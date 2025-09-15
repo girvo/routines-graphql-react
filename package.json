@@ -1,0 +1,8 @@
+{
+  "name": "@my-routines/app",
+  "packageManager": "yarn@4.9.4",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
+}
