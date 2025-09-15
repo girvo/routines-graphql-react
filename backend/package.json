@@ -2,6 +2,7 @@
   "name": "@my-routines/backend",
   "packageManager": "yarn@4.9.4",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node src/main.ts"
   },
