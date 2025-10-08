@@ -4,6 +4,10 @@ import {
   createYoga,
   useExecutionCancellation,
 } from 'graphql-yoga'
+import { readFile } from 'node:fs/promises'
+import * as resolvers from './resolvers/index.ts'
+
+const schema = await readFile('../../schema.graphql', 'utf-8')
 
 const app = fastify({ logger: true })
 
@@ -13,22 +17,10 @@ const yoga = createYoga<{
 }>({
   plugins: [useExecutionCancellation()],
   schema: createSchema({
-    typeDefs: /* graphql */ `
-      scalar File
-
-      interface Node {
-        id: ID!
-      }
-
-      type Query {
-        hello: String
-      }
-    `,
+    typeDefs: schema,
     resolvers: {
       Query: {
-        hello() {
-          return 'world'
-        },
+        hello: resolvers.hello,
       },
     },
   }),

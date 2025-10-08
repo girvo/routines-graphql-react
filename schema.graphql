@@ -1,0 +1,14 @@
+scalar File
+
+interface Node {
+  id: ID!
+}
+
+interface User implements Node {
+  email: String!
+  name: String!
+}
+
+type Query {
+  hello: String!
+}
