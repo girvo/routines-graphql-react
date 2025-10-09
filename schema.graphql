@@ -4,11 +4,27 @@ interface Node {
   id: ID!
 }
 
-interface User implements Node {
+type User implements Node {
+  id: ID!
   email: String!
   name: String!
+  createdAt: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginPayload {
+  token: String!
+  user: User!
 }
 
 type Query {
   hello: String!
+}
+
+type Mutation {
+  login(input: LoginInput!): LoginPayload
 }

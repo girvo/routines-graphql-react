@@ -5,9 +5,18 @@ import {
   useExecutionCancellation,
 } from 'graphql-yoga'
 import { readFile } from 'node:fs/promises'
-import * as resolvers from './resolvers/index.ts'
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import resolvers from './resolvers/index.ts'
+import { createContext } from './context/index.ts'
 
-const schema = await readFile('../../schema.graphql', 'utf-8')
+const schemaFile = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  'schema.graphql',
+)
+const schema = await readFile(schemaFile, 'utf-8')
 
 const app = fastify({ logger: true })
 
@@ -15,14 +24,11 @@ const yoga = createYoga<{
   req: FastifyRequest
   reply: FastifyReply
 }>({
+  context: createContext(),
   plugins: [useExecutionCancellation()],
   schema: createSchema({
     typeDefs: schema,
-    resolvers: {
-      Query: {
-        hello: resolvers.hello,
-      },
-    },
+    resolvers: resolvers,
   }),
 
   // Integrate Fastify logger
