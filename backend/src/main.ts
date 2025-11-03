@@ -4,7 +4,14 @@ import {
   createYoga,
   useExecutionCancellation,
 } from 'graphql-yoga'
+import {
+  createInlineSigningKeyProvider,
+  createRemoteJwksSigningKeyProvider,
+  extractFromHeader,
+  useJWT,
+} from '@graphql-yoga/plugin-jwt'
 import { readFile } from 'node:fs/promises'
+import { env } from 'node:process'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import resolvers from './resolvers/index.ts'
@@ -17,6 +24,11 @@ const schemaFile = resolve(
   'schema.graphql',
 )
 const schema = await readFile(schemaFile, 'utf-8')
+const signingKey = env['JWT_SECRET'] ?? ''
+
+if (signingKey === '') {
+  throw new Error('Please pass a JWT secret to the environment')
+}
 
 const app = fastify({ logger: true })
 
@@ -25,7 +37,23 @@ const yoga = createYoga<{
   reply: FastifyReply
 }>({
   context: createContext(),
-  plugins: [useExecutionCancellation()],
+  plugins: [
+    useExecutionCancellation(),
+    // useJWT({
+    //   signingKeyProviders: [createInlineSigningKeyProvider(signingKey)],
+    //   tokenLookupLocations: [
+    //     extractFromHeader({ name: 'authorization', prefix: 'Bearer' }),
+    //   ],
+    //   tokenVerification: {
+    //     algorithms: ['HS256', 'RS256'],
+    //   },
+    //   extendContext: true,
+    //   reject: {
+    //     missingToken: true,
+    //     invalidToken: true,
+    //   },
+    // }),
+  ],
   schema: createSchema({
     typeDefs: schema,
     resolvers: resolvers,
