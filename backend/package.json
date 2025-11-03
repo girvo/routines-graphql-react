@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node --env-file=.env --watch src/main.ts",
     "generate": "graphql-codegen",
+    "db:introspect": "node --env-file=.env tools/introspect-db.ts",
     "migration:make": "node --env-file=.env tools/make-migration.ts",
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
     "migration:down": "node --env-file=.env tools/run-migrations.ts down",
