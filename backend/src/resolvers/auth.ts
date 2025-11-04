@@ -4,6 +4,12 @@ import { toGlobalId } from '../globalId.ts'
 import type { MutationResolvers } from './types.ts'
 import type { Context } from '../context/index.ts'
 import { NoResultError } from 'kysely'
+import { SqliteError } from 'better-sqlite3'
+
+const SignupError = (message: string) => ({
+  __typename: 'SignupError' as const,
+  message,
+})
 
 export const signup: MutationResolvers<Context>['signup'] = async (
   parent: unknown,
@@ -25,10 +31,17 @@ export const signup: MutationResolvers<Context>['signup'] = async (
       },
     }
   } catch (e) {
-    return {
-      __typename: 'SignupError',
-      message: (e as Error).message,
+    if (e instanceof SqliteError) {
+      switch (e.code) {
+        case 'SQLITE_CONSTRAINT_UNIQUE':
+          return SignupError('A user already exists with that email')
+        default:
+          console.warn(e)
+          return SignupError(e.message)
+      }
     }
+
+    throw e
   }
 }
 
@@ -66,9 +79,6 @@ export const login: MutationResolvers<Context>['login'] = async (
     }
 
     // DEBUGGING
-    return {
-      __typename: 'LoginError',
-      message: (e as Error).message,
-    }
+    throw e
   }
 }
