@@ -12,6 +12,7 @@ const config: CodegenConfig = {
             input: 'GlobalId',
             output: 'GlobalId',
           },
+          DateTime: 'Date',
         },
       },
       plugins: ['typescript', 'typescript-resolvers'],

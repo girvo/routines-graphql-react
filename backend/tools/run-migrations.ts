@@ -8,9 +8,13 @@ import { getDirname } from './paths.ts'
 
 const __dirname = getDirname(import.meta.url)
 
+if (!process.env.SQLITE_DB) {
+  throw new Error('No SQLITE_DB defined in environment')
+}
+
 const db = new Kysely({
   dialect: new SqliteDialect({
-    database: new Database(process.env.SQLITE_DB || 'routines.sqlite'),
+    database: new Database(process.env.SQLITE_DB),
   }),
 })
 

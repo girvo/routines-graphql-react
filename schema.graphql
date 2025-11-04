@@ -1,4 +1,5 @@
 scalar File
+scalar DateTime
 
 interface Node {
   id: ID!
@@ -10,52 +11,29 @@ type Query {
 }
 
 type Mutation {
-  signup(input: SignupInput!): AuthPayload!
-  login(input: LoginInput!): AuthPayload!
-}
-
-type MutationError {
-  message: String!
-  extensions: MutationErrorExtension
-}
-
-type MutationErrorExtension {
-  statusCode: Int
-  errorType: String
-}
-
-type ErrorLocation {
-  line: Int!
-  column: Int!
-}
-
-type ErrorExtensions {
-  code: String!
-}
-
-interface MutationPayload {
-  success: Boolean!
-  errors: [MutationError!]
+  signup(email: String!, password: String!): SignupPayload!
+  login(email: String!, password: String!): LoginPayload!
 }
 
 type User implements Node {
   id: ID!
   email: String!
-  name: String!
-  createdAt: String!
+  createdAt: DateTime!
 }
 
-input LoginInput {
-  email: String!
-  password: String!
+type AuthPayload {
+  user: User!
+  token: String!
 }
 
-input SignupInput {
-  email: String!
-  password: String!
+type LoginError {
+  message: String!
 }
 
-type AuthPayload implements MutationPayload {
-  user: User
-  token: String
+union LoginPayload = AuthPayload | LoginError
+
+type SignupError {
+  message: String!
 }
+
+union SignupPayload = AuthPayload | SignupError

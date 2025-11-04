@@ -17,10 +17,12 @@ function decodeGlobalId(globalId: GlobalId): {
   if (!type || !idStr) {
     throw new Error(`Invalid global ID format: ${globalId}`)
   }
+
   const id = parseInt(idStr, 10)
   if (isNaN(id)) {
     throw new Error(`Invalid ID in global ID: ${idStr}`)
   }
+
   return { type, id }
 }
 
@@ -29,6 +31,7 @@ export function fromGlobalId(globalId: GlobalId, expectedType: string): number {
   if (type !== expectedType) {
     throw new Error(`Expected global ID of type ${expectedType}, got ${type}`)
   }
+
   return id
 }
 

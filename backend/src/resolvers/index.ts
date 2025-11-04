@@ -1,16 +1,17 @@
-import type { Resolvers } from './types.ts'
+import type { Resolvers, Scalars } from './types.ts'
 import type { Context } from '../context/index.ts'
 import hello from './hello.ts'
+import { login, signup } from './auth.ts'
+import { DateTimeResolver } from 'graphql-scalars'
 
 const resolvers: Resolvers<Context> = {
-  Query: {
-    hello: (parent: unknown, {}, context) => {
-      return `${context.blah}!`
-    },
-  },
+  Query: {},
   Mutation: {
-    signup: (parent: unknown, { input }, context) => {},
+    signup: signup,
+    login: login,
   },
+  // Custom scalars
+  DateTime: DateTimeResolver,
 }
 
 export default resolvers

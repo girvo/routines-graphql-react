@@ -10,5 +10,16 @@ export const createUserRepository = (db: Kysely<Database>) => {
         .where('email', '=', email)
         .executeTakeFirstOrThrow()
     },
+
+    async createUser(email: string, passwordHash: string) {
+      return db
+        .insertInto('users')
+        .values({
+          email: email,
+          password_hash: passwordHash,
+        })
+        .returning(['id', 'email', 'created_at'])
+        .executeTakeFirstOrThrow()
+    },
   }
 }

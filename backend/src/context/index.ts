@@ -1,10 +1,15 @@
 import type { JWTExtendContextFields } from '@graphql-yoga/plugin-jwt'
 import { db } from '../database/index.ts'
+import { getEnv } from '../env.ts'
+import { createUserRepository } from '../repositories/user.ts'
+import type { YogaInitialContext } from 'graphql-yoga'
 
-export function createContext() {
+export function createContext(initialContext: YogaInitialContext) {
   return {
+    ...initialContext,
     db,
-    blah: 'this is very cool',
+    env: getEnv(),
+    userRepo: createUserRepository(db),
   }
 }
 

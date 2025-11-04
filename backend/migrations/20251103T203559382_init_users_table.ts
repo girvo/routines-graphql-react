@@ -7,7 +7,7 @@ import { Kysely, sql } from 'kysely'
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('users')
-    .addColumn('id', 'serial', col => col.primaryKey())
+    .addColumn('id', 'integer', col => col.primaryKey().autoIncrement())
     .addColumn('email', 'varchar', col => col.notNull().unique())
     .addColumn('password_hash', 'varchar', col => col.notNull())
     .addColumn('created_at', 'datetime', col =>

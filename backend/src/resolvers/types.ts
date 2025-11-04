@@ -17,62 +17,39 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: Date; output: Date; }
   File: { input: any; output: any; }
 };
 
-export type AuthPayload = MutationPayload & {
+export type AuthPayload = {
   __typename?: 'AuthPayload';
-  token?: Maybe<Scalars['String']['output']>;
-  user?: Maybe<User>;
+  token: Scalars['String']['output'];
+  user: User;
 };
 
-export type ErrorExtensions = {
-  __typename?: 'ErrorExtensions';
-  code: Scalars['String']['output'];
+export type LoginError = {
+  __typename?: 'LoginError';
+  message: Scalars['String']['output'];
 };
 
-export type ErrorLocation = {
-  __typename?: 'ErrorLocation';
-  column: Scalars['Int']['output'];
-  line: Scalars['Int']['output'];
-};
-
-export type LoginInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-};
+export type LoginPayload = AuthPayload | LoginError;
 
 export type Mutation = {
   __typename?: 'Mutation';
-  login: AuthPayload;
-  signup: AuthPayload;
+  login: LoginPayload;
+  signup: SignupPayload;
 };
 
 
 export type MutationLoginArgs = {
-  input: LoginInput;
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 
 export type MutationSignupArgs = {
-  input: SignupInput;
-};
-
-export type MutationError = {
-  __typename?: 'MutationError';
-  extensions?: Maybe<MutationErrorExtension>;
-  message: Scalars['String']['output'];
-};
-
-export type MutationErrorExtension = {
-  __typename?: 'MutationErrorExtension';
-  errorType?: Maybe<Scalars['String']['output']>;
-  statusCode?: Maybe<Scalars['Int']['output']>;
-};
-
-export type MutationPayload = {
-  errors?: Maybe<Array<MutationError>>;
-  success: Scalars['Boolean']['output'];
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type Node = {
@@ -90,17 +67,18 @@ export type QueryNodeArgs = {
   id: Scalars['ID']['input'];
 };
 
-export type SignupInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+export type SignupError = {
+  __typename?: 'SignupError';
+  message: Scalars['String']['output'];
 };
+
+export type SignupPayload = AuthPayload | SignupError;
 
 export type User = Node & {
   __typename?: 'User';
-  createdAt: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -173,10 +151,20 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 
 
+/** Mapping of union types */
+export type ResolversUnionTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
+  LoginPayload:
+    | ( AuthPayload )
+    | ( LoginError )
+  ;
+  SignupPayload:
+    | ( AuthPayload )
+    | ( SignupError )
+  ;
+}>;
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
-  MutationPayload: ( AuthPayload );
   Node: ( User );
 }>;
 
@@ -184,19 +172,16 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
 export type ResolversTypes = ResolversObject<{
   AuthPayload: ResolverTypeWrapper<AuthPayload>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  ErrorExtensions: ResolverTypeWrapper<ErrorExtensions>;
-  ErrorLocation: ResolverTypeWrapper<ErrorLocation>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   File: ResolverTypeWrapper<Scalars['File']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
-  LoginInput: LoginInput;
+  LoginError: ResolverTypeWrapper<LoginError>;
+  LoginPayload: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['LoginPayload']>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  MutationError: ResolverTypeWrapper<MutationError>;
-  MutationErrorExtension: ResolverTypeWrapper<MutationErrorExtension>;
-  MutationPayload: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['MutationPayload']>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  SignupInput: SignupInput;
+  SignupError: ResolverTypeWrapper<SignupError>;
+  SignupPayload: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['SignupPayload']>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   User: ResolverTypeWrapper<User>;
 }>;
@@ -205,59 +190,46 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   AuthPayload: AuthPayload;
   Boolean: Scalars['Boolean']['output'];
-  ErrorExtensions: ErrorExtensions;
-  ErrorLocation: ErrorLocation;
+  DateTime: Scalars['DateTime']['output'];
   File: Scalars['File']['output'];
   ID: Scalars['ID']['output'];
-  Int: Scalars['Int']['output'];
-  LoginInput: LoginInput;
+  LoginError: LoginError;
+  LoginPayload: ResolversUnionTypes<ResolversParentTypes>['LoginPayload'];
   Mutation: Record<PropertyKey, never>;
-  MutationError: MutationError;
-  MutationErrorExtension: MutationErrorExtension;
-  MutationPayload: ResolversInterfaceTypes<ResolversParentTypes>['MutationPayload'];
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   Query: Record<PropertyKey, never>;
-  SignupInput: SignupInput;
+  SignupError: SignupError;
+  SignupPayload: ResolversUnionTypes<ResolversParentTypes>['SignupPayload'];
   String: Scalars['String']['output'];
   User: User;
 }>;
 
 export type AuthPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type ErrorExtensionsResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorExtensions'] = ResolversParentTypes['ErrorExtensions']> = ResolversObject<{
-  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-}>;
-
-export type ErrorLocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorLocation'] = ResolversParentTypes['ErrorLocation']> = ResolversObject<{
-  column?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  line?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-}>;
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
 
 export interface FileScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['File'], any> {
   name: 'File';
 }
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
-  signup?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'input'>>;
-}>;
-
-export type MutationErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationError'] = ResolversParentTypes['MutationError']> = ResolversObject<{
-  extensions?: Resolver<Maybe<ResolversTypes['MutationErrorExtension']>, ParentType, ContextType>;
+export type LoginErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginError'] = ResolversParentTypes['LoginError']> = ResolversObject<{
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type MutationErrorExtensionResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationErrorExtension'] = ResolversParentTypes['MutationErrorExtension']> = ResolversObject<{
-  errorType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  statusCode?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+export type LoginPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginPayload'] = ResolversParentTypes['LoginPayload']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'AuthPayload' | 'LoginError', ParentType, ContextType>;
 }>;
 
-export type MutationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationPayload'] = ResolversParentTypes['MutationPayload']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'AuthPayload', ParentType, ContextType>;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  login?: Resolver<ResolversTypes['LoginPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  signup?: Resolver<ResolversTypes['SignupPayload'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'password'>>;
 }>;
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
@@ -269,25 +241,33 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 }>;
 
+export type SignupErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignupError'] = ResolversParentTypes['SignupError']> = ResolversObject<{
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type SignupPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignupPayload'] = ResolversParentTypes['SignupPayload']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'AuthPayload' | 'SignupError', ParentType, ContextType>;
+}>;
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   AuthPayload?: AuthPayloadResolvers<ContextType>;
-  ErrorExtensions?: ErrorExtensionsResolvers<ContextType>;
-  ErrorLocation?: ErrorLocationResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
   File?: GraphQLScalarType;
+  LoginError?: LoginErrorResolvers<ContextType>;
+  LoginPayload?: LoginPayloadResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  MutationError?: MutationErrorResolvers<ContextType>;
-  MutationErrorExtension?: MutationErrorExtensionResolvers<ContextType>;
-  MutationPayload?: MutationPayloadResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SignupError?: SignupErrorResolvers<ContextType>;
+  SignupPayload?: SignupPayloadResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
 

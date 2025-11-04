@@ -16,6 +16,7 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import resolvers from './resolvers/index.ts'
 import { createContext } from './context/index.ts'
+import { getEnv } from './env.ts'
 
 const schemaFile = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -24,19 +25,31 @@ const schemaFile = resolve(
   'schema.graphql',
 )
 const schema = await readFile(schemaFile, 'utf-8')
-const signingKey = env['JWT_SECRET'] ?? ''
+const signingKey = getEnv().JWT_SECRET
 
-if (signingKey === '') {
-  throw new Error('Please pass a JWT secret to the environment')
+const envToLogger = {
+  development: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'HH:MM:ss Z',
+        ignore: 'pid,hostname',
+      },
+    },
+  },
+  production: true,
+  test: false,
 }
 
-const app = fastify({ logger: true })
+const app = fastify({
+  logger: envToLogger[getEnv().ENVIRONMENT],
+})
 
 const yoga = createYoga<{
   req: FastifyRequest
   reply: FastifyReply
 }>({
-  context: createContext(),
+  context: createContext,
   plugins: [
     useExecutionCancellation(),
     // useJWT({
