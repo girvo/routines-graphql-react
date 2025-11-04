@@ -1,3 +1,6 @@
+// GENERATED FILE
+// DO NOT EDIT
+import type { GlobalId } from '../globalId.ts'
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -9,7 +12,7 @@ export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' |
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
+  ID: { input: GlobalId; output: GlobalId; }
   String: { input: string; output: string; }
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
@@ -17,25 +20,59 @@ export type Scalars = {
   File: { input: any; output: any; }
 };
 
+export type AuthPayload = MutationPayload & {
+  __typename?: 'AuthPayload';
+  token?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<User>;
+};
+
+export type ErrorExtensions = {
+  __typename?: 'ErrorExtensions';
+  code: Scalars['String']['output'];
+};
+
+export type ErrorLocation = {
+  __typename?: 'ErrorLocation';
+  column: Scalars['Int']['output'];
+  line: Scalars['Int']['output'];
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
 
-export type LoginPayload = {
-  __typename?: 'LoginPayload';
-  token: Scalars['String']['output'];
-  user: User;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<LoginPayload>;
+  login: AuthPayload;
+  signup: AuthPayload;
 };
 
 
 export type MutationLoginArgs = {
   input: LoginInput;
+};
+
+
+export type MutationSignupArgs = {
+  input: SignupInput;
+};
+
+export type MutationError = {
+  __typename?: 'MutationError';
+  extensions?: Maybe<MutationErrorExtension>;
+  message: Scalars['String']['output'];
+};
+
+export type MutationErrorExtension = {
+  __typename?: 'MutationErrorExtension';
+  errorType?: Maybe<Scalars['String']['output']>;
+  statusCode?: Maybe<Scalars['Int']['output']>;
+};
+
+export type MutationPayload = {
+  errors?: Maybe<Array<MutationError>>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Node = {
@@ -45,6 +82,17 @@ export type Node = {
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String']['output'];
+  node?: Maybe<Node>;
+};
+
+
+export type QueryNodeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type SignupInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type User = Node & {
@@ -128,48 +176,88 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
+  MutationPayload: ( AuthPayload );
   Node: ( User );
 }>;
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AuthPayload: ResolverTypeWrapper<AuthPayload>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  ErrorExtensions: ResolverTypeWrapper<ErrorExtensions>;
+  ErrorLocation: ResolverTypeWrapper<ErrorLocation>;
   File: ResolverTypeWrapper<Scalars['File']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
-  LoginPayload: ResolverTypeWrapper<LoginPayload>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  MutationError: ResolverTypeWrapper<MutationError>;
+  MutationErrorExtension: ResolverTypeWrapper<MutationErrorExtension>;
+  MutationPayload: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['MutationPayload']>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  SignupInput: SignupInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   User: ResolverTypeWrapper<User>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AuthPayload: AuthPayload;
   Boolean: Scalars['Boolean']['output'];
+  ErrorExtensions: ErrorExtensions;
+  ErrorLocation: ErrorLocation;
   File: Scalars['File']['output'];
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   LoginInput: LoginInput;
-  LoginPayload: LoginPayload;
   Mutation: Record<PropertyKey, never>;
+  MutationError: MutationError;
+  MutationErrorExtension: MutationErrorExtension;
+  MutationPayload: ResolversInterfaceTypes<ResolversParentTypes>['MutationPayload'];
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   Query: Record<PropertyKey, never>;
+  SignupInput: SignupInput;
   String: Scalars['String']['output'];
   User: User;
+}>;
+
+export type AuthPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ErrorExtensionsResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorExtensions'] = ResolversParentTypes['ErrorExtensions']> = ResolversObject<{
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
+
+export type ErrorLocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorLocation'] = ResolversParentTypes['ErrorLocation']> = ResolversObject<{
+  column?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  line?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 }>;
 
 export interface FileScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['File'], any> {
   name: 'File';
 }
 
-export type LoginPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginPayload'] = ResolversParentTypes['LoginPayload']> = ResolversObject<{
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  signup?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'input'>>;
 }>;
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  login?: Resolver<Maybe<ResolversTypes['LoginPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+export type MutationErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationError'] = ResolversParentTypes['MutationError']> = ResolversObject<{
+  extensions?: Resolver<Maybe<ResolversTypes['MutationErrorExtension']>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
+
+export type MutationErrorExtensionResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationErrorExtension'] = ResolversParentTypes['MutationErrorExtension']> = ResolversObject<{
+  errorType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  statusCode?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+}>;
+
+export type MutationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationPayload'] = ResolversParentTypes['MutationPayload']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'AuthPayload', ParentType, ContextType>;
 }>;
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
@@ -178,6 +266,7 @@ export type NodeResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   hello?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 }>;
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
@@ -189,9 +278,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
+  AuthPayload?: AuthPayloadResolvers<ContextType>;
+  ErrorExtensions?: ErrorExtensionsResolvers<ContextType>;
+  ErrorLocation?: ErrorLocationResolvers<ContextType>;
   File?: GraphQLScalarType;
-  LoginPayload?: LoginPayloadResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  MutationError?: MutationErrorResolvers<ContextType>;
+  MutationErrorExtension?: MutationErrorExtensionResolvers<ContextType>;
+  MutationPayload?: MutationPayloadResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

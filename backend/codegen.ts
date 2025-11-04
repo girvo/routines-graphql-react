@@ -7,6 +7,12 @@ const config: CodegenConfig = {
       config: {
         useIndexSignature: true,
         useTypeImports: true,
+        scalars: {
+          ID: {
+            input: 'GlobalId',
+            output: 'GlobalId',
+          },
+        },
       },
       plugins: ['typescript', 'typescript-resolvers'],
     },

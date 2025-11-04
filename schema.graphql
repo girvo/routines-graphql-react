@@ -4,6 +4,40 @@ interface Node {
   id: ID!
 }
 
+type Query {
+  hello: String!
+  node(id: ID!): Node
+}
+
+type Mutation {
+  signup(input: SignupInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+}
+
+type MutationError {
+  message: String!
+  extensions: MutationErrorExtension
+}
+
+type MutationErrorExtension {
+  statusCode: Int
+  errorType: String
+}
+
+type ErrorLocation {
+  line: Int!
+  column: Int!
+}
+
+type ErrorExtensions {
+  code: String!
+}
+
+interface MutationPayload {
+  success: Boolean!
+  errors: [MutationError!]
+}
+
 type User implements Node {
   id: ID!
   email: String!
@@ -16,15 +50,12 @@ input LoginInput {
   password: String!
 }
 
-type LoginPayload {
-  token: String!
-  user: User!
+input SignupInput {
+  email: String!
+  password: String!
 }
 
-type Query {
-  hello: String!
-}
-
-type Mutation {
-  login(input: LoginInput!): LoginPayload
+type AuthPayload implements MutationPayload {
+  user: User
+  token: String
 }

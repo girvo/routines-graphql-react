@@ -4,20 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node --env-file=.env --watch src/main.ts",
-    "generate": "graphql-codegen",
     "db:introspect": "node --env-file=.env tools/introspect-db.ts",
+    "migration:down": "node --env-file=.env tools/run-migrations.ts down",
+    "migration:latest": "node --env-file=.env tools/run-migrations.ts latest",
     "migration:make": "node --env-file=.env tools/make-migration.ts",
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
-    "migration:down": "node --env-file=.env tools/run-migrations.ts down",
-    "migration:latest": "node --env-file=.env tools/run-migrations.ts latest"
+    "resolvers:generate": "graphql-codegen && yarn resolvers:fixup",
+    "resolvers:fixup": "node --env-file=.env tools/fixup-resolver-types.ts",
+    "start": "node --env-file=.env --watch src/main.ts"
   },
   "dependencies": {
     "@graphql-yoga/plugin-jwt": "^3.10.0",
+    "bcryptjs": "3.0.3",
     "better-sqlite3": "^12.4.1",
     "fastify": "^5.6.0",
     "graphql": "^16.11.0",
     "graphql-yoga": "^5.15.2",
+    "jsonwebtoken": "9.0.2",
     "kysely": "^0.28.8",
     "typescript": "^5.9.2"
   },
@@ -25,6 +28,8 @@
     "@graphql-codegen/cli": "^6.0.0",
     "@graphql-codegen/typescript": "^5.0.2",
     "@graphql-codegen/typescript-resolvers": "^5.1.0",
-    "@types/better-sqlite3": "^7.6.13"
+    "@types/bcryptjs": "3.0.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/jsonwebtoken": "9.0.10"
   }
 }
