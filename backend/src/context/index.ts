@@ -14,4 +14,4 @@ export function createContext(initialContext: YogaInitialContext) {
 }
 
 export type BaseContext = ReturnType<typeof createContext>
-export type Context = BaseContext & JWTExtendContextFields
+export type Context = BaseContext & { jwt?: JWTExtendContextFields }

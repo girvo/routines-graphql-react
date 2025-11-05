@@ -13,6 +13,7 @@ export interface UserRow {
 export const createUserRepository = (db: Kysely<Database>) => {
   return {
     async findById(id: number): Promise<UserRow> {
+      console.debug(`Looking for user with id ${id}`)
       return db
         .selectFrom('users')
         .selectAll()

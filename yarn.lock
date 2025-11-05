@@ -243,7 +243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@envelop/core@npm:^5.2.3":
+"@envelop/core@npm:^5.2.3, @envelop/core@npm:^5.3.2":
   version: 5.3.2
   resolution: "@envelop/core@npm:5.3.2"
   dependencies:
@@ -264,6 +264,35 @@ __metadata:
     "@whatwg-node/promise-helpers": "npm:^1.2.4"
     tslib: "npm:^2.5.0"
   checksum: 10c0/b925c4809ac1889d822f91669da0e117052eaf26ebbdb911af11a01e4989c68c5771938e2835382d6fcf68a6fd62c14b48de5b7e55d03ecbcd4f1e08994781a4
+  languageName: node
+  linkType: hard
+
+"@envelop/extended-validation@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@envelop/extended-validation@npm:6.1.0"
+  dependencies:
+    "@graphql-tools/utils": "npm:^10.0.0"
+    tslib: "npm:^2.5.0"
+  peerDependencies:
+    "@envelop/core": ^5.3.2
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: 10c0/0b44a393e69dec354f6babd9f33d780d1256418dafb2953d54e187c8f7c3615c70b3bfa4aff834bff1d30783003c174f27afff17c180febf139c1336ccc91115
+  languageName: node
+  linkType: hard
+
+"@envelop/generic-auth@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@envelop/generic-auth@npm:10.0.1"
+  dependencies:
+    "@envelop/extended-validation": "npm:^6.1.0"
+    "@graphql-tools/executor": "npm:^1.3.6"
+    "@graphql-tools/utils": "npm:^10.5.1"
+    "@whatwg-node/promise-helpers": "npm:^1.2.1"
+    tslib: "npm:^2.5.0"
+  peerDependencies:
+    "@envelop/core": ^5.3.2
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: 10c0/0befd12cf9b9ced5a0df623573e41176f5f47bb09409ddefa258eaf9c3fe4d7e9e9da90c3dc8218c606c3e9428e83163125d847d72d6acdc832c270c189c59d0
   languageName: node
   linkType: hard
 
@@ -828,6 +857,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/executor@npm:^1.3.6":
+  version: 1.4.11
+  resolution: "@graphql-tools/executor@npm:1.4.11"
+  dependencies:
+    "@graphql-tools/utils": "npm:^10.10.1"
+    "@graphql-typed-document-node/core": "npm:^3.2.0"
+    "@repeaterjs/repeater": "npm:^3.0.4"
+    "@whatwg-node/disposablestack": "npm:^0.0.6"
+    "@whatwg-node/promise-helpers": "npm:^1.0.0"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 10c0/2db4a07c4c8bb72b259f7e827231bb41614662fe20b49e2454df5ded97dace7da16c43a41c779c6fa3288524b115f0421d76c2352404ce5f516ab1b315c2e5a8
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/executor@npm:^1.4.0, @graphql-tools/executor@npm:^1.4.9":
   version: 1.4.9
   resolution: "@graphql-tools/executor@npm:1.4.9"
@@ -1034,6 +1079,20 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 10c0/97199f52d0235124d4371f7f54cc0df5ce9df6d8aae716ac05d8ebeda4b5ee3faf1fca94d5d1c521a565e152f8e02a1abfb9c2629ffe805c14468aec0c3d41cf
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:^10.10.1, @graphql-tools/utils@npm:^10.5.1":
+  version: 10.10.1
+  resolution: "@graphql-tools/utils@npm:10.10.1"
+  dependencies:
+    "@graphql-typed-document-node/core": "npm:^3.1.1"
+    "@whatwg-node/promise-helpers": "npm:^1.0.0"
+    cross-inspect: "npm:1.0.1"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 10c0/3bce37c9dfd0109e15a0d0017332b84a3727a530496d664e9eba816abb3397717ec720295854be4c4b2aa4110961cb0c307964b10c40002c16ff2f4b8d233f06
   languageName: node
   linkType: hard
 
@@ -1472,6 +1531,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@my-routines/backend@workspace:backend"
   dependencies:
+    "@envelop/core": "npm:^5.3.2"
+    "@envelop/generic-auth": "npm:^10.0.1"
     "@graphql-codegen/cli": "npm:^6.0.0"
     "@graphql-codegen/typescript": "npm:^5.0.2"
     "@graphql-codegen/typescript-resolvers": "npm:^5.1.0"
