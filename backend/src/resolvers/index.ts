@@ -1,7 +1,6 @@
 import type { Resolvers, Scalars } from './types.ts'
 import type { Context } from '../context/index.ts'
 import hello from './hello.ts'
-import { login, signup } from './auth.ts'
 import { DateTimeResolver } from 'graphql-scalars'
 
 const resolvers: Resolvers<Context> = {
@@ -10,10 +9,7 @@ const resolvers: Resolvers<Context> = {
       return 'world'
     },
   },
-  Mutation: {
-    signup: signup,
-    login: login,
-  },
+  Mutation: {},
   // Custom scalars
   DateTime: DateTimeResolver,
 }

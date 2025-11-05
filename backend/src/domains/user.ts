@@ -1,0 +1,29 @@
+import { type UserRow } from '../repositories/user.ts'
+import { sqliteDateToDate } from '../database/utils.ts'
+import { type } from 'arktype'
+
+const UserDomain = type({
+  id: 'number',
+  email: 'string',
+  passwordHash: 'string',
+  createdAt: 'Date',
+  updatedAt: 'Date | null',
+  lastLoggedIn: 'Date | null',
+})
+
+export type UserDomain = typeof UserDomain.infer
+
+export const tableToDomain = (input: UserRow): UserDomain => {
+  const result = UserDomain({
+    id: input.id,
+    email: input.email,
+    passwordHash: input.password_hash,
+    createdAt: sqliteDateToDate(input.created_at),
+    updatedAt: input.updated_at ? sqliteDateToDate(input.updated_at) : null,
+    lastLoggedIn: input.last_logged_in
+      ? sqliteDateToDate(input.last_logged_in)
+      : null,
+  })
+
+  return UserDomain.assert(result)
+}
