@@ -5,7 +5,11 @@ import { login, signup } from './auth.ts'
 import { DateTimeResolver } from 'graphql-scalars'
 
 const resolvers: Resolvers<Context> = {
-  Query: {},
+  Query: {
+    hello: () => {
+      return 'world'
+    },
+  },
   Mutation: {
     signup: signup,
     login: login,

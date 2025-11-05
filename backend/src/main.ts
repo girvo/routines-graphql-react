@@ -11,12 +11,12 @@ import {
   useJWT,
 } from '@graphql-yoga/plugin-jwt'
 import { readFile } from 'node:fs/promises'
-import { env } from 'node:process'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import resolvers from './resolvers/index.ts'
 import { createContext } from './context/index.ts'
 import { getEnv } from './env.ts'
+import { authRoutes } from './rest/auth.ts'
 
 const schemaFile = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -52,20 +52,20 @@ const yoga = createYoga<{
   context: createContext,
   plugins: [
     useExecutionCancellation(),
-    // useJWT({
-    //   signingKeyProviders: [createInlineSigningKeyProvider(signingKey)],
-    //   tokenLookupLocations: [
-    //     extractFromHeader({ name: 'authorization', prefix: 'Bearer' }),
-    //   ],
-    //   tokenVerification: {
-    //     algorithms: ['HS256', 'RS256'],
-    //   },
-    //   extendContext: true,
-    //   reject: {
-    //     missingToken: true,
-    //     invalidToken: true,
-    //   },
-    // }),
+    useJWT({
+      signingKeyProviders: [createInlineSigningKeyProvider(signingKey)],
+      tokenLookupLocations: [
+        extractFromHeader({ name: 'authorization', prefix: 'Bearer' }),
+      ],
+      tokenVerification: {
+        algorithms: ['HS256', 'RS256'],
+      },
+      extendContext: true,
+      reject: {
+        missingToken: true,
+        invalidToken: true,
+      },
+    }),
   ],
   schema: createSchema({
     typeDefs: schema,
@@ -101,5 +101,7 @@ app.route({
 app.addContentTypeParser('multipart/form-data', {}, (req, payload, done) =>
   done(null),
 )
+
+authRoutes(app, {})
 
 app.listen({ port: 4000 })

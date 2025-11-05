@@ -27,6 +27,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ark/schema@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@ark/schema@npm:0.53.0"
+  dependencies:
+    "@ark/util": "npm:0.53.0"
+  checksum: 10c0/2c5b0d4e748956610fe01f6d5fed5cc440994819bc49708796cb6e80ae7fa1c28f1ff17f49bd313c478d5fcf9a651da17de7ed97da8699a64aa34ec5d73ef924
+  languageName: node
+  linkType: hard
+
+"@ark/util@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@ark/util@npm:0.53.0"
+  checksum: 10c0/a3fb8f3c7ad0815de3e0eb33463944f21c666a6d646eac4c1897eeb55e160f0ded3c54dafe02a9209298e93a2869368118aff31028dcf4ee87a254b99496959f
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/code-frame@npm:7.27.1"
@@ -1463,6 +1479,7 @@ __metadata:
     "@types/bcryptjs": "npm:3.0.0"
     "@types/better-sqlite3": "npm:^7.6.13"
     "@types/jsonwebtoken": "npm:9.0.10"
+    arktype: "npm:^2.1.25"
     bcryptjs: "npm:3.0.3"
     better-sqlite3: "npm:^12.4.1"
     fastify: "npm:^5.6.0"
@@ -2114,6 +2131,26 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 10c0/c5640c2d89045371c7cedd6a70212a04e360fd34d6edeae32f6952c63949e3525ea77dbec0289d8213a99bbaeab5abfa860b5c12cf88a2e6cf8106e90dd27a7e
+  languageName: node
+  linkType: hard
+
+"arkregex@npm:0.0.2":
+  version: 0.0.2
+  resolution: "arkregex@npm:0.0.2"
+  dependencies:
+    "@ark/util": "npm:0.53.0"
+  checksum: 10c0/e3f4572058b3136b5d882b38105a50f726f22ea06222d1e3fd46f6d82954f7c7a2b24e516359a2d3b6970f91b78096bf33d1999bf507fd55a1aaea491961e435
+  languageName: node
+  linkType: hard
+
+"arktype@npm:^2.1.25":
+  version: 2.1.25
+  resolution: "arktype@npm:2.1.25"
+  dependencies:
+    "@ark/schema": "npm:0.53.0"
+    "@ark/util": "npm:0.53.0"
+    arkregex: "npm:0.0.2"
+  checksum: 10c0/dd3176364a6d5801c8be7b85f52d033401fb2aa8f669703b2eb9342e7a3ab034407f82aa3d2613492636a06191d17c5d62c04f810adb235bf4e3d3cdd40ab50b
   languageName: node
   linkType: hard
 

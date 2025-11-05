@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@graphql-yoga/plugin-jwt": "^3.10.0",
+    "arktype": "^2.1.25",
     "bcryptjs": "3.0.3",
     "better-sqlite3": "^12.4.1",
     "fastify": "^5.6.0",
