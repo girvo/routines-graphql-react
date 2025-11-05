@@ -1,12 +1,16 @@
 scalar File
 scalar DateTime
 
+directive @skipAuth on FIELD_DEFINITION
+directive @authenticated on FIELD_DEFINITION
+
 interface Node {
   id: ID!
 }
 
 type Query {
-  hello: String!
+  hello: String! @skipAuth
+  another: String!
   node(id: ID!): Node
 }
 

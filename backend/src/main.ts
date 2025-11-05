@@ -64,8 +64,8 @@ const yoga = createYoga<{
       },
       extendContext: true,
       reject: {
-        missingToken: true,
-        invalidToken: true,
+        missingToken: false,
+        invalidToken: false,
       },
     }),
     useGenericAuth({

@@ -24,6 +24,9 @@ export const resolveUser: ResolveUserFn<
 }
 
 export const validateUser: ValidateUserFn<UserDomain> = params => {
+  // console.debug(params.fieldDirectives)
+  if (params.fieldDirectives?.skipAuth) return
+
   if (!params.user) {
     return new GraphQLError('Unauthenticated!')
   }

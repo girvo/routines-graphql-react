@@ -8,6 +8,7 @@ const resolvers: Resolvers<Context> = {
     hello: () => {
       return 'world'
     },
+    another: () => 'test',
   },
   Mutation: {},
   // Custom scalars

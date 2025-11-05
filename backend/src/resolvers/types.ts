@@ -58,6 +58,7 @@ export type Node = {
 
 export type Query = {
   __typename?: 'Query';
+  another: Scalars['String']['output'];
   hello: Scalars['String']['output'];
   node?: Maybe<Node>;
 };
@@ -204,6 +205,14 @@ export type ResolversParentTypes = ResolversObject<{
   User: User;
 }>;
 
+export type AuthenticatedDirectiveArgs = { };
+
+export type AuthenticatedDirectiveResolver<Result, Parent, ContextType = any, Args = AuthenticatedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type SkipAuthDirectiveArgs = { };
+
+export type SkipAuthDirectiveResolver<Result, Parent, ContextType = any, Args = SkipAuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type AuthPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -237,6 +246,7 @@ export type NodeResolvers<ContextType = any, ParentType extends ResolversParentT
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  another?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hello?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 }>;
@@ -271,3 +281,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   User?: UserResolvers<ContextType>;
 }>;
 
+export type DirectiveResolvers<ContextType = any> = ResolversObject<{
+  authenticated?: AuthenticatedDirectiveResolver<any, any, ContextType>;
+  skipAuth?: SkipAuthDirectiveResolver<any, any, ContextType>;
+}>;
