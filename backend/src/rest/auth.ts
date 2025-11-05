@@ -28,6 +28,8 @@ const SignupError = (message: string) => ({
   errors: [{ message }],
 })
 
+const TOKEN_EXPIRY = 15 * 60 * 1000
+
 export const authRoutes = async (fastify: FastifyInstance, options: any) => {
   const env = getEnv()
   const userRepo = createUserRepository(db) // on request? Or on start?
@@ -42,7 +44,9 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
 
       if (!valid) return loginError
 
-      const token = await jwt.sign({ userId: user.id }, env.JWT_SECRET)
+      const token = await jwt.sign({ userId: user.id }, env.JWT_SECRET, {
+        expiresIn: TOKEN_EXPIRY,
+      })
 
       return {
         success: true,
@@ -64,7 +68,9 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
       const user = await userRepo
         .createUser(body.email, passHash)
         .then(User.tableToDomain)
-      const token = await jwt.sign({ userId: user.id }, env.JWT_SECRET)
+      const token = await jwt.sign({ userId: user.id }, env.JWT_SECRET, {
+        expiresIn: TOKEN_EXPIRY,
+      })
 
       return {
         success: true,
