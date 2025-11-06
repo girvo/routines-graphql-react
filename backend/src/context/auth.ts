@@ -16,7 +16,7 @@ export const resolveUser: ResolveUserFn<
   try {
     const { userId } = JwtPayload.assert(context.jwt?.payload)
     const user = await context.userRepo.findById(userId).then(tableToDomain)
-
+    console.log('return user now')
     return user
   } catch (e) {
     return null
@@ -24,7 +24,6 @@ export const resolveUser: ResolveUserFn<
 }
 
 export const validateUser: ValidateUserFn<UserDomain> = params => {
-  // console.debug(params.fieldDirectives)
   if (params.fieldDirectives?.skipAuth) return
 
   if (!params.user) {

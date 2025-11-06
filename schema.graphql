@@ -10,34 +10,15 @@ interface Node {
 
 type Query {
   hello: String! @skipAuth
-  another: String!
+  me: User!
   node(id: ID!): Node
 }
 
-type Mutation {
-  signup(email: String!, password: String!): SignupPayload!
-  login(email: String!, password: String!): LoginPayload!
-}
+# type Mutation {
+# }
 
 type User implements Node {
   id: ID!
   email: String!
   createdAt: DateTime!
 }
-
-type AuthPayload {
-  user: User!
-  token: String!
-}
-
-type LoginError {
-  message: String!
-}
-
-union LoginPayload = AuthPayload | LoginError
-
-type SignupError {
-  message: String!
-}
-
-union SignupPayload = AuthPayload | SignupError

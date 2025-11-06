@@ -3,6 +3,7 @@ import { db } from '../database/index.ts'
 import { getEnv } from '../env.ts'
 import { createUserRepository } from '../repositories/user.ts'
 import type { YogaInitialContext } from 'graphql-yoga'
+import type { UserDomain } from '../domains/user.ts'
 
 export function createContext(initialContext: YogaInitialContext) {
   return {
@@ -14,4 +15,6 @@ export function createContext(initialContext: YogaInitialContext) {
 }
 
 export type BaseContext = ReturnType<typeof createContext>
-export type Context = BaseContext & { jwt?: JWTExtendContextFields }
+export type Context = BaseContext & { jwt?: JWTExtendContextFields } & {
+  currentUser: UserDomain | null
+}
