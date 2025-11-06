@@ -15,9 +15,8 @@ const resolvers: Resolvers<Context> = {
         throw new GraphQLError('No user in context')
       }
 
-      const user = await context.userRepo
-        .findById(context.currentUser?.id)
-        .then(UserDomain.tableToDomain)
+      // NOTE: This isn't actually needed: we've already loaded it, this is just a test
+      const user = await context.users.load(context.currentUser.id)
 
       return {
         __typename: 'User',

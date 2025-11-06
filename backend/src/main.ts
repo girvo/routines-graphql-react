@@ -19,6 +19,8 @@ import { resolveUser, validateUser } from './context/auth.ts'
 import { getEnv } from './env.ts'
 import { authRoutes } from './rest/auth.ts'
 import { useGenericAuth } from '@envelop/generic-auth'
+import { useDataLoader } from '@envelop/dataloader'
+import { userDataLoader } from './loaders/user.ts'
 
 const schemaFile = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -68,6 +70,8 @@ const yoga = createYoga<{
         invalidToken: false,
       },
     }),
+    // This needs to be before useGenericAuth as it relies on this DataLoader
+    useDataLoader('users', userDataLoader),
     useGenericAuth({
       resolveUserFn: resolveUser,
       validateUser: validateUser,

@@ -15,8 +15,8 @@ export const resolveUser: ResolveUserFn<
   // Checks that the user exists correctly in the DB from the JWT
   try {
     const { userId } = JwtPayload.assert(context.jwt?.payload)
-    const user = await context.userRepo.findById(userId).then(tableToDomain)
-    console.log('return user now')
+    const user = await context.users.load(userId)
+
     return user
   } catch (e) {
     return null

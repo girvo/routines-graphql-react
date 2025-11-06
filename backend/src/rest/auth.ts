@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import { type } from 'arktype'
 import { db } from '../database/index.ts'
-import { createUserRepository } from '../repositories/user.ts'
+import { userRepo } from '../context/index.ts'
 import { compare, hash } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { NoResultError } from 'kysely'
@@ -32,7 +32,6 @@ const TOKEN_EXPIRY = 15 * 60 * 1000
 
 export const authRoutes = async (fastify: FastifyInstance, options: any) => {
   const env = getEnv()
-  const userRepo = createUserRepository(db) // on request? Or on start?
 
   fastify.post('/login', { schema }, async request => {
     const body = request.body as typeof AuthSchema.infer

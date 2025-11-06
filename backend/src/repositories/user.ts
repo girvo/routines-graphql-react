@@ -21,6 +21,15 @@ export const createUserRepository = (db: Kysely<Database>) => {
         .executeTakeFirstOrThrow()
     },
 
+    /**
+     * This is used for the per-request DataLoader
+     * @param ids Readonly to satisfy the DataLoader requirements
+     * @returns Promise<UserRow[]>
+     */
+    async findAllByIds(ids: readonly number[]): Promise<UserRow[]> {
+      return db.selectFrom('users').selectAll().where('id', 'in', ids).execute()
+    },
+
     async findByEmail(email: string): Promise<UserRow> {
       return db
         .selectFrom('users')
