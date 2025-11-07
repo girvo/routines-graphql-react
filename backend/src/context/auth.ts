@@ -6,15 +6,18 @@ import { GraphQLError } from 'graphql'
 
 const JwtPayload = type({
   userId: 'number',
+  iat: 'number',
+  exp: 'number',
 })
 
 export const resolveUser: ResolveUserFn<
   UserDomain,
   Context
 > = async context => {
-  // Checks that the user exists correctly in the DB from the JWT
   try {
     const { userId } = JwtPayload.assert(context.jwt?.payload)
+
+    // Checks that the user exists correctly in the DB from the JWT
     const user = await context.users.load(userId)
 
     return user

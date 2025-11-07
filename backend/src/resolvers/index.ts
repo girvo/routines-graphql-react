@@ -18,6 +18,12 @@ const resolvers: Resolvers<Context> = {
       // NOTE: This isn't actually needed: we've already loaded it, this is just a test
       const user = await context.users.load(context.currentUser.id)
 
+      if (!user) {
+        throw new GraphQLError(
+          `No user found by this ID: ${context.currentUser.id}`,
+        )
+      }
+
       return {
         __typename: 'User',
         id: toGlobalId('User', user.id),
