@@ -8,7 +8,7 @@ export function toGlobalId(type: string, id: number): GlobalId {
   return Buffer.from(`${type}:${id}`).toString('base64') as GlobalId
 }
 
-function decodeGlobalId(globalId: GlobalId): {
+export function decodeGlobalId(globalId: GlobalId): {
   type: string
   id: number
 } {

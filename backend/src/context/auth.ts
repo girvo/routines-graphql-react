@@ -33,3 +33,20 @@ export const validateUser: ValidateUserFn<UserDomain> = params => {
     return new GraphQLError('Unauthenticated!')
   }
 }
+
+export const getUser = async (context: Context) => {
+  if (!context.currentUser) {
+    throw new GraphQLError('No user in context')
+  }
+
+  // NOTE: This isn't actually needed: we've already loaded it, this is just a test
+  const user = await context.users.load(context.currentUser.id)
+
+  if (!user) {
+    throw new GraphQLError(
+      `No user found by this ID: ${context.currentUser.id}`,
+    )
+  }
+
+  return user
+}

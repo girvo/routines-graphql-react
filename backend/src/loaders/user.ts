@@ -11,7 +11,15 @@ export const userDataLoader = (context: Context) => {
       try {
         rowMap.set(row.id, UserDomain.tableToDomain(row))
       } catch (error) {
-        rowMap.set(row.id, error instanceof Error ? error : new Error(String(error)))
+        if (error instanceof Error) {
+          rowMap.set(row.id, error)
+        } else {
+          console.warn(
+            'Error received in User DataLoader that is not an actual error:',
+            error,
+          )
+          rowMap.set(row.id, new Error(String(error)))
+        }
       }
     }
 
