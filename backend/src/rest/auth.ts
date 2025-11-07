@@ -28,7 +28,10 @@ const SignupError = (message: string) => ({
   errors: [{ message }],
 })
 
-const TOKEN_EXPIRY = 15 * 60 * 1000
+const signWithExpiry = (id: number, secret: string) =>
+  jwt.sign({ userId: id }, secret, {
+    expiresIn: '10m',
+  })
 
 export const authRoutes = async (fastify: FastifyInstance, options: any) => {
   const env = getEnv()
@@ -43,13 +46,11 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
 
       if (!valid) return loginError
 
-      const token = await jwt.sign({ userId: user.id }, env.JWT_SECRET, {
-        expiresIn: TOKEN_EXPIRY,
-      })
+      const token = await signWithExpiry(user.id, env.JWT_SECRET)
 
       return {
         success: true,
-        access_token: token,
+        accessToken: token,
       }
     } catch (err) {
       if (err instanceof NoResultError) {
@@ -67,13 +68,12 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
       const user = await userRepo
         .createUser(body.email, passHash)
         .then(User.tableToDomain)
-      const token = await jwt.sign({ userId: user.id }, env.JWT_SECRET, {
-        expiresIn: TOKEN_EXPIRY,
-      })
+
+      const token = await signWithExpiry(user.id, env.JWT_SECRET)
 
       return {
         success: true,
-        access_token: token,
+        accessToken: token,
       }
     } catch (err) {
       if (err instanceof SqliteError) {
