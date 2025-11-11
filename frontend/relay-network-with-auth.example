@@ -1,0 +1,79 @@
+import { Environment, Network, RecordSource, Store } from 'relay-runtime'
+
+let refreshPromise: Promise<string> | null = null
+
+async function refreshAccessToken(): Promise<string> {
+  // Ensure only one refresh happens at a time
+  if (refreshPromise) {
+    return refreshPromise
+  }
+
+  refreshPromise = fetch('/api/refresh', {
+    method: 'POST',
+    credentials: 'include', // Send refresh token cookie
+  })
+    .then(async response => {
+      if (!response.ok) {
+        throw new Error('Refresh failed')
+      }
+      const data = await response.json()
+      return data.accessToken
+    })
+    .finally(() => {
+      refreshPromise = null
+    })
+
+  return refreshPromise
+}
+
+async function fetchWithRetry(
+  operation: RequestParameters,
+  variables: Variables,
+  cacheConfig: CacheConfig,
+  uploadables?: UploadableMap,
+  attempt = 0,
+): Promise<GraphQLResponse> {
+  const accessToken = getAccessToken() // Get from memory/localStorage
+
+  const response = await fetch('/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    },
+    body: JSON.stringify({
+      query: operation.text,
+      variables,
+    }),
+  })
+
+  const json = await response.json()
+
+  // Check for authentication errors
+  const hasAuthError =
+    response.status === 401 ||
+    json.errors?.some((err: any) => err.extensions?.code === 'UNAUTHENTICATED')
+
+  if (hasAuthError && attempt === 0) {
+    try {
+      const newToken = await refreshAccessToken()
+      setAccessToken(newToken) // Store in memory/localStorage
+
+      // Retry the request
+      return fetchWithRetry(operation, variables, cacheConfig, uploadables, 1)
+    } catch (error) {
+      // Refresh failed - redirect to login or handle as needed
+      handleAuthFailure()
+      throw error
+    }
+  }
+
+  return json
+}
+
+const network = Network.create(fetchWithRetry)
+
+export const relayEnvironment = new Environment({
+  network,
+  store: new Store(new RecordSource()),
+})
