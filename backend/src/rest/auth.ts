@@ -7,8 +7,7 @@ import { NoResultError } from 'kysely'
 import { getEnv } from '../env.ts'
 import { SqliteError } from 'better-sqlite3'
 import * as User from '../domains/user.ts'
-import '@fastify/cookie'
-import { FastifyInstance } from 'fastify'
+import { type FastifyInstance } from 'fastify'
 
 const AuthSchema = type({
   email: 'string',
@@ -37,7 +36,7 @@ const signWithExpiry = (id: number, secret: string) =>
 export const authRoutes = async (fastify: FastifyInstance, options: any) => {
   const env = getEnv()
 
-  fastify.post('/login', { schema }, async request => {
+  fastify.post('/login', { schema }, async (request, reply) => {
     const body = request.body as typeof AuthSchema.infer
     try {
       const user = await userRepo
@@ -48,6 +47,15 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
       if (!valid) return loginError
 
       const token = await signWithExpiry(user.id, env.JWT_SECRET)
+
+      // Need to generate a token, store in the database
+      reply.setCookie('refresh_token', '', {
+        httpOnly: true,
+        secure: false, // tbd, I do need HTTPs but I'll deal with this later
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60,
+      })
 
       return {
         success: true,

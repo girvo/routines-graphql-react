@@ -1,6 +1,6 @@
 {
   "name": "@my-routines/backend",
-  "packageManager": "yarn@4.9.4",
+  "packageManager": "pnpm@10.21.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "migration:latest": "node --env-file=.env tools/run-migrations.ts latest",
     "migration:make": "node --env-file=.env tools/make-migration.ts",
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
-    "resolvers:generate": "graphql-codegen && yarn resolvers:fixup",
+    "resolvers:generate": "graphql-codegen && pnpm resolvers:fixup",
     "resolvers:fixup": "node --env-file=.env tools/fixup-resolver-types.ts",
     "start": "node --env-file=.env --watch src/main.ts"
   },

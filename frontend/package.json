@@ -1,6 +1,6 @@
 {
   "name": "@my-routines/frontend",
-  "packageManager": "yarn@4.9.4",
+  "packageManager": "pnpm@10.21.0",
   "private": true,
   "dependencies": {
     "typescript": "^5.9.2"

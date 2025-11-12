@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a monorepo for a routines application with a GraphQL backend and frontend. It uses Yarn 4 with Plug'n'Play (PnP) and workspaces.
+This is a monorepo for a routines application with a GraphQL backend and frontend. It uses PNPM, NOT NPM DIRECTLY
+
+NOTE: DO NOT EVER RUN `npm`, only ever `pnpm`. If you feel you have to use `npm`, ASK THE USER FOR CONFIRMATION FIRST.
 
 ## Monorepo Structure
 
@@ -19,16 +21,16 @@ All commands should be run from the repository root:
 
 ```bash
 # Install dependencies
-yarn install
+pnpm install
 
 # Start the backend server
-yarn workspace @my-routines/backend start
+pnpm workspace @my-routines/backend start
 
 # Lint code
-yarn eslint .
+pnpm eslint .
 
 # Format code
-yarn prettier --write .
+pnpm prettier --write .
 ```
 
 ## Backend Architecture
@@ -57,10 +59,6 @@ The backend uses:
 - **Module System**: ESNext with Node.js Next resolution
 - **No Emit**: TypeScript is used for type checking only; Node.js runs .ts files directly
 - **Verbatim Module Syntax**: Import/export syntax is preserved as-is
-
-## Yarn PnP
-
-This project uses Yarn's Plug'n'Play instead of node_modules. The `.pnp.cjs` and `.pnp.loader.mjs` files are generated and should not be edited manually. Use the Yarn SDKs in `.yarn/sdks/` for editor integration.
 
 ## Comments and coding format
 

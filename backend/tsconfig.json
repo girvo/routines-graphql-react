@@ -6,9 +6,6 @@
      "rewriteRelativeImportExtensions": true,
      "erasableSyntaxOnly": true,
      "verbatimModuleSyntax": true,
-     "strict": true,
-     "types": [
-      "@fastify/cookies"
-     ]
+     "strict": true
   },
 }

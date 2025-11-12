@@ -37,7 +37,7 @@ const createMigration = async () => {
 
   if (!migrationName) {
     console.error('Error: Migration name is required')
-    console.error('Usage: yarn tools/make-migration.ts <migration-name>')
+    console.error('Usage: pnpm tools/make-migration.ts <migration-name>')
     process.exit(1)
   }
 

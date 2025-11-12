@@ -32,7 +32,7 @@ const runMigrations = async () => {
 
   if (!command || !['latest', 'up', 'down'].includes(command)) {
     console.error('Error: Invalid command')
-    console.error('Usage: yarn tools/run-migrations.ts <latest|up|down>')
+    console.error('Usage: pnpm tools/run-migrations.ts <latest|up|down>')
     process.exit(1)
   }
 
