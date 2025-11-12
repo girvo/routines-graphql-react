@@ -1,5 +1,6 @@
 import { sqliteDateToDate } from '../database/utils.ts'
 import { type } from 'arktype'
+import { toGlobalId } from '../globalId.ts'
 import type { UserRow } from './user-repository.ts'
 
 const UserDomain = type({
@@ -27,3 +28,10 @@ export const tableToDomain = (input: UserRow): UserDomain => {
 
   return UserDomain.assert(result)
 }
+
+export const userToGraphQL = (user: UserDomain) => ({
+  __typename: 'User' as const,
+  id: toGlobalId('User', user.id),
+  email: user.email,
+  createdAt: user.createdAt,
+})

@@ -4,7 +4,7 @@ import { DateTimeResolver } from 'graphql-scalars'
 import { GraphQLError } from 'graphql'
 import { decodeGlobalId } from '../globalId.ts'
 import { getUser } from '../auth/auth-context.ts'
-import { userToGraphQL } from '../user/user-mapper.ts'
+import { userToGraphQL } from '../user/user-domain.ts'
 import { resolveUserAsNode } from '../user/user-resolvers.ts'
 
 const nodeResolvers = {

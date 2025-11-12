@@ -1,7 +1,6 @@
-import type { UserDomain } from './user-domain.ts'
+import { type UserDomain, userToGraphQL } from './user-domain.ts'
 import type { NodeResolver } from '../graphql/types.ts'
 import { toGlobalId } from '../globalId.ts'
-import { userToGraphQL } from './user-mapper.ts'
 
 export const resolveUserAsNode: NodeResolver<'User'> = async (id, context) => {
   const user = await context.users.load(id)
