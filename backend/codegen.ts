@@ -3,7 +3,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli'
 const config: CodegenConfig = {
   schema: '../schema.graphql',
   generates: {
-    './src/resolvers/types.ts': {
+    './src/graphql/resolver-types.ts': {
       config: {
         useIndexSignature: true,
         useTypeImports: true,

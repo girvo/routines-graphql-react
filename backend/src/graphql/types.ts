@@ -1,6 +1,6 @@
-import { resolveUserAsNode } from './user.ts'
-import type { Context } from '../context/index.ts'
-import type { ResolversParentTypes } from '../resolvers/types.ts'
+import { resolveUserAsNode } from '../user/user-resolvers.ts'
+import type { Context } from './context.ts'
+import type { ResolversParentTypes } from './resolver-types.ts'
 
 // Type nonsense to ensure our resolvers for Node are strongly typed
 // via type extraction from the generated file
@@ -18,7 +18,3 @@ export type NodeResolver<T extends NodeType> = (
 ) => Promise<WithRequiredTypename<
   Extract<NodeUnion, { __typename?: T }>
 > | null>
-
-export const nodeResolvers = {
-  User: resolveUserAsNode,
-}

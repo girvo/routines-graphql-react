@@ -1,6 +1,6 @@
-import { type UserRow } from '../repositories/user.ts'
 import { sqliteDateToDate } from '../database/utils.ts'
 import { type } from 'arktype'
+import type { UserRow } from './user-repository.ts'
 
 const UserDomain = type({
   id: 'number',

@@ -9,7 +9,7 @@ import type { GlobalId } from '../globalId.ts'
 `
 
 const __dirname = getDirname(import.meta.url)
-const resolverTypeFile = resolve(__dirname, '../src/resolvers/types.ts')
+const resolverTypeFile = resolve(__dirname, '../src/graphql/resolver-types.ts')
 
 const existingContent = await readFile(resolverTypeFile, 'utf-8')
 

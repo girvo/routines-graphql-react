@@ -1,11 +1,15 @@
-import type { Resolvers, Scalars } from './types.ts'
-import type { Context } from '../context/index.ts'
+import type { Resolvers, Scalars } from './resolver-types.ts'
+import type { Context } from './context.ts'
 import { DateTimeResolver } from 'graphql-scalars'
 import { GraphQLError } from 'graphql'
 import { decodeGlobalId } from '../globalId.ts'
-import { getUser } from '../context/auth.ts'
-import { userToGraphQL } from '../mappers/user.ts'
-import { nodeResolvers } from './node.ts'
+import { getUser } from '../auth/auth-context.ts'
+import { userToGraphQL } from '../user/user-mapper.ts'
+import { resolveUserAsNode } from '../user/user-resolvers.ts'
+
+const nodeResolvers = {
+  User: resolveUserAsNode,
+}
 
 const resolvers: Resolvers<Context> = {
   Query: {

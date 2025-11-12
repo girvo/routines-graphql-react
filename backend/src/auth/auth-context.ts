@@ -1,6 +1,6 @@
-import { type Context } from './index.ts'
+import { type Context } from '../graphql/context.ts'
 import { type ResolveUserFn, type ValidateUserFn } from '@envelop/generic-auth'
-import { type UserDomain, tableToDomain } from '../domains/user.ts'
+import { type UserDomain, tableToDomain } from '../user/user-domain.ts'
 import { type } from 'arktype'
 import { GraphQLError } from 'graphql'
 

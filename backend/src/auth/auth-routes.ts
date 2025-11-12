@@ -1,12 +1,12 @@
 import { type } from 'arktype'
 import { db } from '../database/index.ts'
-import { userRepo } from '../context/index.ts'
+import { userRepo } from '../graphql/context.ts'
 import { compare, hash } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { NoResultError } from 'kysely'
 import { getEnv } from '../env.ts'
 import { SqliteError } from 'better-sqlite3'
-import * as User from '../domains/user.ts'
+import * as User from '../user/user-domain.ts'
 import { type FastifyInstance } from 'fastify'
 
 const AuthSchema = type({

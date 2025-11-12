@@ -1,10 +1,10 @@
 import type { JWTExtendContextFields } from '@graphql-yoga/plugin-jwt'
 import { db } from '../database/index.ts'
 import { getEnv } from '../env.ts'
-import { createUserRepository } from '../repositories/user.ts'
 import type { YogaInitialContext } from 'graphql-yoga'
-import type { UserDomain } from '../domains/user.ts'
-import type { UserDataLoader } from '../loaders/user.ts'
+import { createUserRepository } from '../user/user-repository.ts'
+import type { UserDomain } from '../user/user-domain.ts'
+import type { UserDataLoader } from '../user/user-loaders.ts'
 
 export const userRepo = createUserRepository(db)
 

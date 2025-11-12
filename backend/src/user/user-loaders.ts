@@ -1,5 +1,5 @@
-import { userRepo, type Context } from '../context/index.ts'
-import * as UserDomain from '../domains/user.ts'
+import { userRepo, type Context } from '../graphql/context.ts'
+import * as UserDomain from './user-domain.ts'
 import DataLoader from 'dataloader'
 
 export const userDataLoader = (context: Context) => {
