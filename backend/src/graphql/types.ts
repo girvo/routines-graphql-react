@@ -6,7 +6,7 @@ import type { ResolversParentTypes } from './resolver-types.ts'
 // via type extraction from the generated file
 
 type NodeUnion = ResolversParentTypes['Node']
-type NodeType = NonNullable<NodeUnion['__typename']>
+export type NodeType = NonNullable<NodeUnion['__typename']>
 
 type WithRequiredTypename<T> = T & {
   __typename: NonNullable<T extends { __typename?: infer U } ? U : never>

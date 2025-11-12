@@ -46,9 +46,9 @@ The backend uses:
 1. **Schema Loading**: The GraphQL schema is loaded from `../../schema.graphql` relative to `backend/src/main.ts` (line 10)
 
 2. **Resolver Structure**:
-   - Resolvers live in `backend/src/resolvers/`
-   - Export resolvers from `backend/src/resolvers/index.ts`
-   - Wire them up in `main.ts` under the appropriate operation type (Query, Mutation, etc.)
+   - Resolvers are defined in `backend/src/graphql/resolvers.ts`
+   - Resolvers are imported from each domain, like `backend/src/user/user-resolvers.ts`
+   - Wire them up in `backend/src/graphql/resolvers.ts` under the appropriate operation type (Query, Mutation, etc.)
 
 3. **Import Extensions**: Due to `rewriteRelativeImportExtensions`, all local imports must include `.ts` extensions (e.g., `import * as resolvers from './resolvers/index.ts'`)
 

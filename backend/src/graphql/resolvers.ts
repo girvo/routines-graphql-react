@@ -6,8 +6,9 @@ import { decodeGlobalId } from '../globalId.ts'
 import { getUser } from '../auth/auth-context.ts'
 import { userToGraphQL } from '../user/user-domain.ts'
 import { resolveUserAsNode } from '../user/user-resolvers.ts'
+import type { NodeResolver, NodeType } from './types.ts'
 
-const nodeResolvers = {
+const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: resolveUserAsNode,
 }
 
