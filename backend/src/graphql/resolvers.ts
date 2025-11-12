@@ -11,7 +11,7 @@ const nodeResolvers = {
   User: resolveUserAsNode,
 }
 
-const resolvers: Resolvers<Context> = {
+export const resolvers: Resolvers<Context> = {
   Query: {
     hello: () => {
       return 'world'
@@ -46,10 +46,8 @@ const resolvers: Resolvers<Context> = {
     },
   },
   Node: {
-    __resolveType: (parent, _, info) => parent.__typename ?? null,
+    __resolveType: (parent, _) => parent.__typename ?? null,
   },
   // Custom scalars
   DateTime: DateTimeResolver,
 }
-
-export default resolvers

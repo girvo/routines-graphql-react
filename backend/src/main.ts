@@ -13,7 +13,7 @@ import {
 import { readFile } from 'node:fs/promises'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import resolvers from './graphql/resolvers.ts'
+import { resolvers } from './graphql/resolvers.ts'
 import { createContext } from './graphql/context.ts'
 import { resolveUser, validateUser } from './auth/auth-context.ts'
 import { getEnv } from './env.ts'

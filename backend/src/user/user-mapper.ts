@@ -1,4 +1,4 @@
-import type { UserDomain } from '../domains/user.ts'
+import type { UserDomain } from './user-domain.ts'
 import { toGlobalId } from '../globalId.ts'
 
 export const userToGraphQL = (user: UserDomain) => ({

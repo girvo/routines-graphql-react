@@ -1,15 +1,15 @@
-import { userRepo, type Context } from '../graphql/context.ts'
-import * as UserDomain from './user-domain.ts'
+import type { Context } from '../graphql/context.ts'
+import { type UserDomain, tableToDomain } from './user-domain.ts'
 import DataLoader from 'dataloader'
 
 export const userDataLoader = (context: Context) => {
   return new DataLoader(async (keys: readonly number[]) => {
     const rows = await context.userRepo.findAllByIds(keys)
-    const rowMap = new Map<number, UserDomain.UserDomain | Error>()
+    const rowMap = new Map<number, UserDomain | Error>()
 
     for (const row of rows) {
       try {
-        rowMap.set(row.id, UserDomain.tableToDomain(row))
+        rowMap.set(row.id, tableToDomain(row))
       } catch (error) {
         if (error instanceof Error) {
           rowMap.set(row.id, error)
