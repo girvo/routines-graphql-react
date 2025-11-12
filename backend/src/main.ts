@@ -21,6 +21,7 @@ import { authRoutes } from './rest/auth.ts'
 import { useGenericAuth } from '@envelop/generic-auth'
 import { useDataLoader } from '@envelop/dataloader'
 import { userDataLoader } from './loaders/user.ts'
+import cookie from '@fastify/cookie'
 
 const schemaFile = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -48,6 +49,8 @@ const envToLogger = {
 const app = fastify({
   logger: envToLogger[getEnv().ENVIRONMENT],
 })
+
+await app.register(cookie)
 
 const yoga = createYoga<{
   req: FastifyRequest

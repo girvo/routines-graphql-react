@@ -1,4 +1,3 @@
-import type { FastifyInstance } from 'fastify'
 import { type } from 'arktype'
 import { db } from '../database/index.ts'
 import { userRepo } from '../context/index.ts'
@@ -8,6 +7,8 @@ import { NoResultError } from 'kysely'
 import { getEnv } from '../env.ts'
 import { SqliteError } from 'better-sqlite3'
 import * as User from '../domains/user.ts'
+import '@fastify/cookie'
+import { FastifyInstance } from 'fastify'
 
 const AuthSchema = type({
   email: 'string',
@@ -87,5 +88,18 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
 
       throw err
     }
+  })
+
+  fastify.get('/refresh', {}, async (request, reply) => {
+    const refreshToken = request.cookies.refreshToken
+
+    if (!refreshToken) {
+      return reply.code(401).send({
+        success: false,
+        errors: [{ message: 'No refresh token' }],
+      })
+    }
+
+    return { success: true }
   })
 }
