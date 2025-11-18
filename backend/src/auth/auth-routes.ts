@@ -1,13 +1,21 @@
+import type { FastifyInstance } from 'fastify'
 import { type } from 'arktype'
 import { db } from '../database/index.ts'
 import { userRepo } from '../graphql/context.ts'
 import { compare, hash } from 'bcryptjs'
-import jwt from 'jsonwebtoken'
 import { NoResultError } from 'kysely'
 import { getEnv } from '../env.ts'
 import { SqliteError } from 'better-sqlite3'
 import * as User from '../user/user-domain.ts'
-import { type FastifyInstance } from 'fastify'
+import * as RefreshToken from './refresh-token-domain.ts'
+import { createRefreshTokenRepository } from './refresh-token-repository.ts'
+import {
+  generateRefreshToken,
+  hashRefreshToken,
+  createAccessToken,
+  getRefreshTokenExpiry,
+  REFRESH_TOKEN_MAX_AGE_SECONDS,
+} from './auth-utils.ts'
 
 const AuthSchema = type({
   email: 'string',
@@ -28,12 +36,9 @@ const SignupError = (message: string) => ({
   errors: [{ message }],
 })
 
-const signWithExpiry = (id: number, secret: string) =>
-  jwt.sign({ userId: id }, secret, {
-    expiresIn: '10m',
-  })
+const refreshTokenRepo = createRefreshTokenRepository(db)
 
-export const authRoutes = async (fastify: FastifyInstance, options: any) => {
+export const authRoutes = async (fastify: FastifyInstance) => {
   const env = getEnv()
 
   fastify.post('/login', { schema }, async (request, reply) => {
@@ -46,15 +51,26 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
 
       if (!valid) return loginError
 
-      const token = await signWithExpiry(user.id, env.JWT_SECRET)
+      const token = createAccessToken(user.id, env.JWT_SECRET)
 
-      // Need to generate a token, store in the database
-      reply.setCookie('refresh_token', '', {
+      const refreshToken = generateRefreshToken()
+      const tokenHash = await hashRefreshToken(refreshToken)
+      const expiresAt = getRefreshTokenExpiry()
+
+      await refreshTokenRepo.createRefreshToken(
+        user.id,
+        tokenHash,
+        expiresAt,
+        request.headers['user-agent'],
+        request.ip,
+      )
+
+      reply.setCookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false, // tbd, I do need HTTPs but I'll deal with this later
+        secure: false,
         sameSite: 'strict',
         path: '/',
-        maxAge: 7 * 24 * 60 * 60,
+        maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
       })
 
       return {
@@ -70,7 +86,7 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
     }
   })
 
-  fastify.post('/signup', { schema }, async request => {
+  fastify.post('/signup', { schema }, async (request, reply) => {
     const body = request.body as typeof AuthSchema.infer
     try {
       const passHash = await hash(body.password, 10)
@@ -78,7 +94,27 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
         .createUser(body.email, passHash)
         .then(User.tableToDomain)
 
-      const token = await signWithExpiry(user.id, env.JWT_SECRET)
+      const token = createAccessToken(user.id, env.JWT_SECRET)
+
+      const refreshToken = generateRefreshToken()
+      const tokenHash = await hashRefreshToken(refreshToken)
+      const expiresAt = getRefreshTokenExpiry()
+
+      await refreshTokenRepo.createRefreshToken(
+        user.id,
+        tokenHash,
+        expiresAt,
+        request.headers['user-agent'],
+        request.ip,
+      )
+
+      reply.setCookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        path: '/',
+        maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+      })
 
       return {
         success: true,
@@ -108,6 +144,77 @@ export const authRoutes = async (fastify: FastifyInstance, options: any) => {
       })
     }
 
-    return { success: true }
+    try {
+      const tokenHash = await hashRefreshToken(refreshToken)
+      const storedToken = await refreshTokenRepo.findByTokenHash(tokenHash)
+
+      if (!storedToken) {
+        reply.clearCookie('refreshToken')
+        return reply.code(401).send({
+          success: false,
+          errors: [{ message: 'Invalid refresh token' }],
+        })
+      }
+
+      const tokenDomain = RefreshToken.tableToDomain(storedToken)
+
+      if (tokenDomain.revokedAt) {
+        reply.clearCookie('refreshToken')
+        return reply.code(401).send({
+          success: false,
+          errors: [{ message: 'Refresh token has been revoked' }],
+        })
+      }
+
+      if (tokenDomain.expiresAt < new Date()) {
+        reply.clearCookie('refreshToken')
+        return reply.code(401).send({
+          success: false,
+          errors: [{ message: 'Refresh token has expired' }],
+        })
+      }
+
+      const newAccessToken = createAccessToken(
+        tokenDomain.userId,
+        env.JWT_SECRET,
+      )
+
+      return {
+        success: true,
+        accessToken: newAccessToken,
+      }
+    } catch (err) {
+      reply.clearCookie('refreshToken')
+      throw err
+    }
+  })
+
+  fastify.post('/logout', {}, async (request, reply) => {
+    const refreshToken = request.cookies.refreshToken
+
+    if (!refreshToken) {
+      console.warn('Logout called without a refresh token in the request')
+      return reply.code(200).send({
+        success: true,
+      })
+    }
+
+    try {
+      const tokenHash = await hashRefreshToken(refreshToken)
+      const storedToken = await refreshTokenRepo.findByTokenHash(tokenHash)
+
+      if (storedToken) {
+        await refreshTokenRepo.revokeToken(storedToken.id)
+      }
+
+      reply.clearCookie('refreshToken')
+
+      return {
+        success: true,
+      }
+    } catch (err) {
+      reply.clearCookie('refreshToken')
+      throw err
+    }
   })
 }

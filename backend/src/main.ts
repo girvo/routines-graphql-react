@@ -116,6 +116,7 @@ app.addContentTypeParser('multipart/form-data', {}, (req, payload, done) =>
   done(null),
 )
 
-authRoutes(app, {})
+// Set up/wire up authentication handling routes
+authRoutes(app)
 
 app.listen({ port: 4000 })

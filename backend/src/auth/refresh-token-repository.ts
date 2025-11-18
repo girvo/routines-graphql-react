@@ -1,3 +1,7 @@
+/**
+ * NOTE: This is not loaded into the GraphQL context, as this should never be exposed there
+ *       It can only be called from the REST calls and via HttpOnly cookies, etc
+ */
 import type { Kysely } from 'kysely'
 import type { Database } from '../database/types.ts'
 
@@ -24,10 +28,16 @@ export const createRefreshTokenRepository = (db: Kysely<Database>) => {
     },
 
     async findAllByIds(ids: readonly number[]): Promise<RefreshTokenRow[]> {
-      return db.selectFrom('refresh_tokens').selectAll().where('id', 'in', ids).execute()
+      return db
+        .selectFrom('refresh_tokens')
+        .selectAll()
+        .where('id', 'in', ids)
+        .execute()
     },
 
-    async findByTokenHash(tokenHash: string): Promise<RefreshTokenRow | undefined> {
+    async findByTokenHash(
+      tokenHash: string,
+    ): Promise<RefreshTokenRow | undefined> {
       return db
         .selectFrom('refresh_tokens')
         .selectAll()
@@ -50,7 +60,7 @@ export const createRefreshTokenRepository = (db: Kysely<Database>) => {
       tokenHash: string,
       expiresAt: string,
       userAgent?: string,
-      ipAddress?: string
+      ipAddress?: string,
     ): Promise<RefreshTokenRow> {
       return db
         .insertInto('refresh_tokens')
