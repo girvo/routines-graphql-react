@@ -9,8 +9,7 @@
     "migration:latest": "node --env-file=.env tools/run-migrations.ts latest",
     "migration:make": "node --env-file=.env tools/make-migration.ts",
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
-    "resolvers:generate": "graphql-codegen && pnpm resolvers:fixup",
-    "resolvers:fixup": "node --env-file=.env tools/fixup-resolver-types.ts",
+    "resolvers:generate": "graphql-codegen",
     "start": "node --env-file=.env --watch src/main.ts",
     "typecheck": "tsc --noEmit"
   },

@@ -35,3 +35,5 @@ export const userToGraphQL = (user: UserDomain) => ({
   email: user.email,
   createdAt: user.createdAt,
 })
+
+export type UserNode = ReturnType<typeof userToGraphQL>

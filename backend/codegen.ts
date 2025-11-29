@@ -17,6 +17,12 @@ const config: CodegenConfig = {
           },
           DateTime: 'Date',
         },
+        mappers: {
+          GlobalId: '../globalId.ts#GlobalId',
+          User: '../user/user-domain.ts#UserNode',
+          Task: '../task/task-domain.ts#TaskNode',
+          // Add others as you create them
+        },
       },
       plugins: ['typescript', 'typescript-resolvers'],
     },

@@ -2,6 +2,7 @@ import { type Context, assertAuthenticated } from '../graphql/context.ts'
 import { type TaskDomain, tableToDomain } from './task-domain.ts'
 import DataLoader from 'dataloader'
 
+// So I'm not 100% sure this is how this loader should work, we'll see I guess
 export const taskDataLoader = (context: Context) => {
   assertAuthenticated(context)
   return new DataLoader(async (keys: readonly number[]) => {

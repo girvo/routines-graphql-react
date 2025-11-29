@@ -22,6 +22,7 @@ import { useGenericAuth } from '@envelop/generic-auth'
 import { useDataLoader } from '@envelop/dataloader'
 import { userDataLoader } from './user/user-loaders.ts'
 import cookie from '@fastify/cookie'
+import { taskDataLoader } from './task/task-loaders.ts'
 
 const schemaFile = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -80,6 +81,7 @@ const yoga = createYoga<{
       validateUser: validateUser,
       mode: 'protect-all',
     }),
+    useDataLoader('tasks', taskDataLoader),
   ],
   schema: createSchema({
     typeDefs: schema,

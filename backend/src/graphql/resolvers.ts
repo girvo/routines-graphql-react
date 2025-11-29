@@ -7,9 +7,11 @@ import { getUser } from '../auth/auth-context.ts'
 import { userToGraphQL } from '../user/user-domain.ts'
 import { resolveUserAsNode } from '../user/user-resolvers.ts'
 import type { NodeResolver, NodeType } from './types.ts'
+import { resolveTaskAsNode, tasksResolver } from '../task/task-resolvers.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: resolveUserAsNode,
+  Task: resolveTaskAsNode,
 }
 
 export const resolvers: Resolvers<Context> = {
@@ -45,9 +47,34 @@ export const resolvers: Resolvers<Context> = {
 
       return adapter(internalId, context)
     },
+    tasks: tasksResolver,
   },
   Node: {
-    __resolveType: (parent, _) => parent.__typename ?? null,
+    __resolveType: parent => parent.__typename ?? null,
+  },
+  Task: {
+    completions: (parent, args, context) => {
+      return {
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: null,
+          endCursor: null,
+        },
+      }
+    },
+    slots: () => {
+      return {
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: null,
+          endCursor: null,
+        },
+      }
+    },
   },
   // Custom scalars
   DateTime: DateTimeResolver,

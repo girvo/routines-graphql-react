@@ -1,7 +1,7 @@
-// GENERATED FILE
-// DO NOT EDIT
-import type { GlobalId } from '../globalId.ts'
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import type { GlobalId } from '../globalId.ts';
+import type { UserNode } from '../user/user-domain.ts';
+import type { TaskNode } from '../task/task-domain.ts';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -9,6 +9,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -427,10 +428,10 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   Node:
-    | ( RoutineSlot )
-    | ( Task )
-    | ( TaskCompletion )
-    | ( User )
+    | ( Omit<RoutineSlot, 'task'> & { task: _RefType['Task'] } )
+    | ( TaskNode )
+    | ( Omit<TaskCompletion, 'task'> & { task: _RefType['Task'] } )
+    | ( UserNode )
   ;
 }>;
 
@@ -438,17 +439,17 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CompleteTaskInput: CompleteTaskInput;
-  CompleteTaskPayload: ResolverTypeWrapper<CompleteTaskPayload>;
+  CompleteTaskPayload: ResolverTypeWrapper<Omit<CompleteTaskPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversTypes['TaskCompletionEdge'] }>;
   CreateRoutineSlotInput: CreateRoutineSlotInput;
-  CreateRoutineSlotPayload: ResolverTypeWrapper<CreateRoutineSlotPayload>;
-  CreateTaskPayload: ResolverTypeWrapper<CreateTaskPayload>;
-  DailyRoutinePayload: ResolverTypeWrapper<DailyRoutinePayload>;
-  DailyTaskInstance: ResolverTypeWrapper<DailyTaskInstance>;
-  DailyTaskInstanceConnection: ResolverTypeWrapper<DailyTaskInstanceConnection>;
-  DailyTaskInstanceEdge: ResolverTypeWrapper<DailyTaskInstanceEdge>;
+  CreateRoutineSlotPayload: ResolverTypeWrapper<Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversTypes['RoutineSlotEdge'] }>;
+  CreateTaskPayload: ResolverTypeWrapper<Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversTypes['TaskEdge'] }>;
+  DailyRoutinePayload: ResolverTypeWrapper<Omit<DailyRoutinePayload, 'evening' | 'midday' | 'morning'> & { evening: ResolversTypes['DailyTaskInstanceConnection'], midday: ResolversTypes['DailyTaskInstanceConnection'], morning: ResolversTypes['DailyTaskInstanceConnection'] }>;
+  DailyTaskInstance: ResolverTypeWrapper<Omit<DailyTaskInstance, 'task'> & { task: ResolversTypes['Task'] }>;
+  DailyTaskInstanceConnection: ResolverTypeWrapper<Omit<DailyTaskInstanceConnection, 'edges'> & { edges: Array<ResolversTypes['DailyTaskInstanceEdge']> }>;
+  DailyTaskInstanceEdge: ResolverTypeWrapper<Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversTypes['DailyTaskInstance'] }>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   DayOfWeek: DayOfWeek;
-  DaySchedule: ResolverTypeWrapper<DaySchedule>;
+  DaySchedule: ResolverTypeWrapper<Omit<DaySchedule, 'evening' | 'midday' | 'morning'> & { evening: ResolversTypes['RoutineSlotConnection'], midday: ResolversTypes['RoutineSlotConnection'], morning: ResolversTypes['RoutineSlotConnection'] }>;
   DaySection: DaySection;
   DeleteRoutineSlotPayload: ResolverTypeWrapper<DeleteRoutineSlotPayload>;
   DeleteTaskPayload: ResolverTypeWrapper<DeleteTaskPayload>;
@@ -459,38 +460,38 @@ export type ResolversTypes = ResolversObject<{
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  RoutineSlot: ResolverTypeWrapper<RoutineSlot>;
-  RoutineSlotConnection: ResolverTypeWrapper<RoutineSlotConnection>;
-  RoutineSlotEdge: ResolverTypeWrapper<RoutineSlotEdge>;
+  RoutineSlot: ResolverTypeWrapper<Omit<RoutineSlot, 'task'> & { task: ResolversTypes['Task'] }>;
+  RoutineSlotConnection: ResolverTypeWrapper<Omit<RoutineSlotConnection, 'edges'> & { edges: Array<ResolversTypes['RoutineSlotEdge']> }>;
+  RoutineSlotEdge: ResolverTypeWrapper<Omit<RoutineSlotEdge, 'node'> & { node: ResolversTypes['RoutineSlot'] }>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Task: ResolverTypeWrapper<Task>;
-  TaskCompletion: ResolverTypeWrapper<TaskCompletion>;
-  TaskCompletionConnection: ResolverTypeWrapper<TaskCompletionConnection>;
-  TaskCompletionEdge: ResolverTypeWrapper<TaskCompletionEdge>;
-  TaskConnection: ResolverTypeWrapper<TaskConnection>;
-  TaskEdge: ResolverTypeWrapper<TaskEdge>;
+  Task: ResolverTypeWrapper<TaskNode>;
+  TaskCompletion: ResolverTypeWrapper<Omit<TaskCompletion, 'task'> & { task: ResolversTypes['Task'] }>;
+  TaskCompletionConnection: ResolverTypeWrapper<Omit<TaskCompletionConnection, 'edges'> & { edges: Array<ResolversTypes['TaskCompletionEdge']> }>;
+  TaskCompletionEdge: ResolverTypeWrapper<Omit<TaskCompletionEdge, 'node'> & { node: ResolversTypes['TaskCompletion'] }>;
+  TaskConnection: ResolverTypeWrapper<Omit<TaskConnection, 'edges'> & { edges: Array<ResolversTypes['TaskEdge']> }>;
+  TaskEdge: ResolverTypeWrapper<Omit<TaskEdge, 'node'> & { node: ResolversTypes['Task'] }>;
   UncompleteTaskInput: UncompleteTaskInput;
   UncompleteTaskPayload: ResolverTypeWrapper<UncompleteTaskPayload>;
   UpdateTaskInput: UpdateTaskInput;
-  UpdateTaskPayload: ResolverTypeWrapper<UpdateTaskPayload>;
-  User: ResolverTypeWrapper<User>;
-  WeeklySchedulePayload: ResolverTypeWrapper<WeeklySchedulePayload>;
+  UpdateTaskPayload: ResolverTypeWrapper<Omit<UpdateTaskPayload, 'task'> & { task: ResolversTypes['Task'] }>;
+  User: ResolverTypeWrapper<UserNode>;
+  WeeklySchedulePayload: ResolverTypeWrapper<Omit<WeeklySchedulePayload, 'friday' | 'monday' | 'saturday' | 'sunday' | 'thursday' | 'tuesday' | 'wednesday'> & { friday: ResolversTypes['DaySchedule'], monday: ResolversTypes['DaySchedule'], saturday: ResolversTypes['DaySchedule'], sunday: ResolversTypes['DaySchedule'], thursday: ResolversTypes['DaySchedule'], tuesday: ResolversTypes['DaySchedule'], wednesday: ResolversTypes['DaySchedule'] }>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   CompleteTaskInput: CompleteTaskInput;
-  CompleteTaskPayload: CompleteTaskPayload;
+  CompleteTaskPayload: Omit<CompleteTaskPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversParentTypes['TaskCompletionEdge'] };
   CreateRoutineSlotInput: CreateRoutineSlotInput;
-  CreateRoutineSlotPayload: CreateRoutineSlotPayload;
-  CreateTaskPayload: CreateTaskPayload;
-  DailyRoutinePayload: DailyRoutinePayload;
-  DailyTaskInstance: DailyTaskInstance;
-  DailyTaskInstanceConnection: DailyTaskInstanceConnection;
-  DailyTaskInstanceEdge: DailyTaskInstanceEdge;
+  CreateRoutineSlotPayload: Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversParentTypes['RoutineSlotEdge'] };
+  CreateTaskPayload: Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversParentTypes['TaskEdge'] };
+  DailyRoutinePayload: Omit<DailyRoutinePayload, 'evening' | 'midday' | 'morning'> & { evening: ResolversParentTypes['DailyTaskInstanceConnection'], midday: ResolversParentTypes['DailyTaskInstanceConnection'], morning: ResolversParentTypes['DailyTaskInstanceConnection'] };
+  DailyTaskInstance: Omit<DailyTaskInstance, 'task'> & { task: ResolversParentTypes['Task'] };
+  DailyTaskInstanceConnection: Omit<DailyTaskInstanceConnection, 'edges'> & { edges: Array<ResolversParentTypes['DailyTaskInstanceEdge']> };
+  DailyTaskInstanceEdge: Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversParentTypes['DailyTaskInstance'] };
   DateTime: Scalars['DateTime']['output'];
-  DaySchedule: DaySchedule;
+  DaySchedule: Omit<DaySchedule, 'evening' | 'midday' | 'morning'> & { evening: ResolversParentTypes['RoutineSlotConnection'], midday: ResolversParentTypes['RoutineSlotConnection'], morning: ResolversParentTypes['RoutineSlotConnection'] };
   DeleteRoutineSlotPayload: DeleteRoutineSlotPayload;
   DeleteTaskPayload: DeleteTaskPayload;
   File: Scalars['File']['output'];
@@ -500,22 +501,22 @@ export type ResolversParentTypes = ResolversObject<{
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   PageInfo: PageInfo;
   Query: Record<PropertyKey, never>;
-  RoutineSlot: RoutineSlot;
-  RoutineSlotConnection: RoutineSlotConnection;
-  RoutineSlotEdge: RoutineSlotEdge;
+  RoutineSlot: Omit<RoutineSlot, 'task'> & { task: ResolversParentTypes['Task'] };
+  RoutineSlotConnection: Omit<RoutineSlotConnection, 'edges'> & { edges: Array<ResolversParentTypes['RoutineSlotEdge']> };
+  RoutineSlotEdge: Omit<RoutineSlotEdge, 'node'> & { node: ResolversParentTypes['RoutineSlot'] };
   String: Scalars['String']['output'];
-  Task: Task;
-  TaskCompletion: TaskCompletion;
-  TaskCompletionConnection: TaskCompletionConnection;
-  TaskCompletionEdge: TaskCompletionEdge;
-  TaskConnection: TaskConnection;
-  TaskEdge: TaskEdge;
+  Task: TaskNode;
+  TaskCompletion: Omit<TaskCompletion, 'task'> & { task: ResolversParentTypes['Task'] };
+  TaskCompletionConnection: Omit<TaskCompletionConnection, 'edges'> & { edges: Array<ResolversParentTypes['TaskCompletionEdge']> };
+  TaskCompletionEdge: Omit<TaskCompletionEdge, 'node'> & { node: ResolversParentTypes['TaskCompletion'] };
+  TaskConnection: Omit<TaskConnection, 'edges'> & { edges: Array<ResolversParentTypes['TaskEdge']> };
+  TaskEdge: Omit<TaskEdge, 'node'> & { node: ResolversParentTypes['Task'] };
   UncompleteTaskInput: UncompleteTaskInput;
   UncompleteTaskPayload: UncompleteTaskPayload;
   UpdateTaskInput: UpdateTaskInput;
-  UpdateTaskPayload: UpdateTaskPayload;
-  User: User;
-  WeeklySchedulePayload: WeeklySchedulePayload;
+  UpdateTaskPayload: Omit<UpdateTaskPayload, 'task'> & { task: ResolversParentTypes['Task'] };
+  User: UserNode;
+  WeeklySchedulePayload: Omit<WeeklySchedulePayload, 'friday' | 'monday' | 'saturday' | 'sunday' | 'thursday' | 'tuesday' | 'wednesday'> & { friday: ResolversParentTypes['DaySchedule'], monday: ResolversParentTypes['DaySchedule'], saturday: ResolversParentTypes['DaySchedule'], sunday: ResolversParentTypes['DaySchedule'], thursday: ResolversParentTypes['DaySchedule'], tuesday: ResolversParentTypes['DaySchedule'], wednesday: ResolversParentTypes['DaySchedule'] };
 }>;
 
 export type AuthenticatedDirectiveArgs = { };
