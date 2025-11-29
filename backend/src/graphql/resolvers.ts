@@ -1,6 +1,6 @@
 import type { Resolvers, Scalars } from './resolver-types.ts'
 import type { Context } from './context.ts'
-import { DateTimeResolver } from 'graphql-scalars'
+import { DateTimeResolver, NonNegativeIntResolver } from 'graphql-scalars'
 import { GraphQLError } from 'graphql'
 import { decodeGlobalId } from '../globalId.ts'
 import { getUser } from '../auth/auth-context.ts'
@@ -78,4 +78,5 @@ export const resolvers: Resolvers<Context> = {
   },
   // Custom scalars
   DateTime: DateTimeResolver,
+  NonNegativeInt: NonNegativeIntResolver,
 }

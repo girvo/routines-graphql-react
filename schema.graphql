@@ -1,5 +1,6 @@
 scalar File
 scalar DateTime
+scalar NonNegativeInt
 
 directive @skipAuth on FIELD_DEFINITION
 directive @authenticated on FIELD_DEFINITION
@@ -31,10 +32,10 @@ type Query {
   dailyRoutine(date: DateTime): DailyRoutinePayload!
 
   weeklySchedule: WeeklySchedulePayload!
-  tasks(first: Int, after: String): TaskConnection!
+  tasks(first: NonNegativeInt, after: String): TaskConnection!
 
   taskCompletions(
-    first: Int
+    first: NonNegativeInt
     after: String
     startDate: DateTime
     endDate: DateTime
@@ -67,10 +68,10 @@ type Task implements Node {
   title: String!
   createdAt: DateTime!
 
-  slots(first: Int, after: String): RoutineSlotConnection!
+  slots(first: NonNegativeInt, after: String): RoutineSlotConnection!
 
   completions(
-    first: Int
+    first: NonNegativeInt
     after: String
     startDate: DateTime
     endDate: DateTime
@@ -95,9 +96,9 @@ type TaskCompletion implements Node {
 type DailyRoutinePayload {
   date: DateTime!
   dayOfWeek: DayOfWeek!
-  morning(first: Int, after: String): DailyTaskInstanceConnection!
-  midday(first: Int, after: String): DailyTaskInstanceConnection!
-  evening(first: Int, after: String): DailyTaskInstanceConnection!
+  morning(first: NonNegativeInt, after: String): DailyTaskInstanceConnection!
+  midday(first: NonNegativeInt, after: String): DailyTaskInstanceConnection!
+  evening(first: NonNegativeInt, after: String): DailyTaskInstanceConnection!
 }
 
 type DailyTaskInstance {
@@ -119,9 +120,9 @@ type WeeklySchedulePayload {
 
 type DaySchedule {
   dayOfWeek: DayOfWeek!
-  morning(first: Int, after: String): RoutineSlotConnection!
-  midday(first: Int, after: String): RoutineSlotConnection!
-  evening(first: Int, after: String): RoutineSlotConnection!
+  morning(first: NonNegativeInt, after: String): RoutineSlotConnection!
+  midday(first: NonNegativeInt, after: String): RoutineSlotConnection!
+  evening(first: NonNegativeInt, after: String): RoutineSlotConnection!
 }
 
 type TaskConnection {

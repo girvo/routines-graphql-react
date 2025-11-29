@@ -11,14 +11,11 @@ const config: CodegenConfig = {
         futureProofEnums: true,
         futureProofUnions: true,
         scalars: {
-          ID: {
-            input: 'GlobalId',
-            output: 'GlobalId',
-          },
+          ID: '../globalId.ts#GlobalId',
           DateTime: 'Date',
+          NonNegativeInt: 'number',
         },
         mappers: {
-          GlobalId: '../globalId.ts#GlobalId',
           User: '../user/user-domain.ts#UserNode',
           Task: '../task/task-domain.ts#TaskNode',
           // Add others as you create them

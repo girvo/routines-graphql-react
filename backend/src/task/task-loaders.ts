@@ -28,6 +28,8 @@ export const taskDataLoader = (context: Context) => {
       }
     }
 
+    console.debug('im in taskDataLoader!')
+
     return keys.map(key => rowMap.get(key) ?? null)
   })
 }

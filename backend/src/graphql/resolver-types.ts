@@ -1,5 +1,5 @@
-import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import type { GlobalId } from '../globalId.ts';
+import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import type { UserNode } from '../user/user-domain.ts';
 import type { TaskNode } from '../task/task-domain.ts';
 export type Maybe<T> = T | null;
@@ -20,6 +20,7 @@ export type Scalars = {
   Float: { input: number; output: number; }
   DateTime: { input: Date; output: Date; }
   File: { input: any; output: any; }
+  NonNegativeInt: { input: number; output: number; }
 };
 
 export type CompleteTaskInput = {
@@ -60,19 +61,19 @@ export type DailyRoutinePayload = {
 
 export type DailyRoutinePayloadEveningArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 
 export type DailyRoutinePayloadMiddayArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 
 export type DailyRoutinePayloadMorningArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 export type DailyTaskInstance = {
@@ -116,19 +117,19 @@ export type DaySchedule = {
 
 export type DayScheduleEveningArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 
 export type DayScheduleMiddayArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 
 export type DayScheduleMorningArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 export type DaySection =
@@ -230,14 +231,14 @@ export type QueryNodeArgs = {
 export type QueryTaskCompletionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 
 export type QueryTasksArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 export type RoutineSlot = Node & {
@@ -274,14 +275,14 @@ export type Task = Node & {
 export type TaskCompletionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 
 export type TaskSlotsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
 };
 
 export type TaskCompletion = Node & {
@@ -455,9 +456,9 @@ export type ResolversTypes = ResolversObject<{
   DeleteTaskPayload: ResolverTypeWrapper<DeleteTaskPayload>;
   File: ResolverTypeWrapper<Scalars['File']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
+  NonNegativeInt: ResolverTypeWrapper<Scalars['NonNegativeInt']['output']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   RoutineSlot: ResolverTypeWrapper<Omit<RoutineSlot, 'task'> & { task: ResolversTypes['Task'] }>;
@@ -496,9 +497,9 @@ export type ResolversParentTypes = ResolversObject<{
   DeleteTaskPayload: DeleteTaskPayload;
   File: Scalars['File']['output'];
   ID: Scalars['ID']['output'];
-  Int: Scalars['Int']['output'];
   Mutation: Record<PropertyKey, never>;
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
+  NonNegativeInt: Scalars['NonNegativeInt']['output'];
   PageInfo: PageInfo;
   Query: Record<PropertyKey, never>;
   RoutineSlot: Omit<RoutineSlot, 'task'> & { task: ResolversParentTypes['Task'] };
@@ -600,6 +601,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
   __resolveType: TypeResolveFn<'RoutineSlot' | 'Task' | 'TaskCompletion' | 'User', ParentType, ContextType>;
 }>;
+
+export interface NonNegativeIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['NonNegativeInt'], any> {
+  name: 'NonNegativeInt';
+}
 
 export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
   endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -714,6 +719,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   File?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
+  NonNegativeInt?: GraphQLScalarType;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RoutineSlot?: RoutineSlotResolvers<ContextType>;
