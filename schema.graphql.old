@@ -1,0 +1,24 @@
+scalar File
+scalar DateTime
+
+directive @skipAuth on FIELD_DEFINITION
+directive @authenticated on FIELD_DEFINITION
+
+interface Node {
+  id: ID!
+}
+
+type Query {
+  hello: String! @skipAuth
+  me: User!
+  node(id: ID!): Node
+}
+
+# type Mutation {
+# }
+
+type User implements Node {
+  id: ID!
+  email: String!
+  createdAt: DateTime!
+}

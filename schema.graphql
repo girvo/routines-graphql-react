@@ -8,17 +8,204 @@ interface Node {
   id: ID!
 }
 
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum DaySection {
+  MORNING
+  MIDDAY
+  EVENING
+}
+
 type Query {
-  hello: String! @skipAuth
   me: User!
+
+  # Get today's routine (or specific date)
+  dailyRoutine(date: DateTime): DailyRoutinePayload!
+
+  weeklySchedule: WeeklySchedulePayload!
+  tasks(first: Int, after: String): TaskConnection!
+
+  taskCompletions(
+    first: Int
+    after: String
+    startDate: DateTime
+    endDate: DateTime
+  ): TaskCompletionConnection!
+
+  hello: String! @skipAuth
   node(id: ID!): Node
 }
 
-# type Mutation {
-# }
+type Mutation {
+  createTask(title: String!): CreateTaskPayload!
+  updateTask(input: UpdateTaskInput!): UpdateTaskPayload!
+  deleteTask(id: ID!): DeleteTaskPayload!
+
+  createRoutineSlot(input: CreateRoutineSlotInput!): CreateRoutineSlotPayload!
+  deleteRoutineSlot(id: ID!): DeleteRoutineSlotPayload!
+
+  completeTask(input: CompleteTaskInput!): CompleteTaskPayload!
+  uncompleteTask(input: UncompleteTaskInput!): UncompleteTaskPayload!
+}
 
 type User implements Node {
   id: ID!
   email: String!
   createdAt: DateTime!
+}
+
+type Task implements Node {
+  id: ID!
+  title: String!
+  createdAt: DateTime!
+
+  slots(first: Int, after: String): RoutineSlotConnection!
+
+  completions(
+    first: Int
+    after: String
+    startDate: DateTime
+    endDate: DateTime
+  ): TaskCompletionConnection!
+}
+
+type RoutineSlot implements Node {
+  id: ID!
+  task: Task!
+  dayOfWeek: DayOfWeek!
+  section: DaySection!
+  createdAt: DateTime!
+}
+
+type TaskCompletion implements Node {
+  id: ID!
+  task: Task!
+  completedAt: DateTime!
+  completionDate: DateTime! # Normalized to date (no time component)
+}
+
+type DailyRoutinePayload {
+  date: DateTime!
+  dayOfWeek: DayOfWeek!
+  morning: [DailyTaskInstance!]!
+  midday: [DailyTaskInstance!]!
+  evening: [DailyTaskInstance!]!
+}
+
+type DailyTaskInstance {
+  task: Task!
+  section: DaySection!
+  isCompleted: Boolean!
+  completedAt: DateTime
+}
+
+type WeeklySchedulePayload {
+  monday: DaySchedule!
+  tuesday: DaySchedule!
+  wednesday: DaySchedule!
+  thursday: DaySchedule!
+  friday: DaySchedule!
+  saturday: DaySchedule!
+  sunday: DaySchedule!
+}
+
+type DaySchedule {
+  dayOfWeek: DayOfWeek!
+  morning: [RoutineSlot!]!
+  midday: [RoutineSlot!]!
+  evening: [RoutineSlot!]!
+}
+
+type TaskConnection {
+  edges: [TaskEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TaskEdge {
+  node: Task!
+  cursor: String!
+}
+
+type RoutineSlotConnection {
+  edges: [RoutineSlotEdge!]!
+  pageInfo: PageInfo!
+}
+
+type RoutineSlotEdge {
+  node: RoutineSlot!
+  cursor: String!
+}
+
+type TaskCompletionConnection {
+  edges: [TaskCompletionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TaskCompletionEdge {
+  node: TaskCompletion!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+input UpdateTaskInput {
+  id: ID!
+  title: String!
+}
+
+input CreateRoutineSlotInput {
+  taskId: ID!
+  dayOfWeek: DayOfWeek!
+  section: DaySection!
+}
+
+input CompleteTaskInput {
+  taskId: ID!
+  completionDate: DateTime # Optional: if not provided, uses current date/time
+}
+
+input UncompleteTaskInput {
+  taskId: ID!
+  completionDate: DateTime! # Which date to uncomplete
+}
+
+type CreateTaskPayload {
+  task: Task!
+}
+
+type UpdateTaskPayload {
+  task: Task!
+}
+
+type DeleteTaskPayload {
+  deletedId: ID!
+}
+
+type CreateRoutineSlotPayload {
+  routineSlot: RoutineSlot!
+}
+
+type DeleteRoutineSlotPayload {
+  deletedId: ID!
+}
+
+type CompleteTaskPayload {
+  taskCompletion: TaskCompletion!
+}
+
+type UncompleteTaskPayload {
+  deletedId: ID!
 }

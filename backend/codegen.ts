@@ -7,6 +7,9 @@ const config: CodegenConfig = {
       config: {
         useIndexSignature: true,
         useTypeImports: true,
+        enumsAsTypes: true,
+        futureProofEnums: true,
+        futureProofUnions: true,
         scalars: {
           ID: {
             input: 'GlobalId',
