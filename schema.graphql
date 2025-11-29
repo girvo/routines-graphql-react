@@ -95,9 +95,9 @@ type TaskCompletion implements Node {
 type DailyRoutinePayload {
   date: DateTime!
   dayOfWeek: DayOfWeek!
-  morning: [DailyTaskInstance!]!
-  midday: [DailyTaskInstance!]!
-  evening: [DailyTaskInstance!]!
+  morning(first: Int, after: String): DailyTaskInstanceConnection!
+  midday(first: Int, after: String): DailyTaskInstanceConnection!
+  evening(first: Int, after: String): DailyTaskInstanceConnection!
 }
 
 type DailyTaskInstance {
@@ -119,9 +119,9 @@ type WeeklySchedulePayload {
 
 type DaySchedule {
   dayOfWeek: DayOfWeek!
-  morning: [RoutineSlot!]!
-  midday: [RoutineSlot!]!
-  evening: [RoutineSlot!]!
+  morning(first: Int, after: String): RoutineSlotConnection!
+  midday(first: Int, after: String): RoutineSlotConnection!
+  evening(first: Int, after: String): RoutineSlotConnection!
 }
 
 type TaskConnection {
@@ -154,6 +154,16 @@ type TaskCompletionEdge {
   cursor: String!
 }
 
+type DailyTaskInstanceConnection {
+  edges: [DailyTaskInstanceEdge!]!
+  pageInfo: PageInfo!
+}
+
+type DailyTaskInstanceEdge {
+  node: DailyTaskInstance!
+  cursor: String!
+}
+
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
@@ -183,7 +193,7 @@ input UncompleteTaskInput {
 }
 
 type CreateTaskPayload {
-  task: Task!
+  taskEdge: TaskEdge!
 }
 
 type UpdateTaskPayload {
@@ -195,7 +205,7 @@ type DeleteTaskPayload {
 }
 
 type CreateRoutineSlotPayload {
-  routineSlot: RoutineSlot!
+  routineSlotEdge: RoutineSlotEdge!
 }
 
 type DeleteRoutineSlotPayload {
@@ -203,7 +213,7 @@ type DeleteRoutineSlotPayload {
 }
 
 type CompleteTaskPayload {
-  taskCompletion: TaskCompletion!
+  taskCompletionEdge: TaskCompletionEdge!
 }
 
 type UncompleteTaskPayload {

@@ -3,6 +3,7 @@ import type { ColumnType, Generated } from 'kysely'
 export interface Database {
   users: UsersTable
   refresh_tokens: RefreshTokensTable
+  tasks: TasksTable
 }
 
 export interface UsersTable {
@@ -23,4 +24,13 @@ export interface RefreshTokensTable {
   revoked_at: string | null
   user_agent: string | null
   ip_address: string | null
+}
+
+export interface TasksTable {
+  id: Generated<number>
+  user_id: number
+  title: string
+  created_at: ColumnType<string, string | undefined, never>
+  updated_at: ColumnType<string | null, string | undefined, string>
+  deleted_at: string | null
 }

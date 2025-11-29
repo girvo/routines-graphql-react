@@ -28,7 +28,7 @@ export type CompleteTaskInput = {
 
 export type CompleteTaskPayload = {
   __typename?: 'CompleteTaskPayload';
-  taskCompletion: TaskCompletion;
+  taskCompletionEdge: TaskCompletionEdge;
 };
 
 export type CreateRoutineSlotInput = {
@@ -39,21 +39,39 @@ export type CreateRoutineSlotInput = {
 
 export type CreateRoutineSlotPayload = {
   __typename?: 'CreateRoutineSlotPayload';
-  routineSlot: RoutineSlot;
+  routineSlotEdge: RoutineSlotEdge;
 };
 
 export type CreateTaskPayload = {
   __typename?: 'CreateTaskPayload';
-  task: Task;
+  taskEdge: TaskEdge;
 };
 
 export type DailyRoutinePayload = {
   __typename?: 'DailyRoutinePayload';
   date: Scalars['DateTime']['output'];
   dayOfWeek: DayOfWeek;
-  evening: Array<DailyTaskInstance>;
-  midday: Array<DailyTaskInstance>;
-  morning: Array<DailyTaskInstance>;
+  evening: DailyTaskInstanceConnection;
+  midday: DailyTaskInstanceConnection;
+  morning: DailyTaskInstanceConnection;
+};
+
+
+export type DailyRoutinePayloadEveningArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type DailyRoutinePayloadMiddayArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type DailyRoutinePayloadMorningArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type DailyTaskInstance = {
@@ -62,6 +80,18 @@ export type DailyTaskInstance = {
   isCompleted: Scalars['Boolean']['output'];
   section: DaySection;
   task: Task;
+};
+
+export type DailyTaskInstanceConnection = {
+  __typename?: 'DailyTaskInstanceConnection';
+  edges: Array<DailyTaskInstanceEdge>;
+  pageInfo: PageInfo;
+};
+
+export type DailyTaskInstanceEdge = {
+  __typename?: 'DailyTaskInstanceEdge';
+  cursor: Scalars['String']['output'];
+  node: DailyTaskInstance;
 };
 
 export type DayOfWeek =
@@ -77,9 +107,27 @@ export type DayOfWeek =
 export type DaySchedule = {
   __typename?: 'DaySchedule';
   dayOfWeek: DayOfWeek;
-  evening: Array<RoutineSlot>;
-  midday: Array<RoutineSlot>;
-  morning: Array<RoutineSlot>;
+  evening: RoutineSlotConnection;
+  midday: RoutineSlotConnection;
+  morning: RoutineSlotConnection;
+};
+
+
+export type DayScheduleEveningArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type DayScheduleMiddayArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type DayScheduleMorningArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type DaySection =
@@ -396,6 +444,8 @@ export type ResolversTypes = ResolversObject<{
   CreateTaskPayload: ResolverTypeWrapper<CreateTaskPayload>;
   DailyRoutinePayload: ResolverTypeWrapper<DailyRoutinePayload>;
   DailyTaskInstance: ResolverTypeWrapper<DailyTaskInstance>;
+  DailyTaskInstanceConnection: ResolverTypeWrapper<DailyTaskInstanceConnection>;
+  DailyTaskInstanceEdge: ResolverTypeWrapper<DailyTaskInstanceEdge>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   DayOfWeek: DayOfWeek;
   DaySchedule: ResolverTypeWrapper<DaySchedule>;
@@ -437,6 +487,8 @@ export type ResolversParentTypes = ResolversObject<{
   CreateTaskPayload: CreateTaskPayload;
   DailyRoutinePayload: DailyRoutinePayload;
   DailyTaskInstance: DailyTaskInstance;
+  DailyTaskInstanceConnection: DailyTaskInstanceConnection;
+  DailyTaskInstanceEdge: DailyTaskInstanceEdge;
   DateTime: Scalars['DateTime']['output'];
   DaySchedule: DaySchedule;
   DeleteRoutineSlotPayload: DeleteRoutineSlotPayload;
@@ -475,23 +527,23 @@ export type SkipAuthDirectiveArgs = { };
 export type SkipAuthDirectiveResolver<Result, Parent, ContextType = any, Args = SkipAuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type CompleteTaskPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompleteTaskPayload'] = ResolversParentTypes['CompleteTaskPayload']> = ResolversObject<{
-  taskCompletion?: Resolver<ResolversTypes['TaskCompletion'], ParentType, ContextType>;
+  taskCompletionEdge?: Resolver<ResolversTypes['TaskCompletionEdge'], ParentType, ContextType>;
 }>;
 
 export type CreateRoutineSlotPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRoutineSlotPayload'] = ResolversParentTypes['CreateRoutineSlotPayload']> = ResolversObject<{
-  routineSlot?: Resolver<ResolversTypes['RoutineSlot'], ParentType, ContextType>;
+  routineSlotEdge?: Resolver<ResolversTypes['RoutineSlotEdge'], ParentType, ContextType>;
 }>;
 
 export type CreateTaskPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateTaskPayload'] = ResolversParentTypes['CreateTaskPayload']> = ResolversObject<{
-  task?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
+  taskEdge?: Resolver<ResolversTypes['TaskEdge'], ParentType, ContextType>;
 }>;
 
 export type DailyRoutinePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DailyRoutinePayload'] = ResolversParentTypes['DailyRoutinePayload']> = ResolversObject<{
   date?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   dayOfWeek?: Resolver<ResolversTypes['DayOfWeek'], ParentType, ContextType>;
-  evening?: Resolver<Array<ResolversTypes['DailyTaskInstance']>, ParentType, ContextType>;
-  midday?: Resolver<Array<ResolversTypes['DailyTaskInstance']>, ParentType, ContextType>;
-  morning?: Resolver<Array<ResolversTypes['DailyTaskInstance']>, ParentType, ContextType>;
+  evening?: Resolver<ResolversTypes['DailyTaskInstanceConnection'], ParentType, ContextType, Partial<DailyRoutinePayloadEveningArgs>>;
+  midday?: Resolver<ResolversTypes['DailyTaskInstanceConnection'], ParentType, ContextType, Partial<DailyRoutinePayloadMiddayArgs>>;
+  morning?: Resolver<ResolversTypes['DailyTaskInstanceConnection'], ParentType, ContextType, Partial<DailyRoutinePayloadMorningArgs>>;
 }>;
 
 export type DailyTaskInstanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['DailyTaskInstance'] = ResolversParentTypes['DailyTaskInstance']> = ResolversObject<{
@@ -501,15 +553,25 @@ export type DailyTaskInstanceResolvers<ContextType = any, ParentType extends Res
   task?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
 }>;
 
+export type DailyTaskInstanceConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['DailyTaskInstanceConnection'] = ResolversParentTypes['DailyTaskInstanceConnection']> = ResolversObject<{
+  edges?: Resolver<Array<ResolversTypes['DailyTaskInstanceEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+}>;
+
+export type DailyTaskInstanceEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['DailyTaskInstanceEdge'] = ResolversParentTypes['DailyTaskInstanceEdge']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['DailyTaskInstance'], ParentType, ContextType>;
+}>;
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
 export type DayScheduleResolvers<ContextType = any, ParentType extends ResolversParentTypes['DaySchedule'] = ResolversParentTypes['DaySchedule']> = ResolversObject<{
   dayOfWeek?: Resolver<ResolversTypes['DayOfWeek'], ParentType, ContextType>;
-  evening?: Resolver<Array<ResolversTypes['RoutineSlot']>, ParentType, ContextType>;
-  midday?: Resolver<Array<ResolversTypes['RoutineSlot']>, ParentType, ContextType>;
-  morning?: Resolver<Array<ResolversTypes['RoutineSlot']>, ParentType, ContextType>;
+  evening?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<DayScheduleEveningArgs>>;
+  midday?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<DayScheduleMiddayArgs>>;
+  morning?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<DayScheduleMorningArgs>>;
 }>;
 
 export type DeleteRoutineSlotPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRoutineSlotPayload'] = ResolversParentTypes['DeleteRoutineSlotPayload']> = ResolversObject<{
@@ -642,6 +704,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CreateTaskPayload?: CreateTaskPayloadResolvers<ContextType>;
   DailyRoutinePayload?: DailyRoutinePayloadResolvers<ContextType>;
   DailyTaskInstance?: DailyTaskInstanceResolvers<ContextType>;
+  DailyTaskInstanceConnection?: DailyTaskInstanceConnectionResolvers<ContextType>;
+  DailyTaskInstanceEdge?: DailyTaskInstanceEdgeResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DaySchedule?: DayScheduleResolvers<ContextType>;
   DeleteRoutineSlotPayload?: DeleteRoutineSlotPayloadResolvers<ContextType>;
