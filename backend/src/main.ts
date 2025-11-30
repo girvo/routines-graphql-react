@@ -26,15 +26,6 @@ import { taskDataLoader } from './task/task-loaders.ts'
 import fastifyStatic from '@fastify/static'
 import cors from '@fastify/cors'
 
-const schemaFile = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-  '..',
-  '..',
-  'schema.graphql',
-)
-const schema = await readFile(schemaFile, 'utf-8')
-const signingKey = getEnv().JWT_SECRET
-
 const envToLogger = {
   development: {
     transport: {
@@ -49,93 +40,109 @@ const envToLogger = {
   test: false,
 }
 
-const app = fastify({
-  logger: envToLogger[getEnv().ENVIRONMENT],
-})
+export const createApp = async () => {
+  const schemaFile = resolve(
+    dirname(fileURLToPath(import.meta.url)),
+    '..',
+    '..',
+    'schema.graphql',
+  )
+  const schema = await readFile(schemaFile, 'utf-8')
+  const signingKey = getEnv().JWT_SECRET
 
-await app.register(cors, {
-  origin: true,
-  credentials: true,
-})
+  const app = fastify({
+    logger: envToLogger[getEnv().ENVIRONMENT],
+  })
 
-await app.register(cookie)
+  await app.register(cors, {
+    origin: true,
+    credentials: true,
+  })
 
-const yoga = createYoga<{
-  req: FastifyRequest
-  reply: FastifyReply
-}>({
-  cors: false,
-  context: createContext,
-  plugins: [
-    useExecutionCancellation(),
-    useJWT({
-      signingKeyProviders: [createInlineSigningKeyProvider(signingKey)],
-      tokenLookupLocations: [
-        extractFromHeader({ name: 'authorization', prefix: 'Bearer' }),
-      ],
-      tokenVerification: {
-        algorithms: ['HS256', 'RS256'],
-      },
-      extendContext: true,
-      reject: {
-        missingToken: false,
-        invalidToken: false,
-      },
+  await app.register(cookie)
+
+  const yoga = createYoga<{
+    req: FastifyRequest
+    reply: FastifyReply
+  }>({
+    cors: false,
+    context: createContext,
+    plugins: [
+      useExecutionCancellation(),
+      useJWT({
+        signingKeyProviders: [createInlineSigningKeyProvider(signingKey)],
+        tokenLookupLocations: [
+          extractFromHeader({ name: 'authorization', prefix: 'Bearer' }),
+        ],
+        tokenVerification: {
+          algorithms: ['HS256', 'RS256'],
+        },
+        extendContext: true,
+        reject: {
+          missingToken: false,
+          invalidToken: false,
+        },
+      }),
+      // This needs to be before useGenericAuth as it relies on this DataLoader
+      useDataLoader('users', userDataLoader),
+      useGenericAuth({
+        resolveUserFn: resolveUser,
+        validateUser: validateUser,
+        mode: 'protect-all',
+      }),
+      useDataLoader('tasks', taskDataLoader),
+    ],
+    schema: createSchema({
+      typeDefs: schema,
+      resolvers: resolvers,
     }),
-    // This needs to be before useGenericAuth as it relies on this DataLoader
-    useDataLoader('users', userDataLoader),
-    useGenericAuth({
-      resolveUserFn: resolveUser,
-      validateUser: validateUser,
-      mode: 'protect-all',
-    }),
-    useDataLoader('tasks', taskDataLoader),
-  ],
-  schema: createSchema({
-    typeDefs: schema,
-    resolvers: resolvers,
-  }),
-  // Integrate Fastify logger
-  logging: {
-    debug: (...args) => args.forEach(arg => app.log.debug(arg)),
-    info: (...args) => args.forEach(arg => app.log.info(arg)),
-    warn: (...args) => args.forEach(arg => app.log.warn(arg)),
-    error: (...args) => args.forEach(arg => app.log.error(arg)),
-  },
-  graphiql: false,
-})
+    // Integrate Fastify logger
+    logging: {
+      debug: (...args) => args.forEach(arg => app.log.debug(arg)),
+      info: (...args) => args.forEach(arg => app.log.info(arg)),
+      warn: (...args) => args.forEach(arg => app.log.warn(arg)),
+      error: (...args) => args.forEach(arg => app.log.error(arg)),
+    },
+    graphiql: false,
+  })
 
-/**
- * We pass the incoming HTTP request to GraphQL Yoga
- * and handle the response using Fastify's `reply` API
- * Learn more about `reply` https://www.fastify.io/docs/latest/Reply/
- **/
-app.route({
-  // Bind to the Yoga's endpoint to avoid rendering on any path
-  url: yoga.graphqlEndpoint,
-  method: ['GET', 'POST', 'OPTIONS'],
-  handler: (req, reply) =>
-    yoga.handleNodeRequestAndResponse(req, reply, {
-      req,
-      reply,
-    }),
-})
+  /**
+   * We pass the incoming HTTP request to GraphQL Yoga
+   * and handle the response using Fastify's `reply` API
+   * Learn more about `reply` https://www.fastify.io/docs/latest/Reply/
+   **/
+  app.route({
+    // Bind to the Yoga's endpoint to avoid rendering on any path
+    url: yoga.graphqlEndpoint,
+    method: ['GET', 'POST', 'OPTIONS'],
+    handler: (req, reply) =>
+      yoga.handleNodeRequestAndResponse(req, reply, {
+        req,
+        reply,
+      }),
+  })
 
-// This will allow Fastify to forward multipart requests to GraphQL Yoga
-app.addContentTypeParser('multipart/form-data', {}, (req, payload, done) =>
-  done(null),
-)
+  // This will allow Fastify to forward multipart requests to GraphQL Yoga
+  app.addContentTypeParser('multipart/form-data', {}, (req, payload, done) =>
+    done(null),
+  )
 
-// Set up/wire up authentication handling routes
-authRoutes(app)
+  // Set up/wire up authentication handling routes
+  authRoutes(app)
 
-await app.register(fastifyStatic, {
-  root: resolve(dirname(fileURLToPath(import.meta.url)), 'templates'),
-  // prefix: '/public/', // optional: serve files under /public/ URL
-})
+  await app.register(fastifyStatic, {
+    root: resolve(dirname(fileURLToPath(import.meta.url)), 'templates'),
+    // prefix: '/public/', // optional: serve files under /public/ URL
+  })
 
-app.get('/graphiql', (request, reply) => {
-  return reply.sendFile('graphiql.html')
-})
+  app.get('/graphiql', (request, reply) => {
+    return reply.sendFile('graphiql.html')
+  })
 
-app.listen({ port: 4000 })
+  return { app, yoga }
+}
+
+if (require.main === module) {
+  const { app } = await createApp()
+  app.listen({ port: 4000 })
+}
