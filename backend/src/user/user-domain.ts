@@ -1,5 +1,5 @@
-import { sqliteDateToDate } from '../database/utils.ts'
 import { type } from 'arktype'
+import { parseISO } from 'date-fns'
 import { toGlobalId } from '../globalId.ts'
 import type { UserRow } from './user-repository.ts'
 
@@ -19,11 +19,9 @@ export const tableToDomain = (input: UserRow): UserDomain => {
     id: input.id,
     email: input.email,
     passwordHash: input.password_hash,
-    createdAt: sqliteDateToDate(input.created_at),
-    updatedAt: input.updated_at ? sqliteDateToDate(input.updated_at) : null,
-    lastLoggedIn: input.last_logged_in
-      ? sqliteDateToDate(input.last_logged_in)
-      : null,
+    createdAt: parseISO(input.created_at),
+    updatedAt: input.updated_at ? parseISO(input.updated_at) : null,
+    lastLoggedIn: input.last_logged_in ? parseISO(input.last_logged_in) : null,
   })
 
   return UserDomain.assert(result)

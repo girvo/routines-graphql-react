@@ -1,5 +1,5 @@
-import { sqliteDateToDate } from '../database/utils.ts'
 import { type } from 'arktype'
+import { parseISO } from 'date-fns'
 import type { RefreshTokenRow } from './refresh-token-repository.ts'
 
 const RefreshTokenDomain = type({
@@ -20,9 +20,9 @@ export const tableToDomain = (input: RefreshTokenRow): RefreshTokenDomain => {
     id: input.id,
     userId: input.user_id,
     token: input.token_hash,
-    expiresAt: sqliteDateToDate(input.expires_at),
-    createdAt: sqliteDateToDate(input.created_at),
-    revokedAt: input.revoked_at ? sqliteDateToDate(input.revoked_at) : null,
+    expiresAt: parseISO(input.expires_at),
+    createdAt: parseISO(input.created_at),
+    revokedAt: input.revoked_at ? parseISO(input.revoked_at) : null,
     userAgent: input.user_agent,
     ipAddress: input.ip_address,
   })

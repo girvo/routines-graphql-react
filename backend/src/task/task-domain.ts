@@ -1,5 +1,5 @@
-import { sqliteDateToDate } from '../database/utils.ts'
 import { type } from 'arktype'
+import { parseISO } from 'date-fns'
 import { toGlobalId } from '../globalId.ts'
 import { taskCursor, type TaskRow } from './task-repository.ts'
 import type { PageInfo } from '../graphql/resolver-types.ts'
@@ -20,9 +20,9 @@ export const tableToDomain = (input: TaskRow): TaskDomain => {
     id: input.id,
     userId: input.user_id,
     title: input.title,
-    createdAt: sqliteDateToDate(input.created_at),
-    updatedAt: input.updated_at ? sqliteDateToDate(input.updated_at) : null,
-    deletedAt: input.deleted_at ? sqliteDateToDate(input.deleted_at) : null,
+    createdAt: parseISO(input.created_at),
+    updatedAt: input.updated_at ? parseISO(input.updated_at) : null,
+    deletedAt: input.deleted_at ? parseISO(input.deleted_at) : null,
   })
 }
 

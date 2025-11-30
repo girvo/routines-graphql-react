@@ -1,3 +1,5 @@
+import { parseISO } from 'date-fns'
+
 export const sqliteDateToDate = (input: string): Date => {
-  return new Date(`${input.replace(' ', 'T')}Z`)
+  return parseISO(input)
 }

@@ -54,7 +54,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
       const token = createAccessToken(user.id, env.JWT_SECRET)
 
       const refreshToken = generateRefreshToken()
-      const tokenHash = await hashRefreshToken(refreshToken)
+      const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
       const expiresAt = getRefreshTokenExpiry()
 
       await refreshTokenRepo.createRefreshToken(
@@ -69,7 +69,6 @@ export const authRoutes = async (fastify: FastifyInstance) => {
         httpOnly: true,
         secure: false,
         sameSite: 'strict',
-        path: '/',
         maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
       })
 
@@ -97,7 +96,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
       const token = createAccessToken(user.id, env.JWT_SECRET)
 
       const refreshToken = generateRefreshToken()
-      const tokenHash = await hashRefreshToken(refreshToken)
+      const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
       const expiresAt = getRefreshTokenExpiry()
 
       await refreshTokenRepo.createRefreshToken(
@@ -145,7 +144,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
     }
 
     try {
-      const tokenHash = await hashRefreshToken(refreshToken)
+      const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
       const storedToken = await refreshTokenRepo.findByTokenHash(tokenHash)
 
       if (!storedToken) {
@@ -200,7 +199,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
     }
 
     try {
-      const tokenHash = await hashRefreshToken(refreshToken)
+      const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
       const storedToken = await refreshTokenRepo.findByTokenHash(tokenHash)
 
       if (storedToken) {

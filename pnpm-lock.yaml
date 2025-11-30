@@ -69,6 +69,9 @@ importers:
       dataloader:
         specifier: ^2.2.3
         version: 2.2.3
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       fastify:
         specifier: ^5.6.0
         version: 5.6.2
@@ -103,9 +106,6 @@ importers:
       '@graphql-codegen/typescript-resolvers':
         specifier: ^5.1.0
         version: 5.1.0(graphql@16.12.0)
-      '@types/bcryptjs':
-        specifier: 3.0.0
-        version: 3.0.0
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -797,10 +797,6 @@ packages:
     peerDependencies:
       graphql: ^16.0.0
 
-  '@types/bcryptjs@3.0.0':
-    resolution: {integrity: sha512-WRZOuCuaz8UcZZE4R5HXTco2goQSI2XxjGY3hbM/xDvwmqFWd4ivooImsMx65OKM6CtNKbnZ5YL+YwAwK7c1dg==}
-    deprecated: This is a stub types definition. bcryptjs provides its own type definitions, so you do not need this installed.
-
   '@types/better-sqlite3@7.6.13':
     resolution: {integrity: sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA==}
 
@@ -1239,6 +1235,9 @@ packages:
 
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
+
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
@@ -3788,10 +3787,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@types/bcryptjs@3.0.0':
-    dependencies:
-      bcryptjs: 3.0.3
-
   '@types/better-sqlite3@7.6.13':
     dependencies:
       '@types/node': 24.10.1
@@ -4348,6 +4343,8 @@ snapshots:
       is-data-view: 1.0.2
 
   dataloader@2.2.3: {}
+
+  date-fns@4.1.0: {}
 
   dateformat@4.6.3: {}
 
