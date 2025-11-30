@@ -14,7 +14,8 @@ export const taskDataLoader = (context: Context) => {
 
     for (const row of rows) {
       try {
-        rowMap.set(row.id, tableToDomain(row))
+        const task = tableToDomain(row)
+        rowMap.set(row.id, task)
       } catch (error) {
         if (error instanceof Error) {
           rowMap.set(row.id, error)
@@ -27,8 +28,6 @@ export const taskDataLoader = (context: Context) => {
         }
       }
     }
-
-    console.debug('im in taskDataLoader!')
 
     return keys.map(key => rowMap.get(key) ?? null)
   })
