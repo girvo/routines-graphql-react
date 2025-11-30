@@ -58,3 +58,44 @@ html, body, #graphiql {
   background: #ffebee;
   border-radius: 4px;
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1e1e1e;
+    color: #e0e0e0;
+  }
+
+  #login-container {
+    background: #1e1e1e;
+  }
+
+  #login-form {
+    background: #2d2d2d;
+    border-color: #444;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  #login-form input {
+    background: #3d3d3d;
+    border-color: #555;
+    color: #e0e0e0;
+  }
+
+  #login-form input:focus {
+    outline: 1px solid #0066cc;
+    border-color: #0066cc;
+  }
+
+  #login-form button {
+    background: #1976d2;
+  }
+
+  #login-form button:hover {
+    background: #1565c0;
+  }
+
+  .error {
+    color: #ef5350;
+    background: #3d2020;
+  }
+}

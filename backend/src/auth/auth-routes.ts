@@ -188,32 +188,37 @@ export const authRoutes = async (fastify: FastifyInstance) => {
     }
   })
 
-  fastify.post('/logout', {}, async (request, reply) => {
-    const refreshToken = request.cookies.refreshToken
+  fastify.route({
+    method: ['GET', 'POST'],
+    url: '/logout',
+    schema: {},
+    handler: async (request, reply) => {
+      const refreshToken = request.cookies.refreshToken
 
-    if (!refreshToken) {
-      console.warn('Logout called without a refresh token in the request')
-      return reply.code(200).send({
-        success: true,
-      })
-    }
-
-    try {
-      const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
-      const storedToken = await refreshTokenRepo.findByTokenHash(tokenHash)
-
-      if (storedToken) {
-        await refreshTokenRepo.revokeToken(storedToken.id)
+      if (!refreshToken) {
+        console.warn('Logout called without a refresh token in the request')
+        return reply.code(200).send({
+          success: true,
+        })
       }
 
-      reply.clearCookie('refreshToken')
+      try {
+        const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
+        const storedToken = await refreshTokenRepo.findByTokenHash(tokenHash)
 
-      return {
-        success: true,
+        if (storedToken) {
+          await refreshTokenRepo.revokeToken(storedToken.id)
+        }
+
+        reply.clearCookie('refreshToken')
+
+        return {
+          success: true,
+        }
+      } catch (err) {
+        reply.clearCookie('refreshToken')
+        throw err
       }
-    } catch (err) {
-      reply.clearCookie('refreshToken')
-      throw err
-    }
+    },
   })
 }
