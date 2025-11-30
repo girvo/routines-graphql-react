@@ -22,11 +22,6 @@ describe('Task operations', () => {
 
   it('can create a new task for a user via createTask mutation', async () => {
     const token = await createTestUser(db)
-    console.debug(token)
-
-    const res = await db.selectFrom('users').selectAll().executeTakeFirst()
-    console.log(res)
-
     const result = await executeGraphQL(
       yoga,
       `
@@ -46,8 +41,6 @@ describe('Task operations', () => {
       },
       token,
     )
-
-    console.debug(JSON.stringify(result))
 
     expect(result.data?.createTask.taskEdge.node.title).toBe('Test Task')
     expect(result.data?.createTask.taskEdge.node.id).toBeDefined()

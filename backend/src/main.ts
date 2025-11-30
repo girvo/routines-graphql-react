@@ -3,10 +3,10 @@ import {
   createSchema,
   createYoga,
   useExecutionCancellation,
+  type YogaServerOptions,
 } from 'graphql-yoga'
 import {
   createInlineSigningKeyProvider,
-  createRemoteJwksSigningKeyProvider,
   extractFromHeader,
   useJWT,
 } from '@graphql-yoga/plugin-jwt'
@@ -25,6 +25,9 @@ import cookie from '@fastify/cookie'
 import { taskDataLoader } from './task/task-loaders.ts'
 import fastifyStatic from '@fastify/static'
 import cors from '@fastify/cors'
+import { getDb } from './database/index.ts'
+import type { Kysely } from 'kysely'
+import type { Database } from './database/types.ts'
 
 const envToLogger = {
   development: {
@@ -40,7 +43,13 @@ const envToLogger = {
   test: false,
 }
 
-export const createApp = async () => {
+export const createApp = async (
+  options: YogaServerOptions<
+    { req: FastifyRequest; reply: FastifyReply },
+    {}
+  > = {},
+  database?: Kysely<Database>,
+) => {
   const schemaFile = resolve(
     dirname(fileURLToPath(import.meta.url)),
     '..',
@@ -54,6 +63,10 @@ export const createApp = async () => {
     logger: envToLogger[getEnv().ENVIRONMENT],
   })
 
+  // Forcibly load the database module here, gross but we need it
+  const db = database ?? getDb()
+  app.decorate('db', db)
+
   await app.register(cors, {
     origin: true,
     credentials: true,
@@ -66,7 +79,7 @@ export const createApp = async () => {
     reply: FastifyReply
   }>({
     cors: false,
-    context: createContext,
+    context: initialContext => createContext(initialContext, db),
     plugins: [
       useExecutionCancellation(),
       useJWT({
@@ -104,6 +117,7 @@ export const createApp = async () => {
       error: (...args) => args.forEach(arg => app.log.error(arg)),
     },
     graphiql: false,
+    ...options,
   })
 
   /**
@@ -142,7 +156,7 @@ export const createApp = async () => {
   return { app, yoga }
 }
 
-if (require.main === module) {
+if (import.meta.main) {
   const { app } = await createApp()
   app.listen({ port: 4000 })
 }

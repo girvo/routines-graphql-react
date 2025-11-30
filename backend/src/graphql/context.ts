@@ -1,5 +1,4 @@
 import type { JWTExtendContextFields } from '@graphql-yoga/plugin-jwt'
-import { db } from '../database/index.ts'
 import { getEnv } from '../env.ts'
 import type { YogaInitialContext } from 'graphql-yoga'
 import { createUserRepository } from '../user/user-repository.ts'
@@ -7,11 +6,16 @@ import type { UserDomain } from '../user/user-domain.ts'
 import type { UserDataLoader } from '../user/user-loaders.ts'
 import { createTaskRepository } from '../task/task-repository.ts'
 import type { TaskDataLoader } from '../task/task-loaders.ts'
+import type { Kysely } from 'kysely'
+import type { Database } from '../database/types.ts'
 
-export const userRepo = createUserRepository(db)
-const taskRepo = createTaskRepository(db)
+export function createContext(
+  initialContext: YogaInitialContext,
+  db: Kysely<Database>,
+) {
+  const userRepo = createUserRepository(db)
+  const taskRepo = createTaskRepository(db)
 
-export function createContext(initialContext: YogaInitialContext) {
   return {
     ...initialContext,
     env: getEnv(),

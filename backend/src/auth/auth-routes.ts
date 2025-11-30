@@ -1,7 +1,5 @@
 import type { FastifyInstance } from 'fastify'
 import { type } from 'arktype'
-import { db } from '../database/index.ts'
-import { userRepo } from '../graphql/context.ts'
 import { compare, hash } from 'bcryptjs'
 import { NoResultError } from 'kysely'
 import { getEnv } from '../env.ts'
@@ -16,6 +14,7 @@ import {
   getRefreshTokenExpiry,
   REFRESH_TOKEN_MAX_AGE_SECONDS,
 } from './auth-utils.ts'
+import { createUserRepository } from '../user/user-repository.ts'
 
 const AuthSchema = type({
   email: 'string',
@@ -36,10 +35,10 @@ const SignupError = (message: string) => ({
   errors: [{ message }],
 })
 
-const refreshTokenRepo = createRefreshTokenRepository(db)
-
 export const authRoutes = async (fastify: FastifyInstance) => {
   const env = getEnv()
+  const userRepo = createUserRepository(fastify.db)
+  const refreshTokenRepo = createRefreshTokenRepository(fastify.db)
 
   fastify.post('/login', { schema }, async (request, reply) => {
     const body = request.body as typeof AuthSchema.infer

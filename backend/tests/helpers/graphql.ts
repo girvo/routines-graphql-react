@@ -1,13 +1,9 @@
-import { vi } from 'vitest'
 import type { Kysely } from 'kysely'
 import type { Database } from '../../src/database/types.ts'
 import { createApp } from '../../src/main.ts'
-import * as dbModule from '../../src/database/index.ts'
 
 export const createTestApp = async (testDb: Kysely<Database>) => {
-  vi.mocked(dbModule).db = testDb
-
-  const { app, yoga } = await createApp()
+  const { app, yoga } = await createApp({ maskedErrors: false }, testDb)
   return { app, yoga }
 }
 
