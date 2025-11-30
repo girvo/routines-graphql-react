@@ -11,7 +11,7 @@ import {
   useJWT,
 } from '@graphql-yoga/plugin-jwt'
 import { readFile } from 'node:fs/promises'
-import { resolve, dirname } from 'node:path'
+import { resolve, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolvers } from './graphql/resolvers.ts'
 import { createContext } from './graphql/context.ts'
@@ -23,6 +23,8 @@ import { useDataLoader } from '@envelop/dataloader'
 import { userDataLoader } from './user/user-loaders.ts'
 import cookie from '@fastify/cookie'
 import { taskDataLoader } from './task/task-loaders.ts'
+import fastifyStatic from '@fastify/static'
+import cors from '@fastify/cors'
 
 const schemaFile = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -51,12 +53,18 @@ const app = fastify({
   logger: envToLogger[getEnv().ENVIRONMENT],
 })
 
+await app.register(cors, {
+  origin: true,
+  credentials: true,
+})
+
 await app.register(cookie)
 
 const yoga = createYoga<{
   req: FastifyRequest
   reply: FastifyReply
 }>({
+  cors: false,
   context: createContext,
   plugins: [
     useExecutionCancellation(),
@@ -87,7 +95,6 @@ const yoga = createYoga<{
     typeDefs: schema,
     resolvers: resolvers,
   }),
-
   // Integrate Fastify logger
   logging: {
     debug: (...args) => args.forEach(arg => app.log.debug(arg)),
@@ -95,6 +102,7 @@ const yoga = createYoga<{
     warn: (...args) => args.forEach(arg => app.log.warn(arg)),
     error: (...args) => args.forEach(arg => app.log.error(arg)),
   },
+  graphiql: false,
 })
 
 /**
@@ -120,5 +128,14 @@ app.addContentTypeParser('multipart/form-data', {}, (req, payload, done) =>
 
 // Set up/wire up authentication handling routes
 authRoutes(app)
+
+await app.register(fastifyStatic, {
+  root: resolve(dirname(fileURLToPath(import.meta.url)), 'templates'),
+  // prefix: '/public/', // optional: serve files under /public/ URL
+})
+
+app.get('/graphiql', (request, reply) => {
+  return reply.sendFile('graphiql.html')
+})
 
 app.listen({ port: 4000 })

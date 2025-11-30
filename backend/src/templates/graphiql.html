@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GraphiQL</title>
+  <link href="https://unpkg.com/graphiql@3/graphiql.min.css" rel="stylesheet" />
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+  <style>
+    html, body, #graphiql {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    #login-form {
+      width: 100%;
+      max-width: 400px;
+      padding: 2rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    #login-form h2 {
+      margin-top: 0;
+    }
+    #login-form input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    #login-form button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #login-form button:hover {
+      background: #0052a3;
+    }
+    .error {
+      color: #d32f2f;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: #ffebee;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div id="graphiql"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/graphiql@3/graphiql.min.js"></script>
+
+  <script>
+    // Token management
+    let accessToken = localStorage.getItem('accessToken');
+
+    async function refreshAccessToken() {
+      try {
+        const response = await fetch('/refresh', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) throw new Error('Refresh failed');
+
+        const data = await response.json();
+        accessToken = data.accessToken;
+        if (!acccessToken) {
+          throw new Error('Could not get access token from response!')
+        }
+        localStorage.setItem('accessToken', accessToken);
+        return accessToken;
+      } catch (error) {
+        console.error('Token refresh failed:', error);
+        // Optionally redirect to login
+        // window.location.href = '/login';
+        return null;
+      }
+    }
+
+    function isTokenExpired(token) {
+      if (!token) return true;
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        // Check if expired or expiring within 30 seconds
+        return payload.exp * 1000 < Date.now() + 30000;
+      } catch {
+        return true;
+      }
+    }
+
+    // Custom fetcher with automatic token refresh
+    async function fetcher(graphQLParams) {
+      // Proactively refresh if token is expired or expiring soon
+      if (isTokenExpired(accessToken)) {
+        await refreshAccessToken();
+      }
+
+      const response = await fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': accessToken ? `Bearer ${accessToken}` : '',
+        },
+        body: JSON.stringify(graphQLParams),
+      });
+
+      // Handle 401 - token might have been invalidated server-side
+      if (response.status === 401) {
+        console.warning('WE GOT A RESPONSE!')
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+          // Retry the request with new token
+          const retryResponse = await fetch('/graphql', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${newToken}`,
+            },
+            body: JSON.stringify(graphQLParams),
+          });
+          return retryResponse.json();
+        }
+      }
+
+      return response.json();
+    }
+
+    if (!accessToken) {
+      document.getElementById('graphiql').innerHTML = `
+        <div id="login-container">
+          <div id="login-form" x-data="{ email: '', password: '', error: '' }">
+            <h2>Login to GraphiQL</h2>
+            <form @submit.prevent="
+              error = '';
+              fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+              })
+              .then(r => r.ok ? r.json() : r.json().then(err => Promise.reject(err.message || 'Login failed')))
+              .then(data => {
+                if (data.success && data.accessToken) {
+                  localStorage.setItem('accessToken', data.accessToken);
+                  window.location.reload();
+                }
+                if (data.errors) {
+                  throw new Error(data.errors[0].message)
+                }
+              })
+              .catch(err => error = typeof err === 'string' ? err : 'Login failed')
+            ">
+              <div x-show="error" class="error" x-text="error"></div>
+
+              <input type="email" placeholder="Email" x-model="email" required>
+              <input type="password" placeholder="Password" x-model="password" required>
+              <button type="submit">Login</button>
+            </form>
+          </div>
+        </div>
+      `;
+    } else {
+      // Render GraphiQL if we've got a token
+      ReactDOM.render(
+        React.createElement(GraphiQL, {
+          fetcher: fetcher,
+          defaultEditorToolsVisibility: true,
+        }),
+        document.getElementById('graphiql')
+      );
+    }
+  </script>
+</body>
+</html>
