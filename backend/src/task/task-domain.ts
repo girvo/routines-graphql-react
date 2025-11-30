@@ -36,14 +36,13 @@ export const taskToGraphQL = (task: TaskDomain) => ({
 
 export type TaskNode = ReturnType<typeof taskToGraphQL>
 
-const buildTaskEdge = (task: TaskDomain, edgeRow?: TaskRow) => {
+export const buildTaskEdge = (task: TaskDomain) => {
   return {
     node: task,
     cursor: taskCursor.encode({
       createdAt: task.createdAt.toISOString(),
       id: task.id,
     }),
-    // and i could put any other edge data I wanted in here I guess
   }
 }
 
@@ -57,10 +56,10 @@ export const buildTaskConnection = (
   requestedCount: number,
 ): TaskConnection => {
   const hasNextPage = edgeRows.length > requestedCount
-  const edges = edgeRows.slice(0, requestedCount).map(row => {
-    const task = tableToDomain(row)
-    return buildTaskEdge(task, row)
-  })
+  const edges = edgeRows
+    .slice(0, requestedCount)
+    .map(tableToDomain)
+    .map(buildTaskEdge)
 
   return {
     edges,

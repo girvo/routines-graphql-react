@@ -8,6 +8,7 @@ import { userToGraphQL } from '../user/user-domain.ts'
 import { resolveUserAsNode } from '../user/user-resolvers.ts'
 import type { NodeResolver, NodeType } from './types.ts'
 import { resolveTaskAsNode, tasksResolver } from '../task/task-resolvers.ts'
+import { createTask } from '../task/task-mutations.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: resolveUserAsNode,
@@ -48,6 +49,9 @@ export const resolvers: Resolvers<Context> = {
       return adapter(internalId, context)
     },
     tasks: tasksResolver,
+  },
+  Mutation: {
+    createTask: createTask,
   },
   Node: {
     __resolveType: parent => parent.__typename ?? null,

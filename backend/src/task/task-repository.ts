@@ -87,7 +87,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
       return query.execute()
     },
 
-    async createTask(userId: number, title: string): Promise<TaskRow> {
+    async createTask(title: string, userId: number): Promise<TaskRow> {
       return db
         .insertInto('tasks')
         .values({

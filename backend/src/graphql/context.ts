@@ -30,7 +30,7 @@ export type Context = BaseContext & { jwt?: JWTExtendContextFields } & {
 }
 
 // Used so we can stop having to write this over and over...
-type AuthenticatedContext = Omit<Context, 'currentUser'> & {
+export type AuthenticatedContext = Omit<Context, 'currentUser'> & {
   currentUser: UserDomain
 }
 
