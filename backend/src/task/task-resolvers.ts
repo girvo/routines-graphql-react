@@ -33,7 +33,9 @@ export const tasksResolver: QueryResolvers<Context>['tasks'] = async (
   connection.edges.forEach(({ node }) => context.tasks.prime(node.id, node))
 
   return {
+    __typename: 'TaskConnection',
     edges: connection.edges.map(edge => ({
+      __typename: 'TaskEdge',
       node: taskToGraphQL(edge.node),
       cursor: edge.cursor,
     })),
