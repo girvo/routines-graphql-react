@@ -26,6 +26,7 @@ enum DaySection {
 }
 
 type Query {
+  node(id: ID!): Node
   me: User!
 
   # Get today's routine (or specific date)
@@ -42,7 +43,6 @@ type Query {
   ): TaskCompletionConnection!
 
   hello: String! @skipAuth
-  node(id: ID!): Node
 }
 
 type Mutation {
@@ -173,7 +173,7 @@ type PageInfo {
 }
 
 input UpdateTaskInput {
-  id: ID!
+  taskId: ID!
   title: String!
 }
 

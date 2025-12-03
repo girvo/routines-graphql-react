@@ -98,7 +98,11 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         .executeTakeFirstOrThrow()
     },
 
-    async updateTask(id: number, title: string): Promise<TaskRow> {
+    async updateTask(
+      id: number,
+      title: string,
+      userId: number,
+    ): Promise<TaskRow> {
       return db
         .updateTable('tasks')
         .set({
@@ -107,6 +111,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         })
         .where('id', '=', id)
         .where('deleted_at', 'is', null)
+        .where('user_id', '=', userId)
         .returningAll()
         .executeTakeFirstOrThrow()
     },

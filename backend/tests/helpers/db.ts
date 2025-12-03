@@ -1,19 +1,9 @@
-import { Kysely, Migrator, FileMigrationProvider, SqliteDialect } from 'kysely'
+import { Migrator, FileMigrationProvider } from 'kysely'
 import { promises as fs } from 'node:fs'
 import { join, resolve } from 'node:path'
-import SQLite from 'better-sqlite3'
-import type { Database } from '../../src/database/types.ts'
+import { db, type Database } from '../../src/database/index.ts'
 
-// re-export for usage
-export type { Database }
-
-export const createTestDb = async () => {
-  const dialect = new SqliteDialect({
-    database: new SQLite(':memory:'),
-  })
-
-  const db = new Kysely<Database>({ dialect })
-
+export const migrateTestDb = async () => {
   const migrator = new Migrator({
     db,
     provider: new FileMigrationProvider({
@@ -30,10 +20,11 @@ export const createTestDb = async () => {
     console.error(errMessage, result.error, result.results)
     throw new Error(errMessage)
   }
-
-  return db
 }
 
-export const destroyTestDb = async (db: Kysely<Database>) => {
-  await db.destroy()
+export const clearAllTables = async () => {
+  const tables = await db.introspection.getTables()
+  for (const table of tables) {
+    await db.deleteFrom(table.name as keyof Database).execute()
+  }
 }

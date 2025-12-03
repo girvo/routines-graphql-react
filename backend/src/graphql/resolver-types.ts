@@ -328,7 +328,7 @@ export type UncompleteTaskPayload = {
 };
 
 export type UpdateTaskInput = {
-  id: Scalars['ID']['input'];
+  taskId: Scalars['ID']['input'];
   title: Scalars['String']['input'];
 };
 

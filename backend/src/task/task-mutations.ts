@@ -42,3 +42,23 @@ export const deleteTask: MutationResolvers<Context>['deleteTask'] = async (
     deletedId: id,
   }
 }
+
+export const updateTask: MutationResolvers<Context>['updateTask'] = async (
+  _parent,
+  { input },
+  context,
+) => {
+  assertAuthenticated(context)
+
+  const updatedTaskRow = await context.taskRepo.updateTask(
+    fromGlobalId(input.taskId, 'Task'),
+    input.title,
+    context.currentUser.id,
+  )
+  const updatedTask = tableToDomain(updatedTaskRow)
+  context.tasks.prime(updatedTask.id, updatedTask)
+
+  return {
+    task: taskToGraphQL(updatedTask),
+  }
+}

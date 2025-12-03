@@ -1,9 +1,7 @@
-import type { Kysely } from 'kysely'
-import type { Database } from '../../src/database/types.ts'
 import { createApp } from '../../src/main.ts'
 
-export const createTestApp = async (testDb: Kysely<Database>) => {
-  const { app, yoga } = await createApp({ maskedErrors: false }, testDb)
+export const createTestApp = async () => {
+  const { app, yoga } = await createApp({ maskedErrors: false })
   return { app, yoga }
 }
 

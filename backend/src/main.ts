@@ -25,9 +25,7 @@ import cookie from '@fastify/cookie'
 import { taskDataLoader } from './task/task-loaders.ts'
 import fastifyStatic from '@fastify/static'
 import cors from '@fastify/cors'
-import { getDb } from './database/index.ts'
-import type { Kysely } from 'kysely'
-import type { Database } from './database/types.ts'
+import { db } from './database/index.ts'
 
 const envToLogger = {
   development: {
@@ -48,7 +46,6 @@ export const createApp = async (
     { req: FastifyRequest; reply: FastifyReply },
     {}
   > = {},
-  database?: Kysely<Database>,
 ) => {
   const schemaFile = resolve(
     dirname(fileURLToPath(import.meta.url)),
@@ -62,10 +59,6 @@ export const createApp = async (
   const app = fastify({
     logger: envToLogger[getEnv().ENVIRONMENT],
   })
-
-  // Forcibly load the database module here, gross but we need it
-  const db = database ?? getDb()
-  app.decorate('db', db)
 
   await app.register(cors, {
     origin: true,

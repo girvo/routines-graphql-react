@@ -15,6 +15,7 @@ import {
   REFRESH_TOKEN_MAX_AGE_SECONDS,
 } from './auth-utils.ts'
 import { createUserRepository } from '../user/user-repository.ts'
+import { db } from '../database/index.ts'
 
 const AuthSchema = type({
   email: 'string',
@@ -37,8 +38,8 @@ const SignupError = (message: string) => ({
 
 export const authRoutes = async (fastify: FastifyInstance) => {
   const env = getEnv()
-  const userRepo = createUserRepository(fastify.db)
-  const refreshTokenRepo = createRefreshTokenRepository(fastify.db)
+  const userRepo = createUserRepository(db)
+  const refreshTokenRepo = createRefreshTokenRepository(db)
 
   fastify.post('/login', { schema }, async (request, reply) => {
     const body = request.body as typeof AuthSchema.infer
