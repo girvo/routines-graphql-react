@@ -21,7 +21,37 @@ const config: CodegenConfig = {
           // Add others as you create them
         },
       },
-      plugins: ['typescript', 'typescript-resolvers'],
+      plugins: [
+        'typescript',
+        'typescript-resolvers',
+        {
+          add: {
+            content: `export type { GlobalID }`,
+            placement: 'append',
+          },
+        },
+      ],
+    },
+    './tests/': {
+      preset: 'near-operation-file',
+      presetConfig: {
+        baseTypesPath: '~../../src/graphql/resolver-types.ts',
+        extension: '.generated.ts',
+      },
+      documents: './tests/**/*.ts',
+      plugins: ['typescript-operations', 'typed-document-node'],
+      config: {
+        useIndexSignature: true,
+        useTypeImports: true,
+        enumsAsTypes: true,
+        futureProofEnums: true,
+        futureProofUnions: true,
+        scalars: {
+          ID: 'Types.GlobalID',
+          DateTime: 'Date',
+          NonNegativeInt: 'number',
+        },
+      },
     },
   },
 }

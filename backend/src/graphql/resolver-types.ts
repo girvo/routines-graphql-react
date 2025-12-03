@@ -741,3 +741,5 @@ export type DirectiveResolvers<ContextType = any> = ResolversObject<{
   authenticated?: AuthenticatedDirectiveResolver<any, any, ContextType>;
   skipAuth?: SkipAuthDirectiveResolver<any, any, ContextType>;
 }>;
+
+export type { GlobalID }

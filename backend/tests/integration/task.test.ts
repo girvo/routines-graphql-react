@@ -1,14 +1,17 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest'
+import { gql } from 'graphql-tag'
 import { clearAllTables } from '../helpers/db.ts'
-import { db, type Database } from '../../src/database/index.ts'
 import { createTestUser } from '../helpers/auth.ts'
 import { createTestApp, executeGraphQL } from '../helpers/graphql.ts'
 import type { createApp } from '../../src/main.ts'
+import {
+  CreateTaskDocument,
+  UpdateTaskDocument,
+} from './task.test.generated.ts'
 
-const createTaskMutation = `
+const createTaskMutation = gql`
   mutation CreateTask($title: String!) {
     createTask(title: $title) {
-      success
       taskEdge {
         node {
           id
@@ -19,7 +22,7 @@ const createTaskMutation = `
   }
 `
 
-const updateTaskMutation = `
+const updateTaskMutation = gql`
   mutation UpdateTask($input: UpdateTaskInput!) {
     updateTask(input: $input) {
       task {
@@ -46,7 +49,7 @@ describe('Task operations', () => {
     const token = await createTestUser()
     const result = await executeGraphQL(
       yoga,
-      createTaskMutation,
+      CreateTaskDocument,
       {
         title: 'Test Task',
       },
@@ -61,30 +64,29 @@ describe('Task operations', () => {
     const token = await createTestUser()
     const firstResult = await executeGraphQL(
       yoga,
-      createTaskMutation,
+      CreateTaskDocument,
       { title: 'Another test task' },
       token,
     )
     console.debug(firstResult)
 
-    expect(firstResult.data?.success).toBe(true)
+    expect(firstResult.errors ?? []).toHaveLength(0)
+    expect(firstResult.data?.createTask.taskEdge.node.id).toBeDefined()
+
     const secondResult = await executeGraphQL(
       yoga,
-      updateTaskMutation,
+      UpdateTaskDocument,
       {
         input: {
           title: 'My changed title',
-          taskId: firstResult.data?.createTask.taskEdge.node.id,
+          taskId: firstResult.data!.createTask.taskEdge.node.id,
         },
       },
       token,
     )
 
-    expect(secondResult.data?.success).toBe(true)
-    expect(secondResult.data?.createTask.taskEdge.node.title).toBe(
-      'My changed title',
-    )
-    expect(secondResult.data?.createTask.taskEdge.node.id).toBe(
+    expect(secondResult.data?.updateTask.task.title).toBe('My changed title')
+    expect(secondResult.data?.updateTask.task.id).toBe(
       firstResult.data?.createTask.taskEdge.node.id,
     )
   })
