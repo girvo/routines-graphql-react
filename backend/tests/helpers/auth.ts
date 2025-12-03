@@ -9,7 +9,7 @@ export const createTestUser = async () => {
   const userRepo = createUserRepository(db)
   const passHash = await hash(randomBytes(32).toString('base64'), 10)
   const user = await userRepo.createUser('test@example.com', passHash)
-  const token = createAccessToken(user.id, env.JWT_SECRET as any)
+  const userToken = createAccessToken(user.id, env.JWT_SECRET as any)
 
-  return token
+  return { userToken, numericId: user.id }
 }

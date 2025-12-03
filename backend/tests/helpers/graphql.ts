@@ -9,20 +9,21 @@ export const createTestApp = async () => {
 }
 
 export const executeGraphQL = async <Result, Variables>(
-  yoga: Awaited<ReturnType<typeof createApp>>['yoga'],
   operation: TypedDocumentNode<Result, Variables>,
-  variables?: Variables,
-  userToken?: string,
+  variables: Variables,
+  environment: {
+    yoga: Awaited<ReturnType<typeof createApp>>['yoga']
+    userToken?: string
+  },
 ): Promise<ExecutionResult<Result>> => {
   let extraHeaders = {} as Record<string, unknown>
-  if (userToken) {
-    extraHeaders['Authorization'] = `Bearer ${userToken}`
+  if (environment.userToken) {
+    extraHeaders['Authorization'] = `Bearer ${environment.userToken}`
   }
 
   const query = print(operation)
-  console.debug(operation)
 
-  const response = await yoga.fetch('http://localhost/graphql', {
+  const response = await environment.yoga.fetch('http://localhost/graphql', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',

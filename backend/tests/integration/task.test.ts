@@ -36,14 +36,13 @@ describe('Task operations', () => {
   })
 
   it('can create a new task for a user via createTask mutation', async () => {
-    const token = await createTestUser()
+    const { userToken } = await createTestUser()
     const result = await executeGraphQL(
-      yoga,
       CreateTaskMutation,
       {
         title: 'Test Task',
       },
-      token,
+      { yoga, userToken },
     )
 
     expect(result.data?.createTask.taskEdge.node.title).toBe('Test Task')
@@ -51,22 +50,17 @@ describe('Task operations', () => {
   })
 
   it('can update a task that is created for a user via the updateTask mutation', async () => {
-    const token = await createTestUser()
+    const { userToken } = await createTestUser()
     const firstResult = await executeGraphQL(
-      yoga,
       CreateTaskMutation,
       { title: 'Another test task' },
-      token,
+      { yoga, userToken },
     )
-    console.debug(firstResult)
 
     expect(firstResult.errors ?? []).toHaveLength(0)
     expect(firstResult.data?.createTask.taskEdge.node.id).toBeDefined()
 
-    // const UpdateTaskMutation =
-
     const secondResult = await executeGraphQL(
-      yoga,
       graphql(`
         mutation UpdateTask($input: UpdateTaskInput!) {
           updateTask(input: $input) {
@@ -83,7 +77,7 @@ describe('Task operations', () => {
           taskId: firstResult.data!.createTask.taskEdge.node.id,
         },
       },
-      token,
+      { yoga, userToken }
     )
 
     expect(secondResult.data?.updateTask.task.title).toBe('My changed title')
