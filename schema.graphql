@@ -48,10 +48,10 @@ type Query {
 type Mutation {
   createTask(title: String!): CreateTaskPayload!
   updateTask(input: UpdateTaskInput!): UpdateTaskPayload!
-  deleteTask(id: ID!): DeleteTaskPayload!
+  deleteTask(taskId: ID!): DeleteTaskPayload!
 
   createRoutineSlot(input: CreateRoutineSlotInput!): CreateRoutineSlotPayload!
-  deleteRoutineSlot(id: ID!): DeleteRoutineSlotPayload!
+  deleteRoutineSlot(routineSlotId: ID!): DeleteRoutineSlotPayload!
 
   completeTask(input: CompleteTaskInput!): CompleteTaskPayload!
   uncompleteTask(input: UncompleteTaskInput!): UncompleteTaskPayload!

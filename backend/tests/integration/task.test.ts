@@ -1,14 +1,12 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest'
-// import { gql } from 'graphql-tag'
 import { clearAllTables } from '../helpers/db.ts'
 import { createTestUser } from '../helpers/auth.ts'
-import { createTestApp, executeGraphQL } from '../helpers/graphql.ts'
-import type { createApp } from '../../src/main.ts'
+import {
+  createTestApp,
+  executeGraphQL,
+  type YogaApp,
+} from '../helpers/graphql.ts'
 import { graphql } from '../gql/gql.ts'
-// import {
-//   CreateTaskDocument,
-//   UpdateTaskDocument,
-// } from './task.test.generated.ts'
 
 const CreateTaskMutation = graphql(`
   mutation CreateTask($title: String!) {
@@ -24,7 +22,7 @@ const CreateTaskMutation = graphql(`
 `)
 
 describe('Task operations', () => {
-  let yoga: Awaited<ReturnType<typeof createApp>>['yoga']
+  let yoga: YogaApp
 
   beforeAll(async () => {
     const { yoga: testYoga } = await createTestApp()
@@ -57,7 +55,7 @@ describe('Task operations', () => {
       { yoga, userToken },
     )
 
-    expect(firstResult.errors ?? []).toHaveLength(0)
+    expect(firstResult.errors).toBeUndefined()
     expect(firstResult.data?.createTask.taskEdge.node.id).toBeDefined()
 
     const secondResult = await executeGraphQL(
@@ -77,12 +75,41 @@ describe('Task operations', () => {
           taskId: firstResult.data!.createTask.taskEdge.node.id,
         },
       },
-      { yoga, userToken }
+      { yoga, userToken },
     )
 
     expect(secondResult.data?.updateTask.task.title).toBe('My changed title')
     expect(secondResult.data?.updateTask.task.id).toBe(
       firstResult.data?.createTask.taskEdge.node.id,
+    )
+  })
+
+  it('can delete a task that is created for a user via the deleteTask mutation', async () => {
+    const { userToken } = await createTestUser()
+    const createResult = await executeGraphQL(
+      CreateTaskMutation,
+      { title: 'Task to delete' },
+      { yoga, userToken },
+    )
+
+    expect(createResult.errors).toBeUndefined()
+    expect(createResult.data?.createTask.taskEdge.node.id).toBeDefined()
+
+    const deleteResult = await executeGraphQL(
+      graphql(`
+        mutation DeleteTask($taskId: ID!) {
+          deleteTask(taskId: $taskId) {
+            deletedId
+          }
+        }
+      `),
+      { taskId: createResult.data!.createTask.taskEdge.node.id },
+      { yoga, userToken },
+    )
+
+    expect(deleteResult.errors).toBeUndefined()
+    expect(deleteResult.data?.deleteTask.deletedId).toBe(
+      createResult.data?.createTask.taskEdge.node.id,
     )
   })
 })

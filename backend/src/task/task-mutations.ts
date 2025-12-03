@@ -31,15 +31,15 @@ export const createTask: MutationResolvers<Context>['createTask'] = async (
 
 export const deleteTask: MutationResolvers<Context>['deleteTask'] = async (
   _parent,
-  { id },
+  { taskId },
   context,
 ) => {
   assertAuthenticated(context)
 
-  await context.taskRepo.deleteTask(fromGlobalId(id, 'Task'))
+  await context.taskRepo.deleteTask(fromGlobalId(taskId, 'Task'))
 
   return {
-    deletedId: id,
+    deletedId: taskId,
   }
 }
 

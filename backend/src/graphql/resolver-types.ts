@@ -176,12 +176,12 @@ export type MutationCreateTaskArgs = {
 
 
 export type MutationDeleteRoutineSlotArgs = {
-  id: Scalars['ID']['input'];
+  routineSlotId: Scalars['ID']['input'];
 };
 
 
 export type MutationDeleteTaskArgs = {
-  id: Scalars['ID']['input'];
+  taskId: Scalars['ID']['input'];
 };
 
 
@@ -592,8 +592,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   completeTask?: Resolver<ResolversTypes['CompleteTaskPayload'], ParentType, ContextType, RequireFields<MutationCompleteTaskArgs, 'input'>>;
   createRoutineSlot?: Resolver<ResolversTypes['CreateRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationCreateRoutineSlotArgs, 'input'>>;
   createTask?: Resolver<ResolversTypes['CreateTaskPayload'], ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'title'>>;
-  deleteRoutineSlot?: Resolver<ResolversTypes['DeleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationDeleteRoutineSlotArgs, 'id'>>;
-  deleteTask?: Resolver<ResolversTypes['DeleteTaskPayload'], ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'id'>>;
+  deleteRoutineSlot?: Resolver<ResolversTypes['DeleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationDeleteRoutineSlotArgs, 'routineSlotId'>>;
+  deleteTask?: Resolver<ResolversTypes['DeleteTaskPayload'], ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'taskId'>>;
   uncompleteTask?: Resolver<ResolversTypes['UncompleteTaskPayload'], ParentType, ContextType, RequireFields<MutationUncompleteTaskArgs, 'input'>>;
   updateTask?: Resolver<ResolversTypes['UpdateTaskPayload'], ParentType, ContextType, RequireFields<MutationUpdateTaskArgs, 'input'>>;
 }>;
@@ -741,5 +741,3 @@ export type DirectiveResolvers<ContextType = any> = ResolversObject<{
   authenticated?: AuthenticatedDirectiveResolver<any, any, ContextType>;
   skipAuth?: SkipAuthDirectiveResolver<any, any, ContextType>;
 }>;
-
-export type { GlobalID }

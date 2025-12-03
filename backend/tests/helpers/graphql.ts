@@ -3,6 +3,8 @@ import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { ExecutionResult } from 'graphql'
 import { print } from 'graphql'
 
+export type YogaApp = Awaited<ReturnType<typeof createApp>>['yoga']
+
 export const createTestApp = async () => {
   const { app, yoga } = await createApp({ maskedErrors: false })
   return { app, yoga }
@@ -12,7 +14,7 @@ export const executeGraphQL = async <Result, Variables>(
   operation: TypedDocumentNode<Result, Variables>,
   variables: Variables,
   environment: {
-    yoga: Awaited<ReturnType<typeof createApp>>['yoga']
+    yoga: YogaApp
     userToken?: string
   },
 ): Promise<ExecutionResult<Result>> => {
