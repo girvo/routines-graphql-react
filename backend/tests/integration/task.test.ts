@@ -1,15 +1,16 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest'
-import { gql } from 'graphql-tag'
+// import { gql } from 'graphql-tag'
 import { clearAllTables } from '../helpers/db.ts'
 import { createTestUser } from '../helpers/auth.ts'
 import { createTestApp, executeGraphQL } from '../helpers/graphql.ts'
 import type { createApp } from '../../src/main.ts'
-import {
-  CreateTaskDocument,
-  UpdateTaskDocument,
-} from './task.test.generated.ts'
+import { graphql } from '../gql/gql.ts'
+// import {
+//   CreateTaskDocument,
+//   UpdateTaskDocument,
+// } from './task.test.generated.ts'
 
-const createTaskMutation = gql`
+const CreateTaskMutation = graphql(`
   mutation CreateTask($title: String!) {
     createTask(title: $title) {
       taskEdge {
@@ -20,18 +21,7 @@ const createTaskMutation = gql`
       }
     }
   }
-`
-
-const updateTaskMutation = gql`
-  mutation UpdateTask($input: UpdateTaskInput!) {
-    updateTask(input: $input) {
-      task {
-        id
-        title
-      }
-    }
-  }
-`
+`)
 
 describe('Task operations', () => {
   let yoga: Awaited<ReturnType<typeof createApp>>['yoga']
@@ -49,7 +39,7 @@ describe('Task operations', () => {
     const token = await createTestUser()
     const result = await executeGraphQL(
       yoga,
-      CreateTaskDocument,
+      CreateTaskMutation,
       {
         title: 'Test Task',
       },
@@ -64,7 +54,7 @@ describe('Task operations', () => {
     const token = await createTestUser()
     const firstResult = await executeGraphQL(
       yoga,
-      CreateTaskDocument,
+      CreateTaskMutation,
       { title: 'Another test task' },
       token,
     )
@@ -73,9 +63,20 @@ describe('Task operations', () => {
     expect(firstResult.errors ?? []).toHaveLength(0)
     expect(firstResult.data?.createTask.taskEdge.node.id).toBeDefined()
 
+    // const UpdateTaskMutation =
+
     const secondResult = await executeGraphQL(
       yoga,
-      UpdateTaskDocument,
+      graphql(`
+        mutation UpdateTask($input: UpdateTaskInput!) {
+          updateTask(input: $input) {
+            task {
+              id
+              title
+            }
+          }
+        }
+      `),
       {
         input: {
           title: 'My changed title',

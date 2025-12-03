@@ -2,6 +2,8 @@ import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
   schema: '../schema.graphql',
+  documents: './tests/**/*.ts',
+  emitLegacyCommonJSImports: false,
   generates: {
     './src/graphql/resolver-types.ts': {
       config: {
@@ -21,25 +23,10 @@ const config: CodegenConfig = {
           // Add others as you create them
         },
       },
-      plugins: [
-        'typescript',
-        'typescript-resolvers',
-        {
-          add: {
-            content: `export type { GlobalID }`,
-            placement: 'append',
-          },
-        },
-      ],
+      plugins: ['typescript', 'typescript-resolvers'],
     },
-    './tests/': {
-      preset: 'near-operation-file',
-      presetConfig: {
-        baseTypesPath: '~../../src/graphql/resolver-types.ts',
-        extension: '.generated.ts',
-      },
-      documents: './tests/**/*.ts',
-      plugins: ['typescript-operations', 'typed-document-node'],
+    './tests/gql/': {
+      preset: 'client',
       config: {
         useIndexSignature: true,
         useTypeImports: true,
@@ -47,10 +34,13 @@ const config: CodegenConfig = {
         futureProofEnums: true,
         futureProofUnions: true,
         scalars: {
-          ID: 'Types.GlobalID',
+          ID: '../../src/globalId.ts#GlobalId',
           DateTime: 'Date',
           NonNegativeInt: 'number',
         },
+      },
+      hooks: {
+        afterAllFileWrite: ['node tools/fix-import-extensions.ts'],
       },
     },
   },
