@@ -2,6 +2,7 @@ import type { Kysely, ExpressionBuilder } from 'kysely'
 import type { Database } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
+import { format } from 'date-fns'
 
 export interface TaskRow {
   id: number
@@ -72,13 +73,18 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         .where('user_id', '=', userId)
         .where('deleted_at', 'is', null)
         .orderBy('created_at', 'desc')
+        .orderBy('id', 'desc')
         .limit(pagination.first + 1) // always one more for hasNextPage
 
       if (pagination.after) {
         const cursor = taskCursor.decode(pagination.after)
+        const sqliteFormattedDate = format(
+          new Date(cursor.createdAt),
+          'yyyy-MM-dd HH:mm:ss',
+        )
         query = query.where(eb =>
           buildCursorCondition(eb, {
-            created_at: cursor.createdAt,
+            created_at: sqliteFormattedDate,
             id: cursor.id,
           }),
         )

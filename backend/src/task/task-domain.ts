@@ -65,7 +65,7 @@ export const buildTaskConnection = (
     edges,
     pageInfo: {
       hasNextPage,
-      hasPreviousPage: false, // how do I do this?
+      hasPreviousPage: false,
       startCursor: edges[0]?.cursor ?? null,
       endCursor: edges[edges.length - 1]?.cursor ?? null,
     },

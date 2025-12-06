@@ -230,7 +230,7 @@ describe('Task queries', () => {
       { after: nextPage.data?.tasks.pageInfo.endCursor },
       { yoga, userToken },
     )
-    expect(selected.data?.tasks.edges.length).toEqual(1)
-    expect(selected.data?.tasks.pageInfo.hasNextPage).toBe(false)
+    expect(finalPage.data?.tasks.edges.length).toEqual(1)
+    expect(finalPage.data?.tasks.pageInfo.hasNextPage).toBe(false)
   })
 })

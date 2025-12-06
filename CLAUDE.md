@@ -10,7 +10,7 @@ NOTE: DO NOT EVER RUN `npm`, only ever `pnpm`. If you feel you have to use `npm`
 
 ## Monorepo Structure
 
-- **Root**: Monorepo configuration with Yarn workspaces
+- **Root**: Monorepo configuration with pnpm workspaces
 - **backend/**: Fastify server with GraphQL Yoga
 - **frontend/**: Frontend application (minimal setup currently)
 - **schema.graphql**: Shared GraphQL schema at the root
@@ -24,7 +24,7 @@ All commands should be run from the repository root:
 pnpm install
 
 # Start the backend server
-pnpm workspace @my-routines/backend start
+pnpm --filter @my-routines/backend start
 
 # Lint code
 pnpm eslint .
