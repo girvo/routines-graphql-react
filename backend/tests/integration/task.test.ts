@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach } from 'vitest'
+import { assert, describe, it, expect, beforeAll, beforeEach } from 'vitest'
 import { clearAllTables } from '../helpers/db.ts'
 import { createTestUser } from '../helpers/auth.ts'
 import {
@@ -163,47 +163,39 @@ describe('Task queries', () => {
     // ensure they're created correctly
     created.map(res => expect(res.errors).toBeUndefined())
 
-    // now select the first page
-    const selected = await executeGraphQL(
-      graphql(`
-        query PaginatedTasksOne {
-          tasks(first: 10) {
-            edges {
-              node {
-                id
-              }
-            }
-            pageInfo {
-              hasNextPage
-              endCursor
-              startCursor
+    const selectPage = graphql(`
+      query PaginatedTasks($after: String) {
+        tasks(first: 10, after: $after) {
+          edges {
+            node {
+              id
+              title
             }
           }
+          pageInfo {
+            hasNextPage
+            endCursor
+            startCursor
+          }
         }
-      `),
-      {},
-      { yoga, userToken },
-    )
+      }
+    `)
 
+    // now select the first page
+    const selected = await executeGraphQL(selectPage, {}, { yoga, userToken })
     expect(selected.data?.tasks.edges.length).toEqual(10)
     expect(selected.data?.tasks.pageInfo.hasNextPage).toBe(true)
+    console.debug(selected.data?.tasks.edges)
+
+    assert(selected.data?.tasks.edges !== undefined, 'an edge set exists')
+    for (const [index] of selected.data.tasks.edges.entries()) {
+      expect(selected.data.tasks.edges[index].node.title).toEqual(
+        `Task to select ${index}`,
+      )
+    }
 
     const nextPage = await executeGraphQL(
-      graphql(`
-        query PaginatedTasksTwo($after: String) {
-          tasks(first: 10, after: $after) {
-            edges {
-              node {
-                id
-              }
-            }
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
-          }
-        }
-      `),
+      selectPage,
       { after: selected.data?.tasks.pageInfo.endCursor },
       { yoga, userToken },
     )
@@ -212,21 +204,7 @@ describe('Task queries', () => {
     expect(nextPage.data?.tasks.pageInfo.hasNextPage).toBe(true)
 
     const finalPage = await executeGraphQL(
-      graphql(`
-        query PaginatedTasksThree($after: String) {
-          tasks(first: 10, after: $after) {
-            edges {
-              node {
-                __typename
-              }
-            }
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
-          }
-        }
-      `),
+      selectPage,
       { after: nextPage.data?.tasks.pageInfo.endCursor },
       { yoga, userToken },
     )

@@ -72,8 +72,8 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         .selectAll()
         .where('user_id', '=', userId)
         .where('deleted_at', 'is', null)
-        .orderBy('created_at', 'desc')
-        .orderBy('id', 'desc')
+        .orderBy('created_at', 'asc')
+        .orderBy('id', 'asc')
         .limit(pagination.first + 1) // always one more for hasNextPage
 
       if (pagination.after) {
