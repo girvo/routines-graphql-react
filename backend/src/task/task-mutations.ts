@@ -24,6 +24,7 @@ export const createTask: MutationResolvers<Context>['createTask'] = async (
       cursor: taskCursor.encode({
         createdAt: task.createdAt.toISOString(),
         id: task.id,
+        direction: 'asc',
       }),
     },
   }

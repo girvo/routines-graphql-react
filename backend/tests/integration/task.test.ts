@@ -154,7 +154,7 @@ describe('Task queries', () => {
       Array.from({ length: 21 }, (_, i) =>
         executeGraphQL(
           CreateTaskMutation,
-          { title: `Task to select ${i}` },
+          { title: `Task to select ${i + 1}` },
           { yoga, userToken },
         ),
       ),
@@ -185,12 +185,11 @@ describe('Task queries', () => {
     const selected = await executeGraphQL(selectPage, {}, { yoga, userToken })
     expect(selected.data?.tasks.edges.length).toEqual(10)
     expect(selected.data?.tasks.pageInfo.hasNextPage).toBe(true)
-    console.debug(selected.data?.tasks.edges)
 
     assert(selected.data?.tasks.edges !== undefined, 'an edge set exists')
     for (const [index] of selected.data.tasks.edges.entries()) {
       expect(selected.data.tasks.edges[index].node.title).toEqual(
-        `Task to select ${index}`,
+        `Task to select ${index + 1}`,
       )
     }
 
@@ -199,9 +198,14 @@ describe('Task queries', () => {
       { after: selected.data?.tasks.pageInfo.endCursor },
       { yoga, userToken },
     )
-    console.debug(nextPage.data?.tasks.edges)
     expect(nextPage.data?.tasks.edges.length).toEqual(10)
     expect(nextPage.data?.tasks.pageInfo.hasNextPage).toBe(true)
+    assert(nextPage.data?.tasks.edges !== undefined, 'an edge set exists')
+    for (const [index] of nextPage.data.tasks.edges.entries()) {
+      expect(nextPage.data.tasks.edges[index].node.title).toEqual(
+        `Task to select ${index + 11}`,
+      )
+    }
 
     const finalPage = await executeGraphQL(
       selectPage,
@@ -210,5 +214,8 @@ describe('Task queries', () => {
     )
     expect(finalPage.data?.tasks.edges.length).toEqual(1)
     expect(finalPage.data?.tasks.pageInfo.hasNextPage).toBe(false)
+    expect(finalPage.data?.tasks.edges[0].node.title).toEqual(
+      'Task to select 21',
+    )
   })
 })

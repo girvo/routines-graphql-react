@@ -16,17 +16,19 @@ export interface TaskRow {
 export interface TaskCursor {
   createdAt: string
   id: number
+  direction: 'asc' | 'desc'
 }
 
 export const taskCursor = createCursorCodec<TaskCursor>()
 
-// Needed for building the cursor
 const buildCursorCondition = (
   eb: ExpressionBuilder<Database, 'tasks'>,
-  cursor: { created_at: string; id: number },
+  cursor: { created_at: string; id: number; direction: 'asc' | 'desc' },
 ) => {
+  const createdAtOperator = cursor.direction === 'asc' ? '>' : '<'
+
   return eb.or([
-    eb('created_at', '>', cursor.created_at),
+    eb('created_at', createdAtOperator, cursor.created_at),
     eb.and([
       eb('created_at', '=', cursor.created_at),
       eb('id', '>', cursor.id),
@@ -67,14 +69,18 @@ export const createTaskRepository = (db: Kysely<Database>) => {
       userId: number,
       pagination: PaginationArgs,
     ): Promise<TaskRow[]> {
+      const direction: 'asc' | 'desc' = pagination.after
+        ? taskCursor.decode(pagination.after).direction
+        : 'asc'
+
       let query = db
         .selectFrom('tasks')
         .selectAll()
         .where('user_id', '=', userId)
         .where('deleted_at', 'is', null)
-        .orderBy('created_at', 'asc')
+        .orderBy('created_at', direction)
         .orderBy('id', 'asc')
-        .limit(pagination.first + 1) // always one more for hasNextPage
+        .limit(pagination.first + 1)
 
       if (pagination.after) {
         const cursor = taskCursor.decode(pagination.after)
@@ -86,6 +92,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
           buildCursorCondition(eb, {
             created_at: sqliteFormattedDate,
             id: cursor.id,
+            direction: cursor.direction,
           }),
         )
       }

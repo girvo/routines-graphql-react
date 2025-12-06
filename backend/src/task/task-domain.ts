@@ -36,12 +36,16 @@ export const taskToGraphQL = (task: TaskDomain) => ({
 
 export type TaskNode = ReturnType<typeof taskToGraphQL>
 
-export const buildTaskEdge = (task: TaskDomain) => {
+export const buildTaskEdge = (
+  task: TaskDomain,
+  direction: 'asc' | 'desc' = 'asc',
+) => {
   return {
     node: task,
     cursor: taskCursor.encode({
       createdAt: task.createdAt.toISOString(),
       id: task.id,
+      direction,
     }),
   }
 }
@@ -54,12 +58,13 @@ export interface TaskConnection {
 export const buildTaskConnection = (
   edgeRows: TaskRow[],
   requestedCount: number,
+  direction: 'asc' | 'desc' = 'asc',
 ): TaskConnection => {
   const hasNextPage = edgeRows.length > requestedCount
   const edges = edgeRows
     .slice(0, requestedCount)
     .map(tableToDomain)
-    .map(buildTaskEdge)
+    .map(task => buildTaskEdge(task, direction))
 
   return {
     edges,
