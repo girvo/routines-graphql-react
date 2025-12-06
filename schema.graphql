@@ -88,9 +88,8 @@ type RoutineSlot implements Node {
 
 type TaskCompletion implements Node {
   id: ID!
-  task: Task!
+  routineSlot: RoutineSlot!
   completedAt: DateTime!
-  completionDate: DateTime! # Normalized to date (no time component)
 }
 
 type DailyRoutinePayload {
@@ -102,10 +101,8 @@ type DailyRoutinePayload {
 }
 
 type DailyTaskInstance {
-  task: Task!
-  section: DaySection!
-  isCompleted: Boolean!
-  completedAt: DateTime
+  routineSlot: RoutineSlot!
+  completion: TaskCompletion
 }
 
 type WeeklySchedulePayload {
@@ -184,12 +181,11 @@ input CreateRoutineSlotInput {
 }
 
 input CompleteTaskInput {
-  taskId: ID!
-  completionDate: DateTime # Optional: if not provided, uses current date/time
+  routineSlotId: ID!
 }
 
 input UncompleteTaskInput {
-  taskId: ID!
+  routineSlotId: ID!
   completionDate: DateTime! # Which date to uncomplete
 }
 

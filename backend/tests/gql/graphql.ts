@@ -21,8 +21,7 @@ export type Scalars = {
 };
 
 export type CompleteTaskInput = {
-  completionDate?: InputMaybe<Scalars['DateTime']['input']>;
-  taskId: Scalars['ID']['input'];
+  routineSlotId: Scalars['ID']['input'];
 };
 
 export type CompleteTaskPayload = {
@@ -75,10 +74,8 @@ export type DailyRoutinePayloadMorningArgs = {
 
 export type DailyTaskInstance = {
   __typename?: 'DailyTaskInstance';
-  completedAt?: Maybe<Scalars['DateTime']['output']>;
-  isCompleted: Scalars['Boolean']['output'];
-  section: DaySection;
-  task: Task;
+  completion?: Maybe<TaskCompletion>;
+  routineSlot: RoutineSlot;
 };
 
 export type DailyTaskInstanceConnection = {
@@ -285,9 +282,8 @@ export type TaskSlotsArgs = {
 export type TaskCompletion = Node & {
   __typename?: 'TaskCompletion';
   completedAt: Scalars['DateTime']['output'];
-  completionDate: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
-  task: Task;
+  routineSlot: RoutineSlot;
 };
 
 export type TaskCompletionConnection = {
@@ -316,7 +312,7 @@ export type TaskEdge = {
 
 export type UncompleteTaskInput = {
   completionDate: Scalars['DateTime']['input'];
-  taskId: Scalars['ID']['input'];
+  routineSlotId: Scalars['ID']['input'];
 };
 
 export type UncompleteTaskPayload = {
