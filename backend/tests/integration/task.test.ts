@@ -21,18 +21,18 @@ const CreateTaskMutation = graphql(`
   }
 `)
 
-describe('Task operations', () => {
-  let yoga: YogaApp
+let yoga: YogaApp
 
-  beforeAll(async () => {
-    const { yoga: testYoga } = await createTestApp()
-    yoga = testYoga
-  })
+beforeAll(async () => {
+  const { yoga: testYoga } = await createTestApp()
+  yoga = testYoga
+})
 
-  beforeEach(async () => {
-    await clearAllTables()
-  })
+beforeEach(async () => {
+  await clearAllTables()
+})
 
+describe('Task mutations', () => {
   it('can create a new task for a user via createTask mutation', async () => {
     const { userToken } = await createTestUser()
     const result = await executeGraphQL(
@@ -111,5 +111,126 @@ describe('Task operations', () => {
     expect(deleteResult.data?.deleteTask.deletedId).toBe(
       createResult.data?.createTask.taskEdge.node.id,
     )
+  })
+})
+
+describe('Task queries', () => {
+  it('can select one created task via the tasks() resolver', async () => {
+    const { userToken } = await createTestUser()
+    const createResult = await executeGraphQL(
+      CreateTaskMutation,
+      { title: 'Task to select' },
+      { yoga, userToken },
+    )
+    expect(createResult.errors).toBeUndefined()
+
+    const tasksResult = await executeGraphQL(
+      graphql(`
+        query TasksTestOne {
+          tasks(first: 1) {
+            edges {
+              node {
+                title
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+    expect(tasksResult.errors).toBeUndefined()
+    expect(tasksResult.data?.tasks.edges.length).toEqual(1)
+    expect(tasksResult.data?.tasks.edges[0].node.title).toEqual(
+      'Task to select',
+    )
+  })
+
+  it('tasks query has working pagination', async () => {
+    const { userToken } = await createTestUser()
+
+    // Let's create ~20 tasks or so
+    const created = await Promise.all(
+      Array.from({ length: 21 }, (_, i) =>
+        executeGraphQL(
+          CreateTaskMutation,
+          { title: `Task to select ${i}` },
+          { yoga, userToken },
+        ),
+      ),
+    )
+
+    // ensure they're created correctly
+    created.map(res => expect(res.errors).toBeUndefined())
+
+    // now select the first page
+    const selected = await executeGraphQL(
+      graphql(`
+        query PaginatedTasksOne {
+          tasks(first: 10) {
+            edges {
+              node {
+                id
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+              startCursor
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+
+    expect(selected.data?.tasks.edges.length).toEqual(10)
+    expect(selected.data?.tasks.pageInfo.hasNextPage).toBe(true)
+
+    const nextPage = await executeGraphQL(
+      graphql(`
+        query PaginatedTasksTwo($after: String) {
+          tasks(first: 10, after: $after) {
+            edges {
+              node {
+                id
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+      `),
+      { after: selected.data?.tasks.pageInfo.endCursor },
+      { yoga, userToken },
+    )
+    console.debug(nextPage.data?.tasks.edges)
+    expect(nextPage.data?.tasks.edges.length).toEqual(10)
+    expect(nextPage.data?.tasks.pageInfo.hasNextPage).toBe(true)
+
+    const finalPage = await executeGraphQL(
+      graphql(`
+        query PaginatedTasksThree($after: String) {
+          tasks(first: 10, after: $after) {
+            edges {
+              node {
+                __typename
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+      `),
+      { after: nextPage.data?.tasks.pageInfo.endCursor },
+      { yoga, userToken },
+    )
+    expect(selected.data?.tasks.edges.length).toEqual(1)
+    expect(selected.data?.tasks.pageInfo.hasNextPage).toBe(false)
   })
 })

@@ -1,6 +1,6 @@
 import type { Database } from './types.ts'
 import SQLite from 'better-sqlite3'
-import { Kysely, SqliteDialect } from 'kysely'
+import { Kysely, SqliteDialect, type LogConfig } from 'kysely'
 import { getDirname } from '../../tools/paths.ts'
 import { resolve } from 'node:path'
 
@@ -15,7 +15,13 @@ if (process.env.NODE_ENV !== 'test' && process.env.SQLITE_DB) {
   throw new Error('You must provde a SQLITE_DB variable in your environment')
 }
 
+let log: LogConfig = ['error']
+if (process.env.NODE_ENV === 'test') {
+  log = ['query', 'error']
+}
+
 export const db = new Kysely<Database>({
+  log: log,
   dialect: new SqliteDialect({
     database: new SQLite(path),
   }),

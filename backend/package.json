@@ -40,6 +40,7 @@
     "@graphql-codegen/typescript": "^5.0.2",
     "@graphql-codegen/typescript-resolvers": "^5.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@parcel/watcher": "^2.5.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "9.0.10",
     "glob": "^13.0.0",
