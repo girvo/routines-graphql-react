@@ -26,10 +26,10 @@ const buildCursorCondition = (
   cursor: { created_at: string; id: number },
 ) => {
   return eb.or([
-    eb('created_at', '<', cursor.created_at),
+    eb('created_at', '>', cursor.created_at),
     eb.and([
       eb('created_at', '=', cursor.created_at),
-      eb('id', '<', cursor.id), // yes we're being lazy and abusing ID being a number
+      eb('id', '>', cursor.id),
     ]),
   ])
 }
