@@ -56,3 +56,11 @@ export interface RoutineSlotsTable {
   created_at: ColumnType<string, string | undefined, never>
   deleted_at: string | null
 }
+
+export interface TaskCompletionsTable {
+  id: Generated<number>
+  routine_slot_id: number
+  user_id: number
+  completed_at: ColumnType<string, string | undefined, never>
+  created_at: ColumnType<string, string | undefined, never>
+}

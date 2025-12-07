@@ -34,3 +34,11 @@ export const deleteRoutineSlot: MutationResolvers<Context>['deleteRoutineSlot'] 
       deletedId: routineSlotId,
     }
   }
+
+// export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlot'] =
+//   async (_parent, { input }, context) => {
+//     assertAuthenticated(context)
+
+//     const id = fromGlobalId(input.routineSlotId, 'RoutineSlot')
+//     await context.routineRepo.
+//   }
