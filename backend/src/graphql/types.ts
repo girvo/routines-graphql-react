@@ -1,7 +1,7 @@
 import type { Context } from './context.ts'
 import type { UserNode } from '../user/user-domain.ts'
 import type { TaskNode } from '../task/task-domain.ts'
-import type { RoutineSlotNode } from '../routine-slots/routine-slot-domain.ts'
+import type { RoutineSlotNode } from '../routine-slot/routine-slot-domain.ts'
 
 export type NodeDomains = UserNode | TaskNode | RoutineSlotNode
 

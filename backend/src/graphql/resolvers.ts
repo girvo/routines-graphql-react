@@ -13,14 +13,14 @@ import { resolveTaskAsNode, tasksResolver } from '../task/task-resolvers.ts'
 import {
   resolveRoutineTaskAsNode,
   task as routineSlotTask,
-} from '../routine-slots/routine-slot-resolvers.ts'
+} from '../routine-slot/routine-slot-resolvers.ts'
 
 // Mutations
 import { createTask, deleteTask, updateTask } from '../task/task-mutations.ts'
 import {
   createRoutineSlot,
   deleteRoutineSlot,
-} from '../routine-slots/routine-slot-mutations.ts'
+} from '../routine-slot/routine-slot-mutations.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: resolveUserAsNode,
