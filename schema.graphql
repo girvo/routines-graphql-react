@@ -53,8 +53,8 @@ type Mutation {
   createRoutineSlot(input: CreateRoutineSlotInput!): CreateRoutineSlotPayload!
   deleteRoutineSlot(routineSlotId: ID!): DeleteRoutineSlotPayload!
 
-  completeRoutineSlot(input: CompleteRoutineSlotInput!): CompleteRoutineSlotPayload!
-  uncompleteRoutineSlot(input: UncompleteRoutineSlotInput!): UncompleteRoutineSlotPayload!
+  completeRoutineSlot(routineSlotId: ID!): CompleteRoutineSlotPayload!
+  uncompleteRoutineSlot(taskCompletionId: ID!): UncompleteRoutineSlotPayload!
 }
 
 type User implements Node {
@@ -178,15 +178,6 @@ input CreateRoutineSlotInput {
   taskId: ID!
   dayOfWeek: DayOfWeek!
   section: DaySection!
-}
-
-input CompleteRoutineSlotInput {
-  routineSlotId: ID!
-}
-
-input UncompleteRoutineSlotInput {
-  routineSlotId: ID!
-  completionDate: DateTime! # Which date to uncomplete
 }
 
 type CreateTaskPayload {
