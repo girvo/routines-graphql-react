@@ -10,18 +10,22 @@ import { userToGraphQL } from '../user/user-domain.ts'
 // Resolvers
 import { resolveUserAsNode } from '../user/user-resolvers.ts'
 import { resolveTaskAsNode, tasksResolver } from '../task/task-resolvers.ts'
-import { task as routineSlotTask } from '../routine-slots/routine-resolvers.ts'
+import {
+  resolveRoutineTaskAsNode,
+  task as routineSlotTask,
+} from '../routine-slots/routine-slot-resolvers.ts'
 
 // Mutations
 import { createTask, deleteTask, updateTask } from '../task/task-mutations.ts'
 import {
   createRoutineSlot,
   deleteRoutineSlot,
-} from '../routine-slots/routine-mutations.ts'
+} from '../routine-slots/routine-slot-mutations.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: resolveUserAsNode,
   Task: resolveTaskAsNode,
+  RoutineSlot: resolveRoutineTaskAsNode,
 }
 
 export const resolvers: Resolvers<Context> = {
