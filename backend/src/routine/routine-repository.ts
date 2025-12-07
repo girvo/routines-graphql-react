@@ -61,5 +61,18 @@ export const createRoutineRepository = (db: Kysely<Database>) => {
         .where('deleted_at', 'is', null)
         .executeTakeFirst()
     },
+
+    async findAllByIdsAndUserId(
+      ids: readonly number[],
+      userId: number,
+    ): Promise<RoutineSlotRow[]> {
+      return db
+        .selectFrom('routine_slots')
+        .selectAll()
+        .where('id', 'in', ids)
+        .where('user_id', '=', userId)
+        .where('deleted_at', 'is', null)
+        .execute()
+    },
   }
 }

@@ -24,12 +24,12 @@ export type Scalars = {
   NonNegativeInt: { input: number; output: number; }
 };
 
-export type CompleteTaskInput = {
+export type CompleteRoutineSlotInput = {
   routineSlotId: Scalars['ID']['input'];
 };
 
-export type CompleteTaskPayload = {
-  __typename?: 'CompleteTaskPayload';
+export type CompleteRoutineSlotPayload = {
+  __typename?: 'CompleteRoutineSlotPayload';
   taskCompletionEdge: TaskCompletionEdge;
 };
 
@@ -148,18 +148,18 @@ export type DeleteTaskPayload = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  completeTask: CompleteTaskPayload;
+  completeRoutineSlot: CompleteRoutineSlotPayload;
   createRoutineSlot: CreateRoutineSlotPayload;
   createTask: CreateTaskPayload;
   deleteRoutineSlot: DeleteRoutineSlotPayload;
   deleteTask: DeleteTaskPayload;
-  uncompleteTask: UncompleteTaskPayload;
+  uncompleteRoutineSlot: UncompleteRoutineSlotPayload;
   updateTask: UpdateTaskPayload;
 };
 
 
-export type MutationCompleteTaskArgs = {
-  input: CompleteTaskInput;
+export type MutationCompleteRoutineSlotArgs = {
+  input: CompleteRoutineSlotInput;
 };
 
 
@@ -183,8 +183,8 @@ export type MutationDeleteTaskArgs = {
 };
 
 
-export type MutationUncompleteTaskArgs = {
-  input: UncompleteTaskInput;
+export type MutationUncompleteRoutineSlotArgs = {
+  input: UncompleteRoutineSlotInput;
 };
 
 
@@ -314,13 +314,13 @@ export type TaskEdge = {
   node: Task;
 };
 
-export type UncompleteTaskInput = {
+export type UncompleteRoutineSlotInput = {
   completionDate: Scalars['DateTime']['input'];
   routineSlotId: Scalars['ID']['input'];
 };
 
-export type UncompleteTaskPayload = {
-  __typename?: 'UncompleteTaskPayload';
+export type UncompleteRoutineSlotPayload = {
+  __typename?: 'UncompleteRoutineSlotPayload';
   deletedId: Scalars['ID']['output'];
 };
 
@@ -436,8 +436,8 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  CompleteTaskInput: CompleteTaskInput;
-  CompleteTaskPayload: ResolverTypeWrapper<Omit<CompleteTaskPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversTypes['TaskCompletionEdge'] }>;
+  CompleteRoutineSlotInput: CompleteRoutineSlotInput;
+  CompleteRoutineSlotPayload: ResolverTypeWrapper<Omit<CompleteRoutineSlotPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversTypes['TaskCompletionEdge'] }>;
   CreateRoutineSlotInput: CreateRoutineSlotInput;
   CreateRoutineSlotPayload: ResolverTypeWrapper<Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversTypes['RoutineSlotEdge'] }>;
   CreateTaskPayload: ResolverTypeWrapper<Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversTypes['TaskEdge'] }>;
@@ -468,8 +468,8 @@ export type ResolversTypes = ResolversObject<{
   TaskCompletionEdge: ResolverTypeWrapper<Omit<TaskCompletionEdge, 'node'> & { node: ResolversTypes['TaskCompletion'] }>;
   TaskConnection: ResolverTypeWrapper<Omit<TaskConnection, 'edges'> & { edges: Array<ResolversTypes['TaskEdge']> }>;
   TaskEdge: ResolverTypeWrapper<Omit<TaskEdge, 'node'> & { node: ResolversTypes['Task'] }>;
-  UncompleteTaskInput: UncompleteTaskInput;
-  UncompleteTaskPayload: ResolverTypeWrapper<UncompleteTaskPayload>;
+  UncompleteRoutineSlotInput: UncompleteRoutineSlotInput;
+  UncompleteRoutineSlotPayload: ResolverTypeWrapper<UncompleteRoutineSlotPayload>;
   UpdateTaskInput: UpdateTaskInput;
   UpdateTaskPayload: ResolverTypeWrapper<Omit<UpdateTaskPayload, 'task'> & { task: ResolversTypes['Task'] }>;
   User: ResolverTypeWrapper<UserNode>;
@@ -479,8 +479,8 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
-  CompleteTaskInput: CompleteTaskInput;
-  CompleteTaskPayload: Omit<CompleteTaskPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversParentTypes['TaskCompletionEdge'] };
+  CompleteRoutineSlotInput: CompleteRoutineSlotInput;
+  CompleteRoutineSlotPayload: Omit<CompleteRoutineSlotPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversParentTypes['TaskCompletionEdge'] };
   CreateRoutineSlotInput: CreateRoutineSlotInput;
   CreateRoutineSlotPayload: Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversParentTypes['RoutineSlotEdge'] };
   CreateTaskPayload: Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversParentTypes['TaskEdge'] };
@@ -509,8 +509,8 @@ export type ResolversParentTypes = ResolversObject<{
   TaskCompletionEdge: Omit<TaskCompletionEdge, 'node'> & { node: ResolversParentTypes['TaskCompletion'] };
   TaskConnection: Omit<TaskConnection, 'edges'> & { edges: Array<ResolversParentTypes['TaskEdge']> };
   TaskEdge: Omit<TaskEdge, 'node'> & { node: ResolversParentTypes['Task'] };
-  UncompleteTaskInput: UncompleteTaskInput;
-  UncompleteTaskPayload: UncompleteTaskPayload;
+  UncompleteRoutineSlotInput: UncompleteRoutineSlotInput;
+  UncompleteRoutineSlotPayload: UncompleteRoutineSlotPayload;
   UpdateTaskInput: UpdateTaskInput;
   UpdateTaskPayload: Omit<UpdateTaskPayload, 'task'> & { task: ResolversParentTypes['Task'] };
   User: UserNode;
@@ -525,7 +525,7 @@ export type SkipAuthDirectiveArgs = { };
 
 export type SkipAuthDirectiveResolver<Result, Parent, ContextType = any, Args = SkipAuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
-export type CompleteTaskPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompleteTaskPayload'] = ResolversParentTypes['CompleteTaskPayload']> = ResolversObject<{
+export type CompleteRoutineSlotPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompleteRoutineSlotPayload'] = ResolversParentTypes['CompleteRoutineSlotPayload']> = ResolversObject<{
   taskCompletionEdge?: Resolver<ResolversTypes['TaskCompletionEdge'], ParentType, ContextType>;
 }>;
 
@@ -584,12 +584,12 @@ export interface FileScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  completeTask?: Resolver<ResolversTypes['CompleteTaskPayload'], ParentType, ContextType, RequireFields<MutationCompleteTaskArgs, 'input'>>;
+  completeRoutineSlot?: Resolver<ResolversTypes['CompleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationCompleteRoutineSlotArgs, 'input'>>;
   createRoutineSlot?: Resolver<ResolversTypes['CreateRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationCreateRoutineSlotArgs, 'input'>>;
   createTask?: Resolver<ResolversTypes['CreateTaskPayload'], ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'title'>>;
   deleteRoutineSlot?: Resolver<ResolversTypes['DeleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationDeleteRoutineSlotArgs, 'routineSlotId'>>;
   deleteTask?: Resolver<ResolversTypes['DeleteTaskPayload'], ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'taskId'>>;
-  uncompleteTask?: Resolver<ResolversTypes['UncompleteTaskPayload'], ParentType, ContextType, RequireFields<MutationUncompleteTaskArgs, 'input'>>;
+  uncompleteRoutineSlot?: Resolver<ResolversTypes['UncompleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationUncompleteRoutineSlotArgs, 'input'>>;
   updateTask?: Resolver<ResolversTypes['UpdateTaskPayload'], ParentType, ContextType, RequireFields<MutationUpdateTaskArgs, 'input'>>;
 }>;
 
@@ -673,7 +673,7 @@ export type TaskEdgeResolvers<ContextType = any, ParentType extends ResolversPar
   node?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
 }>;
 
-export type UncompleteTaskPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UncompleteTaskPayload'] = ResolversParentTypes['UncompleteTaskPayload']> = ResolversObject<{
+export type UncompleteRoutineSlotPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UncompleteRoutineSlotPayload'] = ResolversParentTypes['UncompleteRoutineSlotPayload']> = ResolversObject<{
   deletedId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
@@ -699,7 +699,7 @@ export type WeeklySchedulePayloadResolvers<ContextType = any, ParentType extends
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
-  CompleteTaskPayload?: CompleteTaskPayloadResolvers<ContextType>;
+  CompleteRoutineSlotPayload?: CompleteRoutineSlotPayloadResolvers<ContextType>;
   CreateRoutineSlotPayload?: CreateRoutineSlotPayloadResolvers<ContextType>;
   CreateTaskPayload?: CreateTaskPayloadResolvers<ContextType>;
   DailyRoutinePayload?: DailyRoutinePayloadResolvers<ContextType>;
@@ -725,7 +725,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   TaskCompletionEdge?: TaskCompletionEdgeResolvers<ContextType>;
   TaskConnection?: TaskConnectionResolvers<ContextType>;
   TaskEdge?: TaskEdgeResolvers<ContextType>;
-  UncompleteTaskPayload?: UncompleteTaskPayloadResolvers<ContextType>;
+  UncompleteRoutineSlotPayload?: UncompleteRoutineSlotPayloadResolvers<ContextType>;
   UpdateTaskPayload?: UpdateTaskPayloadResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   WeeklySchedulePayload?: WeeklySchedulePayloadResolvers<ContextType>;

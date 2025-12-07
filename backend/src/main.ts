@@ -23,6 +23,7 @@ import { useDataLoader } from '@envelop/dataloader'
 import { userDataLoader } from './user/user-loaders.ts'
 import cookie from '@fastify/cookie'
 import { taskDataLoader } from './task/task-loaders.ts'
+import { routineSlotDataLoader } from './routine/routine-loaders.ts'
 import fastifyStatic from '@fastify/static'
 import cors from '@fastify/cors'
 import { db } from './database/index.ts'
@@ -97,6 +98,7 @@ export const createApp = async (
         mode: 'protect-all',
       }),
       useDataLoader('tasks', taskDataLoader),
+      useDataLoader('routineSlots', routineSlotDataLoader),
     ],
     schema: createSchema({
       typeDefs: schema,

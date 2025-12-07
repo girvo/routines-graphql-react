@@ -1,13 +1,14 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
-import { toGlobalId } from '../globalId.ts'
+import { toGlobalId, type GlobalId } from '../globalId.ts'
 import { routineSlotCursor, type RoutineSlotRow } from './routine-repository.ts'
 
 const RoutineSlotDomain = type({
   id: 'number',
   userId: 'number',
   taskId: 'number',
-  dayOfWeek: "'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'",
+  dayOfWeek:
+    "'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'",
   section: "'MORNING' | 'MIDDAY' | 'EVENING'",
   createdAt: 'Date',
   deletedAt: 'Date | null',
@@ -30,7 +31,7 @@ export const tableToDomain = (input: RoutineSlotRow): RoutineSlotDomain => {
 export const routineSlotToGraphQL = (slot: RoutineSlotDomain) => ({
   __typename: 'RoutineSlot' as const,
   id: toGlobalId('RoutineSlot', slot.id),
-  task: { id: slot.taskId },
+  task: { id: toGlobalId('Task', slot.taskId) },
   dayOfWeek: slot.dayOfWeek,
   section: slot.section,
   createdAt: slot.createdAt,

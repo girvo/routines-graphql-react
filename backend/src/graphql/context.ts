@@ -6,6 +6,7 @@ import type { UserDomain } from '../user/user-domain.ts'
 import type { UserDataLoader } from '../user/user-loaders.ts'
 import { createTaskRepository } from '../task/task-repository.ts'
 import type { TaskDataLoader } from '../task/task-loaders.ts'
+import type { RoutineSlotDataLoader } from '../routine/routine-loaders.ts'
 import { createRoutineRepository } from '../routine/routine-repository.ts'
 import type { Kysely } from 'kysely'
 import type { Database } from '../database/types.ts'
@@ -34,6 +35,7 @@ export type Context = BaseContext & { jwt?: JWTExtendContextFields } & {
 } & {
   users: UserDataLoader
   tasks: TaskDataLoader
+  routineSlots: RoutineSlotDataLoader
 }
 
 // Used so we can stop having to write this over and over...
