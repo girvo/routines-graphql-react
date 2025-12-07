@@ -2,6 +2,7 @@ import type { GlobalId } from '../globalId.ts';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import type { UserNode } from '../user/user-domain.ts';
 import type { TaskNode } from '../task/task-domain.ts';
+import type { RoutineSlotNode } from '../routine/routine-domain.ts';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -425,7 +426,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   Node:
-    | ( Omit<RoutineSlot, 'task'> & { task: _RefType['Task'] } )
+    | ( RoutineSlotNode )
     | ( TaskNode )
     | ( Omit<TaskCompletion, 'routineSlot'> & { routineSlot: _RefType['RoutineSlot'] } )
     | ( UserNode )
@@ -457,7 +458,7 @@ export type ResolversTypes = ResolversObject<{
   NonNegativeInt: ResolverTypeWrapper<Scalars['NonNegativeInt']['output']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  RoutineSlot: ResolverTypeWrapper<Omit<RoutineSlot, 'task'> & { task: ResolversTypes['Task'] }>;
+  RoutineSlot: ResolverTypeWrapper<RoutineSlotNode>;
   RoutineSlotConnection: ResolverTypeWrapper<Omit<RoutineSlotConnection, 'edges'> & { edges: Array<ResolversTypes['RoutineSlotEdge']> }>;
   RoutineSlotEdge: ResolverTypeWrapper<Omit<RoutineSlotEdge, 'node'> & { node: ResolversTypes['RoutineSlot'] }>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -498,7 +499,7 @@ export type ResolversParentTypes = ResolversObject<{
   NonNegativeInt: Scalars['NonNegativeInt']['output'];
   PageInfo: PageInfo;
   Query: Record<PropertyKey, never>;
-  RoutineSlot: Omit<RoutineSlot, 'task'> & { task: ResolversParentTypes['Task'] };
+  RoutineSlot: RoutineSlotNode;
   RoutineSlotConnection: Omit<RoutineSlotConnection, 'edges'> & { edges: Array<ResolversParentTypes['RoutineSlotEdge']> };
   RoutineSlotEdge: Omit<RoutineSlotEdge, 'node'> & { node: ResolversParentTypes['RoutineSlot'] };
   String: Scalars['String']['output'];

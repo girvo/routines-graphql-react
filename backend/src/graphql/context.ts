@@ -6,6 +6,7 @@ import type { UserDomain } from '../user/user-domain.ts'
 import type { UserDataLoader } from '../user/user-loaders.ts'
 import { createTaskRepository } from '../task/task-repository.ts'
 import type { TaskDataLoader } from '../task/task-loaders.ts'
+import { createRoutineRepository } from '../routine/routine-repository.ts'
 import type { Kysely } from 'kysely'
 import type { Database } from '../database/types.ts'
 
@@ -15,6 +16,7 @@ export function createContext(
 ) {
   const userRepo = createUserRepository(db)
   const taskRepo = createTaskRepository(db)
+  const routineRepo = createRoutineRepository(db)
 
   return {
     ...initialContext,
@@ -22,6 +24,7 @@ export function createContext(
     db,
     userRepo,
     taskRepo,
+    routineRepo,
   }
 }
 

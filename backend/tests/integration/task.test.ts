@@ -1,25 +1,13 @@
 import { assert, describe, it, expect, beforeAll, beforeEach } from 'vitest'
 import { clearAllTables } from '../helpers/db.ts'
 import { createTestUser } from '../helpers/auth.ts'
+import { createTask } from '../helpers/tasks.ts'
 import {
   createTestApp,
   executeGraphQL,
   type YogaApp,
 } from '../helpers/graphql.ts'
 import { graphql } from '../gql/gql.ts'
-
-const CreateTaskMutation = graphql(`
-  mutation CreateTask($title: String!) {
-    createTask(title: $title) {
-      taskEdge {
-        node {
-          id
-          title
-        }
-      }
-    }
-  }
-`)
 
 let yoga: YogaApp
 
@@ -35,13 +23,7 @@ beforeEach(async () => {
 describe('Task mutations', () => {
   it('can create a new task for a user via createTask mutation', async () => {
     const { userToken } = await createTestUser()
-    const result = await executeGraphQL(
-      CreateTaskMutation,
-      {
-        title: 'Test Task',
-      },
-      { yoga, userToken },
-    )
+    const result = await createTask({ title: 'Test Task', yoga, userToken })
 
     expect(result.data?.createTask.taskEdge.node.title).toBe('Test Task')
     expect(result.data?.createTask.taskEdge.node.id).toBeDefined()
@@ -49,11 +31,11 @@ describe('Task mutations', () => {
 
   it('can update a task that is created for a user via the updateTask mutation', async () => {
     const { userToken } = await createTestUser()
-    const firstResult = await executeGraphQL(
-      CreateTaskMutation,
-      { title: 'Another test task' },
-      { yoga, userToken },
-    )
+    const firstResult = await createTask({
+      title: 'Another test task',
+      yoga,
+      userToken,
+    })
 
     expect(firstResult.errors).toBeUndefined()
     expect(firstResult.data?.createTask.taskEdge.node.id).toBeDefined()
@@ -86,11 +68,11 @@ describe('Task mutations', () => {
 
   it('can delete a task that is created for a user via the deleteTask mutation', async () => {
     const { userToken } = await createTestUser()
-    const createResult = await executeGraphQL(
-      CreateTaskMutation,
-      { title: 'Task to delete' },
-      { yoga, userToken },
-    )
+    const createResult = await createTask({
+      title: 'Task to delete',
+      yoga,
+      userToken,
+    })
 
     expect(createResult.errors).toBeUndefined()
     expect(createResult.data?.createTask.taskEdge.node.id).toBeDefined()
@@ -117,11 +99,11 @@ describe('Task mutations', () => {
 describe('Task queries', () => {
   it('can select one created task via the tasks() resolver', async () => {
     const { userToken } = await createTestUser()
-    const createResult = await executeGraphQL(
-      CreateTaskMutation,
-      { title: 'Task to select' },
-      { yoga, userToken },
-    )
+    const createResult = await createTask({
+      title: 'Task to select',
+      yoga,
+      userToken,
+    })
     expect(createResult.errors).toBeUndefined()
 
     const tasksResult = await executeGraphQL(
@@ -152,11 +134,11 @@ describe('Task queries', () => {
     // Let's create ~20 tasks or so
     const created = await Promise.all(
       Array.from({ length: 21 }, (_, i) =>
-        executeGraphQL(
-          CreateTaskMutation,
-          { title: `Task to select ${i + 1}` },
-          { yoga, userToken },
-        ),
+        createTask({
+          title: `Task to select ${i + 1}`,
+          yoga,
+          userToken,
+        }),
       ),
     )
 

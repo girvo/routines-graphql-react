@@ -4,6 +4,7 @@ export interface Database {
   users: UsersTable
   refresh_tokens: RefreshTokensTable
   tasks: TasksTable
+  routine_slots: RoutineSlotsTable
 }
 
 export interface UsersTable {
@@ -32,5 +33,26 @@ export interface TasksTable {
   title: string
   created_at: ColumnType<string, string | undefined, never>
   updated_at: ColumnType<string | null, string | undefined, string>
+  deleted_at: string | null
+}
+
+export type DayOfWeek =
+  | 'MONDAY'
+  | 'TUESDAY'
+  | 'WEDNESDAY'
+  | 'THURSDAY'
+  | 'FRIDAY'
+  | 'SATURDAY'
+  | 'SUNDAY'
+
+export type DaySection = 'MORNING' | 'MIDDAY' | 'EVENING'
+
+export interface RoutineSlotsTable {
+  id: Generated<number>
+  user_id: number
+  task_id: number
+  day_of_week: DayOfWeek
+  section: DaySection
+  created_at: ColumnType<string, string | undefined, never>
   deleted_at: string | null
 }

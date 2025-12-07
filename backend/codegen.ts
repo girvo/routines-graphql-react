@@ -20,7 +20,7 @@ const config: CodegenConfig = {
         mappers: {
           User: '../user/user-domain.ts#UserNode',
           Task: '../task/task-domain.ts#TaskNode',
-          // Add others as you create them
+          RoutineSlot: '../routine/routine-domain.ts#RoutineSlotNode',
         },
       },
       plugins: ['typescript', 'typescript-resolvers'],

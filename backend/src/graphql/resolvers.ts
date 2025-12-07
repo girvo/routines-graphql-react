@@ -1,14 +1,23 @@
 import type { Resolvers, Scalars } from './resolver-types.ts'
 import type { Context } from './context.ts'
+import type { NodeResolver, NodeType } from './types.ts'
 import { DateTimeResolver, NonNegativeIntResolver } from 'graphql-scalars'
 import { GraphQLError } from 'graphql'
 import { decodeGlobalId } from '../globalId.ts'
 import { getUser } from '../auth/auth-context.ts'
 import { userToGraphQL } from '../user/user-domain.ts'
+
+// Resolvers
 import { resolveUserAsNode } from '../user/user-resolvers.ts'
-import type { NodeResolver, NodeType } from './types.ts'
 import { resolveTaskAsNode, tasksResolver } from '../task/task-resolvers.ts'
+import { task as routineSlotTask } from '../routine/routine-resolvers.ts'
+
+// Mutations
 import { createTask, deleteTask, updateTask } from '../task/task-mutations.ts'
+import {
+  createRoutineSlot,
+  deleteRoutineSlot,
+} from '../routine/routine-mutations.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: resolveUserAsNode,
@@ -54,6 +63,8 @@ export const resolvers: Resolvers<Context> = {
     createTask,
     deleteTask,
     updateTask,
+    createRoutineSlot,
+    deleteRoutineSlot,
   },
   Node: {
     __resolveType: parent => parent.__typename ?? null,
@@ -81,6 +92,9 @@ export const resolvers: Resolvers<Context> = {
         },
       }
     },
+  },
+  RoutineSlot: {
+    task: routineSlotTask,
   },
   // Custom scalars
   DateTime: DateTimeResolver,
