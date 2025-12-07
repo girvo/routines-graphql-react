@@ -8,6 +8,7 @@ import {
   type YogaApp,
 } from '../helpers/graphql.ts'
 import { graphql } from '../gql/gql.ts'
+import { createRoutineSlot } from '../helpers/routine-slot.ts'
 
 let yoga: YogaApp
 
@@ -30,6 +31,7 @@ describe('Routine mutations', () => {
       'task was created',
     )
 
+    // This doesn't use the helper so we can test more stuff
     const result = await executeGraphQL(
       graphql(`
         mutation CreateRoutineSlot($input: CreateRoutineSlotInput!) {
@@ -66,5 +68,42 @@ describe('Routine mutations', () => {
     expect(routineSlot.section).toBe('MORNING')
     expect(routineSlot.task.id).toBe(task.data.createTask.taskEdge.node.id)
     expect(routineSlot.task.title).toBe('A task')
+  })
+
+  it('can delete the routine slot once created', async () => {
+    // Setup user and task to put into the routine slot
+    const { userToken } = await createTestUser()
+    const task = await createTask({ title: 'A task', yoga, userToken })
+    assert(
+      task.data?.createTask.taskEdge.node !== undefined,
+      'task was created',
+    )
+
+    const slot = await createRoutineSlot({
+      input: {
+        taskId: task.data.createTask.taskEdge.node.id,
+        dayOfWeek: 'THURSDAY',
+        section: 'MIDDAY',
+      },
+      yoga,
+      userToken,
+    })
+    const routineSlot = slot.data?.createRoutineSlot.routineSlotEdge.node
+    expect(slot.errors).toBeUndefined()
+    assert(routineSlot !== undefined, 'slot was created')
+
+    const result = await executeGraphQL(
+      graphql(`
+        mutation DeleteRoutineSlot($routineSlotId: ID!) {
+          deleteRoutineSlot(routineSlotId: $routineSlotId) {
+            deletedId
+          }
+        }
+      `),
+      { routineSlotId: routineSlot.id },
+      { yoga, userToken },
+    )
+    expect(result.errors).toBeUndefined()
+    expect(result.data?.deleteRoutineSlot.deletedId).toBe(routineSlot.id)
   })
 })
