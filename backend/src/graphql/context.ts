@@ -6,8 +6,8 @@ import type { UserDomain } from '../user/user-domain.ts'
 import type { UserDataLoader } from '../user/user-loaders.ts'
 import { createTaskRepository } from '../task/task-repository.ts'
 import type { TaskDataLoader } from '../task/task-loaders.ts'
-import type { RoutineSlotDataLoader } from '../routine/routine-loaders.ts'
-import { createRoutineRepository } from '../routine/routine-repository.ts'
+import type { RoutineSlotDataLoader } from '../routine-slots/routine-slot-loaders.ts'
+import { createRoutineSlotRepository } from '../routine-slots/routine-slot-repository.ts'
 import type { Kysely } from 'kysely'
 import type { Database } from '../database/types.ts'
 
@@ -17,7 +17,7 @@ export function createContext(
 ) {
   const userRepo = createUserRepository(db)
   const taskRepo = createTaskRepository(db)
-  const routineRepo = createRoutineRepository(db)
+  const routineRepo = createRoutineSlotRepository(db)
 
   return {
     ...initialContext,

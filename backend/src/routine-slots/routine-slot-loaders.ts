@@ -1,5 +1,5 @@
 import { type Context, assertAuthenticated } from '../graphql/context.ts'
-import { type RoutineSlotDomain, tableToDomain } from './routine-domain.ts'
+import { type RoutineSlotDomain, tableToDomain } from './routine-slot-domain.ts'
 import DataLoader from 'dataloader'
 
 export const routineSlotDataLoader = (context: Context) => {

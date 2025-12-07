@@ -1,7 +1,10 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
 import { toGlobalId, type GlobalId } from '../globalId.ts'
-import { routineSlotCursor, type RoutineSlotRow } from './routine-repository.ts'
+import {
+  routineSlotCursor,
+  type RoutineSlotRow,
+} from './routine-slot-repository.ts'
 
 const RoutineSlotDomain = type({
   id: 'number',

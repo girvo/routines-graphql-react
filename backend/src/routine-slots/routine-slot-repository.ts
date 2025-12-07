@@ -19,7 +19,7 @@ export interface RoutineSlotCursor {
 
 export const routineSlotCursor = createCursorCodec<RoutineSlotCursor>()
 
-export const createRoutineRepository = (db: Kysely<Database>) => {
+export const createRoutineSlotRepository = (db: Kysely<Database>) => {
   return {
     async createRoutineSlot(
       userId: number,

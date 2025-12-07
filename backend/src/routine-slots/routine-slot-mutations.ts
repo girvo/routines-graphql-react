@@ -1,4 +1,4 @@
-import { tableToDomain, buildRoutineSlotEdge } from './routine-domain.ts'
+import { tableToDomain, buildRoutineSlotEdge } from './routine-slot-domain.ts'
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { fromGlobalId } from '../globalId.ts'
