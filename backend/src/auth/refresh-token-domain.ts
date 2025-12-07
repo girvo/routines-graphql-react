@@ -27,7 +27,3 @@ export const tableToDomain = (input: RefreshTokenRow): RefreshTokenDomain => {
     ipAddress: input.ip_address,
   })
 }
-
-export const refreshTokenToGraphQl = (input: RefreshTokenDomain): never => {
-  throw new Error('This should never be called')
-}

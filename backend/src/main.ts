@@ -24,6 +24,7 @@ import { userDataLoader } from './user/user-loaders.ts'
 import cookie from '@fastify/cookie'
 import { taskDataLoader } from './task/task-loaders.ts'
 import { routineSlotDataLoader } from './routine-slot/routine-slot-loaders.ts'
+import { taskCompletionDataLoader } from './task-completion/task-completion-loaders.ts'
 import fastifyStatic from '@fastify/static'
 import cors from '@fastify/cors'
 import { db } from './database/index.ts'
@@ -99,6 +100,7 @@ export const createApp = async (
       }),
       useDataLoader('tasks', taskDataLoader),
       useDataLoader('routineSlots', routineSlotDataLoader),
+      useDataLoader('taskCompletions', taskCompletionDataLoader),
     ],
     schema: createSchema({
       typeDefs: schema,

@@ -9,11 +9,19 @@ import { userToGraphQL } from '../user/user-domain.ts'
 
 // Resolvers
 import { resolveUserAsNode } from '../user/user-resolvers.ts'
-import { resolveTaskAsNode, tasksResolver } from '../task/task-resolvers.ts'
+import {
+  resolveTaskAsNode,
+  tasksResolver,
+  completions as taskCompletions,
+} from '../task/task-resolvers.ts'
 import {
   resolveRoutineTaskAsNode,
   task as routineSlotTask,
 } from '../routine-slot/routine-slot-resolvers.ts'
+import {
+  resolveTaskCompletionAsNode,
+  routineSlot as taskCompletionRoutineSlot,
+} from '../task-completion/task-completion-resolvers.ts'
 
 // Mutations
 import { createTask, deleteTask, updateTask } from '../task/task-mutations.ts'
@@ -21,11 +29,16 @@ import {
   createRoutineSlot,
   deleteRoutineSlot,
 } from '../routine-slot/routine-slot-mutations.ts'
+import {
+  completeRoutineSlot,
+  uncompleteRoutineSlot,
+} from '../task-completion/task-completion-mutations.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: resolveUserAsNode,
   Task: resolveTaskAsNode,
   RoutineSlot: resolveRoutineTaskAsNode,
+  TaskCompletion: resolveTaskCompletionAsNode,
 }
 
 export const resolvers: Resolvers<Context> = {
@@ -69,22 +82,14 @@ export const resolvers: Resolvers<Context> = {
     updateTask,
     createRoutineSlot,
     deleteRoutineSlot,
+    completeRoutineSlot,
+    uncompleteRoutineSlot,
   },
   Node: {
     __resolveType: parent => parent.__typename ?? null,
   },
   Task: {
-    completions: (parent, args, context) => {
-      return {
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: null,
-          endCursor: null,
-        },
-      }
-    },
+    completions: taskCompletions,
     slots: () => {
       return {
         edges: [],
@@ -99,6 +104,9 @@ export const resolvers: Resolvers<Context> = {
   },
   RoutineSlot: {
     task: routineSlotTask,
+  },
+  TaskCompletion: {
+    routineSlot: taskCompletionRoutineSlot,
   },
   // Custom scalars
   DateTime: DateTimeResolver,

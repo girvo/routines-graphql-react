@@ -20,10 +20,6 @@ export type Scalars = {
   NonNegativeInt: { input: number; output: number; }
 };
 
-export type CompleteRoutineSlotInput = {
-  routineSlotId: Scalars['ID']['input'];
-};
-
 export type CompleteRoutineSlotPayload = {
   __typename?: 'CompleteRoutineSlotPayload';
   taskCompletionEdge: TaskCompletionEdge;
@@ -155,7 +151,7 @@ export type Mutation = {
 
 
 export type MutationCompleteRoutineSlotArgs = {
-  input: CompleteRoutineSlotInput;
+  routineSlotId: Scalars['ID']['input'];
 };
 
 
@@ -180,7 +176,7 @@ export type MutationDeleteTaskArgs = {
 
 
 export type MutationUncompleteRoutineSlotArgs = {
-  input: UncompleteRoutineSlotInput;
+  taskCompletionId: Scalars['ID']['input'];
 };
 
 
@@ -308,11 +304,6 @@ export type TaskEdge = {
   __typename?: 'TaskEdge';
   cursor: Scalars['String']['output'];
   node: Task;
-};
-
-export type UncompleteRoutineSlotInput = {
-  completionDate: Scalars['DateTime']['input'];
-  routineSlotId: Scalars['ID']['input'];
 };
 
 export type UncompleteRoutineSlotPayload = {

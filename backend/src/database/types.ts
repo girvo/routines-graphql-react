@@ -5,6 +5,7 @@ export interface Database {
   refresh_tokens: RefreshTokensTable
   tasks: TasksTable
   routine_slots: RoutineSlotsTable
+  task_completions: TaskCompletionsTable
 }
 
 export interface UsersTable {
