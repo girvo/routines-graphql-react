@@ -1,4 +1,8 @@
-import { tableToDomain, buildRoutineSlotEdge } from './routine-slot-domain.ts'
+import {
+  tableToDomain,
+  buildRoutineSlotEdge,
+  routineSlotToGraphQL,
+} from './routine-slot-domain.ts'
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { fromGlobalId } from '../globalId.ts'
@@ -17,9 +21,13 @@ export const createRoutineSlot: MutationResolvers<Context>['createRoutineSlot'] 
       input.section as DaySection,
     )
     const routineSlot = tableToDomain(routineSlotRow)
+    const edge = buildRoutineSlotEdge(routineSlot)
 
     return {
-      routineSlotEdge: buildRoutineSlotEdge(routineSlot),
+      routineSlotEdge: {
+        node: routineSlotToGraphQL(edge.node),
+        cursor: edge.cursor,
+      },
     }
   }
 
@@ -34,11 +42,3 @@ export const deleteRoutineSlot: MutationResolvers<Context>['deleteRoutineSlot'] 
       deletedId: routineSlotId,
     }
   }
-
-// export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlot'] =
-//   async (_parent, { input }, context) => {
-//     assertAuthenticated(context)
-
-//     const id = fromGlobalId(input.routineSlotId, 'RoutineSlot')
-//     await context.routineRepo.
-//   }

@@ -11,6 +11,10 @@ import {
   buildTaskCompletionConnection,
   taskCompletionToGraphQL,
 } from '../task-completion/task-completion-domain.ts'
+import {
+  buildRoutineSlotConnection,
+  routineSlotToGraphQL,
+} from '../routine-slot/routine-slot-domain.ts'
 
 export const resolveTaskAsNode: NodeResolver<'Task'> = async (id, context) => {
   const task = await context.tasks.load(id)
@@ -24,22 +28,22 @@ export const resolveTaskAsNode: NodeResolver<'Task'> = async (id, context) => {
 
 export const tasksResolver: QueryResolvers<Context>['tasks'] = async (
   _parent,
-  args,
+  { first, after },
   context,
 ) => {
   assertAuthenticated(context)
 
-  const first = args.first ?? 10
-  const direction: 'asc' | 'desc' = args.after
-    ? taskCursor.decode(args.after).direction
+  const take = first ?? 10
+  const direction: 'asc' | 'desc' = after
+    ? taskCursor.decode(after).direction
     : 'asc'
 
   const rows = await context.taskRepo.findByUserIdPaginated(
     context.currentUser.id,
-    { first: first ?? 10, after: args.after },
+    { first: first ?? 10, after },
   )
 
-  const connection = buildTaskConnection(rows, first, direction)
+  const connection = buildTaskConnection(rows, take, direction)
 
   // Prime the dataloader cache
   connection.edges.forEach(({ node }) => context.tasks.prime(node.id, node))
@@ -59,16 +63,16 @@ export const completions: TaskResolvers<Context>['completions'] = async (
   context,
 ) => {
   assertAuthenticated(context)
-  const requested = first ?? 10
+  const take = first ?? 10
 
   const completionResults =
     await context.taskCompletionRepo.findByTaskIdPaginated(
       fromGlobalId(parent.id, 'Task'),
       context.currentUser.id,
-      { first: requested, ...args },
+      { first: take, ...args },
     )
 
-  const connection = buildTaskCompletionConnection(completionResults, requested)
+  const connection = buildTaskCompletionConnection(completionResults, take)
 
   connection.edges.forEach(({ node }) =>
     context.taskCompletions.prime(node.id, node),
@@ -77,6 +81,35 @@ export const completions: TaskResolvers<Context>['completions'] = async (
   return {
     edges: connection.edges.map(edge => ({
       node: taskCompletionToGraphQL(edge.node),
+      cursor: edge.cursor,
+    })),
+    pageInfo: connection.pageInfo,
+  }
+}
+
+export const slots: TaskResolvers<Context>['slots'] = async (
+  parent,
+  { first, after },
+  context,
+) => {
+  assertAuthenticated(context)
+  const take = first ?? 10
+
+  const slotRows = await context.routineRepo.findAllByTaskIdAndUserIdPaginated(
+    fromGlobalId(parent.id, 'Task'),
+    context.currentUser.id,
+    { first: take, after },
+  )
+
+  const connection = buildRoutineSlotConnection(slotRows, take)
+
+  connection.edges.forEach(({ node }) =>
+    context.routineSlots.prime(node.id, node),
+  )
+
+  return {
+    edges: connection.edges.map(edge => ({
+      node: routineSlotToGraphQL(edge.node),
       cursor: edge.cursor,
     })),
     pageInfo: connection.pageInfo,

@@ -1,6 +1,8 @@
-import type { Kysely } from 'kysely'
+import type { Kysely, ExpressionBuilder } from 'kysely'
 import type { Database, DayOfWeek, DaySection } from '../database/types.ts'
+import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
+import { format } from 'date-fns'
 
 export interface RoutineSlotRow {
   id: number
@@ -18,6 +20,19 @@ export interface RoutineSlotCursor {
 }
 
 export const routineSlotCursor = createCursorCodec<RoutineSlotCursor>()
+
+const buildCursorCondition = (
+  eb: ExpressionBuilder<Database, 'routine_slots'>,
+  cursor: { created_at: string; id: number },
+) => {
+  return eb.or([
+    eb('created_at', '>', cursor.created_at),
+    eb.and([
+      eb('created_at', '=', cursor.created_at),
+      eb('id', '>', cursor.id),
+    ]),
+  ])
+}
 
 export const createRoutineSlotRepository = (db: Kysely<Database>) => {
   return {
@@ -73,6 +88,38 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
         .where('user_id', '=', userId)
         .where('deleted_at', 'is', null)
         .execute()
+    },
+
+    async findAllByTaskIdAndUserIdPaginated(
+      taskId: number,
+      userId: number,
+      pagination: PaginationArgs,
+    ): Promise<RoutineSlotRow[]> {
+      let query = db
+        .selectFrom('routine_slots')
+        .selectAll()
+        .where('task_id', '=', taskId)
+        .where('user_id', '=', userId)
+        .where('deleted_at', 'is', null)
+        .orderBy('created_at', 'asc')
+        .orderBy('id', 'asc')
+        .limit(pagination.first + 1)
+
+      if (pagination.after) {
+        const cursor = routineSlotCursor.decode(pagination.after)
+        const sqliteFormattedDate = format(
+          new Date(cursor.createdAt),
+          'yyyy-MM-dd HH:mm:ss',
+        )
+        query = query.where(eb =>
+          buildCursorCondition(eb, {
+            created_at: sqliteFormattedDate,
+            id: cursor.id,
+          }),
+        )
+      }
+
+      return query.execute()
     },
   }
 }

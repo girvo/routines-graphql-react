@@ -13,6 +13,7 @@ import {
   resolveTaskAsNode,
   tasksResolver,
   completions as taskCompletions,
+  slots as taskSlots,
 } from '../task/task-resolvers.ts'
 import {
   resolveRoutineTaskAsNode,
@@ -90,17 +91,7 @@ export const resolvers: Resolvers<Context> = {
   },
   Task: {
     completions: taskCompletions,
-    slots: () => {
-      return {
-        edges: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: null,
-          endCursor: null,
-        },
-      }
-    },
+    slots: taskSlots,
   },
   RoutineSlot: {
     task: routineSlotTask,

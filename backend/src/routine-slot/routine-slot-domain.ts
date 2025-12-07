@@ -5,6 +5,7 @@ import {
   routineSlotCursor,
   type RoutineSlotRow,
 } from './routine-slot-repository.ts'
+import type { PageInfo } from '../graphql/resolver-types.ts'
 
 const RoutineSlotDomain = type({
   id: 'number',
@@ -44,10 +45,36 @@ export type RoutineSlotNode = ReturnType<typeof routineSlotToGraphQL>
 
 export const buildRoutineSlotEdge = (slot: RoutineSlotDomain) => {
   return {
-    node: routineSlotToGraphQL(slot),
+    node: slot,
     cursor: routineSlotCursor.encode({
       createdAt: slot.createdAt.toISOString(),
       id: slot.id,
     }),
+  }
+}
+
+export interface RoutineSlotConnection {
+  edges: ReturnType<typeof buildRoutineSlotEdge>[]
+  pageInfo: PageInfo
+}
+
+export const buildRoutineSlotConnection = (
+  edgeRows: RoutineSlotRow[],
+  requestedCount: number,
+): RoutineSlotConnection => {
+  const hasNextPage = edgeRows.length > requestedCount
+  const edges = edgeRows
+    .slice(0, requestedCount)
+    .map(tableToDomain)
+    .map(buildRoutineSlotEdge)
+
+  return {
+    edges,
+    pageInfo: {
+      hasNextPage,
+      hasPreviousPage: false,
+      startCursor: edges[0]?.cursor ?? null,
+      endCursor: edges[edges.length - 1]?.cursor ?? null,
+    },
   }
 }
