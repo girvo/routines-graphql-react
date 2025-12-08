@@ -11,10 +11,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('email', 'varchar', col => col.notNull().unique())
     .addColumn('password_hash', 'varchar', col => col.notNull())
     .addColumn('created_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`).notNull(),
     )
     .addColumn('updated_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`),
     )
     .addColumn('last_logged_in', 'datetime')
     .execute()
@@ -28,7 +28,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('token_hash', 'varchar', col => col.notNull().unique())
     .addColumn('expires_at', 'datetime', col => col.notNull())
     .addColumn('created_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`).notNull(),
     )
     .addColumn('revoked_at', 'datetime')
     .addColumn('user_agent', 'varchar')

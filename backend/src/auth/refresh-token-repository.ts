@@ -4,6 +4,7 @@
  */
 import type { Kysely } from 'kysely'
 import type { Database } from '../database/types.ts'
+import { getCurrentTimestamp } from '../database/time.ts'
 
 export interface RefreshTokenRow {
   id: number
@@ -51,7 +52,7 @@ export const createRefreshTokenRepository = (db: Kysely<Database>) => {
         .selectAll()
         .where('user_id', '=', userId)
         .where('revoked_at', 'is', null)
-        .where('expires_at', '>', new Date().toISOString())
+        .where('expires_at', '>', getCurrentTimestamp())
         .execute()
     },
 
@@ -70,6 +71,7 @@ export const createRefreshTokenRepository = (db: Kysely<Database>) => {
           expires_at: expiresAt,
           user_agent: userAgent ?? null,
           ip_address: ipAddress ?? null,
+          created_at: getCurrentTimestamp(),
         })
         .returningAll()
         .executeTakeFirstOrThrow()
@@ -78,7 +80,7 @@ export const createRefreshTokenRepository = (db: Kysely<Database>) => {
     async revokeToken(id: number): Promise<void> {
       await db
         .updateTable('refresh_tokens')
-        .set({ revoked_at: new Date().toISOString() })
+        .set({ revoked_at: getCurrentTimestamp() })
         .where('id', '=', id)
         .execute()
     },
@@ -86,7 +88,7 @@ export const createRefreshTokenRepository = (db: Kysely<Database>) => {
     async revokeAllUserTokens(userId: number): Promise<void> {
       await db
         .updateTable('refresh_tokens')
-        .set({ revoked_at: new Date().toISOString() })
+        .set({ revoked_at: getCurrentTimestamp() })
         .where('user_id', '=', userId)
         .where('revoked_at', 'is', null)
         .execute()

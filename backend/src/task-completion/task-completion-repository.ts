@@ -3,6 +3,7 @@ import type { Database } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
 import { format, startOfDay, endOfDay } from 'date-fns'
+import { getCurrentTimestamp } from '../database/time.ts'
 
 export interface TaskCompletionRow {
   id: number
@@ -91,7 +92,7 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
         const cursor = taskCompletionCursor.decode(pagination.after)
         const sqliteFormattedDate = format(
           new Date(cursor.completedAt),
-          'yyyy-MM-dd HH:mm:ss',
+          'yyyy-MM-dd HH:mm:ss.SSS',
         )
         query = query.where(eb =>
           buildCursorCondition(eb, {
@@ -139,7 +140,7 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
         const cursor = taskCompletionCursor.decode(pagination.after)
         const sqliteFormattedDate = format(
           new Date(cursor.completedAt),
-          'yyyy-MM-dd HH:mm:ss',
+          'yyyy-MM-dd HH:mm:ss.SSS',
         )
         query = query.where(eb =>
           buildCursorCondition(eb, {
@@ -155,14 +156,14 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
     async createCompletion(
       userId: number,
       routineSlotId: number,
-      completedAt?: Date, // TODO: Probably remove this, can only create on the day
     ): Promise<TaskCompletionRow> {
       return db
         .insertInto('task_completions')
         .values({
           user_id: userId,
           routine_slot_id: routineSlotId,
-          completed_at: completedAt?.toISOString(),
+          completed_at: getCurrentTimestamp(),
+          created_at: getCurrentTimestamp(),
         })
         .returningAll()
         .executeTakeFirstOrThrow()
@@ -239,7 +240,7 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
         const cursor = taskCompletionCursor.decode(pagination.after)
         const sqliteFormattedDate = format(
           new Date(cursor.completedAt),
-          'yyyy-MM-dd HH:mm:ss',
+          'yyyy-MM-dd HH:mm:ss.SSS',
         )
         query = query.where(eb =>
           buildCursorCondition(eb, {

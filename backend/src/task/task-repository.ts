@@ -3,6 +3,7 @@ import type { Database } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
 import { format } from 'date-fns'
+import { getCurrentTimestamp } from '../database/time.ts'
 
 export interface TaskRow {
   id: number
@@ -86,7 +87,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         const cursor = taskCursor.decode(pagination.after)
         const sqliteFormattedDate = format(
           new Date(cursor.createdAt),
-          'yyyy-MM-dd HH:mm:ss',
+          'yyyy-MM-dd HH:mm:ss.SSS',
         )
         query = query.where(eb =>
           buildCursorCondition(eb, {
@@ -106,6 +107,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         .values({
           user_id: userId,
           title: title,
+          created_at: getCurrentTimestamp(),
         })
         .returningAll()
         .executeTakeFirstOrThrow()
@@ -120,7 +122,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         .updateTable('tasks')
         .set({
           title: title,
-          updated_at: new Date().toISOString(),
+          updated_at: getCurrentTimestamp(),
         })
         .where('id', '=', id)
         .where('deleted_at', 'is', null)
@@ -132,7 +134,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
     async deleteTask(id: number): Promise<void> {
       await db
         .updateTable('tasks')
-        .set({ deleted_at: new Date().toISOString() })
+        .set({ deleted_at: getCurrentTimestamp() })
         .where('id', '=', id)
         .where('deleted_at', 'is', null)
         .execute()

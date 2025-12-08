@@ -13,10 +13,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn('title', 'varchar', col => col.notNull())
     .addColumn('created_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`).notNull(),
     )
     .addColumn('updated_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`),
     )
     .addColumn('deleted_at', 'datetime')
     .execute()

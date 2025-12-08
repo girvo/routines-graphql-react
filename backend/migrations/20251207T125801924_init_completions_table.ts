@@ -15,10 +15,10 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.notNull().references('routine_slots.id').onDelete('cascade'),
     )
     .addColumn('completed_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`).notNull(),
     )
     .addColumn('created_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`).notNull(),
     )
     .execute()
 

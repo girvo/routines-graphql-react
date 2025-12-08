@@ -25,7 +25,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.notNull().check(sql`section IN ('MORNING', 'MIDDAY', 'EVENING')`),
     )
     .addColumn('created_at', 'datetime', col =>
-      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
+      col.defaultTo(sql`(strftime('%Y-%m-%d %H:%M:%f', 'now'))`).notNull(),
     )
     .addColumn('deleted_at', 'datetime')
     .execute()

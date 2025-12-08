@@ -3,6 +3,7 @@ import type { Database, DayOfWeek, DaySection } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
 import { format } from 'date-fns'
+import { getCurrentTimestamp } from '../database/time.ts'
 
 export interface RoutineSlotRow {
   id: number
@@ -49,6 +50,7 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
           task_id: taskId,
           day_of_week: dayOfWeek,
           section: section,
+          created_at: getCurrentTimestamp(),
         })
         .returningAll()
         .executeTakeFirstOrThrow()
@@ -57,7 +59,7 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
     async deleteRoutineSlot(id: number, userId: number): Promise<void> {
       await db
         .updateTable('routine_slots')
-        .set({ deleted_at: new Date().toISOString() })
+        .set({ deleted_at: getCurrentTimestamp() })
         .where('id', '=', id)
         .where('user_id', '=', userId)
         .where('deleted_at', 'is', null)
@@ -109,7 +111,7 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
         const cursor = routineSlotCursor.decode(pagination.after)
         const sqliteFormattedDate = format(
           new Date(cursor.createdAt),
-          'yyyy-MM-dd HH:mm:ss',
+          'yyyy-MM-dd HH:mm:ss.SSS',
         )
         query = query.where(eb =>
           buildCursorCondition(eb, {
