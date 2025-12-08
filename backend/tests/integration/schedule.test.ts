@@ -25,6 +25,23 @@ describe('dailyRoutine query', () => {
   it('can query daily routine for a specific day with morning, midday, and evening sections', async () => {
     const { userToken } = await createTestUser()
 
+    const testDate = new Date('2025-12-08T12:00:00Z')
+
+    const dayCheckResult = await executeGraphQL(
+      graphql(`
+        query GetDayOfWeek($date: DateTime) {
+          dailyRoutine(date: $date) {
+            dayOfWeek
+          }
+        }
+      `),
+      { date: testDate },
+      { yoga, userToken },
+    )
+
+    const targetDayOfWeek = dayCheckResult.data?.dailyRoutine.dayOfWeek
+    assert(targetDayOfWeek !== undefined, 'day of week determined')
+
     const morningTask = await createTask({
       title: 'Morning Exercise',
       yoga,
@@ -57,7 +74,7 @@ describe('dailyRoutine query', () => {
     await createRoutineSlot({
       input: {
         taskId: morningTask.data.createTask.taskEdge.node.id,
-        dayOfWeek: 'MONDAY',
+        dayOfWeek: targetDayOfWeek,
         section: 'MORNING',
       },
       yoga,
@@ -67,7 +84,7 @@ describe('dailyRoutine query', () => {
     await createRoutineSlot({
       input: {
         taskId: middayTask.data.createTask.taskEdge.node.id,
-        dayOfWeek: 'MONDAY',
+        dayOfWeek: targetDayOfWeek,
         section: 'MIDDAY',
       },
       yoga,
@@ -77,7 +94,7 @@ describe('dailyRoutine query', () => {
     await createRoutineSlot({
       input: {
         taskId: eveningTask.data.createTask.taskEdge.node.id,
-        dayOfWeek: 'MONDAY',
+        dayOfWeek: targetDayOfWeek,
         section: 'EVENING',
       },
       yoga,
@@ -86,15 +103,12 @@ describe('dailyRoutine query', () => {
 
     const result = await executeGraphQL(
       graphql(`
-        query DailyRoutineWithSections {
-          dailyRoutine {
-            date
-            dayOfWeek
+        query DailyRoutineWithSections($date: DateTime) {
+          dailyRoutine(date: $date) {
             morning {
               edges {
                 node {
                   routineSlot {
-                    id
                     dayOfWeek
                     section
                     task {
@@ -102,7 +116,7 @@ describe('dailyRoutine query', () => {
                     }
                   }
                   completion {
-                    id
+                    __typename
                   }
                 }
               }
@@ -111,7 +125,6 @@ describe('dailyRoutine query', () => {
               edges {
                 node {
                   routineSlot {
-                    id
                     dayOfWeek
                     section
                     task {
@@ -119,7 +132,7 @@ describe('dailyRoutine query', () => {
                     }
                   }
                   completion {
-                    id
+                    __typename
                   }
                 }
               }
@@ -128,7 +141,6 @@ describe('dailyRoutine query', () => {
               edges {
                 node {
                   routineSlot {
-                    id
                     dayOfWeek
                     section
                     task {
@@ -136,7 +148,7 @@ describe('dailyRoutine query', () => {
                     }
                   }
                   completion {
-                    id
+                    __typename
                   }
                 }
               }
@@ -144,7 +156,7 @@ describe('dailyRoutine query', () => {
           }
         }
       `),
-      {},
+      { date: testDate },
       { yoga, userToken },
     )
 
@@ -152,26 +164,29 @@ describe('dailyRoutine query', () => {
     const routine = result.data?.dailyRoutine
     assert(routine !== undefined, 'routine returned')
 
+    const morning = routine.morning.edges[0].node
+    assert(morning !== undefined, 'morning node exists')
     expect(routine.morning.edges.length).toBe(1)
-    expect(routine.morning.edges[0].node.routineSlot.task.title).toBe(
-      'Morning Exercise',
-    )
-    expect(routine.morning.edges[0].node.routineSlot.section).toBe('MORNING')
-    expect(routine.morning.edges[0].node.completion).toBeNull()
+    expect(morning.routineSlot.task.title).toBe('Morning Exercise')
+    expect(morning.routineSlot.section).toBe('MORNING')
+    expect(morning.routineSlot.dayOfWeek).toBe(targetDayOfWeek)
+    expect(morning.completion).toBeNull()
 
+    const midday = routine.midday.edges[0].node
+    assert(midday !== undefined, 'midday node exists')
     expect(routine.midday.edges.length).toBe(1)
-    expect(routine.midday.edges[0].node.routineSlot.task.title).toBe(
-      'Lunch Prep',
-    )
-    expect(routine.midday.edges[0].node.routineSlot.section).toBe('MIDDAY')
-    expect(routine.midday.edges[0].node.completion).toBeNull()
+    expect(midday.routineSlot.task.title).toBe('Lunch Prep')
+    expect(midday.routineSlot.section).toBe('MIDDAY')
+    expect(midday.routineSlot.dayOfWeek).toBe(targetDayOfWeek)
+    expect(midday.completion).toBeNull()
 
+    const evening = routine.evening.edges[0].node
+    assert(evening !== undefined, 'evening node exists')
     expect(routine.evening.edges.length).toBe(1)
-    expect(routine.evening.edges[0].node.routineSlot.task.title).toBe(
-      'Evening Reading',
-    )
-    expect(routine.evening.edges[0].node.routineSlot.section).toBe('EVENING')
-    expect(routine.evening.edges[0].node.completion).toBeNull()
+    expect(evening.routineSlot.task.title).toBe('Evening Reading')
+    expect(evening.routineSlot.section).toBe('EVENING')
+    expect(evening.routineSlot.dayOfWeek).toBe(targetDayOfWeek)
+    expect(evening.completion).toBeNull()
   })
 
   it('returns only slots for the specified day of week', async () => {
@@ -290,8 +305,6 @@ describe('weeklySchedule query', () => {
               morning {
                 edges {
                   node {
-                    id
-                    dayOfWeek
                     section
                     task {
                       title
@@ -301,16 +314,12 @@ describe('weeklySchedule query', () => {
               }
               midday {
                 edges {
-                  node {
-                    id
-                  }
+                  __typename
                 }
               }
               evening {
                 edges {
-                  node {
-                    id
-                  }
+                  __typename
                 }
               }
             }
@@ -318,23 +327,17 @@ describe('weeklySchedule query', () => {
               dayOfWeek
               morning {
                 edges {
-                  node {
-                    id
-                  }
+                  __typename
                 }
               }
               midday {
                 edges {
-                  node {
-                    id
-                  }
+                  __typename
                 }
               }
               evening {
                 edges {
                   node {
-                    id
-                    dayOfWeek
                     section
                     task {
                       title
@@ -365,7 +368,9 @@ describe('weeklySchedule query', () => {
     expect(schedule.tuesday.morning.edges.length).toBe(0)
     expect(schedule.tuesday.midday.edges.length).toBe(0)
     expect(schedule.tuesday.evening.edges.length).toBe(1)
-    expect(schedule.tuesday.evening.edges[0].node.task.title).toBe('Tuesday Task')
+    expect(schedule.tuesday.evening.edges[0].node.task.title).toBe(
+      'Tuesday Task',
+    )
     expect(schedule.tuesday.evening.edges[0].node.section).toBe('EVENING')
   })
 })
