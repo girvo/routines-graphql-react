@@ -2,28 +2,7 @@
 
 ## Missing Major Features
 
-### 2. Weekly Schedule Query (`weeklySchedule`)
-
-**Status:** Not implemented
-**Priority:** High
-
-**What it does:**
-
-- Returns the complete weekly schedule template (not tied to a specific week)
-- Shows which routine slots are scheduled for each day of the week
-- Each day has morning, midday, and evening sections
-
-**Implementation needed:**
-
-- [ ] Implement `weeklySchedule` query resolver in `backend/src/schedule/schedule-resolvers.ts`
-  - Return WeeklySchedulePayload with all seven days
-- [ ] Implement DaySchedule resolver for each day (Monday through Sunday)
-  - [ ] `morning` - fetch routine slots for MORNING section for that day
-  - [ ] `midday` - fetch routine slots for MIDDAY section for that day
-  - [ ] `evening` - fetch routine slots for EVENING section for that day
-- [ ] Wire up resolvers in `backend/src/graphql/resolvers.ts`
-- [ ] Add pagination support for RoutineSlotConnection
-- [ ] Write tests
+(None remaining - all major features implemented!)
 
 ## Implementation Notes
 
@@ -61,3 +40,5 @@ Both features require proper connection/edge implementations:
 - [x] User authentication (me query)
 - [x] Node interface and resolution
 - [x] Field resolvers for Task, RoutineSlot, TaskCompletion
+- [x] Daily Routine query (dailyRoutine) - shows actual instances for a specific date with completion status
+- [x] Weekly Schedule query (weeklySchedule) - shows the template/plan for each day of the week (no completions)

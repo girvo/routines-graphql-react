@@ -4,7 +4,7 @@ import type { UserNode } from '../user/user-domain.ts';
 import type { TaskNode } from '../task/task-domain.ts';
 import type { RoutineSlotNode } from '../routine-slot/routine-slot-domain.ts';
 import type { TaskCompletionNode } from '../task-completion/task-completion-domain.ts';
-import type { DailyRoutineData } from '../schedule/schedule-domain.ts';
+import type { DailyRoutineData, WeeklyScheduleData, DayScheduleData } from '../schedule/schedule-domain.ts';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -439,7 +439,7 @@ export type ResolversTypes = ResolversObject<{
   DailyTaskInstanceEdge: ResolverTypeWrapper<Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversTypes['DailyTaskInstance'] }>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   DayOfWeek: DayOfWeek;
-  DaySchedule: ResolverTypeWrapper<Omit<DaySchedule, 'evening' | 'midday' | 'morning'> & { evening: ResolversTypes['RoutineSlotConnection'], midday: ResolversTypes['RoutineSlotConnection'], morning: ResolversTypes['RoutineSlotConnection'] }>;
+  DaySchedule: ResolverTypeWrapper<DayScheduleData>;
   DaySection: DaySection;
   DeleteRoutineSlotPayload: ResolverTypeWrapper<DeleteRoutineSlotPayload>;
   DeleteTaskPayload: ResolverTypeWrapper<DeleteTaskPayload>;
@@ -464,7 +464,7 @@ export type ResolversTypes = ResolversObject<{
   UpdateTaskInput: UpdateTaskInput;
   UpdateTaskPayload: ResolverTypeWrapper<Omit<UpdateTaskPayload, 'task'> & { task: ResolversTypes['Task'] }>;
   User: ResolverTypeWrapper<UserNode>;
-  WeeklySchedulePayload: ResolverTypeWrapper<Omit<WeeklySchedulePayload, 'friday' | 'monday' | 'saturday' | 'sunday' | 'thursday' | 'tuesday' | 'wednesday'> & { friday: ResolversTypes['DaySchedule'], monday: ResolversTypes['DaySchedule'], saturday: ResolversTypes['DaySchedule'], sunday: ResolversTypes['DaySchedule'], thursday: ResolversTypes['DaySchedule'], tuesday: ResolversTypes['DaySchedule'], wednesday: ResolversTypes['DaySchedule'] }>;
+  WeeklySchedulePayload: ResolverTypeWrapper<WeeklyScheduleData>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -479,7 +479,7 @@ export type ResolversParentTypes = ResolversObject<{
   DailyTaskInstanceConnection: Omit<DailyTaskInstanceConnection, 'edges'> & { edges: Array<ResolversParentTypes['DailyTaskInstanceEdge']> };
   DailyTaskInstanceEdge: Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversParentTypes['DailyTaskInstance'] };
   DateTime: Scalars['DateTime']['output'];
-  DaySchedule: Omit<DaySchedule, 'evening' | 'midday' | 'morning'> & { evening: ResolversParentTypes['RoutineSlotConnection'], midday: ResolversParentTypes['RoutineSlotConnection'], morning: ResolversParentTypes['RoutineSlotConnection'] };
+  DaySchedule: DayScheduleData;
   DeleteRoutineSlotPayload: DeleteRoutineSlotPayload;
   DeleteTaskPayload: DeleteTaskPayload;
   File: Scalars['File']['output'];
@@ -503,7 +503,7 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateTaskInput: UpdateTaskInput;
   UpdateTaskPayload: Omit<UpdateTaskPayload, 'task'> & { task: ResolversParentTypes['Task'] };
   User: UserNode;
-  WeeklySchedulePayload: Omit<WeeklySchedulePayload, 'friday' | 'monday' | 'saturday' | 'sunday' | 'thursday' | 'tuesday' | 'wednesday'> & { friday: ResolversParentTypes['DaySchedule'], monday: ResolversParentTypes['DaySchedule'], saturday: ResolversParentTypes['DaySchedule'], sunday: ResolversParentTypes['DaySchedule'], thursday: ResolversParentTypes['DaySchedule'], tuesday: ResolversParentTypes['DaySchedule'], wednesday: ResolversParentTypes['DaySchedule'] };
+  WeeklySchedulePayload: WeeklyScheduleData;
 }>;
 
 export type AuthenticatedDirectiveArgs = { };

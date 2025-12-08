@@ -10,6 +10,12 @@ export interface DailyRoutineData {
   dayOfWeek: DayOfWeek
 }
 
+export interface WeeklyScheduleData {}
+
+export interface DayScheduleData {
+  dayOfWeek: DayOfWeek
+}
+
 export interface DailyTaskInstanceData {
   routineSlot: RoutineSlotDomain
   completion: TaskCompletionDomain | null

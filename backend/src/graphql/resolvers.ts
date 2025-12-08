@@ -58,6 +58,7 @@ export const resolvers: Resolvers<Context> = {
     tasks: TaskResolvers.tasksResolver,
     taskCompletions: TaskCompletionResolvers.taskCompletions,
     dailyRoutine: ScheduleResolvers.dailyRoutine,
+    weeklySchedule: ScheduleResolvers.weeklySchedule,
   },
   Mutation: {
     createTask: TaskMutations.createTask,
@@ -82,6 +83,20 @@ export const resolvers: Resolvers<Context> = {
     morning: ScheduleResolvers.morning,
     midday: ScheduleResolvers.midday,
     evening: ScheduleResolvers.evening,
+  },
+  WeeklySchedulePayload: {
+    monday: ScheduleResolvers.monday,
+    tuesday: ScheduleResolvers.tuesday,
+    wednesday: ScheduleResolvers.wednesday,
+    thursday: ScheduleResolvers.thursday,
+    friday: ScheduleResolvers.friday,
+    saturday: ScheduleResolvers.saturday,
+    sunday: ScheduleResolvers.sunday,
+  },
+  DaySchedule: {
+    morning: ScheduleResolvers.dayMorning,
+    midday: ScheduleResolvers.dayMidday,
+    evening: ScheduleResolvers.dayEvening,
   },
   Node: {
     __resolveType: parent => parent.__typename ?? null,

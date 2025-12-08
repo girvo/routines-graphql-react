@@ -24,6 +24,8 @@ const config: CodegenConfig = {
           TaskCompletion:
             '../task-completion/task-completion-domain.ts#TaskCompletionNode',
           DailyRoutinePayload: '../schedule/schedule-domain.ts#DailyRoutineData',
+          WeeklySchedulePayload: '../schedule/schedule-domain.ts#WeeklyScheduleData',
+          DaySchedule: '../schedule/schedule-domain.ts#DayScheduleData',
         },
       },
       plugins: ['typescript', 'typescript-resolvers'],
