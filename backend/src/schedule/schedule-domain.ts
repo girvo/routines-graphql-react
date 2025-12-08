@@ -3,6 +3,7 @@ import type { RoutineSlotDomain } from '../routine-slot/routine-slot-domain.ts'
 import type { TaskCompletionDomain } from '../task-completion/task-completion-domain.ts'
 import { routineSlotToGraphQL } from '../routine-slot/routine-slot-domain.ts'
 import { taskCompletionToGraphQL } from '../task-completion/task-completion-domain.ts'
+import { routineSlotCursor } from '../routine-slot/routine-slot-repository.ts'
 
 export interface DailyRoutineData {
   date: Date
@@ -23,7 +24,10 @@ export const dailyTaskInstanceToGraphQL = (instance: DailyTaskInstanceData) => (
 export const buildDailyTaskInstanceEdge = (instance: DailyTaskInstanceData) => {
   return {
     node: instance,
-    cursor: instance.routineSlot.createdAt.toISOString() + ':' + instance.routineSlot.id,
+    cursor: routineSlotCursor.encode({
+      createdAt: instance.routineSlot.createdAt.toISOString(),
+      id: instance.routineSlot.id,
+    }),
   }
 }
 

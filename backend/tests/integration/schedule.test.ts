@@ -86,8 +86,8 @@ describe('dailyRoutine query', () => {
 
     const result = await executeGraphQL(
       graphql(`
-        query DailyRoutineWithSections($date: DateTime) {
-          dailyRoutine(date: $date) {
+        query DailyRoutineWithSections {
+          dailyRoutine {
             date
             dayOfWeek
             morning {

@@ -16,38 +16,22 @@ import { tableToDomain as routineSlotTableToDomain } from '../routine-slot/routi
 import { tableToDomain as taskCompletionTableToDomain } from '../task-completion/task-completion-domain.ts'
 import { GraphQLError } from 'graphql'
 
-const VALID_DAYS = [
-  'MONDAY',
-  'TUESDAY',
-  'WEDNESDAY',
-  'THURSDAY',
-  'FRIDAY',
-  'SATURDAY',
-  'SUNDAY',
-] as const
-
-const VALID_SECTIONS = ['MORNING', 'MIDDAY', 'EVENING'] as const
-
 const isDayOfWeek = (day: string): day is DayOfWeek => {
-  return VALID_DAYS.includes(day as DayOfWeek)
+  return [
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+    'SUNDAY',
+  ].includes(day as DayOfWeek)
 }
 
 const isDaySection = (section: string): section is DaySection => {
-  return VALID_SECTIONS.includes(section as DaySection)
-}
-
-const toDayOfWeek = (day: DayOfWeekGql): DayOfWeek => {
-  if (!isDayOfWeek(day)) {
-    throw new Error(`Invalid day of week: ${day}`)
-  }
-  return day
-}
-
-const toDaySection = (section: string): DaySection => {
-  if (!isDaySection(section)) {
-    throw new Error(`Invalid day section: ${section}`)
-  }
-  return section
+  return (['MORNING', 'MIDDAY', 'EVENING'] as const).includes(
+    section as DaySection,
+  )
 }
 
 const getDayOfWeek = (date: Date): DayOfWeek => {
@@ -80,6 +64,11 @@ export const dailyRoutine: QueryResolvers<Context>['dailyRoutine'] = async (
   }
 }
 
+/**
+ * NOTE: This is eager, which is a bit rough. The reason for it is simple: this
+ * is not a real Node with a real ID, but an ephemeral object that is a pair
+ * of distinctly related data that will basically always be loaded together
+ */
 const createSectionResolver = (
   section: 'MORNING' | 'MIDDAY' | 'EVENING',
 ): DailyRoutinePayloadResolvers<Context>['morning'] => {
