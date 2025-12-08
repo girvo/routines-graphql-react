@@ -6,40 +6,19 @@ import { GraphQLError } from 'graphql'
 import { decodeGlobalId } from '../globalId.ts'
 import { getUser } from '../auth/auth-context.ts'
 import { userToGraphQL } from '../user/user-domain.ts'
-
-// Resolvers
-import { resolveUserAsNode } from '../user/user-resolvers.ts'
-import {
-  resolveTaskAsNode,
-  tasksResolver,
-  completions as taskCompletions,
-  slots as taskSlots,
-} from '../task/task-resolvers.ts'
-import {
-  resolveRoutineTaskAsNode,
-  task as routineSlotTask,
-} from '../routine-slot/routine-slot-resolvers.ts'
-import {
-  resolveTaskCompletionAsNode,
-  routineSlot as taskCompletionRoutineSlot,
-} from '../task-completion/task-completion-resolvers.ts'
-
-// Mutations
-import { createTask, deleteTask, updateTask } from '../task/task-mutations.ts'
-import {
-  createRoutineSlot,
-  deleteRoutineSlot,
-} from '../routine-slot/routine-slot-mutations.ts'
-import {
-  completeRoutineSlot,
-  uncompleteRoutineSlot,
-} from '../task-completion/task-completion-mutations.ts'
+import * as UserResolvers from '../user/user-resolvers.ts'
+import * as TaskResolvers from '../task/task-resolvers.ts'
+import * as TaskMutations from '../task/task-mutations.ts'
+import * as RoutineSlotResolvers from '../routine-slot/routine-slot-resolvers.ts'
+import * as RoutineSlotMutations from '../routine-slot/routine-slot-mutations.ts'
+import * as TaskCompletionResolvers from '../task-completion/task-completion-resolvers.ts'
+import * as TaskCompletionMutations from '../task-completion/task-completion-mutations.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
-  User: resolveUserAsNode,
-  Task: resolveTaskAsNode,
-  RoutineSlot: resolveRoutineTaskAsNode,
-  TaskCompletion: resolveTaskCompletionAsNode,
+  User: UserResolvers.resolveUserAsNode,
+  Task: TaskResolvers.resolveTaskAsNode,
+  RoutineSlot: RoutineSlotResolvers.resolveRoutineTaskAsNode,
+  TaskCompletion: TaskCompletionResolvers.resolveTaskCompletionAsNode,
 }
 
 export const resolvers: Resolvers<Context> = {
@@ -75,29 +54,30 @@ export const resolvers: Resolvers<Context> = {
 
       return adapter(internalId, context)
     },
-    tasks: tasksResolver,
+    tasks: TaskResolvers.tasksResolver,
+    taskCompletions: TaskCompletionResolvers.taskCompletions,
   },
   Mutation: {
-    createTask,
-    deleteTask,
-    updateTask,
-    createRoutineSlot,
-    deleteRoutineSlot,
-    completeRoutineSlot,
-    uncompleteRoutineSlot,
+    createTask: TaskMutations.createTask,
+    deleteTask: TaskMutations.deleteTask,
+    updateTask: TaskMutations.updateTask,
+    createRoutineSlot: RoutineSlotMutations.createRoutineSlot,
+    deleteRoutineSlot: RoutineSlotMutations.deleteRoutineSlot,
+    completeRoutineSlot: TaskCompletionMutations.completeRoutineSlot,
+    uncompleteRoutineSlot: TaskCompletionMutations.uncompleteRoutineSlot,
+  },
+  Task: {
+    completions: TaskResolvers.completions,
+    slots: TaskResolvers.slots,
+  },
+  RoutineSlot: {
+    task: RoutineSlotResolvers.task,
+  },
+  TaskCompletion: {
+    routineSlot: TaskCompletionResolvers.routineSlot,
   },
   Node: {
     __resolveType: parent => parent.__typename ?? null,
-  },
-  Task: {
-    completions: taskCompletions,
-    slots: taskSlots,
-  },
-  RoutineSlot: {
-    task: routineSlotTask,
-  },
-  TaskCompletion: {
-    routineSlot: taskCompletionRoutineSlot,
   },
   // Custom scalars
   DateTime: DateTimeResolver,
