@@ -74,9 +74,9 @@ export const dailyRoutine: QueryResolvers<Context>['dailyRoutine'] = async (
  * is not a real Node with a real ID, but an ephemeral object that is a pair
  * of distinctly related data that will basically always be loaded together
  */
-const createSectionResolver = <T extends DaySection>(
-  section: T,
-): DailyRoutinePayloadResolvers<Context>[Lowercase<T>] => {
+const createSectionResolver = <Section extends DaySection>(
+  section: Section,
+): DailyRoutinePayloadResolvers<Context>[Lowercase<Section>] => {
   return async (parent: DailyRoutineData, { first, after }, context) => {
     assertAuthenticated(context)
 
@@ -143,13 +143,11 @@ export const weeklySchedule: QueryResolvers<Context>['weeklySchedule'] = async (
   return {}
 }
 
-const createDayResolver = (
-  dayOfWeek: DayOfWeek,
-): WeeklySchedulePayloadResolvers<Context>['monday'] => {
+const createDayResolver = <Day extends DayOfWeek>(
+  dayOfWeek: Day,
+): WeeklySchedulePayloadResolvers<Context>[Lowercase<Day>] => {
   return async _parent => {
-    return {
-      dayOfWeek,
-    }
+    return { dayOfWeek }
   }
 }
 
@@ -161,9 +159,9 @@ export const friday = createDayResolver('FRIDAY')
 export const saturday = createDayResolver('SATURDAY')
 export const sunday = createDayResolver('SUNDAY')
 
-const createDaySectionResolver = <T extends DaySection>(
-  section: T,
-): DayScheduleResolvers<Context>[Lowercase<T>] => {
+const createDaySectionResolver = <Section extends DaySection>(
+  section: Section,
+): DayScheduleResolvers<Context>[Lowercase<Section>] => {
   return async (parent: DayScheduleData, { first, after }, context) => {
     assertAuthenticated(context)
 
