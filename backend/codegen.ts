@@ -23,6 +23,7 @@ const config: CodegenConfig = {
           RoutineSlot: '../routine-slot/routine-slot-domain.ts#RoutineSlotNode',
           TaskCompletion:
             '../task-completion/task-completion-domain.ts#TaskCompletionNode',
+          DailyRoutinePayload: '../schedule/schedule-domain.ts#DailyRoutineData',
         },
       },
       plugins: ['typescript', 'typescript-resolvers'],

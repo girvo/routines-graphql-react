@@ -123,5 +123,39 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
 
       return query.execute()
     },
+
+    async findAllByDayAndSectionPaginated(
+      userId: number,
+      dayOfWeek: DayOfWeek,
+      section: DaySection,
+      pagination: PaginationArgs,
+    ): Promise<RoutineSlotRow[]> {
+      let query = db
+        .selectFrom('routine_slots')
+        .selectAll()
+        .where('user_id', '=', userId)
+        .where('day_of_week', '=', dayOfWeek)
+        .where('section', '=', section)
+        .where('deleted_at', 'is', null)
+        .orderBy('created_at', 'asc')
+        .orderBy('id', 'asc')
+        .limit(pagination.first + 1)
+
+      if (pagination.after) {
+        const cursor = routineSlotCursor.decode(pagination.after)
+        const sqliteFormattedDate = format(
+          new Date(cursor.createdAt),
+          'yyyy-MM-dd HH:mm:ss.SSS',
+        )
+        query = query.where(eb =>
+          buildCursorCondition(eb, {
+            created_at: sqliteFormattedDate,
+            id: cursor.id,
+          }),
+        )
+      }
+
+      return query.execute()
+    },
   }
 }

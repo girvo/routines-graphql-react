@@ -4,6 +4,7 @@ import type { UserNode } from '../user/user-domain.ts';
 import type { TaskNode } from '../task/task-domain.ts';
 import type { RoutineSlotNode } from '../routine-slot/routine-slot-domain.ts';
 import type { TaskCompletionNode } from '../task-completion/task-completion-domain.ts';
+import type { DailyRoutineData } from '../schedule/schedule-domain.ts';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -432,7 +433,7 @@ export type ResolversTypes = ResolversObject<{
   CreateRoutineSlotInput: CreateRoutineSlotInput;
   CreateRoutineSlotPayload: ResolverTypeWrapper<Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversTypes['RoutineSlotEdge'] }>;
   CreateTaskPayload: ResolverTypeWrapper<Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversTypes['TaskEdge'] }>;
-  DailyRoutinePayload: ResolverTypeWrapper<Omit<DailyRoutinePayload, 'evening' | 'midday' | 'morning'> & { evening: ResolversTypes['DailyTaskInstanceConnection'], midday: ResolversTypes['DailyTaskInstanceConnection'], morning: ResolversTypes['DailyTaskInstanceConnection'] }>;
+  DailyRoutinePayload: ResolverTypeWrapper<DailyRoutineData>;
   DailyTaskInstance: ResolverTypeWrapper<Omit<DailyTaskInstance, 'completion' | 'routineSlot'> & { completion?: Maybe<ResolversTypes['TaskCompletion']>, routineSlot: ResolversTypes['RoutineSlot'] }>;
   DailyTaskInstanceConnection: ResolverTypeWrapper<Omit<DailyTaskInstanceConnection, 'edges'> & { edges: Array<ResolversTypes['DailyTaskInstanceEdge']> }>;
   DailyTaskInstanceEdge: ResolverTypeWrapper<Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversTypes['DailyTaskInstance'] }>;
@@ -473,7 +474,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateRoutineSlotInput: CreateRoutineSlotInput;
   CreateRoutineSlotPayload: Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversParentTypes['RoutineSlotEdge'] };
   CreateTaskPayload: Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversParentTypes['TaskEdge'] };
-  DailyRoutinePayload: Omit<DailyRoutinePayload, 'evening' | 'midday' | 'morning'> & { evening: ResolversParentTypes['DailyTaskInstanceConnection'], midday: ResolversParentTypes['DailyTaskInstanceConnection'], morning: ResolversParentTypes['DailyTaskInstanceConnection'] };
+  DailyRoutinePayload: DailyRoutineData;
   DailyTaskInstance: Omit<DailyTaskInstance, 'completion' | 'routineSlot'> & { completion?: Maybe<ResolversParentTypes['TaskCompletion']>, routineSlot: ResolversParentTypes['RoutineSlot'] };
   DailyTaskInstanceConnection: Omit<DailyTaskInstanceConnection, 'edges'> & { edges: Array<ResolversParentTypes['DailyTaskInstanceEdge']> };
   DailyTaskInstanceEdge: Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversParentTypes['DailyTaskInstance'] };

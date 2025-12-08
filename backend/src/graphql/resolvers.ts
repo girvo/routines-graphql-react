@@ -13,6 +13,7 @@ import * as RoutineSlotResolvers from '../routine-slot/routine-slot-resolvers.ts
 import * as RoutineSlotMutations from '../routine-slot/routine-slot-mutations.ts'
 import * as TaskCompletionResolvers from '../task-completion/task-completion-resolvers.ts'
 import * as TaskCompletionMutations from '../task-completion/task-completion-mutations.ts'
+import * as ScheduleResolvers from '../schedule/schedule-resolvers.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: UserResolvers.resolveUserAsNode,
@@ -56,6 +57,7 @@ export const resolvers: Resolvers<Context> = {
     },
     tasks: TaskResolvers.tasksResolver,
     taskCompletions: TaskCompletionResolvers.taskCompletions,
+    dailyRoutine: ScheduleResolvers.dailyRoutine,
   },
   Mutation: {
     createTask: TaskMutations.createTask,
@@ -75,6 +77,11 @@ export const resolvers: Resolvers<Context> = {
   },
   TaskCompletion: {
     routineSlot: TaskCompletionResolvers.routineSlot,
+  },
+  DailyRoutinePayload: {
+    morning: ScheduleResolvers.morning,
+    midday: ScheduleResolvers.midday,
+    evening: ScheduleResolvers.evening,
   },
   Node: {
     __resolveType: parent => parent.__typename ?? null,

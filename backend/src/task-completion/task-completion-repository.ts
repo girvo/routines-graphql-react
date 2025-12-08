@@ -252,5 +252,27 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
 
       return query.execute()
     },
+
+    async findByRoutineSlotIdsAndDate(
+      routineSlotIds: number[],
+      userId: number,
+      date: Date,
+    ): Promise<TaskCompletionRow[]> {
+      if (routineSlotIds.length === 0) {
+        return []
+      }
+
+      const dayStart = startOfDay(date)
+      const dayEnd = endOfDay(date)
+
+      return db
+        .selectFrom('task_completions')
+        .selectAll()
+        .where('routine_slot_id', 'in', routineSlotIds)
+        .where('user_id', '=', userId)
+        .where('completed_at', '>=', dayStart.toISOString())
+        .where('completed_at', '<=', dayEnd.toISOString())
+        .execute()
+    },
   }
 }
