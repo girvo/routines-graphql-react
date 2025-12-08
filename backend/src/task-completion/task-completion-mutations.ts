@@ -1,6 +1,7 @@
 import {
   tableToDomain,
   buildTaskCompletionEdge,
+  taskCompletionToGraphQL,
 } from './task-completion-domain.ts'
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
@@ -17,9 +18,13 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
     )
 
     const completion = tableToDomain(completionRow)
+    const completionEdge = buildTaskCompletionEdge(completion)
 
     return {
-      taskCompletionEdge: buildTaskCompletionEdge(completion),
+      taskCompletionEdge: {
+        node: taskCompletionToGraphQL(completionEdge.node),
+        cursor: completionEdge.cursor,
+      },
     }
   }
 

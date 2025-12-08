@@ -107,3 +107,56 @@ describe('Routine mutations', () => {
     expect(result.data?.deleteRoutineSlot.deletedId).toBe(routineSlot.id)
   })
 })
+
+describe('Task.slots query resolver', () => {
+  it('can get a single slot from a given task', async () => {
+    const { userToken } = await createTestUser()
+    const task = await createTask({ title: 'Task one', yoga, userToken })
+    assert(
+      task.data?.createTask.taskEdge.node !== undefined,
+      'Task was created successfully',
+    )
+
+    const slot = await createRoutineSlot({
+      input: {
+        taskId: task.data.createTask.taskEdge.node.id,
+        dayOfWeek: 'THURSDAY',
+        section: 'MIDDAY',
+      },
+      yoga,
+      userToken,
+    })
+
+    const taskQuery = await executeGraphQL(
+      graphql(`
+        query TaskResolverQuery {
+          tasks {
+            edges {
+              node {
+                title
+                slots {
+                  edges {
+                    node {
+                      dayOfWeek
+                      section
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+
+    const selectedTask = taskQuery.data?.tasks?.edges[0].node
+    assert(selectedTask !== undefined, 'Task was selected successfully')
+    expect(taskQuery.errors).toBeUndefined()
+    expect(selectedTask.title).toBe('Task one')
+    expect(selectedTask.slots.edges.length).toBe(1)
+    expect(selectedTask.slots.edges?.[0].node.dayOfWeek).toBe('THURSDAY')
+    expect(selectedTask.slots.edges?.[0].node.section).toBe('MIDDAY')
+  })
+})

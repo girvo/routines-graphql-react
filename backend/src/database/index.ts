@@ -15,8 +15,10 @@ if (process.env.NODE_ENV !== 'test' && process.env.SQLITE_DB) {
   throw new Error('You must provde a SQLITE_DB variable in your environment')
 }
 
-let log: LogConfig = ['error']
-if (process.env.DB_LOG === 'all') {
+let log: LogConfig = []
+if (process.env.DB_LOG === 'error') {
+  log = ['error']
+} else if (process.env.DB_LOG === 'all') {
   log = ['query', 'error']
 }
 
