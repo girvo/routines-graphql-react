@@ -160,7 +160,7 @@ describe('Task completion mutations', () => {
     )
   })
 
-  it('cannot complete the same routine slot multiple times', async () => {
+  it('cannot complete the same routine slot multiple times on the same day', async () => {
     const { userToken } = await createTestUser()
     const task = await createTask({
       title: 'Daily meditation',
