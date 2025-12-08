@@ -4,6 +4,7 @@ import { env } from 'process'
 import { createAccessToken } from '../../src/auth/auth-utils.ts'
 import { createUserRepository } from '../../src/user/user-repository.ts'
 import { db } from '../../src/database/index.ts'
+import { toGlobalId } from '../../src/globalId.ts'
 
 export const createTestUser = async () => {
   const userRepo = createUserRepository(db)
@@ -11,5 +12,9 @@ export const createTestUser = async () => {
   const user = await userRepo.createUser('test@example.com', passHash)
   const userToken = createAccessToken(user.id, env.JWT_SECRET as any)
 
-  return { userToken, numericId: user.id }
+  return {
+    userToken,
+    numericId: user.id,
+    globalId: toGlobalId('User', user.id),
+  }
 }
