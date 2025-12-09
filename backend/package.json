@@ -10,7 +10,7 @@
     "migration:make": "node --env-file=.env tools/make-migration.ts",
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
     "resolvers:generate": "graphql-codegen",
-    "start": "node --env-file=.env --watch --watch-preserve-output src/main.ts",
+    "start": "node --env-file=.env --watch-preserve-output src/main.ts",
     "test": "node --env-file=.env.test ./node_modules/vitest/vitest.mjs",
     "typecheck": "tsc --noEmit"
   },
