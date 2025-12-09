@@ -11,12 +11,6 @@ export const AuthContext = createContext<AuthContext>({
   setAccessToken: () => {},
 })
 
-export const useAuthToken = () => {
-  const { accessToken } = useContext(AuthContext)
-
-  return accessToken
-}
-
 export const useSetAuthToken = () => {
   const { setAccessToken } = useContext(AuthContext)
 

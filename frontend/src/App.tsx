@@ -1,8 +1,9 @@
-import { useAuthToken } from './login/AuthContext'
+import { use } from 'react'
+import { AuthContext } from './login/AuthContext'
 import { Login } from './login/Login'
 
 export default function App() {
-  const accessToken = useAuthToken()
+  const { accessToken } = use(AuthContext)
 
   if (!accessToken) {
     return <Login />

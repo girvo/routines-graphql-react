@@ -127,6 +127,9 @@ importers:
 
   frontend:
     dependencies:
+      arktype:
+        specifier: ^2.1.26
+        version: 2.1.26
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
