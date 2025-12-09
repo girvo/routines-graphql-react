@@ -13,7 +13,7 @@ const card = cn(
 )
 const formGroup = cn('form-control w-full')
 const input = cn('input input-bordered w-full')
-const submitButton = cn('btn btn-primary w-full mt-4')
+const submitButton = cn('btn btn-primary w-full mt-1')
 
 const loginSchema = type({
   email: 'string.email',
@@ -38,9 +38,12 @@ export const Login = () => {
   // Login handler
   const [state, formAction, isPending] = useActionState(
     async (_: unknown, formData: FormData) => {
+      const email = formData.get('email')
+      const password = formData.get('password')
+
       const result = loginSchema({
-        email: formData.get('email'),
-        password: formData.get('password'),
+        email,
+        password,
       })
 
       if (result instanceof type.errors) {
@@ -48,7 +51,11 @@ export const Login = () => {
         result.forEach(error => {
           errors[error.path.toString()] = error.message
         })
-        return { errors }
+        return {
+          errors,
+          email: String(email ?? ''),
+          password: String(password ?? ''),
+        }
       }
 
       try {
@@ -102,6 +109,7 @@ export const Login = () => {
       }
     },
     {
+      success: false,
       errors: {},
     },
   )
@@ -120,6 +128,7 @@ export const Login = () => {
               name="email"
               type="email"
               placeholder="Email"
+              defaultValue={state?.email}
               className={cn(
                 input,
                 state?.errors?.email && !isPending && 'input-error',
@@ -141,6 +150,7 @@ export const Login = () => {
               name="password"
               type="password"
               placeholder="Password"
+              defaultValue={state?.password}
               className={cn(
                 input,
                 state?.errors?.password && !isPending && 'input-error',
@@ -156,6 +166,9 @@ export const Login = () => {
           <button type="submit" className={submitButton} disabled={isPending}>
             Login
           </button>
+          {state?.errors?.network && (
+            <div className="alert alert-error">{state.errors.network}</div>
+          )}
         </form>
       </div>
     </div>

@@ -7,16 +7,4 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     include: ['./tests/**/*.test.ts'],
   },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
-      },
-      '/graphql': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
-      },
-    },
-  },
 })
