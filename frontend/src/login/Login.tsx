@@ -15,14 +15,27 @@ const formGroup = cn('form-control w-full')
 const input = cn('input input-bordered w-full')
 const submitButton = cn('btn btn-primary w-full mt-4')
 
-// login handler
 const loginSchema = type({
   email: 'string.email',
   password: 'string',
 })
 
+const loginSuccessResponse = type({
+  success: 'true',
+  accessToken: 'string',
+})
+
+const loginErrorResponse = type({
+  success: 'false',
+  errors: type({ message: 'string' }).array(),
+})
+
+const loginResponse = loginSuccessResponse.or(loginErrorResponse)
+
 export const Login = () => {
   const { setAccessToken } = use(AuthContext)
+
+  // Login handler
   const [state, formAction, isPending] = useActionState(
     async (_: unknown, formData: FormData) => {
       const result = loginSchema({
@@ -38,12 +51,55 @@ export const Login = () => {
         return { errors }
       }
 
-      const { email, password } = result
+      try {
+        const { email, password } = result
+        const httpResponse = await fetch('/api/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+        })
 
-      await new Promise(resolve => setTimeout(resolve, 2000))
+        const json = await httpResponse.json()
+        const validatedResponse = loginResponse(json)
 
-      setAccessToken('hooray')
-      return { success: true }
+        if (validatedResponse instanceof type.errors) {
+          console.error(
+            'Invalid response from server:',
+            validatedResponse.summary,
+          )
+          return {
+            success: false,
+            errors: { network: 'Invalid server response' },
+          }
+        }
+
+        if (validatedResponse.success) {
+          setAccessToken(validatedResponse.accessToken)
+          return { success: true }
+        }
+
+        return {
+          success: false,
+          errors: { network: validatedResponse.errors[0].message } as Record<
+            string,
+            string
+          >,
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error(err)
+          return {
+            success: false,
+            errors: { network: err.message } as Record<string, string>,
+          }
+        }
+
+        return { success: false }
+      }
     },
     {
       errors: {},

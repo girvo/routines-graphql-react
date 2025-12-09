@@ -41,7 +41,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
   const userRepo = createUserRepository(db)
   const refreshTokenRepo = createRefreshTokenRepository(db)
 
-  fastify.post('/login', { schema }, async (request, reply) => {
+  fastify.post('/api/login', { schema }, async (request, reply) => {
     const body = request.body as typeof AuthSchema.infer
     try {
       const user = await userRepo
@@ -85,7 +85,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
     }
   })
 
-  fastify.post('/signup', { schema }, async (request, reply) => {
+  fastify.post('/api/signup', { schema }, async (request, reply) => {
     const body = request.body as typeof AuthSchema.infer
     try {
       const passHash = await hash(body.password, 10)
@@ -133,7 +133,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
     }
   })
 
-  fastify.get('/refresh', {}, async (request, reply) => {
+  fastify.get('/api/refresh', {}, async (request, reply) => {
     const refreshToken = request.cookies.refreshToken
 
     if (!refreshToken) {
@@ -190,7 +190,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
 
   fastify.route({
     method: ['GET', 'POST'],
-    url: '/logout',
+    url: '/api/logout',
     schema: {},
     handler: async (request, reply) => {
       const refreshToken = request.cookies.refreshToken

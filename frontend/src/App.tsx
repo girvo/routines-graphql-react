@@ -8,5 +8,5 @@ export default function App() {
   if (!accessToken) {
     return <Login />
   }
-  return <div>Hello world</div>
+  return <div>{`Hello, world! ${accessToken}`}</div>
 }
