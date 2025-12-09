@@ -3,8 +3,8 @@ import { type RoutineSlotDomain, tableToDomain } from './routine-slot-domain.ts'
 import DataLoader from 'dataloader'
 
 export const routineSlotDataLoader = (context: Context) => {
-  assertAuthenticated(context)
   return new DataLoader(async (keys: readonly number[]) => {
+    assertAuthenticated(context)
     const rows = await context.routineRepo.findAllByIdsAndUserId(
       keys,
       context.currentUser.id,

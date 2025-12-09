@@ -6,8 +6,8 @@ import {
 import DataLoader from 'dataloader'
 
 export const taskCompletionDataLoader = (context: Context) => {
-  assertAuthenticated(context)
   return new DataLoader(async (keys: readonly number[]) => {
+    assertAuthenticated(context)
     const rows = await context.taskCompletionRepo.findAllByIdsAndUserId(
       keys,
       context.currentUser.id,

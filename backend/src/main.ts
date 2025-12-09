@@ -60,6 +60,7 @@ export const createApp = async (
 
   const app = fastify({
     logger: envToLogger[getEnv().ENVIRONMENT],
+    forceCloseConnections: true,
   })
 
   await app.register(cors, {
@@ -146,7 +147,7 @@ export const createApp = async (
     // prefix: '/public/', // optional: serve files under /public/ URL
   })
 
-  app.get('/graphiql', (request, reply) => {
+  app.get('/graphiql', (_request, reply) => {
     return reply.sendFile('graphiql.html')
   })
 
@@ -155,5 +156,15 @@ export const createApp = async (
 
 if (import.meta.main) {
   const { app } = await createApp()
-  app.listen({ port: 4000 })
+
+  const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM']
+  for (const signal of signals) {
+    process.on(signal, async () => {
+      app.log.info(`Received ${signal}, closing server gracefully...`)
+      await app.close()
+      process.exit(0)
+    })
+  }
+
+  await app.listen({ port: 4000 })
 }
