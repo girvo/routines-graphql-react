@@ -118,7 +118,7 @@ export const Login = () => {
     <div className={container}>
       <div className={card}>
         <h1 className="text-4xl font-bold mb-8 text-center">Login</h1>
-        <form className="flex flex-col gap-4" action={formAction} noValidate>
+        <form className="flex flex-col gap-4" action={formAction} method="POST" noValidate>
           <div className={formGroup}>
             <label htmlFor="email" className="sr-only">
               Email

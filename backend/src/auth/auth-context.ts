@@ -10,6 +10,10 @@ const JwtPayload = type({
   exp: 'number',
 })
 
+const unauthOptions = {
+  extensions: { code: 'UNAUTHENTICATED' },
+}
+
 export const resolveUser: ResolveUserFn<
   UserDomain,
   Context
@@ -33,13 +37,13 @@ export const validateUser: ValidateUserFn<UserDomain> = params => {
   }
 
   if (!params.user) {
-    return new GraphQLError('Unauthenticated!')
+    return new GraphQLError('Unauthenticated!', unauthOptions)
   }
 }
 
 export const getUser = async (context: Context) => {
   if (!context.currentUser) {
-    throw new GraphQLError('No user in context')
+    throw new GraphQLError('No user in context', unauthOptions)
   }
 
   // NOTE: This isn't actually needed: we've already loaded it, this is just a test
@@ -48,6 +52,7 @@ export const getUser = async (context: Context) => {
   if (!user) {
     throw new GraphQLError(
       `No user found by this ID: ${context.currentUser.id}`,
+      unauthOptions,
     )
   }
 
