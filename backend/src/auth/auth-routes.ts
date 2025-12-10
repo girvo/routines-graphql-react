@@ -18,8 +18,8 @@ import { createUserRepository } from '../user/user-repository.ts'
 import { db } from '../database/index.ts'
 
 const AuthSchema = type({
-  email: 'string',
-  password: 'string',
+  email: 'string.email',
+  password: 'string>5',
 })
 
 const schema = {

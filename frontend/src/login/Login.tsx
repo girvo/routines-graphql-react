@@ -53,6 +53,15 @@ export const Login = () => {
         })
 
         const json = await httpResponse.json()
+
+        if (!httpResponse.ok) {
+          const errorMessage = json.message || json.error || 'Request failed'
+          return {
+            success: false,
+            errors: { network: errorMessage } as Record<string, string>,
+          }
+        }
+
         const validatedResponse = authResponse(json)
 
         if (validatedResponse instanceof type.errors) {
@@ -154,7 +163,9 @@ export const Login = () => {
             Login
           </button>
           {state?.errors?.network && (
-            <div className="alert alert-error">{state.errors.network}</div>
+            <div className="alert alert-error">
+              {capitalise(state.errors.network)}
+            </div>
           )}
         </form>
         <NavLink to="/register" className={linkButton}>

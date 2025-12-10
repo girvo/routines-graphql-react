@@ -52,6 +52,15 @@ export const Register = () => {
         })
 
         const json = await httpResponse.json()
+
+        if (!httpResponse.ok) {
+          const errorMessage = json.message || json.error || 'Request failed'
+          return {
+            success: false,
+            errors: { network: errorMessage } as Record<string, string>,
+          }
+        }
+
         const validatedResponse = authResponse(json)
 
         if (validatedResponse instanceof type.errors) {
@@ -153,7 +162,9 @@ export const Register = () => {
             Register
           </button>
           {state?.errors?.network && (
-            <div className="alert alert-error">{state.errors.network}</div>
+            <div className="alert alert-error">
+              {capitalise(state.errors.network)}
+            </div>
           )}
         </form>
         <NavLink to="/" className={linkButton}>
