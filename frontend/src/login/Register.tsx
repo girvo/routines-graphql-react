@@ -14,10 +14,9 @@ import {
 } from './auth-styles'
 import { NavLink } from 'react-router'
 
-export const Login = () => {
+export const Register = () => {
   const { setAccessToken } = use(AuthContext)
 
-  // Login handler
   const [state, formAction, isPending] = useActionState(
     async (_: unknown, formData: FormData) => {
       const email = formData.get('email')
@@ -42,7 +41,7 @@ export const Login = () => {
 
       try {
         const { email, password } = result
-        const httpResponse = await fetch('/api/login', {
+        const httpResponse = await fetch('/api/signup', {
           method: 'POST',
           body: JSON.stringify({
             email,
@@ -99,7 +98,7 @@ export const Login = () => {
   return (
     <div className={container}>
       <div className={card}>
-        <h1 className="mb-8 text-center text-4xl font-bold">Login</h1>
+        <h1 className="mb-8 text-center text-4xl font-bold">Register</h1>
         <form
           className="flex flex-col gap-4"
           action={formAction}
@@ -151,14 +150,14 @@ export const Login = () => {
             )}
           </div>
           <button type="submit" className={submitButton} disabled={isPending}>
-            Login
+            Register
           </button>
           {state?.errors?.network && (
             <div className="alert alert-error">{state.errors.network}</div>
           )}
         </form>
-        <NavLink to="/register" className={linkButton}>
-          Don't have an account? Register
+        <NavLink to="/" className={linkButton}>
+          Already have an account? Login
         </NavLink>
       </div>
     </div>

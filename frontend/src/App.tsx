@@ -1,31 +1,14 @@
-import { Suspense, use } from 'react'
+import { use } from 'react'
 import { AuthContext } from './auth/auth-store'
-import { Login } from './login/Login'
-import { Hello } from './Hello'
+import { RouterProvider } from 'react-router'
+import { routes, unAuthedRoutes } from './routes.tsx'
 
 export default function App() {
-  const { hasAccessToken, clearAccessToken } = use(AuthContext)
+  const { hasAccessToken } = use(AuthContext)
 
   if (!hasAccessToken) {
-    return <Login />
+    return <RouterProvider router={unAuthedRoutes} />
   }
 
-  return (
-    <div>
-      <h1>Hello, world!</h1>
-      <a
-        href="#"
-        onClick={ev => {
-          ev.preventDefault()
-          clearAccessToken()
-        }}
-      >
-        Logout
-      </a>
-      <hr />
-      <Suspense>
-        <Hello />
-      </Suspense>
-    </div>
-  )
+  return <RouterProvider router={routes} />
 }
