@@ -1,5 +1,5 @@
 import { Suspense, use } from 'react'
-import { AuthContext } from './login/AuthContext'
+import { AuthContext } from './auth/auth-store'
 import { Login } from './login/Login'
 import { Hello } from './Hello'
 

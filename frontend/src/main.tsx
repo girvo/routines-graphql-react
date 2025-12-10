@@ -4,7 +4,7 @@ import App from './App.tsx'
 import { ErrorBoundary } from 'react-error-boundary'
 import { environment } from './relay/environment'
 import { RelayEnvironmentProvider } from 'react-relay'
-import { AuthProvider } from './login/AuthContext.tsx'
+import { AuthProvider } from './auth/AuthProvider.tsx'
 import { AppError } from './AppError.tsx'
 import './styles.css'
 

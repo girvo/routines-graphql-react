@@ -2,18 +2,18 @@ import { useActionState, use } from 'react'
 import { type } from 'arktype'
 import { cn } from '../utils/tailwind'
 import { capitalise } from '../utils/text'
-import { AuthContext } from './AuthContext'
+import { AuthContext } from '../auth/auth-store'
 
 // Styles
-const container = cn('flex p-4 items-center justify-center md:min-h-screen')
+const container = cn('flex items-center justify-center p-4 md:min-h-screen')
 const card = cn(
-  'card bg-base-100 shadow-xl border border-base-300',
+  'card bg-base-100 border-base-300 border shadow-xl',
   'w-full md:w-96',
   'p-8',
 )
 const formGroup = cn('form-control w-full')
 const input = cn('input input-bordered w-full')
-const submitButton = cn('btn btn-primary w-full mt-1')
+const submitButton = cn('btn btn-primary mt-1 w-full')
 
 const loginSchema = type({
   email: 'string.email',
@@ -117,8 +117,13 @@ export const Login = () => {
   return (
     <div className={container}>
       <div className={card}>
-        <h1 className="text-4xl font-bold mb-8 text-center">Login</h1>
-        <form className="flex flex-col gap-4" action={formAction} method="POST" noValidate>
+        <h1 className="mb-8 text-center text-4xl font-bold">Login</h1>
+        <form
+          className="flex flex-col gap-4"
+          action={formAction}
+          method="POST"
+          noValidate
+        >
           <div className={formGroup}>
             <label htmlFor="email" className="sr-only">
               Email
@@ -136,7 +141,7 @@ export const Login = () => {
               disabled={isPending}
             />
             {state?.errors?.email && !isPending && (
-              <span className="text-error text-sm mt-1">
+              <span className="text-error mt-1 text-sm">
                 {capitalise(state.errors.email)}
               </span>
             )}
@@ -158,7 +163,7 @@ export const Login = () => {
               disabled={isPending}
             />
             {state?.errors?.password && !isPending && (
-              <span className="text-error text-sm mt-1">
+              <span className="text-error mt-1 text-sm">
                 {capitalise(state.errors.password)}
               </span>
             )}

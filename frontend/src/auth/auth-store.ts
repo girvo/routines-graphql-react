@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useSyncExternalStore } from 'react'
+import { createContext } from 'react'
 
 const ACCESS_TOKEN_KEY = 'accessToken'
 
@@ -47,7 +46,7 @@ class AuthStore {
   }
 }
 
-const authStore = new AuthStore()
+export const authStore = new AuthStore()
 
 export const AuthContext = createContext<AuthContext>({
   hasAccessToken: false,
@@ -55,29 +54,29 @@ export const AuthContext = createContext<AuthContext>({
   clearAccessToken: () => authStore.setAccessToken(null),
 })
 
-interface AuthProviderProps {
-  children: React.ReactNode
-}
+// interface AuthProviderProps {
+//   children: React.ReactNode
+// }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const hasAccessToken = useSyncExternalStore(
-    authStore.subscribe,
-    authStore.getSnapshot,
-    authStore.getSnapshot,
-  )
+// // export const AuthProvider = ({ children }: AuthProviderProps) => {
+//   const hasAccessToken = useSyncExternalStore(
+//     authStore.subscribe,
+//     authStore.getSnapshot,
+//     authStore.getSnapshot,
+//   )
 
-  return (
-    <AuthContext.Provider
-      value={{
-        hasAccessToken,
-        setAccessToken: authStore.setAccessToken,
-        clearAccessToken: () => authStore.setAccessToken(null),
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
-}
+//   return (
+//     <AuthContext.Provider
+//       value={{
+//         hasAccessToken,
+//         setAccessToken: authStore.setAccessToken,
+//         clearAccessToken: () => authStore.setAccessToken(null),
+//       }}
+//     >
+//       {children}
+//     </AuthContext.Provider>
+//   )
+// }
 
 export const setAccessToken = (token: string) => {
   authStore.setAccessToken(token)
