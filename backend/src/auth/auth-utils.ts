@@ -12,7 +12,7 @@ export const hashRefreshToken = (token: string, secret: string): string => {
 
 export const createAccessToken = (userId: number, secret: string): string => {
   return jwt.sign({ userId }, secret, {
-    expiresIn: '1m',
+    expiresIn: '15m',
   })
 }
 

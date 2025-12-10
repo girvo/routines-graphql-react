@@ -4,15 +4,15 @@ import { Login } from './login/Login'
 import { Hello } from './Hello'
 
 export default function App() {
-  const { accessToken, clearAccessToken } = use(AuthContext)
+  const { hasAccessToken, clearAccessToken } = use(AuthContext)
 
-  if (!accessToken) {
+  if (!hasAccessToken) {
     return <Login />
   }
 
   return (
     <div>
-      <h1>{`Hello, world! ${accessToken}`}</h1>
+      <h1>Hello, world!</h1>
       <a
         href="#"
         onClick={ev => {

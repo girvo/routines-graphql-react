@@ -4,7 +4,7 @@ import React, { createContext, useSyncExternalStore } from 'react'
 const ACCESS_TOKEN_KEY = 'accessToken'
 
 interface AuthContext {
-  accessToken: string | null
+  hasAccessToken: boolean
   setAccessToken: (token: string | null) => void
   clearAccessToken: () => void
 }
@@ -27,30 +27,32 @@ class AuthStore {
   }
 
   getSnapshot = () => {
-    return this.accessToken
+    return this.accessToken !== null
   }
 
   setAccessToken = (token: string | null) => {
+    const hadToken = this.accessToken !== null
+    const hasToken = token !== null
+
     if (token) {
       window.localStorage.setItem(ACCESS_TOKEN_KEY, token)
     } else {
       window.localStorage.removeItem(ACCESS_TOKEN_KEY)
     }
     this.accessToken = token
-    this.listeners.forEach(listener => listener())
-  }
 
-  clearAccessToken = () => {
-    this.setAccessToken(null)
+    if (hadToken !== hasToken) {
+      this.listeners.forEach(listener => listener())
+    }
   }
 }
 
 const authStore = new AuthStore()
 
 export const AuthContext = createContext<AuthContext>({
-  accessToken: authStore.getSnapshot(),
+  hasAccessToken: false,
   setAccessToken: authStore.setAccessToken,
-  clearAccessToken: authStore.clearAccessToken,
+  clearAccessToken: () => authStore.setAccessToken(null),
 })
 
 interface AuthProviderProps {
@@ -58,7 +60,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const accessToken = useSyncExternalStore(
+  const hasAccessToken = useSyncExternalStore(
     authStore.subscribe,
     authStore.getSnapshot,
     authStore.getSnapshot,
@@ -67,9 +69,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   return (
     <AuthContext.Provider
       value={{
-        accessToken,
+        hasAccessToken,
         setAccessToken: authStore.setAccessToken,
-        clearAccessToken: authStore.clearAccessToken,
+        clearAccessToken: () => authStore.setAccessToken(null),
       }}
     >
       {children}
@@ -77,15 +79,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   )
 }
 
-/**
- * This is for non-React use-cases
- */
-export const clearAccessToken = () => {
-  authStore.clearAccessToken()
-}
-
 export const setAccessToken = (token: string) => {
-  authStore.setAccessToken(token) // I wonder how we do this without re-rendering...
+  authStore.setAccessToken(token)
 }
 
-export const getAccessToken = () => authStore.getSnapshot()
+export const clearAccessToken = () => {
+  authStore.setAccessToken(null)
+}
+
+export const getAccessToken = (): string | null => {
+  return authStore['accessToken']
+}
