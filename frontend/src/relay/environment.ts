@@ -35,12 +35,9 @@ import {
 let refreshPromise: Promise<string> | null = null
 
 async function refreshAccessToken(): Promise<string> {
-  // Ensure only one refresh happens at a time
   if (refreshPromise) {
     return refreshPromise
   }
-
-  console.log('in refresh!')
 
   refreshPromise = fetch('/api/refresh', {
     method: 'GET',
@@ -93,14 +90,6 @@ async function fetchGraphQLRequest(
         err.extensions?.code === 'UNAUTHENTICATED',
     )
 
-  console.debug(
-    json.errors?.some(
-      (err: { extensions?: { code?: string } }) =>
-        err.extensions?.code === 'UNAUTHENTICATED',
-    ),
-  )
-
-  console.log(attempt)
   if (hasAuthError && attempt === 0) {
     try {
       const newToken = await refreshAccessToken()

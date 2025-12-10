@@ -1,4 +1,4 @@
-import { use } from 'react'
+import { Suspense, use } from 'react'
 import { AuthContext } from './login/AuthContext'
 import { Login } from './login/Login'
 import { Hello } from './Hello'
@@ -23,7 +23,9 @@ export default function App() {
         Logout
       </a>
       <hr />
-      <Hello />
+      <Suspense>
+        <Hello />
+      </Suspense>
     </div>
   )
 }
