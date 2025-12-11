@@ -3,6 +3,7 @@
  * This file is mostly type nonsense to get the same type derivations working
  * that Relay uses internally; you mostly don't have to care about this
  */
+import { Suspense } from 'react'
 import { EntryPointContainer } from 'react-relay'
 import type { PreloadedEntryPoint, EntryPointComponent } from 'react-relay'
 import type {
@@ -41,6 +42,7 @@ export function createEntryPointRoute<TEntryPoint>(
   entrypoint: TEntryPoint,
   params: GetEntryPointParamsFromEntryPoint<TEntryPoint>,
   runtimeProps: GetRuntimePropsFromEntryPoint<TEntryPoint>,
+  fallback?: React.ReactNode,
 ): EntryPointRouteConfig<TEntryPoint> {
   type TComponent = GetEntryPointComponentFromEntryPoint<TEntryPoint>
   type TRef = PreloadedEntryPoint<TComponent>
@@ -52,11 +54,17 @@ export function createEntryPointRoute<TEntryPoint>(
     loader: () => loadEntryPoint(entrypoint, params),
     Component: function EntryPointRouteComponent() {
       const entryPointReference = useLoaderData() as TRef
-      return (
+      const container = (
         <EntryPointContainer
           entryPointReference={entryPointReference}
           props={runtimeProps as TRuntimeProps}
         />
+      )
+
+      return fallback ? (
+        <Suspense fallback={fallback}>{container}</Suspense>
+      ) : (
+        container
       )
     },
   }

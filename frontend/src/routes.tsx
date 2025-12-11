@@ -44,7 +44,12 @@ export const routes = createBrowserRouter([
       },
       {
         path: '/tasks',
-        ...createEntryPointRoute(TasksPageEntryPoint, {}, {}),
+        ...createEntryPointRoute(
+          TasksPageEntryPoint,
+          {},
+          {},
+          <div>Loading...</div>,
+        ),
         handle: {
           title: 'All tasks',
         },
