@@ -29,5 +29,8 @@
   // For tailwind cn utility function
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ]
+  ],
+  "relay.rootDirectory": "frontend",
+  "relay.pathToConfig": "relay.config.json",
+  "relay.pathToRelay": "node_modules/.bin/relay-compiler"
 }
