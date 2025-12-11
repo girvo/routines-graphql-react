@@ -1,16 +1,11 @@
-import { createBrowserRouter, useLoaderData } from 'react-router'
-import type { PreloadedEntryPoint } from 'react-relay'
-import { EntryPointContainer } from 'react-relay'
+import { createBrowserRouter } from 'react-router'
 import { Login } from './login/Login.tsx'
 import { Register } from './login/Register.tsx'
 import { AppError } from './AppError.tsx'
 import { Routine } from './Routine.tsx'
 import { AppShell } from './AppShell.tsx'
-import {
-  TasksPageEntryPoint,
-  type TasksPageEntryPointComponent,
-} from './Tasks/TasksPage.entrypoint.ts'
-import { loadEntryPoint } from './relay/loadEntrypoint.ts'
+import { TasksPageEntryPoint } from './Tasks/TasksPage.entrypoint.ts'
+import { createEntryPointRoute } from './relay/createEntryPointRoute.tsx'
 
 export const unAuthedRoutes = createBrowserRouter([
   {
@@ -49,17 +44,7 @@ export const routes = createBrowserRouter([
       },
       {
         path: '/tasks',
-        loader: () => loadEntryPoint(TasksPageEntryPoint, {}),
-        Component: function TasksPageRoute() {
-          const entryPointReference =
-            useLoaderData() as PreloadedEntryPoint<TasksPageEntryPointComponent>
-          return (
-            <EntryPointContainer
-              entryPointReference={entryPointReference}
-              props={{}}
-            />
-          )
-        },
+        ...createEntryPointRoute(TasksPageEntryPoint, {}, {}),
         handle: {
           title: 'All tasks',
         },

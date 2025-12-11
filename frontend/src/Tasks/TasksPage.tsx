@@ -2,6 +2,8 @@ import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
 import { Task } from './Task'
 
+console.debug('I am loaded!')
+
 interface TaskPageProps {
   queries: {
     tasksPageQuery: PreloadedQuery<TasksPageQuery>
