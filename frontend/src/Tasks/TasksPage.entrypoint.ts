@@ -5,6 +5,7 @@ import TasksPageQueryDocument, {
 } from './__generated__/TasksPageQuery.graphql'
 
 // The type for the props your component receives via entrypoint
+// This component _has_ none, and ESLint doesn't like `{}` lol
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type TasksPageEntryPointParams = {}
 
@@ -14,6 +15,8 @@ type TasksPageQueries = {
 }
 
 // The component type that will receive these queries
+// NOTE: we should probably be importing this from TasksPage directly
+// This stuff is why we have wrappers that do createEntryPoint and so on!
 export type TasksPageEntryPointComponent = EntryPointComponent<
   TasksPageQueries,
   Record<string, never>,
