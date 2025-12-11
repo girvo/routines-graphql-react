@@ -6,7 +6,7 @@ interface TaskPageProps {
   queryRef: PreloadedQuery<TasksPageQuery>
 }
 
-export const TasksPage = ({ queryRef }: TaskPageProps) => {
+const TasksPage = ({ queryRef }: TaskPageProps) => {
   const data = usePreloadedQuery<TasksPageQuery>(
     graphql`
       query TasksPageQuery {
@@ -31,3 +31,5 @@ export const TasksPage = ({ queryRef }: TaskPageProps) => {
     </ul>
   )
 }
+
+export default TasksPage

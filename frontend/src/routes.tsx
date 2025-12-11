@@ -1,10 +1,11 @@
 import { createBrowserRouter } from 'react-router'
-import { Login } from './login/Login'
-import { Register } from './login/Register'
-import { AppError } from './AppError'
-import { Routine } from './Routine'
-import { AppShell } from './AppShell'
-import { TasksPage } from './Tasks/TasksPage'
+import { Login } from './login/Login.tsx'
+import { Register } from './login/Register.tsx'
+import { AppError } from './AppError.tsx'
+import { Routine } from './Routine.tsx'
+import { AppShell } from './AppShell.tsx'
+import { EntryPointRoute } from './relay/EntryPointRoute.tsx'
+import { TasksPageEntrypoint } from './Tasks/TasksPage.entrypoint.ts'
 
 export const unAuthedRoutes = createBrowserRouter([
   {
@@ -43,7 +44,7 @@ export const routes = createBrowserRouter([
       },
       {
         path: '/tasks',
-        Component: TasksPage,
+        element: <EntryPointRoute entrypoint={TasksPageEntrypoint} />,
         handle: {
           title: 'All tasks',
         },
