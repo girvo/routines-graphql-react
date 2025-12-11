@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react-vite'
-import { MemoryRouter } from 'react-router'
+import { createMemoryRouter, RouterProvider } from 'react-router'
 import '../src/styles.css'
 
 const preview: Preview = {
@@ -21,16 +21,27 @@ const preview: Preview = {
   decorators: [
     // Ensures we have a router around the thing
     (Story, { parameters }) => {
-      let entry = '/'
-      if (parameters.currentPath) {
-        entry = parameters.currentPath
-      }
+      const entry = parameters.currentPath ?? '/'
+      const title = parameters.pageTitle ?? ''
 
-      return (
-        <MemoryRouter initialEntries={[entry]}>
-          <Story />
-        </MemoryRouter>
+      const router = createMemoryRouter(
+        [
+          {
+            index: true,
+            path: '/*',
+            Component: Story,
+            handle: { title },
+          },
+        ],
+        { initialEntries: [entry] },
       )
+
+      return <RouterProvider router={router} />
+      // return (
+      //   <MemoryRouter initialEntries={[entry]}>
+      //     <Story />
+      //   </MemoryRouter>
+      // )
     },
   ],
 }

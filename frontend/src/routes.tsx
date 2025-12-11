@@ -12,10 +12,16 @@ export const unAuthedRoutes = createBrowserRouter([
       {
         index: true,
         Component: Login,
+        handle: {
+          title: 'Login',
+        },
       },
       {
         path: 'register',
         Component: Register,
+        handle: {
+          title: 'Register',
+        },
       },
     ],
   },
@@ -29,6 +35,9 @@ export const routes = createBrowserRouter([
       {
         index: true,
         Component: Routine,
+        handle: {
+          title: 'Routine',
+        },
       },
     ],
   },
