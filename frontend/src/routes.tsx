@@ -4,6 +4,7 @@ import { Register } from './login/Register'
 import { AppError } from './AppError'
 import { Routine } from './Routine'
 import { AppShell } from './AppShell'
+import { TasksPage } from './Tasks/TasksPage'
 
 export const unAuthedRoutes = createBrowserRouter([
   {
@@ -38,6 +39,13 @@ export const routes = createBrowserRouter([
         Component: Routine,
         handle: {
           title: 'Routine',
+        },
+      },
+      {
+        path: '/tasks',
+        Component: TasksPage,
+        handle: {
+          title: 'All tasks',
         },
       },
     ],
