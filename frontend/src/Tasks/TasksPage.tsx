@@ -3,10 +3,12 @@ import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
 import { Task } from './Task'
 
 interface TaskPageProps {
-  queryRef: PreloadedQuery<TasksPageQuery>
+  queries: {
+    tasksPageQuery: PreloadedQuery<TasksPageQuery>
+  }
 }
 
-const TasksPage = ({ queryRef }: TaskPageProps) => {
+const TasksPage = ({ queries }: TaskPageProps) => {
   const data = usePreloadedQuery<TasksPageQuery>(
     graphql`
       query TasksPageQuery {
@@ -20,7 +22,7 @@ const TasksPage = ({ queryRef }: TaskPageProps) => {
         }
       }
     `,
-    queryRef,
+    queries.tasksPageQuery,
   )
 
   return (
