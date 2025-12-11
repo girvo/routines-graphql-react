@@ -11,6 +11,7 @@
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
     "resolvers:generate": "graphql-codegen",
     "start": "node --env-file=.env --watch-preserve-output src/main.ts",
+    "start:watch": "pnpm start --watch-path=./src --watch-path=./migrations",
     "test": "node --env-file=.env.test ./node_modules/vitest/vitest.mjs",
     "typecheck": "tsc --noEmit"
   },

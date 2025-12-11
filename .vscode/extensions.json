@@ -1,6 +1,9 @@
 {
   "recommendations": [
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "meta.relay",
+    "bradlc.vscode-tailwindcss",
+    "GraphQL.vscode-graphql"
   ]
 }

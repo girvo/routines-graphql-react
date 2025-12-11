@@ -2,12 +2,17 @@
   "name": "@my-routines/app",
   "packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501",
   "private": true,
+  "scripts": {
+    "dev": "concurrently -n backend,frontend,storybook -c blue,green,yellow \"pnpm --filter @my-routines/backend start:watch\" \"pnpm --filter @my-routines/frontend dev\" \"pnpm --filter @my-routines/frontend storybook\"",
+    "dev:split": "tmux new-session -d -s dev 'pnpm --filter @my-routines/backend start:watch' \\; split-window -v 'pnpm --filter @my-routines/frontend dev' \\; split-window -v 'pnpm --filter @my-routines/frontend storybook' \\; attach"
+  },
   "dependencies": {
     "@types/node": "^24.4.0",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.35.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
@@ -18,5 +23,9 @@
     "overrides": {
       "vite": "npm:rolldown-vite@7.2.5"
     }
+  },
+  "graphql": {
+    "schema": "./schema.graphql",
+    "documents": "**/*.{graphql,js,ts,jsx,tsx}"
   }
 }
