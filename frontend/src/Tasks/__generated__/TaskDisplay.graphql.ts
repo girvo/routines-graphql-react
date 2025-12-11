@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5daada8d35d0d54da29c39f0e253bed3>>
+ * @generated SignedSource<<5cce9e1ee302ef2d488232637ff74142>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,16 @@ import { FragmentRefs } from "relay-runtime";
 export type TaskDisplay$data = {
   readonly createdAt: any;
   readonly id: string;
+  readonly slots: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly __typename: "RoutineSlot";
+      };
+    }>;
+    readonly pageInfo: {
+      readonly hasNextPage: boolean;
+    };
+  };
   readonly title: string;
   readonly " $fragmentType": "TaskDisplay";
 };
@@ -47,12 +57,70 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "createdAt",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "RoutineSlotConnection",
+      "kind": "LinkedField",
+      "name": "slots",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "RoutineSlotEdge",
+          "kind": "LinkedField",
+          "name": "edges",
+          "plural": true,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "RoutineSlot",
+              "kind": "LinkedField",
+              "name": "node",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
     }
   ],
   "type": "Task",
   "abstractKey": null
 };
 
-(node as any).hash = "3d38e0f5b73cbe8407633eee5805d094";
+(node as any).hash = "cc4d4c66ef5a9384be2bd71cb9c00b92";
 
 export default node;

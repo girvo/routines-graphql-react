@@ -29,28 +29,43 @@ const TaskQuery = () => {
   return <Task task={data.node} />
 }
 
-const TaskWrapper = () => {
+const renderer = () => {
   const environment = createMockEnvironment()
   environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op),
+    MockPayloadGenerator.generate(op, {
+      Task() {
+        return {
+          title: 'my awesome title',
+        }
+      },
+      RoutineSlotConnection() {
+        return {
+          edges: [],
+        }
+      },
+    }),
   )
 
   return (
-    <RelayEnvironmentProvider environment={environment}>
-      <Suspense fallback="Loading...">
-        <TaskQuery />
-      </Suspense>
-    </RelayEnvironmentProvider>
+    <div className="max-w-200">
+      <RelayEnvironmentProvider environment={environment}>
+        <Suspense fallback="Loading...">
+          <ul className="list bg-base-200 rounded-box shadow-md">
+            <TaskQuery />
+          </ul>
+        </Suspense>
+      </RelayEnvironmentProvider>
+    </div>
   )
 }
 
 const meta = {
   title: 'Tasks/Task',
-  component: TaskWrapper,
+  component: renderer,
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof TaskWrapper>
+} satisfies Meta<typeof renderer>
 
 export default meta
 type Story = StoryObj<typeof meta>
