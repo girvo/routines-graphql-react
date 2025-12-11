@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-// import { mocked } from 'storybook/test'
-// import { useMatches } from 'react-router'
 
 import { AppShell } from '../AppShell'
 
@@ -18,11 +16,13 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   parameters: {
     pageTitle: 'Today',
+    pageComponent: () => <div>Today routine!</div>,
   },
 }
 export const AllTasks: Story = {
   parameters: {
     currentPath: '/tasks',
     pageTitle: 'All tasks',
+    pageComponent: () => <div>All tasks</div>,
   },
 }

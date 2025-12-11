@@ -3,6 +3,7 @@ import { Login } from './login/Login'
 import { Register } from './login/Register'
 import { AppError } from './AppError'
 import { Routine } from './Routine'
+import { AppShell } from './AppShell'
 
 export const unAuthedRoutes = createBrowserRouter([
   {
@@ -29,11 +30,11 @@ export const unAuthedRoutes = createBrowserRouter([
 
 export const routes = createBrowserRouter([
   {
-    path: '/',
     ErrorBoundary: AppError,
+    Component: AppShell,
     children: [
       {
-        index: true,
+        path: '/',
         Component: Routine,
         handle: {
           title: 'Routine',

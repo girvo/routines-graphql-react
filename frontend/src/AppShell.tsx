@@ -1,6 +1,6 @@
-import { use, useState, type Dispatch, type SetStateAction } from 'react'
+import React, { use, useState, type Dispatch, type SetStateAction } from 'react'
 import { AuthContext } from './auth/auth-store'
-import { NavLink, type UIMatch } from 'react-router'
+import { NavLink, Outlet, type UIMatch } from 'react-router'
 import { useMatches } from 'react-router'
 
 interface NavBarProps {
@@ -82,6 +82,7 @@ export const AppShell = () => {
       />
       <div className="drawer-content flex flex-col items-center justify-center lg:justify-start">
         <NavBar setIsOpen={setIsOpen} />
+        <Outlet />
       </div>
       <div className="drawer-side">
         <label

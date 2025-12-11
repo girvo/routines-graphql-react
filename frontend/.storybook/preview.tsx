@@ -23,14 +23,20 @@ const preview: Preview = {
     (Story, { parameters }) => {
       const entry = parameters.currentPath ?? '/'
       const title = parameters.pageTitle ?? ''
+      const childComponent = parameters.pageComponent ?? (() => null)
 
       const router = createMemoryRouter(
         [
           {
-            index: true,
-            path: '/*',
-            Component: Story,
+            path: '*',
+            element: <Story />,
             handle: { title },
+            children: [
+              {
+                path: '*',
+                Component: childComponent,
+              },
+            ],
           },
         ],
         { initialEntries: [entry] },
