@@ -2,6 +2,7 @@ import React, { use, useState, type Dispatch, type SetStateAction } from 'react'
 import { AuthContext } from './auth/auth-store'
 import { NavLink, Outlet, type UIMatch } from 'react-router'
 import { useMatches } from 'react-router'
+import { Calendar1, CalendarDays, LayoutList } from 'lucide-react'
 
 interface NavBarProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>
@@ -83,6 +84,20 @@ export const AppShell = () => {
       <div className="drawer-content flex flex-col items-center justify-center lg:justify-start">
         <NavBar setIsOpen={setIsOpen} />
         <Outlet />
+        <div className="dock lg:hidden">
+          <button>
+            <Calendar1 />
+            <span className="dock-label">Today</span>
+          </button>
+          <button>
+            <CalendarDays />
+            <span className="dock-label">Weekly Plan</span>
+          </button>
+          <button>
+            <LayoutList />
+            <span className="dock-label">Tasks</span>
+          </button>
+        </div>
       </div>
       <div className="drawer-side">
         <label
