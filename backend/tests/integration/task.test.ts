@@ -27,6 +27,20 @@ describe('Task mutations', () => {
 
     expect(result.data?.createTask.taskEdge.node.title).toBe('Test Task')
     expect(result.data?.createTask.taskEdge.node.id).toBeDefined()
+    expect(result.data?.createTask.taskEdge.node.icon).toBeNull()
+  })
+
+  it('can create a task with an icon', async () => {
+    const { userToken } = await createTestUser()
+    const result = await createTask({
+      title: 'Task with icon',
+      icon: 'check-circle',
+      yoga,
+      userToken,
+    })
+
+    expect(result.data?.createTask.taskEdge.node.title).toBe('Task with icon')
+    expect(result.data?.createTask.taskEdge.node.icon).toBe('check-circle')
   })
 
   it('can update a task that is created for a user via the updateTask mutation', async () => {
@@ -64,6 +78,41 @@ describe('Task mutations', () => {
     expect(secondResult.data?.updateTask.task.id).toBe(
       firstResult.data?.createTask.taskEdge.node.id,
     )
+  })
+
+  it('can update a task icon via the updateTask mutation', async () => {
+    const { userToken } = await createTestUser()
+    const createResult = await createTask({
+      title: 'Task to update icon',
+      yoga,
+      userToken,
+    })
+
+    expect(createResult.data?.createTask.taskEdge.node.icon).toBeNull()
+
+    const updateResult = await executeGraphQL(
+      graphql(`
+        mutation UpdateTaskIcon($input: UpdateTaskInput!) {
+          updateTask(input: $input) {
+            task {
+              id
+              title
+              icon
+            }
+          }
+        }
+      `),
+      {
+        input: {
+          taskId: createResult.data!.createTask.taskEdge.node.id,
+          icon: 'star',
+        },
+      },
+      { yoga, userToken },
+    )
+
+    expect(updateResult.data?.updateTask.task.icon).toBe('star')
+    expect(updateResult.data?.updateTask.task.title).toBe('Task to update icon')
   })
 
   it('can delete a task that is created for a user via the deleteTask mutation', async () => {

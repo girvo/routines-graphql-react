@@ -1,4 +1,4 @@
-import type { Kysely, ExpressionBuilder } from 'kysely'
+import type { Kysely, ExpressionBuilder, UpdateObject } from 'kysely'
 import type { Database } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
@@ -9,6 +9,7 @@ export interface TaskRow {
   id: number
   user_id: number
   title: string
+  icon: string | null
   created_at: string
   updated_at: string | null
   deleted_at: string | null
@@ -101,12 +102,17 @@ export const createTaskRepository = (db: Kysely<Database>) => {
       return query.execute()
     },
 
-    async createTask(title: string, userId: number): Promise<TaskRow> {
+    async createTask(
+      title: string,
+      userId: number,
+      icon?: string | null,
+    ): Promise<TaskRow> {
       return db
         .insertInto('tasks')
         .values({
           user_id: userId,
           title: title,
+          icon: icon ?? null,
           created_at: getCurrentTimestamp(),
         })
         .returningAll()
@@ -115,15 +121,22 @@ export const createTaskRepository = (db: Kysely<Database>) => {
 
     async updateTask(
       id: number,
-      title: string,
       userId: number,
+      updates: { title?: string | null; icon?: string | null },
     ): Promise<TaskRow> {
+      const setValues: UpdateObject<Database, 'tasks', 'tasks'> = {
+        updated_at: getCurrentTimestamp(),
+      }
+      if (updates.title !== undefined && updates.title !== null) {
+        setValues.title = updates.title
+      }
+      if (updates.icon !== undefined) {
+        setValues.icon = updates.icon
+      }
+
       return db
         .updateTable('tasks')
-        .set({
-          title: title,
-          updated_at: getCurrentTimestamp(),
-        })
+        .set(setValues)
         .where('id', '=', id)
         .where('deleted_at', 'is', null)
         .where('user_id', '=', userId)

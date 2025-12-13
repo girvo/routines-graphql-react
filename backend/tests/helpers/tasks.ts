@@ -1,16 +1,14 @@
 import { executeGraphQL, type YogaApp } from './graphql.ts'
 import { graphql } from '../gql/gql.ts'
 
-/**
- * Extracted this out as lots of other tests will need to run it
- */
 const CreateTaskMutation = graphql(`
-  mutation CreateTaskMutation($title: String!) {
-    createTask(title: $title) {
+  mutation CreateTaskMutation($title: String!, $icon: String) {
+    createTask(title: $title, icon: $icon) {
       taskEdge {
         node {
           id
           title
+          icon
         }
       }
     }
@@ -19,18 +17,20 @@ const CreateTaskMutation = graphql(`
 
 interface CreateTaskArgs {
   title: string
+  icon?: string | null
   yoga: YogaApp
   userToken: string
 }
 
 export const createTask = async ({
   title,
+  icon,
   yoga,
   userToken,
 }: CreateTaskArgs) => {
   return await executeGraphQL(
     CreateTaskMutation,
-    { title },
+    { title, icon },
     { yoga, userToken },
   )
 }

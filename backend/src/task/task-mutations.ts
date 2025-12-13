@@ -6,7 +6,7 @@ import { fromGlobalId } from '../globalId.ts'
 
 export const createTask: MutationResolvers<Context>['createTask'] = async (
   _parent,
-  { title },
+  { title, icon },
   context,
 ) => {
   assertAuthenticated(context)
@@ -14,6 +14,7 @@ export const createTask: MutationResolvers<Context>['createTask'] = async (
   const taskRow = await context.taskRepo.createTask(
     title,
     context.currentUser.id,
+    icon,
   )
   const task = tableToDomain(taskRow)
   context.tasks.prime(task.id, task)
@@ -53,8 +54,8 @@ export const updateTask: MutationResolvers<Context>['updateTask'] = async (
 
   const updatedTaskRow = await context.taskRepo.updateTask(
     fromGlobalId(input.taskId, 'Task'),
-    input.title,
     context.currentUser.id,
+    { title: input.title, icon: input.icon },
   )
   const updatedTask = tableToDomain(updatedTaskRow)
   context.tasks.prime(updatedTask.id, updatedTask)

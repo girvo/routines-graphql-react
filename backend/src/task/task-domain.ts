@@ -8,6 +8,7 @@ const TaskDomain = type({
   id: 'number',
   userId: 'number',
   title: 'string',
+  icon: 'string | null',
   createdAt: 'Date',
   updatedAt: 'Date | null',
   deletedAt: 'Date | null',
@@ -20,6 +21,7 @@ export const tableToDomain = (input: TaskRow): TaskDomain => {
     id: input.id,
     userId: input.user_id,
     title: input.title,
+    icon: input.icon,
     createdAt: parseISO(input.created_at),
     updatedAt: input.updated_at ? parseISO(input.updated_at) : null,
     deletedAt: input.deleted_at ? parseISO(input.deleted_at) : null,
@@ -30,6 +32,7 @@ export const taskToGraphQL = (task: TaskDomain) => ({
   __typename: 'Task' as const,
   id: toGlobalId('Task', task.id),
   title: task.title,
+  icon: task.icon,
   createdAt: task.createdAt,
   updatedAt: task.updatedAt,
 })

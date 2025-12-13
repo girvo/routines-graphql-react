@@ -32,6 +32,7 @@ export interface TasksTable {
   id: Generated<number>
   user_id: number
   title: string
+  icon: string | null
   created_at: ColumnType<string, string | undefined, never>
   updated_at: ColumnType<string | null, string | undefined, string>
   deleted_at: string | null

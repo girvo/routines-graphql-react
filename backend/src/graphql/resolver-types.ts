@@ -167,6 +167,7 @@ export type MutationCreateRoutineSlotArgs = {
 
 
 export type MutationCreateTaskArgs = {
+  icon?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
 };
 
@@ -262,6 +263,7 @@ export type Task = Node & {
   __typename?: 'Task';
   completions: TaskCompletionConnection;
   createdAt: Scalars['DateTime']['output'];
+  icon?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   slots: RoutineSlotConnection;
   title: Scalars['String']['output'];
@@ -318,8 +320,9 @@ export type UncompleteRoutineSlotPayload = {
 };
 
 export type UpdateTaskInput = {
+  icon?: InputMaybe<Scalars['String']['input']>;
   taskId: Scalars['ID']['input'];
-  title: Scalars['String']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateTaskPayload = {
@@ -629,6 +632,7 @@ export type RoutineSlotEdgeResolvers<ContextType = any, ParentType extends Resol
 export type TaskResolvers<ContextType = any, ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']> = ResolversObject<{
   completions?: Resolver<ResolversTypes['TaskCompletionConnection'], ParentType, ContextType, Partial<TaskCompletionsArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  icon?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   slots?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<TaskSlotsArgs>>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
