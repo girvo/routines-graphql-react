@@ -4,6 +4,7 @@ scalar NonNegativeInt
 
 directive @skipAuth on FIELD_DEFINITION
 directive @authenticated on FIELD_DEFINITION
+directive @relay_test_operation on QUERY | MUTATION | SUBSCRIPTION
 
 interface Node {
   id: ID!
