@@ -42,7 +42,11 @@ const preview: Preview = {
         { initialEntries: [entry] },
       )
 
-      return <RouterProvider router={router} />
+      return (
+        <html data-theme="forest">
+          <RouterProvider router={router} />
+        </html>
+      )
       // return (
       //   <MemoryRouter initialEntries={[entry]}>
       //     <Story />
