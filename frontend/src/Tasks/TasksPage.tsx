@@ -28,11 +28,11 @@ const TasksPage = ({ queries }: TaskPageProps) => {
   )
 
   return (
-    <ul className="list bg-base-200 rounded-box shadow-md">
+    <div className="flex flex-col gap-2">
       {data.tasks.edges.map(({ node }) => {
         return <Task key={node.id} task={node} />
       })}
-    </ul>
+    </div>
   )
 }
 

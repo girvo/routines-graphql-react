@@ -93,12 +93,7 @@ const DesktopSidebar = () => {
         </li>
         <span className="divider mt-0 mb-0" />
         <li>
-          <NavLink
-            className={({ isActive }) => (isActive ? 'menu-active' : '')}
-            to="/settings"
-          >
-            Settings
-          </NavLink>
+          <NavLink to="/settings">Settings</NavLink>
         </li>
         <li>
           <a onClick={clearAccessToken}>Logout</a>

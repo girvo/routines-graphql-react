@@ -50,9 +50,9 @@ const renderer = () => {
     <div className="max-w-200">
       <RelayEnvironmentProvider environment={environment}>
         <Suspense fallback="Loading...">
-          <ul className="list bg-base-200 rounded-box shadow-md">
+          <div className="flex flex-col gap-2">
             <TaskQuery />
-          </ul>
+          </div>
         </Suspense>
       </RelayEnvironmentProvider>
     </div>
