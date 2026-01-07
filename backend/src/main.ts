@@ -166,5 +166,5 @@ if (import.meta.main) {
     })
   }
 
-  await app.listen({ port: 4000 })
+  await app.listen({ port: 4000, host: '0.0.0.0' })
 }
