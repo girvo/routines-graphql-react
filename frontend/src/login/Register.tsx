@@ -12,10 +12,11 @@ import {
   submitButton,
   linkButton,
 } from './auth-styles'
-import { NavLink } from 'react-router'
+import { useNavigate, NavLink } from 'react-router'
 
 export const Register = () => {
   const { setAccessToken } = use(AuthContext)
+  const navigate = useNavigate()
 
   const [state, formAction, isPending] = useActionState(
     async (_: unknown, formData: FormData) => {
@@ -76,6 +77,9 @@ export const Register = () => {
 
         if (validatedResponse.success) {
           setAccessToken(validatedResponse.accessToken)
+          navigate('/', { replace: true })
+
+          // This is sort-of a no-op: it'll never run coz we leave the system
           return { success: true }
         }
 
