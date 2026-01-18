@@ -12,6 +12,9 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    hmr: {
+      overlay: true,
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:4000',

@@ -3,10 +3,9 @@ import { X, Check } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { type } from 'arktype'
-import { useMutation, graphql, useFragment } from 'react-relay'
+import { useMutation, graphql } from 'react-relay'
 import { capitalise } from '../utils/text'
 import { iconNameSet } from '../utils/icons'
-import type { CreateTask$key } from './__generated__/CreateTask.graphql'
 import type { CreateTaskMutation } from './__generated__/CreateTaskMutation.graphql'
 
 const lucideIconName = type('string >= 1').narrow(
