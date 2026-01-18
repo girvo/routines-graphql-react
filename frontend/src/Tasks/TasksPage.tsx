@@ -13,8 +13,6 @@ interface TaskPageProps {
   }
 }
 
-asdlkjasd()
-
 const TasksPage = ({ queries }: TaskPageProps) => {
   const [isCreating, setIsCreating] = useState(false)
 

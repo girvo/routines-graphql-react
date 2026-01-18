@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import { Login } from './login/Login.tsx'
 import { Register } from './login/Register.tsx'
-import { AppError } from './AppError.tsx'
+import { RouteErrorBoundary } from './AppError.tsx'
 import { Routine } from './Routine.tsx'
 import { AppShell } from './AppShell.tsx'
 import { TasksPageEntryPoint } from './Tasks/TasksPage.entrypoint.ts'
@@ -10,7 +10,7 @@ import { createEntryPointRoute } from './relay/createEntryPointRoute.tsx'
 export const unAuthedRoutes = createBrowserRouter([
   {
     path: '/',
-    ErrorBoundary: AppError,
+    ErrorBoundary: RouteErrorBoundary,
     children: [
       {
         index: true,
@@ -32,7 +32,7 @@ export const unAuthedRoutes = createBrowserRouter([
 
 export const routes = createBrowserRouter([
   {
-    ErrorBoundary: AppError,
+    ErrorBoundary: RouteErrorBoundary,
     Component: AppShell,
     children: [
       {
