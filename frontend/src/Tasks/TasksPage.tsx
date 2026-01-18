@@ -20,7 +20,7 @@ const TasksPage = ({ queries }: TaskPageProps) => {
     graphql`
       query TasksPageQuery {
         tasks(first: 100) @connection(key: "All_tasks") {
-          ...CreateTask
+          __id
           edges {
             node {
               id
@@ -64,10 +64,19 @@ const TasksPage = ({ queries }: TaskPageProps) => {
               </tr>
             )}
             {isCreating && (
-              <CreateTask setIsCreating={setIsCreating} tasks={data.tasks} />
+              <CreateTask
+                setIsCreating={setIsCreating}
+                connectionId={data.tasks.__id}
+              />
             )}
             {data.tasks.edges.map(({ node }) => {
-              return <Task key={node.id} task={node} />
+              return (
+                <Task
+                  key={node.id}
+                  task={node}
+                  connectionId={data.tasks.__id}
+                />
+              )
             })}
           </tbody>
         </table>

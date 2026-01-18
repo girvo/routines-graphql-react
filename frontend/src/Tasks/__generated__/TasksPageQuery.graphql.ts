@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<59eaa228986a2370458c7c4745896841>>
+ * @generated SignedSource<<44dd4e2505b351a3da9af7a3dbdc17e2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,13 +13,13 @@ import { FragmentRefs } from "relay-runtime";
 export type TasksPageQuery$variables = Record<PropertyKey, never>;
 export type TasksPageQuery$data = {
   readonly tasks: {
+    readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
         readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
       };
     }>;
-    readonly " $fragmentSpreads": FragmentRefs<"CreateTask">;
   };
 };
 export type TasksPageQuery = {
@@ -75,7 +75,19 @@ v4 = {
   ],
   "storageKey": null
 },
-v5 = [
+v5 = {
+  "kind": "ClientExtension",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "__id",
+      "storageKey": null
+    }
+  ]
+},
+v6 = [
   {
     "kind": "Literal",
     "name": "first",
@@ -97,11 +109,6 @@ return {
         "name": "__All_tasks_connection",
         "plural": false,
         "selections": [
-          {
-            "args": null,
-            "kind": "FragmentSpread",
-            "name": "CreateTask"
-          },
           {
             "alias": null,
             "args": null,
@@ -132,7 +139,8 @@ return {
             ],
             "storageKey": null
           },
-          (v4/*: any*/)
+          (v4/*: any*/),
+          (v5/*: any*/)
         ],
         "storageKey": null
       }
@@ -148,24 +156,12 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v6/*: any*/),
         "concreteType": "TaskConnection",
         "kind": "LinkedField",
         "name": "tasks",
         "plural": false,
         "selections": [
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__id",
-                "storageKey": null
-              }
-            ]
-          },
           {
             "alias": null,
             "args": null,
@@ -259,13 +255,14 @@ return {
             ],
             "storageKey": null
           },
-          (v4/*: any*/)
+          (v4/*: any*/),
+          (v5/*: any*/)
         ],
         "storageKey": "tasks(first:100)"
       },
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v6/*: any*/),
         "filters": null,
         "handle": "connection",
         "key": "All_tasks",
@@ -296,6 +293,6 @@ return {
 };
 })();
 
-(node as any).hash = "d61fccad84be1c21c61ad96401c66637";
+(node as any).hash = "013aa632b1e046f31ad212d9644f487e";
 
 export default node;

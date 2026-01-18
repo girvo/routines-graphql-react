@@ -5,10 +5,9 @@ import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { type } from 'arktype'
 import { useMutation, graphql, useFragment } from 'react-relay'
 import { capitalise } from '../utils/text'
+import { iconNameSet } from '../utils/icons'
 import type { CreateTask$key } from './__generated__/CreateTask.graphql'
-import { iconNames } from 'lucide-react/dynamic'
-
-const iconNameSet = new Set<string>(iconNames)
+import type { CreateTaskMutation } from './__generated__/CreateTaskMutation.graphql'
 
 const lucideIconName = type('string >= 1').narrow(
   (s, ctx) => iconNameSet.has(s) || ctx.mustBe('a valid Lucide icon name'),
@@ -22,11 +21,14 @@ const createTaskSchema = type({
 type CreateTaskFormData = typeof createTaskSchema.infer
 
 interface CreateTaskProps {
-  tasks: CreateTask$key
+  connectionId: string
   setIsCreating: Dispatch<SetStateAction<boolean>>
 }
 
-export const CreateTask = ({ tasks, setIsCreating }: CreateTaskProps) => {
+export const CreateTask = ({
+  connectionId,
+  setIsCreating,
+}: CreateTaskProps) => {
   const {
     register,
     handleSubmit,
@@ -39,16 +41,7 @@ export const CreateTask = ({ tasks, setIsCreating }: CreateTaskProps) => {
     },
   })
 
-  const taskConnection = useFragment(
-    graphql`
-      fragment CreateTask on TaskConnection {
-        __id
-      }
-    `,
-    tasks,
-  )
-
-  const [createTask, loading] = useMutation(graphql`
+  const [createTask, loading] = useMutation<CreateTaskMutation>(graphql`
     mutation CreateTaskMutation(
       $title: String!
       $icon: String
@@ -74,9 +67,24 @@ export const CreateTask = ({ tasks, setIsCreating }: CreateTaskProps) => {
       variables: {
         title: data.title,
         icon: data.icon,
-        connections: [taskConnection.__id],
+        connections: [connectionId],
       },
+      // This is more complex than it appears, and I don't like optimistic response really...
+      // optimisticResponse: {
+      //   createTask: {
+      //     taskEdge: {
+      //       node: {
+      //         id: '',
+      //         title: data.title,
+      //         icon: data.icon,
+      //         createdAt: new Date(),
+      //       },
+      //       cursor: '',
+      //     },
+      //   },
+      // },
       onCompleted: (_response, errors) => {
+        // _response.createTask.taskEdge.
         if ((errors?.length ?? 0) > 0) {
           console.error(errors)
           return

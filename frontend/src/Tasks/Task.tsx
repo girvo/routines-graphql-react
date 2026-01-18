@@ -1,15 +1,16 @@
 import { graphql } from 'relay-runtime'
-import { useFragment } from 'react-relay'
+import { useFragment, useMutation } from 'react-relay'
 import type { TaskDisplay$key } from './__generated__/TaskDisplay.graphql'
 import { Pencil, Trash2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { parseIconName } from '../utils/icons.ts'
-
+import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.graphql.ts'
 interface TaskProps {
   task: TaskDisplay$key
+  connectionId: string
 }
 
-export const Task = ({ task: taskData }: TaskProps) => {
+export const Task = ({ task: taskData, connectionId }: TaskProps) => {
   const task = useFragment(
     graphql`
       fragment TaskDisplay on Task {
@@ -31,6 +32,23 @@ export const Task = ({ task: taskData }: TaskProps) => {
     `,
     taskData,
   )
+
+  const [deleteIcon, isLoading] = useMutation<TaskDeleteMutation>(graphql`
+    mutation TaskDeleteMutation($taskId: ID!, $connections: [ID!]!) {
+      deleteTask(taskId: $taskId) {
+        deletedId @deleteEdge(connections: $connections)
+      }
+    }
+  `)
+
+  const onDeleteClick = () => {
+    deleteIcon({
+      variables: {
+        taskId: task.id,
+        connections: [connectionId],
+      },
+    })
+  }
 
   const slotCount = task.slots.edges.length
   const hasMore = task.slots.pageInfo.hasNextPage
@@ -69,7 +87,10 @@ export const Task = ({ task: taskData }: TaskProps) => {
       {/* Actions */}
       <td className="border-base-300 block border-t p-0 md:table-cell md:border-t-0 md:p-3">
         <div className="flex md:gap-1">
-          <button className="btn btn-ghost btn-sm text-error flex-1 rounded-none rounded-bl-lg md:flex-none md:rounded">
+          <button
+            className="btn btn-ghost btn-sm text-error flex-1 rounded-none rounded-bl-lg md:flex-none md:rounded"
+            onClick={onDeleteClick}
+          >
             <Trash2 className="size-4" />
             <span className="md:hidden">Del</span>
           </button>
