@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { graphql } from 'relay-runtime'
 import { useFragment, useMutation } from 'react-relay'
 import type { TaskDisplay$key } from './__generated__/TaskDisplay.graphql'
@@ -5,6 +6,7 @@ import { Pencil, Trash2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { parseIconName } from '../utils/icons.ts'
 import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.graphql.ts'
+import { EditTask } from './EditTask.tsx'
 interface TaskProps {
   task: TaskDisplay$key
   connectionId: string
@@ -33,6 +35,8 @@ export const Task = ({ task: taskData, connectionId }: TaskProps) => {
     taskData,
   )
 
+  const [isEditing, setIsEditing] = useState(false)
+
   const [deleteIcon] = useMutation<TaskDeleteMutation>(graphql`
     mutation TaskDeleteMutation($taskId: ID!, $connections: [ID!]!) {
       deleteTask(taskId: $taskId) {
@@ -50,10 +54,25 @@ export const Task = ({ task: taskData, connectionId }: TaskProps) => {
     })
   }
 
+  const onEditClick = () => {
+    setIsEditing(true)
+  }
+
   const slotCount = task.slots.edges.length
   const hasMore = task.slots.pageInfo.hasNextPage
   const slotText = `${slotCount}${hasMore ? '+' : ''}`
   const iconName = parseIconName(task.icon)
+
+  if (isEditing) {
+    return (
+      <EditTask
+        taskId={task.id}
+        title={task.title}
+        icon={task.icon}
+        setIsEditing={setIsEditing}
+      />
+    )
+  }
 
   return (
     <tr className="bg-base-200 block rounded-lg md:table-row md:rounded-none md:bg-transparent">
@@ -94,7 +113,10 @@ export const Task = ({ task: taskData, connectionId }: TaskProps) => {
             <Trash2 className="size-4" />
             <span className="md:hidden">Delete</span>
           </button>
-          <button className="btn btn-ghost btn-sm flex-1 rounded-none rounded-br-lg md:flex-none md:rounded">
+          <button
+            className="btn btn-ghost btn-sm flex-1 rounded-none rounded-br-lg md:flex-none md:rounded"
+            onClick={onEditClick}
+          >
             <Pencil className="size-4" />
             <span className="md:hidden">Edit</span>
           </button>

@@ -1,23 +1,25 @@
 import { useCallback, type Dispatch, type SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
-import { useMutation, graphql } from 'react-relay'
 import { capitalise } from '../utils/text'
 import { taskFormSchema, type TaskFormData } from './task-validation'
-import type { CreateTaskMutation } from './__generated__/CreateTaskMutation.graphql'
 import { TaskFormRow } from './TaskForm/TaskFormRow'
 import { TaskFormCell } from './TaskForm/TaskFormCell'
 import { TaskFormActionButtons } from './TaskForm/TaskFormActionButtons'
 
-interface CreateTaskProps {
-  connectionId: string
-  setIsCreating: Dispatch<SetStateAction<boolean>>
+interface EditTaskProps {
+  taskId: string
+  title: string
+  icon: string | null | undefined
+  setIsEditing: Dispatch<SetStateAction<boolean>>
 }
 
-export const CreateTask = ({
-  connectionId,
-  setIsCreating,
-}: CreateTaskProps) => {
+export const EditTask = ({
+  taskId,
+  title,
+  icon,
+  setIsEditing,
+}: EditTaskProps) => {
   const {
     register,
     handleSubmit,
@@ -25,47 +27,18 @@ export const CreateTask = ({
   } = useForm<TaskFormData>({
     resolver: arktypeResolver(taskFormSchema),
     defaultValues: {
-      title: '',
-      icon: '',
+      title,
+      icon: icon ?? '',
     },
   })
 
-  const [createTask] = useMutation<CreateTaskMutation>(graphql`
-    mutation CreateTaskMutation(
-      $title: String!
-      $icon: String
-      $connections: [ID!]!
-    ) {
-      createTask(icon: $icon, title: $title) {
-        taskEdge @prependEdge(connections: $connections) {
-          node {
-            ...TaskDisplay
-          }
-          cursor
-        }
-      }
-    }
-  `)
-
   const close = useCallback(() => {
-    setIsCreating(false)
-  }, [setIsCreating])
+    setIsEditing(false)
+  }, [setIsEditing])
 
   const onSubmit = (data: TaskFormData) => {
-    createTask({
-      variables: {
-        title: data.title,
-        icon: data.icon,
-        connections: [connectionId],
-      },
-      onCompleted: (_response, errors) => {
-        if ((errors?.length ?? 0) > 0) {
-          console.error(errors)
-          return
-        }
-        close()
-      },
-    })
+    console.log({ taskId, ...data })
+    close()
   }
 
   return (
