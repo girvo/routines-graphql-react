@@ -85,8 +85,8 @@ export const Task = ({ task: taskData, connectionId }: TaskProps) => {
       </td>
 
       {/* Actions */}
-      <td className="border-base-300 block border-t p-0 md:table-cell md:border-t-0 md:p-3">
-        <div className="flex md:gap-1">
+      <td className="border-base-300 block border-t p-0 md:table-cell md:border-t-0 md:p-3 md:text-center">
+        <div className="flex md:justify-center md:gap-1">
           <button
             className="btn btn-ghost btn-sm text-error flex-1 rounded-none rounded-bl-lg md:flex-none md:rounded"
             onClick={onDeleteClick}

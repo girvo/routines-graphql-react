@@ -1,12 +1,10 @@
 import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
 import { Task } from './Task'
-import { Plus, PlusIcon } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { CreateTask } from './CreateTask'
 import { useHeaderActions } from '../utils/header-actions.ts'
-
-console.debug('I am loaded!')
 
 interface TaskPageProps {
   queries: {
@@ -48,17 +46,7 @@ const TasksPage = ({ queries }: TaskPageProps) => {
 
   return (
     <>
-      <div className="navbar bg-base-300 hidden pr-4 pl-4 md:block">
-        <div className="flex-1 text-xl">All tasks</div>
-        <button
-          className="btn items-center"
-          onClick={() => setIsCreating(true)}
-        >
-          <PlusIcon className="h-4 w-4 translate-y-px" />
-          New
-        </button>
-      </div>
-      <div className="p-4 md:p-0">
+      <div className="p-4 md:px-4 md:py-0">
         <table className="w-full border-separate border-spacing-y-3 md:table md:table-fixed md:border-spacing-0">
           <thead className="hidden md:table-header-group">
             <tr>

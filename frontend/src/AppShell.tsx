@@ -24,11 +24,11 @@ const Header = () => {
   const { actions } = use(HeaderActionsContext)
 
   return (
-    <div className="navbar bg-neutral text-neutral-content shadow-sm lg:hidden">
+    <div className="navbar bg-neutral text-neutral-content shadow-sm">
       <div className="flex-1 pl-4">
         <span className="text-xl">{currentTitle ?? 'Routines'}</span>
       </div>
-      <div className="flex gap-1">
+      <div className="flex gap-1 pr-4">
         {actions.map(action => (
           <button
             key={action.id}
@@ -39,7 +39,7 @@ const Header = () => {
             {action.label}
           </button>
         ))}
-        <div className="dropdown dropdown-end">
+        <div className="dropdown dropdown-end lg:hidden">
           <div tabIndex={0} role="button" className="btn btn-square btn-ghost">
             <EllipsisVertical className="h-5 w-5 translate-y-px" />
           </div>

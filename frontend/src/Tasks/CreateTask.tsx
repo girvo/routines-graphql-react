@@ -112,8 +112,10 @@ export const CreateTask = ({
         </div>
       </td>
 
-      <td className="border-base-300 block border-t p-0 md:table-cell md:border-t-0 md:p-3 md:align-top">
-        <div className="flex md:gap-1">
+      <td className="hidden md:table-cell md:p-3 md:align-top"></td>
+
+      <td className="border-base-300 block border-t p-0 md:table-cell md:border-t-0 md:p-3 md:align-top md:text-center">
+        <div className="flex md:justify-center md:gap-1">
           <button
             type="button"
             className="btn btn-ghost btn-sm text-error flex-1 rounded-none rounded-bl-lg md:flex-none md:rounded"
