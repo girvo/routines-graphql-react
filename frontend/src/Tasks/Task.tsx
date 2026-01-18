@@ -92,7 +92,7 @@ export const Task = ({ task: taskData, connectionId }: TaskProps) => {
             onClick={onDeleteClick}
           >
             <Trash2 className="size-4" />
-            <span className="md:hidden">Del</span>
+            <span className="md:hidden">Delete</span>
           </button>
           <button className="btn btn-ghost btn-sm flex-1 rounded-none rounded-br-lg md:flex-none md:rounded">
             <Pencil className="size-4" />
