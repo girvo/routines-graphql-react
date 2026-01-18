@@ -45,19 +45,19 @@ const TasksPage = ({ queries }: TaskPageProps) => {
         </button>
       </div>
       <div className="p-4 md:p-0">
-        <table className="w-full border-separate border-spacing-y-3 md:table md:border-spacing-0">
+        <table className="w-full border-separate border-spacing-y-3 md:table md:table-fixed md:border-spacing-0">
           <thead className="hidden md:table-header-group">
             <tr>
-              <th>Task name</th>
-              <th>Icon</th>
-              <th>Used in</th>
-              <th className="text-center">Actions</th>
+              <th className="w-1/4">Task name</th>
+              <th className="w-1/4">Icon</th>
+              <th className="w-1/4">Used in</th>
+              <th className="w-1/4 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="block space-y-3 md:table-row-group md:space-y-0">
             {data.tasks.edges.length === 0 && !isCreating && (
               <tr>
-                <td className="text-center" colSpan={99}>
+                <td className="text-center" colSpan={4}>
                   No tasks, create some!
                 </td>
               </tr>

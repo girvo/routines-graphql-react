@@ -13,10 +13,10 @@ export const CreateTask = ({ setIsCreating }: CreateTaskProps) => {
   return (
     <tr>
       <td>
-        <input />
+        <input type="text" placeholder="Task name" className="input" />
       </td>
       <td>
-        <input />
+        <input type="text" placeholder="Lucide icon name" className="input" />
       </td>
       <td>0 slots</td>
       <td>
