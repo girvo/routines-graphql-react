@@ -19,7 +19,7 @@ const Header = () => {
   const { clearAccessToken } = use(AuthContext)
 
   return (
-    <div className="navbar bg-neutral shadow-sm lg:hidden">
+    <div className="navbar bg-neutral text-neutral-content shadow-sm lg:hidden">
       <div className="flex-1 pl-4">
         <span className="text-xl">{currentTitle ?? 'Routines'}</span>
       </div>
@@ -29,7 +29,7 @@ const Header = () => {
         </div>
         <ul
           tabIndex={0}
-          className="dropdown-content menu bg-base-200 rounded-box z-10 w-52 p-2 shadow-sm"
+          className="dropdown-content menu bg-base-200 text-base-content rounded-box z-10 w-52 p-2 shadow-sm"
         >
           <li>
             <NavLink to="/settings">Settings</NavLink>

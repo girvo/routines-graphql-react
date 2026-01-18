@@ -68,22 +68,7 @@ export const CreateTask = ({
         icon: data.icon,
         connections: [connectionId],
       },
-      // This is more complex than it appears, and I don't like optimistic response really...
-      // optimisticResponse: {
-      //   createTask: {
-      //     taskEdge: {
-      //       node: {
-      //         id: '',
-      //         title: data.title,
-      //         icon: data.icon,
-      //         createdAt: new Date(),
-      //       },
-      //       cursor: '',
-      //     },
-      //   },
-      // },
       onCompleted: (_response, errors) => {
-        // _response.createTask.taskEdge.
         if ((errors?.length ?? 0) > 0) {
           console.error(errors)
           return
@@ -94,13 +79,13 @@ export const CreateTask = ({
   }
 
   return (
-    <tr>
-      <td className="align-top">
+    <tr className="bg-base-200 block rounded-lg md:table-row md:rounded-none md:bg-transparent">
+      <td className="block p-4 pb-2 md:table-cell md:p-3 md:align-top">
         <div className="flex flex-col">
           <input
             type="text"
             placeholder="Task name"
-            className={`input ${errors.title ? 'input-error' : ''}`}
+            className={`input w-full ${errors.title ? 'input-error' : ''}`}
             {...register('title')}
           />
           {errors.title?.message && (
@@ -110,12 +95,13 @@ export const CreateTask = ({
           )}
         </div>
       </td>
-      <td className="align-top">
+
+      <td className="block px-4 pb-2 md:table-cell md:p-3 md:align-top">
         <div className="flex flex-col">
           <input
             type="text"
             placeholder="Lucide icon name"
-            className={`input ${errors.icon ? 'input-error' : ''}`}
+            className={`input w-full ${errors.icon ? 'input-error' : ''}`}
             {...register('icon')}
           />
           {errors.icon?.message && (
@@ -125,11 +111,9 @@ export const CreateTask = ({
           )}
         </div>
       </td>
-      <td className="align-top">
-        <div className="flex h-10 items-center">0 slots</div>
-      </td>
-      <td className="align-top">
-        <div className="flex h-10 items-center justify-center md:gap-1">
+
+      <td className="border-base-300 block border-t p-0 md:table-cell md:border-t-0 md:p-3 md:align-top">
+        <div className="flex md:gap-1">
           <button
             type="button"
             className="btn btn-ghost btn-sm text-error flex-1 rounded-none rounded-bl-lg md:flex-none md:rounded"

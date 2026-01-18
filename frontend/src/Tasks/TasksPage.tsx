@@ -35,7 +35,7 @@ const TasksPage = ({ queries }: TaskPageProps) => {
 
   return (
     <>
-      <div className="navbar bg-base-300 pr-4 pl-4">
+      <div className="navbar bg-base-300 hidden pr-4 pl-4 md:block">
         <div className="flex-1 text-xl">All tasks</div>
         <button
           className="btn items-center"
@@ -81,6 +81,12 @@ const TasksPage = ({ queries }: TaskPageProps) => {
           </tbody>
         </table>
       </div>
+      <button
+        className="btn btn-circle btn-primary fixed right-4 bottom-20 md:hidden"
+        onClick={() => setIsCreating(true)}
+      >
+        <PlusIcon className="h-6 w-6" />
+      </button>
     </>
   )
 }
