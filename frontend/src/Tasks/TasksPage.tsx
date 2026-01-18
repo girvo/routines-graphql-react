@@ -2,6 +2,8 @@ import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
 import { Task } from './Task'
 import { PlusIcon } from 'lucide-react'
+import { useState } from 'react'
+import { CreateTask } from './CreateTask'
 
 console.debug('I am loaded!')
 
@@ -12,6 +14,8 @@ interface TaskPageProps {
 }
 
 const TasksPage = ({ queries }: TaskPageProps) => {
+  const [isCreating, setIsCreating] = useState(false)
+
   const data = usePreloadedQuery<TasksPageQuery>(
     graphql`
       query TasksPageQuery {
@@ -32,22 +36,33 @@ const TasksPage = ({ queries }: TaskPageProps) => {
     <>
       <div className="navbar bg-base-300 pr-4 pl-4">
         <div className="flex-1 text-xl">All tasks</div>
-        <button className="btn items-center">
+        <button
+          className="btn items-center"
+          onClick={() => setIsCreating(true)}
+        >
           <PlusIcon className="h-4 w-4 translate-y-px" />
           New
         </button>
       </div>
-      <div className="flex flex-col gap-2">
-        <table className="table">
-          <thead>
+      <div className="p-4 md:p-0">
+        <table className="w-full border-separate border-spacing-y-3 md:table md:border-spacing-0">
+          <thead className="hidden md:table-header-group">
             <tr>
               <th>Task name</th>
               <th>Icon</th>
-              <th>Slots</th>
-              <th>Actions</th>
+              <th>Used in</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="block space-y-3 md:table-row-group md:space-y-0">
+            {data.tasks.edges.length === 0 && !isCreating && (
+              <tr>
+                <td className="text-center" colSpan={99}>
+                  No tasks, create some!
+                </td>
+              </tr>
+            )}
+            {isCreating && <CreateTask setIsCreating={setIsCreating} />}
             {data.tasks.edges.map(({ node }) => {
               return <Task key={node.id} task={node} />
             })}
