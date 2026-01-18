@@ -40,7 +40,7 @@ export const CreateTask = ({
     },
   })
 
-  const [createTask, loading] = useMutation<CreateTaskMutation>(graphql`
+  const [createTask] = useMutation<CreateTaskMutation>(graphql`
     mutation CreateTaskMutation(
       $title: String!
       $icon: String

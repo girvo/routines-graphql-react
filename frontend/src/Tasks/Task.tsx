@@ -33,7 +33,7 @@ export const Task = ({ task: taskData, connectionId }: TaskProps) => {
     taskData,
   )
 
-  const [deleteIcon, isLoading] = useMutation<TaskDeleteMutation>(graphql`
+  const [deleteIcon] = useMutation<TaskDeleteMutation>(graphql`
     mutation TaskDeleteMutation($taskId: ID!, $connections: [ID!]!) {
       deleteTask(taskId: $taskId) {
         deletedId @deleteEdge(connections: $connections)

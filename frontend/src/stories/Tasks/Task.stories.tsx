@@ -26,7 +26,7 @@ const TaskQuery = () => {
 
   if (!data.node) return null
 
-  return <Task task={data.node} />
+  return <Task connectionId="" task={data.node} />
 }
 
 const renderer = () => {
