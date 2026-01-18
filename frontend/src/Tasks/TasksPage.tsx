@@ -1,9 +1,10 @@
 import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
 import { Task } from './Task'
-import { PlusIcon } from 'lucide-react'
-import { useState } from 'react'
+import { Plus, PlusIcon } from 'lucide-react'
+import { useState, useMemo } from 'react'
 import { CreateTask } from './CreateTask'
+import { useHeaderActions } from '../utils/header-actions.ts'
 
 console.debug('I am loaded!')
 
@@ -15,6 +16,18 @@ interface TaskPageProps {
 
 const TasksPage = ({ queries }: TaskPageProps) => {
   const [isCreating, setIsCreating] = useState(false)
+  const headerActions = useMemo(
+    () => [
+      {
+        id: 'new-task',
+        icon: Plus,
+        label: 'New Task',
+        onClick: () => setIsCreating(true),
+      },
+    ],
+    [],
+  )
+  useHeaderActions(headerActions)
 
   const data = usePreloadedQuery<TasksPageQuery>(
     graphql`
@@ -81,12 +94,6 @@ const TasksPage = ({ queries }: TaskPageProps) => {
           </tbody>
         </table>
       </div>
-      <button
-        className="btn btn-circle btn-primary fixed right-4 bottom-20 md:hidden"
-        onClick={() => setIsCreating(true)}
-      >
-        <PlusIcon className="h-6 w-6" />
-      </button>
     </>
   )
 }

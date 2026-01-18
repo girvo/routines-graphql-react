@@ -1,4 +1,4 @@
-import { use } from 'react'
+import { use, useState, useCallback } from 'react'
 import { AuthContext } from './auth/auth-store.ts'
 import { NavLink, Outlet, type UIMatch } from 'react-router'
 import { useMatches } from 'react-router'
@@ -8,6 +8,10 @@ import {
   EllipsisVertical,
   LayoutList,
 } from 'lucide-react'
+import {
+  HeaderActionsContext,
+  type HeaderAction,
+} from './utils/header-actions.ts'
 
 const Header = () => {
   const matches = useMatches() as UIMatch<unknown, { title: string }>[]
@@ -17,27 +21,40 @@ const Header = () => {
     .pop()
 
   const { clearAccessToken } = use(AuthContext)
+  const { actions } = use(HeaderActionsContext)
 
   return (
     <div className="navbar bg-neutral text-neutral-content shadow-sm lg:hidden">
       <div className="flex-1 pl-4">
         <span className="text-xl">{currentTitle ?? 'Routines'}</span>
       </div>
-      <div className="dropdown dropdown-end">
-        <div tabIndex={0} role="button" className="btn btn-square btn-ghost">
-          <EllipsisVertical className="h-5 w-5" />
+      <div className="flex gap-1">
+        {actions.map(action => (
+          <button
+            key={action.id}
+            className="btn btn-outline pr-2.5 pl-1.5"
+            onClick={action.onClick}
+          >
+            <action.icon className="h-5 w-5 translate-y-px" />
+            {action.label}
+          </button>
+        ))}
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-square btn-ghost">
+            <EllipsisVertical className="h-5 w-5 translate-y-px" />
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-200 text-base-content rounded-box z-10 w-52 p-2 shadow-sm"
+          >
+            <li>
+              <NavLink to="/settings">Settings</NavLink>
+            </li>
+            <li>
+              <a onClick={clearAccessToken}>Logout</a>
+            </li>
+          </ul>
         </div>
-        <ul
-          tabIndex={0}
-          className="dropdown-content menu bg-base-200 text-base-content rounded-box z-10 w-52 p-2 shadow-sm"
-        >
-          <li>
-            <NavLink to="/settings">Settings</NavLink>
-          </li>
-          <li>
-            <a onClick={clearAccessToken}>Logout</a>
-          </li>
-        </ul>
       </div>
     </div>
   )
@@ -103,15 +120,29 @@ const DesktopSidebar = () => {
   )
 }
 
-export const AppShell = () => (
-  <div className="flex min-h-screen">
-    <DesktopSidebar />
-    <div className="flex flex-1 flex-col">
-      <Header />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <MobileDock />
-    </div>
-  </div>
-)
+export const AppShell = () => {
+  const [actions, setActionsState] = useState<HeaderAction[]>([])
+
+  const setActions = useCallback((newActions: HeaderAction[]) => {
+    setActionsState(newActions)
+  }, [])
+
+  const clearActions = useCallback(() => {
+    setActionsState([])
+  }, [])
+
+  return (
+    <HeaderActionsContext value={{ actions, setActions, clearActions }}>
+      <div className="flex min-h-screen">
+        <DesktopSidebar />
+        <div className="flex flex-1 flex-col">
+          <Header />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <MobileDock />
+        </div>
+      </div>
+    </HeaderActionsContext>
+  )
+}
