@@ -6,6 +6,9 @@ import { taskFormSchema, type TaskFormData } from './task-validation'
 import { TaskFormRow } from './TaskForm/TaskFormRow'
 import { TaskFormCell } from './TaskForm/TaskFormCell'
 import { TaskFormActionButtons } from './TaskForm/TaskFormActionButtons'
+import { useMutation, graphql } from 'react-relay'
+import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
+import type { EditTaskMutation_updatable$key } from './__generated__/EditTaskMutation_updatable.graphql'
 
 interface EditTaskProps {
   taskId: string
@@ -32,13 +35,48 @@ export const EditTask = ({
     },
   })
 
+  const [updateTask] = useMutation<EditTaskMutation>(graphql`
+    mutation EditTaskMutation($input: UpdateTaskInput!) {
+      updateTask(input: $input) {
+        task {
+          ...TaskDisplay
+          ...EditTaskMutation_updatable
+        }
+      }
+    }
+  `)
+
   const close = useCallback(() => {
     setIsEditing(false)
   }, [setIsEditing])
 
   const onSubmit = (data: TaskFormData) => {
     console.log({ taskId, ...data })
-    close()
+    updateTask({
+      variables: {
+        input: {
+          taskId,
+          title: data.title,
+          icon: data.icon,
+        },
+      },
+      optimisticUpdater: store => {
+        const { updatableData } =
+          store.readUpdatableFragment<EditTaskMutation_updatable$key>(
+            graphql`
+              fragment EditTaskMutation_updatable on Task @updatable {
+                title
+                icon
+              }
+            `,
+            response.updateTask.task,
+          )
+
+        updatableData.title = data.title
+        updatableData.icon = data.icon
+        close() // I wonder, is this right? we will lose data lol
+      },
+    })
   }
 
   return (
