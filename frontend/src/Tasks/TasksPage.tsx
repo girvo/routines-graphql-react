@@ -19,7 +19,8 @@ const TasksPage = ({ queries }: TaskPageProps) => {
   const data = usePreloadedQuery<TasksPageQuery>(
     graphql`
       query TasksPageQuery {
-        tasks {
+        tasks(first: 100) @connection(key: "All_tasks") {
+          ...CreateTask
           edges {
             node {
               id
@@ -62,7 +63,9 @@ const TasksPage = ({ queries }: TaskPageProps) => {
                 </td>
               </tr>
             )}
-            {isCreating && <CreateTask setIsCreating={setIsCreating} />}
+            {isCreating && (
+              <CreateTask setIsCreating={setIsCreating} tasks={data.tasks} />
+            )}
             {data.tasks.edges.map(({ node }) => {
               return <Task key={node.id} task={node} />
             })}

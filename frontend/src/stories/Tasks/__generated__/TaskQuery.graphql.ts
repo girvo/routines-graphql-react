@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4be62f19b539f0eb38815151b4f94aa8>>
+ * @generated SignedSource<<887c67df06e6bb1d01cdcb65e42d6768>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -119,6 +119,13 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "icon",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "createdAt",
                 "storageKey": null
               },
@@ -185,7 +192,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "84eb0c69f4cd0261c002eaa84c0751be",
+    "cacheID": "f8e9e8fb7dea77184b7d05f5da6af927",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -201,6 +208,12 @@ return {
           "nullable": false,
           "plural": false,
           "type": "DateTime"
+        },
+        "node.icon": {
+          "enumValues": null,
+          "nullable": true,
+          "plural": false,
+          "type": "String"
         },
         "node.id": (v4/*: any*/),
         "node.slots": {
@@ -240,7 +253,7 @@ return {
     },
     "name": "TaskQuery",
     "operationKind": "query",
-    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

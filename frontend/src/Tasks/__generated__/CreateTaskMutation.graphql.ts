@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<59eaa228986a2370458c7c4745896841>>
+ * @generated SignedSource<<113a58ac9ce95499faee18971cd3c254>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,105 +10,94 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type TasksPageQuery$variables = Record<PropertyKey, never>;
-export type TasksPageQuery$data = {
-  readonly tasks: {
-    readonly edges: ReadonlyArray<{
+export type CreateTaskMutation$variables = {
+  connections: ReadonlyArray<string>;
+  icon?: string | null | undefined;
+  title: string;
+};
+export type CreateTaskMutation$data = {
+  readonly createTask: {
+    readonly taskEdge: {
+      readonly cursor: string;
       readonly node: {
-        readonly id: string;
         readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
       };
-    }>;
-    readonly " $fragmentSpreads": FragmentRefs<"CreateTask">;
+    };
   };
 };
-export type TasksPageQuery = {
-  response: TasksPageQuery$data;
-  variables: TasksPageQuery$variables;
+export type CreateTaskMutation = {
+  response: CreateTaskMutation$data;
+  variables: CreateTaskMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
 },
 v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "icon"
 },
 v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "title"
+},
+v3 = [
+  {
+    "kind": "Variable",
+    "name": "icon",
+    "variableName": "icon"
+  },
+  {
+    "kind": "Variable",
+    "name": "title",
+    "variableName": "title"
+  }
+],
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v3 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "hasNextPage",
+  "name": "id",
   "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "concreteType": "PageInfo",
-  "kind": "LinkedField",
-  "name": "pageInfo",
-  "plural": false,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "endCursor",
-      "storageKey": null
-    },
-    (v3/*: any*/)
-  ],
-  "storageKey": null
-},
-v5 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 100
-  }
-];
+};
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TasksPageQuery",
+    "name": "CreateTaskMutation",
     "selections": [
       {
-        "alias": "tasks",
-        "args": null,
-        "concreteType": "TaskConnection",
+        "alias": null,
+        "args": (v3/*: any*/),
+        "concreteType": "CreateTaskPayload",
         "kind": "LinkedField",
-        "name": "__All_tasks_connection",
+        "name": "createTask",
         "plural": false,
         "selections": [
-          {
-            "args": null,
-            "kind": "FragmentSpread",
-            "name": "CreateTask"
-          },
           {
             "alias": null,
             "args": null,
             "concreteType": "TaskEdge",
             "kind": "LinkedField",
-            "name": "edges",
-            "plural": true,
+            "name": "taskEdge",
+            "plural": false,
             "selections": [
               {
                 "alias": null,
@@ -118,61 +107,50 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v0/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "TaskDisplay"
-                  },
-                  (v1/*: any*/)
+                  }
                 ],
                 "storageKey": null
               },
-              (v2/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
-          },
-          (v4/*: any*/)
+          }
         ],
         "storageKey": null
       }
     ],
-    "type": "Query",
+    "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": [
+      (v2/*: any*/),
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
-    "name": "TasksPageQuery",
+    "name": "CreateTaskMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
-        "concreteType": "TaskConnection",
+        "args": (v3/*: any*/),
+        "concreteType": "CreateTaskPayload",
         "kind": "LinkedField",
-        "name": "tasks",
+        "name": "createTask",
         "plural": false,
         "selections": [
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__id",
-                "storageKey": null
-              }
-            ]
-          },
           {
             "alias": null,
             "args": null,
             "concreteType": "TaskEdge",
             "kind": "LinkedField",
-            "name": "edges",
-            "plural": true,
+            "name": "taskEdge",
+            "plural": false,
             "selections": [
               {
                 "alias": null,
@@ -182,7 +160,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v0/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -228,8 +206,14 @@ return {
                             "name": "node",
                             "plural": false,
                             "selections": [
-                              (v1/*: any*/),
-                              (v0/*: any*/)
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "__typename",
+                                "storageKey": null
+                              },
+                              (v5/*: any*/)
                             ],
                             "storageKey": null
                           }
@@ -244,58 +228,58 @@ return {
                         "name": "pageInfo",
                         "plural": false,
                         "selections": [
-                          (v3/*: any*/)
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "hasNextPage",
+                            "storageKey": null
+                          }
                         ],
                         "storageKey": null
                       }
                     ],
                     "storageKey": null
-                  },
-                  (v1/*: any*/)
+                  }
                 ],
                 "storageKey": null
               },
-              (v2/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           },
-          (v4/*: any*/)
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "prependEdge",
+            "key": "",
+            "kind": "LinkedHandle",
+            "name": "taskEdge",
+            "handleArgs": [
+              {
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
+              }
+            ]
+          }
         ],
-        "storageKey": "tasks(first:100)"
-      },
-      {
-        "alias": null,
-        "args": (v5/*: any*/),
-        "filters": null,
-        "handle": "connection",
-        "key": "All_tasks",
-        "kind": "LinkedHandle",
-        "name": "tasks"
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "4c4e3c0a47b7f7fb76799ac86781c45c",
+    "cacheID": "e1c7125429cc605f9523e269c60ba594",
     "id": null,
-    "metadata": {
-      "connection": [
-        {
-          "count": null,
-          "cursor": null,
-          "direction": "forward",
-          "path": [
-            "tasks"
-          ]
-        }
-      ]
-    },
-    "name": "TasksPageQuery",
-    "operationKind": "query",
-    "text": "query TasksPageQuery {\n  tasks(first: 100) {\n    edges {\n      node {\n        id\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "metadata": {},
+    "name": "CreateTaskMutation",
+    "operationKind": "mutation",
+    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...TaskDisplay\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d61fccad84be1c21c61ad96401c66637";
+(node as any).hash = "e4bd50000593f57bb8095ceac7741382";
 
 export default node;

@@ -1,7 +1,9 @@
 import { graphql } from 'relay-runtime'
 import { useFragment } from 'react-relay'
 import type { TaskDisplay$key } from './__generated__/TaskDisplay.graphql'
-import { ListTodo, Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
+import { DynamicIcon } from 'lucide-react/dynamic'
+import { parseIconName } from '../utils/icons.ts'
 
 interface TaskProps {
   task: TaskDisplay$key
@@ -13,6 +15,7 @@ export const Task = ({ task: taskData }: TaskProps) => {
       fragment TaskDisplay on Task {
         id
         title
+        icon
         createdAt
         slots {
           edges {
@@ -32,6 +35,7 @@ export const Task = ({ task: taskData }: TaskProps) => {
   const slotCount = task.slots.edges.length
   const hasMore = task.slots.pageInfo.hasNextPage
   const slotText = `${slotCount}${hasMore ? '+' : ''}`
+  const iconName = parseIconName(task.icon)
 
   return (
     <tr className="bg-base-200 block rounded-lg md:table-row md:rounded-none md:bg-transparent">
@@ -39,7 +43,7 @@ export const Task = ({ task: taskData }: TaskProps) => {
       <td className="block p-4 pb-2 md:table-cell md:p-3">
         <div className="flex items-center gap-3">
           <div className="bg-primary text-primary-content flex size-10 shrink-0 items-center justify-center rounded-lg md:hidden">
-            <ListTodo className="size-5" />
+            <DynamicIcon name={iconName} className="size-5" />
           </div>
           <div className="flex flex-col">
             <span className="font-medium">{task.title}</span>
@@ -53,7 +57,7 @@ export const Task = ({ task: taskData }: TaskProps) => {
       {/* Icon column - desktop only */}
       <td className="hidden md:table-cell md:p-3">
         <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded">
-          <ListTodo className="size-4" />
+          <DynamicIcon name={iconName} className="size-4" />
         </div>
       </td>
 

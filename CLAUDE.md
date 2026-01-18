@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+CRITICAL: Always check LSP VSCode diagnostics before running tsc, eslint, or other linters. Only run CLI tools if:
+- Diagnostics appear incomplete
+- Explicitly asked to verify the full project
+- After fixes, to confirm they worked
+
 ## Project Overview
 
 This is a monorepo for a routines application with a GraphQL backend and frontend. It uses PNPM, NOT NPM DIRECTLY

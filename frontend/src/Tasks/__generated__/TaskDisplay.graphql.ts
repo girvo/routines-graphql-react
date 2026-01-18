@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5cce9e1ee302ef2d488232637ff74142>>
+ * @generated SignedSource<<622375bfa98ec5da16a63bbc4bc03cd0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type TaskDisplay$data = {
   readonly createdAt: any;
+  readonly icon: string | null | undefined;
   readonly id: string;
   readonly slots: {
     readonly edges: ReadonlyArray<{
@@ -49,6 +50,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "title",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "icon",
       "storageKey": null
     },
     {
@@ -121,6 +129,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "cc4d4c66ef5a9384be2bd71cb9c00b92";
+(node as any).hash = "64b57859ca3ec890fe40ee6ede28486e";
 
 export default node;
