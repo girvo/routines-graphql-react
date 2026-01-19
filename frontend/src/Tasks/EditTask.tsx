@@ -2,6 +2,7 @@ import { useCallback, type Dispatch, type SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { capitalise } from '../utils/text'
+import { handleEnterKeySubmit } from '../utils/form'
 import { taskFormSchema, type TaskFormData } from './task-validation'
 import { TaskFormRow } from './TaskForm/TaskFormRow'
 import { TaskFormCell } from './TaskForm/TaskFormCell'
@@ -89,6 +90,7 @@ export const EditTask = ({
           placeholder="Task name"
           className={`input w-full ${errors.title ? 'input-error' : ''}`}
           {...register('title')}
+          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
         />
         {errors.title?.message && (
           <span className="text-error mt-1 text-xs">
@@ -103,6 +105,7 @@ export const EditTask = ({
           placeholder="Lucide icon name"
           className={`input w-full ${errors.icon ? 'input-error' : ''}`}
           {...register('icon')}
+          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
         />
         {errors.icon?.message && (
           <span className="text-error mt-1 text-xs">

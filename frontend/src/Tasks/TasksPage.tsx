@@ -1,9 +1,8 @@
 import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
-import { Task } from './Task'
+import { TasksList } from './TasksList'
 import { Plus } from 'lucide-react'
 import { useState, useMemo } from 'react'
-import { CreateTask } from './CreateTask'
 import { useHeaderActions } from '../utils/header-actions.ts'
 
 interface TaskPageProps {
@@ -30,16 +29,7 @@ const TasksPage = ({ queries }: TaskPageProps) => {
   const data = usePreloadedQuery<TasksPageQuery>(
     graphql`
       query TasksPageQuery {
-        tasks(first: 100) @connection(key: "All_tasks") {
-          __id
-          edges {
-            node {
-              id
-              ...TaskDisplay
-              ...EditTaskUpdatable
-            }
-          }
-        }
+        ...TasksList_tasks
       }
     `,
     queries.tasksPageQuery,
@@ -57,31 +47,11 @@ const TasksPage = ({ queries }: TaskPageProps) => {
               <th className="w-1/4 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="block space-y-3 md:table-row-group md:space-y-0">
-            {data.tasks.edges.length === 0 && !isCreating && (
-              <tr>
-                <td className="text-center" colSpan={4}>
-                  No tasks, create some!
-                </td>
-              </tr>
-            )}
-            {isCreating && (
-              <CreateTask
-                setIsCreating={setIsCreating}
-                connectionId={data.tasks.__id}
-              />
-            )}
-            {data.tasks.edges.map(({ node }) => {
-              return (
-                <Task
-                  key={node.id}
-                  task={node}
-                  updatable={node}
-                  connectionId={data.tasks.__id}
-                />
-              )
-            })}
-          </tbody>
+          <TasksList
+            tasks={data}
+            isCreating={isCreating}
+            setIsCreating={setIsCreating}
+          />
         </table>
       </div>
     </>

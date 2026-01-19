@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { useMutation, graphql } from 'react-relay'
 import { capitalise } from '../utils/text'
+import { handleEnterKeySubmit } from '../utils/form'
 import { taskFormSchema, type TaskFormData } from './task-validation'
 import type { CreateTaskMutation } from './__generated__/CreateTaskMutation.graphql'
 import { TaskFormRow } from './TaskForm/TaskFormRow'
@@ -76,6 +77,7 @@ export const CreateTask = ({
           placeholder="Task name"
           className={`input w-full ${errors.title ? 'input-error' : ''}`}
           {...register('title')}
+          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
         />
         {errors.title?.message && (
           <span className="text-error mt-1 text-xs">
@@ -90,6 +92,7 @@ export const CreateTask = ({
           placeholder="Lucide icon name"
           className={`input w-full ${errors.icon ? 'input-error' : ''}`}
           {...register('icon')}
+          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
         />
         {errors.icon?.message && (
           <span className="text-error mt-1 text-xs">

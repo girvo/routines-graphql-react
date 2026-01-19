@@ -2,7 +2,8 @@ import { type } from 'arktype'
 import { iconNameSet } from '../utils/icons'
 
 const lucideIconName = type('string >= 1').narrow(
-  (s, ctx) => iconNameSet.has(s) || ctx.mustBe('a valid Lucide icon name'),
+  (s, ctx) =>
+    iconNameSet.has(s) || ctx.mustBe('a valid Lucide icon name like "list"'),
 )
 
 export const taskFormSchema = type({
