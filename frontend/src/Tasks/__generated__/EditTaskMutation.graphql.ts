@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1ed468d33fb969a3ed2affadaac7b79e>>
+ * @generated SignedSource<<08be64c09c58b265ab615cd6ba275923>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,6 @@ export type EditTaskMutation$variables = {
 export type EditTaskMutation$data = {
   readonly updateTask: {
     readonly task: {
-      readonly $updatableFragmentSpreads: FragmentRefs<"EditTaskMutation_updatable">;
       readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
     };
   };
@@ -52,13 +51,6 @@ v2 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
 };
 return {
   "fragment": {
@@ -87,11 +79,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "TaskDisplay"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "EditTaskMutation_updatable"
               }
             ],
             "storageKey": null
@@ -171,7 +158,13 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v3/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "__typename",
+                            "storageKey": null
+                          },
                           (v2/*: any*/)
                         ],
                         "storageKey": null
@@ -199,8 +192,7 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              (v3/*: any*/)
+              }
             ],
             "storageKey": null
           }
@@ -210,16 +202,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b6b946b8ab87db1c66d25c1cff36c94a",
+    "cacheID": "58f6cee1eaa838243e8670a0be1aed51",
     "id": null,
     "metadata": {},
     "name": "EditTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...TaskDisplay\n      __typename\n      id\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...TaskDisplay\n      id\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "43c113c7da8a0cc07c13c2a9d86e82c9";
+(node as any).hash = "92b5021c56b4ecdb99bfea0bc44dfc03";
 
 export default node;

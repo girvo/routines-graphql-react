@@ -8,7 +8,6 @@ import { TaskFormCell } from './TaskForm/TaskFormCell'
 import { TaskFormActionButtons } from './TaskForm/TaskFormActionButtons'
 import { useMutation, graphql } from 'react-relay'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
-import type { EditTaskMutation_updatable$key } from './__generated__/EditTaskMutation_updatable.graphql'
 
 interface EditTaskProps {
   taskId: string
@@ -40,7 +39,6 @@ export const EditTask = ({
       updateTask(input: $input) {
         task {
           ...TaskDisplay
-          ...EditTaskMutation_updatable
         }
       }
     }
@@ -60,23 +58,16 @@ export const EditTask = ({
           icon: data.icon,
         },
       },
-      optimisticUpdater: store => {
-        const { updatableData } =
-          store.readUpdatableFragment<EditTaskMutation_updatable$key>(
-            graphql`
-              fragment EditTaskMutation_updatable on Task @updatable {
-                title
-                icon
-              }
-            `,
-            response.updateTask.task,
-          )
-
-        updatableData.title = data.title
-        updatableData.icon = data.icon
-        close() // I wonder, is this right? we will lose data lol
+      optimisticUpdater: (store) => {
+        const task = store.get(taskId)
+        if (task) {
+          task.setValue(data.title, 'title')
+          task.setValue(data.icon, 'icon')
+        }
       },
+      onCompleted: () => close(),
     })
+    close()
   }
 
   return (
