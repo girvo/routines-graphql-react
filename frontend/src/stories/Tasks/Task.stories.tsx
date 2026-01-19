@@ -16,7 +16,9 @@ const TaskQuery = () => {
       query TaskQuery @relay_test_operation {
         node(id: "") {
           ... on Task {
+            __typename
             ...TaskDisplay
+            ...EditTaskUpdatable
           }
         }
       }
@@ -25,8 +27,9 @@ const TaskQuery = () => {
   )
 
   if (!data.node) return null
+  if (data.node?.__typename !== 'Task') return null
 
-  return <Task connectionId="" task={data.node} />
+  return <Task connectionId="" task={data.node} updatable={data.node} />
 }
 
 const renderer = () => {

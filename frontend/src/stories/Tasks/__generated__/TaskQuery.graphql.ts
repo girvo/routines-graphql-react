@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<887c67df06e6bb1d01cdcb65e42d6768>>
+ * @generated SignedSource<<b4ff6224a915cde635f1fae00a0618a9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,13 @@ import { FragmentRefs } from "relay-runtime";
 export type TaskQuery$variables = Record<PropertyKey, never>;
 export type TaskQuery$data = {
   readonly node: {
+    readonly __typename: "Task";
+    readonly $updatableFragmentSpreads: FragmentRefs<"EditTaskUpdatable">;
     readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
   } | null | undefined;
 };
 export type TaskQuery = {
@@ -73,10 +79,16 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v1/*: any*/),
               {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "TaskDisplay"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "EditTaskUpdatable"
               }
             ],
             "type": "Task",
@@ -192,7 +204,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f8e9e8fb7dea77184b7d05f5da6af927",
+    "cacheID": "30fe4da2ec77843db13c49a9d24ceadc",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -253,11 +265,11 @@ return {
     },
     "name": "TaskQuery",
     "operationKind": "query",
-    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "fbc668389184811bf5b048de2273330b";
+(node as any).hash = "d6cfeed3e00daae7635140b749516eb8";
 
 export default node;
