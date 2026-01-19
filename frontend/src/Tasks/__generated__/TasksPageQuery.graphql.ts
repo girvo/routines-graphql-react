@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<44dd4e2505b351a3da9af7a3dbdc17e2>>
+ * @generated SignedSource<<6c6daa71cd98c91c2c69fa85ba8af2f9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type TasksPageQuery$data = {
     readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly node: {
+        readonly $updatableFragmentSpreads: FragmentRefs<"EditTaskUpdatable">;
         readonly id: string;
         readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
       };
@@ -130,6 +131,11 @@ return {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "TaskDisplay"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "EditTaskUpdatable"
                   },
                   (v1/*: any*/)
                 ],
@@ -293,6 +299,6 @@ return {
 };
 })();
 
-(node as any).hash = "013aa632b1e046f31ad212d9644f487e";
+(node as any).hash = "23f35e66e54d036e1b7fc6358910d2b7";
 
 export default node;

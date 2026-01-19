@@ -8,11 +8,13 @@ import { TaskFormCell } from './TaskForm/TaskFormCell'
 import { TaskFormActionButtons } from './TaskForm/TaskFormActionButtons'
 import { useMutation, graphql } from 'react-relay'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
+import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql'
 
 interface EditTaskProps {
   taskId: string
   title: string
-  icon: string | null | undefined
+  icon: string | null
+  task: EditTaskUpdatable$key
   setIsEditing: Dispatch<SetStateAction<boolean>>
 }
 
@@ -20,21 +22,22 @@ export const EditTask = ({
   taskId,
   title,
   icon,
+  task,
   setIsEditing,
 }: EditTaskProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<TaskFormData>({
     resolver: arktypeResolver(taskFormSchema),
     defaultValues: {
-      title,
+      title: title,
       icon: icon ?? '',
     },
   })
 
-  const [updateTask] = useMutation<EditTaskMutation>(graphql`
+  const [updateTask, loading] = useMutation<EditTaskMutation>(graphql`
     mutation EditTaskMutation($input: UpdateTaskInput!) {
       updateTask(input: $input) {
         task {
@@ -48,22 +51,30 @@ export const EditTask = ({
     setIsEditing(false)
   }, [setIsEditing])
 
-  const onSubmit = (data: TaskFormData) => {
-    console.log({ taskId, ...data })
+  const onSubmit = (formData: TaskFormData) => {
+    console.log({ taskId, ...formData })
     updateTask({
       variables: {
         input: {
           taskId,
-          title: data.title,
-          icon: data.icon,
+          title: formData.title,
+          icon: formData.icon,
         },
       },
-      optimisticUpdater: (store) => {
-        const task = store.get(taskId)
-        if (task) {
-          task.setValue(data.title, 'title')
-          task.setValue(data.icon, 'icon')
-        }
+      optimisticUpdater: store => {
+        const { updatableData } =
+          store.readUpdatableFragment<EditTaskUpdatable$key>(
+            graphql`
+              fragment EditTaskUpdatable on Task @updatable {
+                id
+                title
+                icon
+              }
+            `,
+            task,
+          )
+        updatableData.title = formData.title
+        updatableData.icon = formData.icon
       },
       onCompleted: () => close(),
     })
@@ -106,7 +117,7 @@ export const EditTask = ({
         <TaskFormActionButtons
           onCancel={close}
           onSave={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
+          disabled={loading}
         />
       </TaskFormCell>
     </TaskFormRow>

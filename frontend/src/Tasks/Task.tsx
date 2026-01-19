@@ -7,12 +7,19 @@ import { DynamicIcon } from 'lucide-react/dynamic'
 import { parseIconName } from '../utils/icons.ts'
 import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.graphql.ts'
 import { EditTask } from './EditTask.tsx'
+import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql.ts'
+
 interface TaskProps {
   task: TaskDisplay$key
+  updatable: EditTaskUpdatable$key
   connectionId: string
 }
 
-export const Task = ({ task: taskData, connectionId }: TaskProps) => {
+export const Task = ({
+  task: taskData,
+  updatable,
+  connectionId,
+}: TaskProps) => {
   const task = useFragment(
     graphql`
       fragment TaskDisplay on Task {
@@ -68,7 +75,8 @@ export const Task = ({ task: taskData, connectionId }: TaskProps) => {
       <EditTask
         taskId={task.id}
         title={task.title}
-        icon={task.icon}
+        icon={task.icon ?? null}
+        task={updatable}
         setIsEditing={setIsEditing}
       />
     )

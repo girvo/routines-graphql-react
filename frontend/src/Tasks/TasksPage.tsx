@@ -36,6 +36,7 @@ const TasksPage = ({ queries }: TaskPageProps) => {
             node {
               id
               ...TaskDisplay
+              ...EditTaskUpdatable
             }
           }
         }
@@ -75,6 +76,7 @@ const TasksPage = ({ queries }: TaskPageProps) => {
                 <Task
                   key={node.id}
                   task={node}
+                  updatable={node}
                   connectionId={data.tasks.__id}
                 />
               )

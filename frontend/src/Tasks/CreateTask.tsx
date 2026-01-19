@@ -21,7 +21,7 @@ export const CreateTask = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<TaskFormData>({
     resolver: arktypeResolver(taskFormSchema),
     defaultValues: {
@@ -30,7 +30,7 @@ export const CreateTask = ({
     },
   })
 
-  const [createTask] = useMutation<CreateTaskMutation>(graphql`
+  const [createTask, loading] = useMutation<CreateTaskMutation>(graphql`
     mutation CreateTaskMutation(
       $title: String!
       $icon: String
@@ -104,7 +104,7 @@ export const CreateTask = ({
         <TaskFormActionButtons
           onCancel={close}
           onSave={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
+          disabled={loading}
         />
       </TaskFormCell>
     </TaskFormRow>
