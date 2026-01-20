@@ -74,7 +74,7 @@ const MobileDock = () => (
       className={({ isActive }) => (isActive ? 'dock-active text-primary' : '')}
     >
       <CalendarDays />
-      <span className="dock-label">Weekly Plan</span>
+      <span className="dock-label">Weekly plan</span>
     </NavLink>
     <NavLink
       to="/tasks"
@@ -98,6 +98,14 @@ const DesktopSidebar = () => {
             to="/"
           >
             Today
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            className={({ isActive }) => (isActive ? 'menu-active' : '')}
+            to="/weekly"
+          >
+            Weekly plan
           </NavLink>
         </li>
         <li>

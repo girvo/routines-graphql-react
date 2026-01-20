@@ -6,6 +6,8 @@ import { Routine } from './Routine.tsx'
 import { AppShell } from './AppShell.tsx'
 import { TasksPageEntryPoint } from './Tasks/TasksPage.entrypoint.ts'
 import { createEntryPointRoute } from './relay/createEntryPointRoute.tsx'
+// import WeeklyPlanPage from './WeeklyPlan/WeeklyPlanPage.tsx'
+import { WeeklyPlanPageEntryPoint } from './WeeklyPlan/WeeklyPlanPage.entrypoint.ts'
 
 export const unAuthedRoutes = createBrowserRouter([
   {
@@ -52,6 +54,18 @@ export const routes = createBrowserRouter([
         ),
         handle: {
           title: 'All tasks',
+        },
+      },
+      {
+        path: '/weekly',
+        ...createEntryPointRoute(
+          WeeklyPlanPageEntryPoint,
+          {},
+          {},
+          <div>Loading...</div>,
+        ),
+        handle: {
+          title: 'Weekly planner',
         },
       },
     ],
