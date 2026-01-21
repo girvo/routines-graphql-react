@@ -85,9 +85,10 @@ async function fetchGraphQLRequest(
         uploadables,
         1,
       )
-    } catch (error) {
+    } catch {
       clearAccessToken()
-      throw error
+      window.location.href = '/'
+      throw new Error('Session expired')
     }
   }
 
