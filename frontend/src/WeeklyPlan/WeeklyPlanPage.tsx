@@ -2,15 +2,17 @@ import { useState } from 'react'
 import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
 import type { WeeklyPlanPageQuery } from './__generated__/WeeklyPlanPageQuery.graphql'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { capitalise } from '../utils/text'
+import { WeeklyPlanDay } from './WeeklyPlanDay'
 
 const DAYS = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
 ] as const
 
 type Day = (typeof DAYS)[number]
@@ -22,26 +24,32 @@ export interface WeeklyPlanPageProps {
 }
 
 const WeeklyPlanPage = ({ queries }: WeeklyPlanPageProps) => {
-  const [selectedDay, setSelectedDay] = useState<Day>('Monday')
+  const [selectedDay, setSelectedDay] = useState<Day>('monday')
 
-  const data = usePreloadedQuery<WeeklyPlanPageQuery>(
+  const schedule = usePreloadedQuery<WeeklyPlanPageQuery>(
     graphql`
       query WeeklyPlanPageQuery {
         weeklySchedule {
           monday {
-            dayOfWeek
-            morning(first: 100) {
-              edges {
-                node {
-                  id
-                  createdAt
-                  section
-                  task {
-                    ...TaskDisplay
-                  }
-                }
-              }
-            }
+            ...WeeklyPlanDay
+          }
+          tuesday {
+            ...WeeklyPlanDay
+          }
+          wednesday {
+            ...WeeklyPlanDay
+          }
+          thursday {
+            ...WeeklyPlanDay
+          }
+          friday {
+            ...WeeklyPlanDay
+          }
+          saturday {
+            ...WeeklyPlanDay
+          }
+          sunday {
+            ...WeeklyPlanDay
           }
         }
       }
@@ -68,7 +76,7 @@ const WeeklyPlanPage = ({ queries }: WeeklyPlanPageProps) => {
         <button className="btn btn-ghost btn-sm" onClick={goToPreviousDay}>
           <ChevronLeft />
         </button>
-        <span className="text-lg font-bold">{selectedDay}</span>
+        <span className="text-lg font-bold">{capitalise(selectedDay)}</span>
         <button className="btn btn-ghost btn-sm" onClick={goToNextDay}>
           <ChevronRight />
         </button>
@@ -82,18 +90,14 @@ const WeeklyPlanPage = ({ queries }: WeeklyPlanPageProps) => {
               className={selectedDay === day ? 'font-bold' : ''}
               onClick={() => setSelectedDay(day)}
             >
-              {day}
+              {capitalise(day)}
             </button>
           </li>
         ))}
       </ul>
 
       {/* Content area */}
-      <div className="flex-1 p-4 md:p-6">
-        <h1 className="border-base-300 hidden border-b pb-4 text-2xl font-bold md:block">
-          {selectedDay}
-        </h1>
-      </div>
+      <WeeklyPlanDay day={schedule.weeklySchedule[selectedDay]} />
     </div>
   )
 }

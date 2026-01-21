@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fc9931fadf54dd36a0fe788ce06e90a7>>
+ * @generated SignedSource<<02173ad106dd2355262416b7be925193>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,25 +10,29 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type DayOfWeek = "FRIDAY" | "MONDAY" | "SATURDAY" | "SUNDAY" | "THURSDAY" | "TUESDAY" | "WEDNESDAY" | "%future added value";
-export type DaySection = "EVENING" | "MIDDAY" | "MORNING" | "%future added value";
 export type WeeklyPlanPageQuery$variables = Record<PropertyKey, never>;
 export type WeeklyPlanPageQuery$data = {
   readonly weeklySchedule: {
+    readonly friday: {
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+    };
     readonly monday: {
-      readonly dayOfWeek: DayOfWeek;
-      readonly morning: {
-        readonly edges: ReadonlyArray<{
-          readonly node: {
-            readonly createdAt: any;
-            readonly id: string;
-            readonly section: DaySection;
-            readonly task: {
-              readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
-            };
-          };
-        }>;
-      };
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+    };
+    readonly saturday: {
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+    };
+    readonly sunday: {
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+    };
+    readonly thursday: {
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+    };
+    readonly tuesday: {
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+    };
+    readonly wednesday: {
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
     };
   };
 };
@@ -38,41 +42,191 @@ export type WeeklyPlanPageQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "dayOfWeek",
-  "storageKey": null
-},
-v1 = [
+var v0 = [
   {
-    "kind": "Literal",
-    "name": "first",
-    "value": 100
+    "args": null,
+    "kind": "FragmentSpread",
+    "name": "WeeklyPlanDay"
   }
 ],
-v2 = {
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v3 = {
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "section",
-  "storageKey": null
-};
+v3 = [
+  {
+    "alias": null,
+    "args": null,
+    "concreteType": "RoutineSlotEdge",
+    "kind": "LinkedField",
+    "name": "edges",
+    "plural": true,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "RoutineSlot",
+        "kind": "LinkedField",
+        "name": "node",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          (v2/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "section",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "Task",
+            "kind": "LinkedField",
+            "name": "task",
+            "plural": false,
+            "selections": [
+              (v1/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "title",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "icon",
+                "storageKey": null
+              },
+              (v2/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "RoutineSlotConnection",
+                "kind": "LinkedField",
+                "name": "slots",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "RoutineSlotEdge",
+                    "kind": "LinkedField",
+                    "name": "edges",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "RoutineSlot",
+                        "kind": "LinkedField",
+                        "name": "node",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "__typename",
+                            "storageKey": null
+                          },
+                          (v1/*: any*/)
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "PageInfo",
+                    "kind": "LinkedField",
+                    "name": "pageInfo",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "hasNextPage",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ],
+    "storageKey": null
+  }
+],
+v4 = [
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "dayOfWeek",
+    "storageKey": null
+  },
+  {
+    "alias": null,
+    "args": [
+      {
+        "kind": "Literal",
+        "name": "first",
+        "value": 100
+      }
+    ],
+    "concreteType": "RoutineSlotConnection",
+    "kind": "LinkedField",
+    "name": "morning",
+    "plural": false,
+    "selections": (v3/*: any*/),
+    "storageKey": "morning(first:100)"
+  },
+  {
+    "alias": null,
+    "args": null,
+    "concreteType": "RoutineSlotConnection",
+    "kind": "LinkedField",
+    "name": "midday",
+    "plural": false,
+    "selections": (v3/*: any*/),
+    "storageKey": null
+  },
+  {
+    "alias": null,
+    "args": null,
+    "concreteType": "RoutineSlotConnection",
+    "kind": "LinkedField",
+    "name": "evening",
+    "plural": false,
+    "selections": (v3/*: any*/),
+    "storageKey": null
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": [],
@@ -95,61 +249,67 @@ return {
             "kind": "LinkedField",
             "name": "monday",
             "plural": false,
-            "selections": [
-              (v0/*: any*/),
-              {
-                "alias": null,
-                "args": (v1/*: any*/),
-                "concreteType": "RoutineSlotConnection",
-                "kind": "LinkedField",
-                "name": "morning",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "RoutineSlotEdge",
-                    "kind": "LinkedField",
-                    "name": "edges",
-                    "plural": true,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "RoutineSlot",
-                        "kind": "LinkedField",
-                        "name": "node",
-                        "plural": false,
-                        "selections": [
-                          (v2/*: any*/),
-                          (v3/*: any*/),
-                          (v4/*: any*/),
-                          {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "Task",
-                            "kind": "LinkedField",
-                            "name": "task",
-                            "plural": false,
-                            "selections": [
-                              {
-                                "args": null,
-                                "kind": "FragmentSpread",
-                                "name": "TaskDisplay"
-                              }
-                            ],
-                            "storageKey": null
-                          }
-                        ],
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": "morning(first:100)"
-              }
-            ],
+            "selections": (v0/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "tuesday",
+            "plural": false,
+            "selections": (v0/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "wednesday",
+            "plural": false,
+            "selections": (v0/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "thursday",
+            "plural": false,
+            "selections": (v0/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "friday",
+            "plural": false,
+            "selections": (v0/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "saturday",
+            "plural": false,
+            "selections": (v0/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "sunday",
+            "plural": false,
+            "selections": (v0/*: any*/),
             "storageKey": null
           }
         ],
@@ -180,131 +340,67 @@ return {
             "kind": "LinkedField",
             "name": "monday",
             "plural": false,
-            "selections": [
-              (v0/*: any*/),
-              {
-                "alias": null,
-                "args": (v1/*: any*/),
-                "concreteType": "RoutineSlotConnection",
-                "kind": "LinkedField",
-                "name": "morning",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "RoutineSlotEdge",
-                    "kind": "LinkedField",
-                    "name": "edges",
-                    "plural": true,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "RoutineSlot",
-                        "kind": "LinkedField",
-                        "name": "node",
-                        "plural": false,
-                        "selections": [
-                          (v2/*: any*/),
-                          (v3/*: any*/),
-                          (v4/*: any*/),
-                          {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "Task",
-                            "kind": "LinkedField",
-                            "name": "task",
-                            "plural": false,
-                            "selections": [
-                              (v2/*: any*/),
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "title",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "icon",
-                                "storageKey": null
-                              },
-                              (v3/*: any*/),
-                              {
-                                "alias": null,
-                                "args": null,
-                                "concreteType": "RoutineSlotConnection",
-                                "kind": "LinkedField",
-                                "name": "slots",
-                                "plural": false,
-                                "selections": [
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "concreteType": "RoutineSlotEdge",
-                                    "kind": "LinkedField",
-                                    "name": "edges",
-                                    "plural": true,
-                                    "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "concreteType": "RoutineSlot",
-                                        "kind": "LinkedField",
-                                        "name": "node",
-                                        "plural": false,
-                                        "selections": [
-                                          {
-                                            "alias": null,
-                                            "args": null,
-                                            "kind": "ScalarField",
-                                            "name": "__typename",
-                                            "storageKey": null
-                                          },
-                                          (v2/*: any*/)
-                                        ],
-                                        "storageKey": null
-                                      }
-                                    ],
-                                    "storageKey": null
-                                  },
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "concreteType": "PageInfo",
-                                    "kind": "LinkedField",
-                                    "name": "pageInfo",
-                                    "plural": false,
-                                    "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "hasNextPage",
-                                        "storageKey": null
-                                      }
-                                    ],
-                                    "storageKey": null
-                                  }
-                                ],
-                                "storageKey": null
-                              }
-                            ],
-                            "storageKey": null
-                          }
-                        ],
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": "morning(first:100)"
-              }
-            ],
+            "selections": (v4/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "tuesday",
+            "plural": false,
+            "selections": (v4/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "wednesday",
+            "plural": false,
+            "selections": (v4/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "thursday",
+            "plural": false,
+            "selections": (v4/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "friday",
+            "plural": false,
+            "selections": (v4/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "saturday",
+            "plural": false,
+            "selections": (v4/*: any*/),
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DaySchedule",
+            "kind": "LinkedField",
+            "name": "sunday",
+            "plural": false,
+            "selections": (v4/*: any*/),
             "storageKey": null
           }
         ],
@@ -313,16 +409,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "854746dacd6e5cf30d26cd28254a1fc1",
+    "cacheID": "ac6961976b5354ac8ee31687bac20add",
     "id": null,
     "metadata": {},
     "name": "WeeklyPlanPageQuery",
     "operationKind": "query",
-    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      dayOfWeek\n      morning(first: 100) {\n        edges {\n          node {\n            id\n            createdAt\n            section\n            task {\n              ...TaskDisplay\n              id\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay\n    }\n    tuesday {\n      ...WeeklyPlanDay\n    }\n    wednesday {\n      ...WeeklyPlanDay\n    }\n    thursday {\n      ...WeeklyPlanDay\n    }\n    friday {\n      ...WeeklyPlanDay\n    }\n    saturday {\n      ...WeeklyPlanDay\n    }\n    sunday {\n      ...WeeklyPlanDay\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanDay on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    ...WeeklyPlanRoutineSectionFragment\n  }\n  midday {\n    ...WeeklyPlanRoutineSectionFragment\n  }\n  evening {\n    ...WeeklyPlanRoutineSectionFragment\n  }\n}\n\nfragment WeeklyPlanRoutineSectionFragment on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      createdAt\n      section\n      task {\n        ...TaskDisplay\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "24d8cacb1ca01fb9f9150df3e9cfe259";
+(node as any).hash = "ef4d53159422a8c69a42fa82fc2508c6";
 
 export default node;
