@@ -12,7 +12,7 @@ import {
   submitButton,
   linkButton,
 } from './auth-styles'
-import { NavLink } from 'react-router'
+import { NavLink } from 'react-router-dom'
 
 export const Login = () => {
   const { setAccessToken } = use(AuthContext)

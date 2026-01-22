@@ -12,7 +12,7 @@ import {
   submitButton,
   linkButton,
 } from './auth-styles'
-import { useNavigate, NavLink } from 'react-router'
+import { useNavigate, NavLink } from 'react-router-dom'
 
 export const Register = () => {
   const { setAccessToken } = use(AuthContext)

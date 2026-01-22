@@ -1,15 +1,14 @@
-import { createBrowserRouter } from 'react-router'
+import type { EntryPointRouteObject } from '@loop-payments/react-router-relay'
+import type { RouteObject } from 'react-router-dom'
 import { Login } from './login/Login.tsx'
 import { Register } from './login/Register.tsx'
 import { RouteErrorBoundary } from './AppError.tsx'
 import { Routine } from './Routine.tsx'
 import { AppShell } from './AppShell.tsx'
 import { TasksPageEntryPoint } from './Tasks/TasksPage.entrypoint.ts'
-import { createEntryPointRoute } from './relay/createEntryPointRoute.tsx'
-// import WeeklyPlanPage from './WeeklyPlan/WeeklyPlanPage.tsx'
 import { WeeklyPlanPageEntryPoint } from './WeeklyPlan/WeeklyPlanPage.entrypoint.ts'
 
-export const unAuthedRoutes = createBrowserRouter([
+export const unAuthedRouteConfig: RouteObject[] = [
   {
     path: '/',
     ErrorBoundary: RouteErrorBoundary,
@@ -30,9 +29,9 @@ export const unAuthedRoutes = createBrowserRouter([
       },
     ],
   },
-])
+]
 
-export const routes = createBrowserRouter([
+export const authedRouteConfig: EntryPointRouteObject[] = [
   {
     ErrorBoundary: RouteErrorBoundary,
     Component: AppShell,
@@ -46,28 +45,20 @@ export const routes = createBrowserRouter([
       },
       {
         path: '/tasks',
-        ...createEntryPointRoute(
-          TasksPageEntryPoint,
-          {},
-          {},
-          <div>Loading...</div>,
-        ),
+        entryPoint: TasksPageEntryPoint,
         handle: {
           title: 'All tasks',
+          loading: () => 'Loading tasks page...',
         },
       },
       {
         path: '/weekly',
-        ...createEntryPointRoute(
-          WeeklyPlanPageEntryPoint,
-          {},
-          {},
-          <div>Loading...</div>,
-        ),
+        entryPoint: WeeklyPlanPageEntryPoint,
         handle: {
           title: 'Weekly planner',
+          loading: () => 'Loading weekly plan...',
         },
       },
     ],
-  },
-])
+  } as EntryPointRouteObject,
+]

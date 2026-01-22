@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
+import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
+import { graphql, usePreloadedQuery } from 'react-relay'
 import type { WeeklyPlanPageQuery } from './__generated__/WeeklyPlanPageQuery.graphql'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { capitalise } from '../utils/text'
@@ -17,13 +18,9 @@ const DAYS = [
 
 type Day = (typeof DAYS)[number]
 
-export interface WeeklyPlanPageProps {
-  queries: {
-    weeklyPlanPageQuery: PreloadedQuery<WeeklyPlanPageQuery>
-  }
-}
+type Props = SimpleEntryPointProps<{ weeklyPlanPageQuery: WeeklyPlanPageQuery }>
 
-const WeeklyPlanPage = ({ queries }: WeeklyPlanPageProps) => {
+const WeeklyPlanPage = ({ queries }: Props) => {
   const [selectedDay, setSelectedDay] = useState<Day>('monday')
 
   const schedule = usePreloadedQuery<WeeklyPlanPageQuery>(

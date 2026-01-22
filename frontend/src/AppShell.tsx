@@ -1,7 +1,12 @@
-import { use, useState, useCallback } from 'react'
+import { Suspense, use, useState, useCallback } from 'react'
 import { AuthContext } from './auth/auth-store.ts'
-import { NavLink, Outlet, type UIMatch } from 'react-router'
-import { useMatches } from 'react-router'
+import {
+  NavLink,
+  Outlet,
+  useLocation,
+  useMatches,
+  type UIMatch,
+} from 'react-router-dom'
 import {
   Calendar1,
   CalendarDays,
@@ -13,8 +18,13 @@ import {
   type HeaderAction,
 } from './utils/header-actions.ts'
 
+interface RouteHandle {
+  title?: string
+  loading?: () => React.ReactNode
+}
+
 const Header = () => {
-  const matches = useMatches() as UIMatch<unknown, { title: string }>[]
+  const matches = useMatches() as UIMatch<unknown, RouteHandle>[]
   const currentTitle = matches
     .filter(match => match.handle?.title)
     .map(match => match.handle.title)
@@ -130,6 +140,9 @@ const DesktopSidebar = () => {
 
 export const AppShell = () => {
   const [actions, setActionsState] = useState<HeaderAction[]>([])
+  const matches = useMatches() as UIMatch<unknown, RouteHandle>[]
+  const location = useLocation()
+  const Loading = matches.findLast(m => m.handle?.loading)?.handle?.loading
 
   const setActions = useCallback((newActions: HeaderAction[]) => {
     setActionsState(newActions)
@@ -146,7 +159,9 @@ export const AppShell = () => {
         <div className="flex flex-1 flex-col">
           <Header />
           <main className="flex-1">
-            <Outlet />
+            <Suspense key={location.pathname} fallback={Loading ? <Loading /> : 'Loading...'}>
+              <Outlet />
+            </Suspense>
           </main>
           <MobileDock />
         </div>

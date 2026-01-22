@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react-vite'
-import { createMemoryRouter, RouterProvider } from 'react-router'
+import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import '../src/styles.css'
 
 const preview: Preview = {

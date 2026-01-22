@@ -1,17 +1,14 @@
-import { graphql, usePreloadedQuery, type PreloadedQuery } from 'react-relay'
+import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
+import { graphql, usePreloadedQuery } from 'react-relay'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
 import { TasksList } from './TasksList'
 import { Plus } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { useHeaderActions } from '../utils/header-actions.ts'
 
-interface TaskPageProps {
-  queries: {
-    tasksPageQuery: PreloadedQuery<TasksPageQuery>
-  }
-}
+type Props = SimpleEntryPointProps<{ tasksPageQuery: TasksPageQuery }>
 
-const TasksPage = ({ queries }: TaskPageProps) => {
+const TasksPage = ({ queries }: Props) => {
   const [isCreating, setIsCreating] = useState(false)
   const headerActions = useMemo(
     () => [

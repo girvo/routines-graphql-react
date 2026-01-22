@@ -1,4 +1,4 @@
-import { useRouteError } from 'react-router'
+import { useRouteError } from 'react-router-dom'
 
 export const AppError = ({ error }: { error?: Error }) => (
   <div className="bg-base-200 flex min-h-screen items-center justify-center p-4">
