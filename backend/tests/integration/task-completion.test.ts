@@ -30,7 +30,7 @@ describe('Task completion mutations', () => {
       userToken,
     })
     assert(
-      task.data?.createTask.taskEdge.node !== undefined,
+      task.data?.createTask?.taskEdge.node !== undefined,
       'task was created',
     )
 
@@ -46,7 +46,7 @@ describe('Task completion mutations', () => {
 
     expect(slotResult.errors).toBeUndefined()
     assert(
-      slotResult.data?.createRoutineSlot.routineSlotEdge.node !== undefined,
+      slotResult.data?.createRoutineSlot?.routineSlotEdge.node !== undefined,
       'routine slot was created',
     )
 
@@ -80,7 +80,7 @@ describe('Task completion mutations', () => {
 
     expect(completionResult.errors).toBeUndefined()
     const completion =
-      completionResult.data?.completeRoutineSlot.taskCompletionEdge.node
+      completionResult.data?.completeRoutineSlot?.taskCompletionEdge.node
     assert(completion !== undefined, 'completion was created')
     expect(completion.routineSlot.id).toBe(
       slotResult.data.createRoutineSlot.routineSlotEdge.node.id,
@@ -93,7 +93,7 @@ describe('Task completion mutations', () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'Evening reading', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node !== undefined,
+      task.data?.createTask?.taskEdge.node !== undefined,
       'task was created',
     )
 
@@ -109,7 +109,7 @@ describe('Task completion mutations', () => {
 
     expect(slotResult.errors).toBeUndefined()
     assert(
-      slotResult.data?.createRoutineSlot.routineSlotEdge.node !== undefined,
+      slotResult.data?.createRoutineSlot?.routineSlotEdge.node !== undefined,
       'routine slot was created',
     )
 
@@ -134,7 +134,7 @@ describe('Task completion mutations', () => {
 
     expect(completionResult.errors).toBeUndefined()
     assert(
-      completionResult.data?.completeRoutineSlot.taskCompletionEdge.node !==
+      completionResult.data?.completeRoutineSlot?.taskCompletionEdge.node !==
         undefined,
       'completion was created',
     )
@@ -155,7 +155,7 @@ describe('Task completion mutations', () => {
     )
 
     expect(uncompletionResult.errors).toBeUndefined()
-    expect(uncompletionResult.data?.uncompleteRoutineSlot.deletedId).toBe(
+    expect(uncompletionResult.data?.uncompleteRoutineSlot?.deletedId).toBe(
       taskCompletionId,
     )
   })
@@ -168,7 +168,7 @@ describe('Task completion mutations', () => {
       userToken,
     })
     assert(
-      task.data?.createTask.taskEdge.node !== undefined,
+      task.data?.createTask?.taskEdge.node !== undefined,
       'task was created',
     )
 
@@ -184,7 +184,7 @@ describe('Task completion mutations', () => {
 
     expect(slotResult.errors).toBeUndefined()
     assert(
-      slotResult.data?.createRoutineSlot.routineSlotEdge.node !== undefined,
+      slotResult.data?.createRoutineSlot?.routineSlotEdge.node !== undefined,
       'routine slot was created',
     )
 
@@ -209,7 +209,7 @@ describe('Task completion mutations', () => {
 
     expect(firstCompletion.errors).toBeUndefined()
     assert(
-      firstCompletion.data?.completeRoutineSlot.taskCompletionEdge.node !==
+      firstCompletion.data?.completeRoutineSlot?.taskCompletionEdge.node !==
         undefined,
       'first completion was created',
     )
@@ -242,7 +242,7 @@ describe('Task.completions query resolver', () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'Task one', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node !== undefined,
+      task.data?.createTask?.taskEdge.node !== undefined,
       'Task was created successfully',
     )
 
@@ -257,7 +257,7 @@ describe('Task.completions query resolver', () => {
     })
 
     assert(
-      slot.data?.createRoutineSlot.routineSlotEdge.node !== undefined,
+      slot.data?.createRoutineSlot?.routineSlotEdge.node !== undefined,
       'Routine slot was created',
     )
 

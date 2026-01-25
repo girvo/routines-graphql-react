@@ -81,26 +81,26 @@ describe('Node resolver', () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'Test task', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node.id !== undefined,
+      task.data?.createTask?.taskEdge.node.id !== undefined,
       'Created a task',
     )
 
     const taskNode = await executeGraphQL(
       NodeQuery,
-      { id: task.data?.createTask.taskEdge.node.id },
+      { id: task.data?.createTask?.taskEdge.node.id },
       { yoga, userToken },
     )
 
     assert(taskNode.data?.node?.__typename === 'Task', 'Got a task back')
     expect(taskNode.data?.node.title).toBe('Test task')
-    expect(taskNode.data?.node.id).toBe(task.data?.createTask.taskEdge.node.id)
+    expect(taskNode.data?.node.id).toBe(task.data?.createTask?.taskEdge.node.id)
   })
 
   it('correctly resolves the RoutineSlot node', async () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'Morning task', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node.id !== undefined,
+      task.data?.createTask?.taskEdge.node.id !== undefined,
       'Created a task',
     )
 
@@ -114,7 +114,7 @@ describe('Node resolver', () => {
       userToken,
     })
     assert(
-      routineSlot.data?.createRoutineSlot.routineSlotEdge.node.id !== undefined,
+      routineSlot.data?.createRoutineSlot?.routineSlotEdge.node.id !== undefined,
       'Created a routine slot',
     )
 
@@ -140,7 +140,7 @@ describe('Node resolver', () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'Evening task', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node.id !== undefined,
+      task.data?.createTask?.taskEdge.node.id !== undefined,
       'Created a task',
     )
 
@@ -154,7 +154,7 @@ describe('Node resolver', () => {
       userToken,
     })
     assert(
-      routineSlot.data?.createRoutineSlot.routineSlotEdge.node.id !== undefined,
+      routineSlot.data?.createRoutineSlot?.routineSlotEdge.node.id !== undefined,
       'Created a routine slot',
     )
 
@@ -165,7 +165,7 @@ describe('Node resolver', () => {
       userToken,
     })
     assert(
-      completion.data?.completeRoutineSlot.taskCompletionEdge.node.id !==
+      completion.data?.completeRoutineSlot?.taskCompletionEdge.node.id !==
         undefined,
       'Created a task completion',
     )

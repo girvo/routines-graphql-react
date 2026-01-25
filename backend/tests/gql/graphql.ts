@@ -140,13 +140,13 @@ export type DeleteTaskPayload = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  completeRoutineSlot: CompleteRoutineSlotPayload;
-  createRoutineSlot: CreateRoutineSlotPayload;
-  createTask: CreateTaskPayload;
-  deleteRoutineSlot: DeleteRoutineSlotPayload;
-  deleteTask: DeleteTaskPayload;
-  uncompleteRoutineSlot: UncompleteRoutineSlotPayload;
-  updateTask: UpdateTaskPayload;
+  completeRoutineSlot?: Maybe<CompleteRoutineSlotPayload>;
+  createRoutineSlot?: Maybe<CreateRoutineSlotPayload>;
+  createTask?: Maybe<CreateTaskPayload>;
+  deleteRoutineSlot?: Maybe<DeleteRoutineSlotPayload>;
+  deleteTask?: Maybe<DeleteTaskPayload>;
+  uncompleteRoutineSlot?: Maybe<UncompleteRoutineSlotPayload>;
+  updateTask?: Maybe<UpdateTaskPayload>;
 };
 
 
@@ -348,14 +348,14 @@ export type CreateRoutineSlotMutationVariables = Exact<{
 }>;
 
 
-export type CreateRoutineSlotMutation = { __typename?: 'Mutation', createRoutineSlot: { __typename?: 'CreateRoutineSlotPayload', routineSlotEdge: { __typename?: 'RoutineSlotEdge', cursor: string, node: { __typename?: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection, createdAt: Date, task: { __typename?: 'Task', id: GlobalId, title: string } } } } };
+export type CreateRoutineSlotMutation = { __typename?: 'Mutation', createRoutineSlot?: { __typename?: 'CreateRoutineSlotPayload', routineSlotEdge: { __typename?: 'RoutineSlotEdge', cursor: string, node: { __typename?: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection, createdAt: Date, task: { __typename?: 'Task', id: GlobalId, title: string } } } } | null };
 
 export type CompleteRoutineSlotHelperMutationVariables = Exact<{
   routineSlotId: Scalars['ID']['input'];
 }>;
 
 
-export type CompleteRoutineSlotHelperMutation = { __typename?: 'Mutation', completeRoutineSlot: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', cursor: string, node: { __typename?: 'TaskCompletion', id: GlobalId, completedAt: Date, routineSlot: { __typename?: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection } } } } };
+export type CompleteRoutineSlotHelperMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', cursor: string, node: { __typename?: 'TaskCompletion', id: GlobalId, completedAt: Date, routineSlot: { __typename?: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection } } } } | null };
 
 export type CreateTaskMutationMutationVariables = Exact<{
   title: Scalars['String']['input'];
@@ -363,7 +363,7 @@ export type CreateTaskMutationMutationVariables = Exact<{
 }>;
 
 
-export type CreateTaskMutationMutation = { __typename?: 'Mutation', createTask: { __typename?: 'CreateTaskPayload', taskEdge: { __typename?: 'TaskEdge', node: { __typename?: 'Task', id: GlobalId, title: string, icon?: string | null } } } };
+export type CreateTaskMutationMutation = { __typename?: 'Mutation', createTask?: { __typename?: 'CreateTaskPayload', taskEdge: { __typename?: 'TaskEdge', node: { __typename?: 'Task', id: GlobalId, title: string, icon?: string | null } } } | null };
 
 export type NodeQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -382,7 +382,7 @@ export type DeleteRoutineSlotMutationVariables = Exact<{
 }>;
 
 
-export type DeleteRoutineSlotMutation = { __typename?: 'Mutation', deleteRoutineSlot: { __typename?: 'DeleteRoutineSlotPayload', deletedId: GlobalId } };
+export type DeleteRoutineSlotMutation = { __typename?: 'Mutation', deleteRoutineSlot?: { __typename?: 'DeleteRoutineSlotPayload', deletedId: GlobalId } | null };
 
 export type TaskResolverQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -420,42 +420,42 @@ export type CompleteRoutineSlotMutationVariables = Exact<{
 }>;
 
 
-export type CompleteRoutineSlotMutation = { __typename?: 'Mutation', completeRoutineSlot: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', cursor: string, node: { __typename?: 'TaskCompletion', id: GlobalId, completedAt: Date, routineSlot: { __typename?: 'RoutineSlot', id: GlobalId, task: { __typename?: 'Task', id: GlobalId, title: string } } } } } };
+export type CompleteRoutineSlotMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', cursor: string, node: { __typename?: 'TaskCompletion', id: GlobalId, completedAt: Date, routineSlot: { __typename?: 'RoutineSlot', id: GlobalId, task: { __typename?: 'Task', id: GlobalId, title: string } } } } } | null };
 
 export type CompleteRoutineSlotForUncompletionMutationVariables = Exact<{
   routineSlotId: Scalars['ID']['input'];
 }>;
 
 
-export type CompleteRoutineSlotForUncompletionMutation = { __typename?: 'Mutation', completeRoutineSlot: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } };
+export type CompleteRoutineSlotForUncompletionMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } | null };
 
 export type UncompleteRoutineSlotMutationVariables = Exact<{
   taskCompletionId: Scalars['ID']['input'];
 }>;
 
 
-export type UncompleteRoutineSlotMutation = { __typename?: 'Mutation', uncompleteRoutineSlot: { __typename?: 'UncompleteRoutineSlotPayload', deletedId: GlobalId } };
+export type UncompleteRoutineSlotMutation = { __typename?: 'Mutation', uncompleteRoutineSlot?: { __typename?: 'UncompleteRoutineSlotPayload', deletedId: GlobalId } | null };
 
 export type FirstCompletionMutationVariables = Exact<{
   routineSlotId: Scalars['ID']['input'];
 }>;
 
 
-export type FirstCompletionMutation = { __typename?: 'Mutation', completeRoutineSlot: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } };
+export type FirstCompletionMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } | null };
 
 export type SecondCompletionMutationVariables = Exact<{
   routineSlotId: Scalars['ID']['input'];
 }>;
 
 
-export type SecondCompletionMutation = { __typename?: 'Mutation', completeRoutineSlot: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } };
+export type SecondCompletionMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } | null };
 
 export type CompleteForTaskCompletionsTestMutationVariables = Exact<{
   routineSlotId: Scalars['ID']['input'];
 }>;
 
 
-export type CompleteForTaskCompletionsTestMutation = { __typename?: 'Mutation', completeRoutineSlot: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } };
+export type CompleteForTaskCompletionsTestMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId } } } | null };
 
 export type TaskCompletionsResolverQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -467,21 +467,21 @@ export type UpdateTaskMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask: { __typename?: 'UpdateTaskPayload', task: { __typename?: 'Task', id: GlobalId, title: string } } };
+export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'UpdateTaskPayload', task: { __typename?: 'Task', id: GlobalId, title: string } } | null };
 
 export type UpdateTaskIconMutationVariables = Exact<{
   input: UpdateTaskInput;
 }>;
 
 
-export type UpdateTaskIconMutation = { __typename?: 'Mutation', updateTask: { __typename?: 'UpdateTaskPayload', task: { __typename?: 'Task', id: GlobalId, title: string, icon?: string | null } } };
+export type UpdateTaskIconMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'UpdateTaskPayload', task: { __typename?: 'Task', id: GlobalId, title: string, icon?: string | null } } | null };
 
 export type DeleteTaskMutationVariables = Exact<{
   taskId: Scalars['ID']['input'];
 }>;
 
 
-export type DeleteTaskMutation = { __typename?: 'Mutation', deleteTask: { __typename?: 'DeleteTaskPayload', deletedId: GlobalId } };
+export type DeleteTaskMutation = { __typename?: 'Mutation', deleteTask?: { __typename?: 'DeleteTaskPayload', deletedId: GlobalId } | null };
 
 export type TasksTestOneQueryVariables = Exact<{ [key: string]: never; }>;
 

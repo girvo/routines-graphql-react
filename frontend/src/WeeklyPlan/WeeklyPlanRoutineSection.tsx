@@ -26,7 +26,7 @@ export const WeeklyPlanRoutineSection = ({
   )
 
   if (routine.edges.length === 0) {
-    return <div className="py-2 text-base-content/50">No tasks added</div>
+    return <div className="text-base-content/50 py-2">No tasks added</div>
   }
 
   return (

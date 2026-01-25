@@ -1,5 +1,6 @@
 import { executeGraphQL, type YogaApp } from './graphql.ts'
 import { graphql } from '../gql/gql.ts'
+import type { GlobalId } from '../../src/globalId.ts'
 
 const CompleteRoutineSlotMutation = graphql(`
   mutation CompleteRoutineSlotHelper($routineSlotId: ID!) {
@@ -21,7 +22,7 @@ const CompleteRoutineSlotMutation = graphql(`
 `)
 
 interface CompleteRoutineSlotArgs {
-  routineSlotId: string
+  routineSlotId: GlobalId
   yoga: YogaApp
   userToken: string
 }

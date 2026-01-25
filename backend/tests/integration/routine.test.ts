@@ -27,7 +27,7 @@ describe('Routine mutations', () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'A task', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node !== undefined,
+      task.data?.createTask?.taskEdge.node !== undefined,
       'task was created',
     )
 
@@ -61,7 +61,7 @@ describe('Routine mutations', () => {
       },
       { yoga, userToken },
     )
-    const routineSlot = result.data?.createRoutineSlot.routineSlotEdge.node
+    const routineSlot = result.data?.createRoutineSlot?.routineSlotEdge.node
     expect(result.errors).toBeUndefined()
     assert(routineSlot !== undefined, 'slot was created')
     expect(routineSlot.dayOfWeek).toBe('MONDAY')
@@ -75,7 +75,7 @@ describe('Routine mutations', () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'A task', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node !== undefined,
+      task.data?.createTask?.taskEdge.node !== undefined,
       'task was created',
     )
 
@@ -88,7 +88,7 @@ describe('Routine mutations', () => {
       yoga,
       userToken,
     })
-    const routineSlot = slot.data?.createRoutineSlot.routineSlotEdge.node
+    const routineSlot = slot.data?.createRoutineSlot?.routineSlotEdge.node
     expect(slot.errors).toBeUndefined()
     assert(routineSlot !== undefined, 'slot was created')
 
@@ -104,7 +104,7 @@ describe('Routine mutations', () => {
       { yoga, userToken },
     )
     expect(result.errors).toBeUndefined()
-    expect(result.data?.deleteRoutineSlot.deletedId).toBe(routineSlot.id)
+    expect(result.data?.deleteRoutineSlot?.deletedId).toBe(routineSlot.id)
   })
 })
 
@@ -113,7 +113,7 @@ describe('Task.slots query resolver', () => {
     const { userToken } = await createTestUser()
     const task = await createTask({ title: 'Task one', yoga, userToken })
     assert(
-      task.data?.createTask.taskEdge.node !== undefined,
+      task.data?.createTask?.taskEdge.node !== undefined,
       'Task was created successfully',
     )
 

@@ -46,15 +46,15 @@ type Query {
 }
 
 type Mutation {
-  createTask(title: String!, icon: String): CreateTaskPayload!
-  updateTask(input: UpdateTaskInput!): UpdateTaskPayload!
-  deleteTask(taskId: ID!): DeleteTaskPayload!
+  createTask(title: String!, icon: String): CreateTaskPayload
+  updateTask(input: UpdateTaskInput!): UpdateTaskPayload
+  deleteTask(taskId: ID!): DeleteTaskPayload
 
-  createRoutineSlot(input: CreateRoutineSlotInput!): CreateRoutineSlotPayload!
-  deleteRoutineSlot(routineSlotId: ID!): DeleteRoutineSlotPayload!
+  createRoutineSlot(input: CreateRoutineSlotInput!): CreateRoutineSlotPayload
+  deleteRoutineSlot(routineSlotId: ID!): DeleteRoutineSlotPayload
 
-  completeRoutineSlot(routineSlotId: ID!): CompleteRoutineSlotPayload!
-  uncompleteRoutineSlot(taskCompletionId: ID!): UncompleteRoutineSlotPayload!
+  completeRoutineSlot(routineSlotId: ID!): CompleteRoutineSlotPayload
+  uncompleteRoutineSlot(taskCompletionId: ID!): UncompleteRoutineSlotPayload
 }
 
 type User implements Node {

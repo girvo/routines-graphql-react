@@ -159,7 +159,10 @@ export const AppShell = () => {
         <div className="flex flex-1 flex-col">
           <Header />
           <main className="flex-1">
-            <Suspense key={location.pathname} fallback={Loading ? <Loading /> : 'Loading...'}>
+            <Suspense
+              key={location.pathname}
+              fallback={Loading ? <Loading /> : 'Loading...'}
+            >
               <Outlet />
             </Suspense>
           </main>

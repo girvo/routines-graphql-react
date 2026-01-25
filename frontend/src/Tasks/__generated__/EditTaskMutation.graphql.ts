@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<08be64c09c58b265ab615cd6ba275923>>
+ * @generated SignedSource<<33b558f7587730c7bac6149a52cdf318>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,7 +23,7 @@ export type EditTaskMutation$data = {
     readonly task: {
       readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
     };
-  };
+  } | null | undefined;
 };
 export type EditTaskMutation = {
   response: EditTaskMutation$data;

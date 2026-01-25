@@ -59,15 +59,15 @@ describe('dailyRoutine query', () => {
     })
 
     assert(
-      morningTask.data?.createTask.taskEdge.node !== undefined,
+      morningTask.data?.createTask?.taskEdge.node !== undefined,
       'morning task created',
     )
     assert(
-      middayTask.data?.createTask.taskEdge.node !== undefined,
+      middayTask.data?.createTask?.taskEdge.node !== undefined,
       'midday task created',
     )
     assert(
-      eveningTask.data?.createTask.taskEdge.node !== undefined,
+      eveningTask.data?.createTask?.taskEdge.node !== undefined,
       'evening task created',
     )
 
@@ -198,7 +198,7 @@ describe('dailyRoutine query', () => {
       userToken,
     })
 
-    assert(task.data?.createTask.taskEdge.node !== undefined, 'task created')
+    assert(task.data?.createTask?.taskEdge.node !== undefined, 'task created')
 
     await createRoutineSlot({
       input: {
@@ -268,11 +268,11 @@ describe('weeklySchedule query', () => {
     })
 
     assert(
-      mondayTask.data?.createTask.taskEdge.node !== undefined,
+      mondayTask.data?.createTask?.taskEdge.node !== undefined,
       'monday task created',
     )
     assert(
-      tuesdayTask.data?.createTask.taskEdge.node !== undefined,
+      tuesdayTask.data?.createTask?.taskEdge.node !== undefined,
       'tuesday task created',
     )
 

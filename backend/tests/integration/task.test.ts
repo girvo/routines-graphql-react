@@ -25,9 +25,9 @@ describe('Task mutations', () => {
     const { userToken } = await createTestUser()
     const result = await createTask({ title: 'Test Task', yoga, userToken })
 
-    expect(result.data?.createTask.taskEdge.node.title).toBe('Test Task')
-    expect(result.data?.createTask.taskEdge.node.id).toBeDefined()
-    expect(result.data?.createTask.taskEdge.node.icon).toBeNull()
+    expect(result.data?.createTask?.taskEdge.node.title).toBe('Test Task')
+    expect(result.data?.createTask?.taskEdge.node.id).toBeDefined()
+    expect(result.data?.createTask?.taskEdge.node.icon).toBeNull()
   })
 
   it('can create a task with an icon', async () => {
@@ -39,8 +39,8 @@ describe('Task mutations', () => {
       userToken,
     })
 
-    expect(result.data?.createTask.taskEdge.node.title).toBe('Task with icon')
-    expect(result.data?.createTask.taskEdge.node.icon).toBe('check-circle')
+    expect(result.data?.createTask?.taskEdge.node.title).toBe('Task with icon')
+    expect(result.data?.createTask?.taskEdge.node.icon).toBe('check-circle')
   })
 
   it('can update a task that is created for a user via the updateTask mutation', async () => {
@@ -52,7 +52,7 @@ describe('Task mutations', () => {
     })
 
     expect(firstResult.errors).toBeUndefined()
-    expect(firstResult.data?.createTask.taskEdge.node.id).toBeDefined()
+    expect(firstResult.data?.createTask?.taskEdge.node.id).toBeDefined()
 
     const secondResult = await executeGraphQL(
       graphql(`
@@ -68,15 +68,15 @@ describe('Task mutations', () => {
       {
         input: {
           title: 'My changed title',
-          taskId: firstResult.data!.createTask.taskEdge.node.id,
+          taskId: firstResult.data!.createTask!.taskEdge.node.id,
         },
       },
       { yoga, userToken },
     )
 
-    expect(secondResult.data?.updateTask.task.title).toBe('My changed title')
-    expect(secondResult.data?.updateTask.task.id).toBe(
-      firstResult.data?.createTask.taskEdge.node.id,
+    expect(secondResult.data?.updateTask?.task.title).toBe('My changed title')
+    expect(secondResult.data?.updateTask?.task.id).toBe(
+      firstResult.data?.createTask?.taskEdge.node.id,
     )
   })
 
@@ -88,7 +88,7 @@ describe('Task mutations', () => {
       userToken,
     })
 
-    expect(createResult.data?.createTask.taskEdge.node.icon).toBeNull()
+    expect(createResult.data?.createTask?.taskEdge.node.icon).toBeNull()
 
     const updateResult = await executeGraphQL(
       graphql(`
@@ -104,15 +104,15 @@ describe('Task mutations', () => {
       `),
       {
         input: {
-          taskId: createResult.data!.createTask.taskEdge.node.id,
+          taskId: createResult.data!.createTask!.taskEdge.node.id,
           icon: 'star',
         },
       },
       { yoga, userToken },
     )
 
-    expect(updateResult.data?.updateTask.task.icon).toBe('star')
-    expect(updateResult.data?.updateTask.task.title).toBe('Task to update icon')
+    expect(updateResult.data?.updateTask?.task.icon).toBe('star')
+    expect(updateResult.data?.updateTask?.task.title).toBe('Task to update icon')
   })
 
   it('can delete a task that is created for a user via the deleteTask mutation', async () => {
@@ -124,7 +124,7 @@ describe('Task mutations', () => {
     })
 
     expect(createResult.errors).toBeUndefined()
-    expect(createResult.data?.createTask.taskEdge.node.id).toBeDefined()
+    expect(createResult.data?.createTask?.taskEdge.node.id).toBeDefined()
 
     const deleteResult = await executeGraphQL(
       graphql(`
@@ -134,13 +134,13 @@ describe('Task mutations', () => {
           }
         }
       `),
-      { taskId: createResult.data!.createTask.taskEdge.node.id },
+      { taskId: createResult.data!.createTask!.taskEdge.node.id },
       { yoga, userToken },
     )
 
     expect(deleteResult.errors).toBeUndefined()
-    expect(deleteResult.data?.deleteTask.deletedId).toBe(
-      createResult.data?.createTask.taskEdge.node.id,
+    expect(deleteResult.data?.deleteTask?.deletedId).toBe(
+      createResult.data?.createTask?.taskEdge.node.id,
     )
   })
 })

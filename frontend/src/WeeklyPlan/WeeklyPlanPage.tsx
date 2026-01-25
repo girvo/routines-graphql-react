@@ -5,18 +5,7 @@ import type { WeeklyPlanPageQuery } from './__generated__/WeeklyPlanPageQuery.gr
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { capitalise } from '../utils/text'
 import { WeeklyPlanDay } from './WeeklyPlanDay'
-
-const DAYS = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday',
-] as const
-
-type Day = (typeof DAYS)[number]
+import { daySelectorToDayOfWeek, DAYS, type Day } from './days'
 
 type Props = SimpleEntryPointProps<{ weeklyPlanPageQuery: WeeklyPlanPageQuery }>
 
@@ -94,7 +83,12 @@ const WeeklyPlanPage = ({ queries }: Props) => {
       </ul>
 
       {/* Content area */}
-      <WeeklyPlanDay day={schedule.weeklySchedule[selectedDay]} />
+      <div className="flex flex-1 justify-center">
+        <WeeklyPlanDay
+          day={schedule.weeklySchedule[selectedDay]}
+          dayOfWeek={daySelectorToDayOfWeek(selectedDay)}
+        />
+      </div>
     </div>
   )
 }

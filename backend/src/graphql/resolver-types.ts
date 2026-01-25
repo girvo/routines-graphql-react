@@ -146,13 +146,13 @@ export type DeleteTaskPayload = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  completeRoutineSlot: CompleteRoutineSlotPayload;
-  createRoutineSlot: CreateRoutineSlotPayload;
-  createTask: CreateTaskPayload;
-  deleteRoutineSlot: DeleteRoutineSlotPayload;
-  deleteTask: DeleteTaskPayload;
-  uncompleteRoutineSlot: UncompleteRoutineSlotPayload;
-  updateTask: UpdateTaskPayload;
+  completeRoutineSlot?: Maybe<CompleteRoutineSlotPayload>;
+  createRoutineSlot?: Maybe<CreateRoutineSlotPayload>;
+  createTask?: Maybe<CreateTaskPayload>;
+  deleteRoutineSlot?: Maybe<DeleteRoutineSlotPayload>;
+  deleteTask?: Maybe<DeleteTaskPayload>;
+  uncompleteRoutineSlot?: Maybe<UncompleteRoutineSlotPayload>;
+  updateTask?: Maybe<UpdateTaskPayload>;
 };
 
 
@@ -577,13 +577,13 @@ export interface FileScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  completeRoutineSlot?: Resolver<ResolversTypes['CompleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationCompleteRoutineSlotArgs, 'routineSlotId'>>;
-  createRoutineSlot?: Resolver<ResolversTypes['CreateRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationCreateRoutineSlotArgs, 'input'>>;
-  createTask?: Resolver<ResolversTypes['CreateTaskPayload'], ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'title'>>;
-  deleteRoutineSlot?: Resolver<ResolversTypes['DeleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationDeleteRoutineSlotArgs, 'routineSlotId'>>;
-  deleteTask?: Resolver<ResolversTypes['DeleteTaskPayload'], ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'taskId'>>;
-  uncompleteRoutineSlot?: Resolver<ResolversTypes['UncompleteRoutineSlotPayload'], ParentType, ContextType, RequireFields<MutationUncompleteRoutineSlotArgs, 'taskCompletionId'>>;
-  updateTask?: Resolver<ResolversTypes['UpdateTaskPayload'], ParentType, ContextType, RequireFields<MutationUpdateTaskArgs, 'input'>>;
+  completeRoutineSlot?: Resolver<Maybe<ResolversTypes['CompleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationCompleteRoutineSlotArgs, 'routineSlotId'>>;
+  createRoutineSlot?: Resolver<Maybe<ResolversTypes['CreateRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationCreateRoutineSlotArgs, 'input'>>;
+  createTask?: Resolver<Maybe<ResolversTypes['CreateTaskPayload']>, ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'title'>>;
+  deleteRoutineSlot?: Resolver<Maybe<ResolversTypes['DeleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoutineSlotArgs, 'routineSlotId'>>;
+  deleteTask?: Resolver<Maybe<ResolversTypes['DeleteTaskPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'taskId'>>;
+  uncompleteRoutineSlot?: Resolver<Maybe<ResolversTypes['UncompleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationUncompleteRoutineSlotArgs, 'taskCompletionId'>>;
+  updateTask?: Resolver<Maybe<ResolversTypes['UpdateTaskPayload']>, ParentType, ContextType, RequireFields<MutationUpdateTaskArgs, 'input'>>;
 }>;
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{

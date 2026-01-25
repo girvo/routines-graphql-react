@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<335b3060c52266a13be2ac8e92584941>>
+ * @generated SignedSource<<5a3353ef8f4a858e6eed4cbeb8ee2d56>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ export type TaskDeleteMutation$variables = {
 export type TaskDeleteMutation$data = {
   readonly deleteTask: {
     readonly deletedId: string;
-  };
+  } | null | undefined;
 };
 export type TaskDeleteMutation = {
   response: TaskDeleteMutation$data;
