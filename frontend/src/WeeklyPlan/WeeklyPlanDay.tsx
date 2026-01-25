@@ -1,20 +1,13 @@
-import { Suspense } from 'react'
-import { graphql, useFragment } from 'react-relay'
+import { graphql, useFragment, useQueryLoader } from 'react-relay'
 import { WeeklyPlanRoutineSection } from './WeeklyPlanRoutineSection.tsx'
 import { AddTaskDropdown } from './AddTaskDropdown.tsx'
-import { PlusIcon } from 'lucide-react'
 import type { WeeklyPlanDay$key } from './__generated__/WeeklyPlanDay.graphql'
+import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
+import AddTaskDropdownQueryNode from './__generated__/AddTaskDropdownQuery.graphql.ts'
 
 interface WeeklyPlanDayProps {
   day: WeeklyPlanDay$key
 }
-
-const AddTaskDropdownFallback = () => (
-  <button className="btn pr-2.5 pl-1.5" disabled>
-    <PlusIcon />
-    Add task
-  </button>
-)
 
 export const WeeklyPlanDay = ({ day }: WeeklyPlanDayProps) => {
   const daySchedule = useFragment<WeeklyPlanDay$key>(
@@ -35,6 +28,14 @@ export const WeeklyPlanDay = ({ day }: WeeklyPlanDayProps) => {
     day,
   )
 
+  const [queryRef, loadQuery] = useQueryLoader<AddTaskDropdownQuery>(
+    AddTaskDropdownQueryNode,
+  )
+
+  const handleButtonHover = () => {
+    loadQuery({ titleSearch: null })
+  }
+
   const handleTaskSelect = (section: string) => (taskId: string) => {
     console.log('Selected task:', taskId, 'for', daySchedule.dayOfWeek, section)
   }
@@ -44,27 +45,36 @@ export const WeeklyPlanDay = ({ day }: WeeklyPlanDayProps) => {
       <div className="border-base-500 border p-4">
         <div className="flex">
           <h2 className="flex-1 text-2xl">Morning</h2>
-          <Suspense fallback={<AddTaskDropdownFallback />}>
-            <AddTaskDropdown onTaskSelect={handleTaskSelect('MORNING')} />
-          </Suspense>
+          <AddTaskDropdown
+            queryRef={queryRef}
+            loadQuery={loadQuery}
+            onButtonHover={handleButtonHover}
+            onTaskSelect={handleTaskSelect('MORNING')}
+          />
         </div>
         <WeeklyPlanRoutineSection weeklyPlanSection={daySchedule.morning} />
       </div>
       <div className="border-base-500 border p-4">
         <div className="flex">
           <h2 className="flex-1 text-2xl">Midday</h2>
-          <Suspense fallback={<AddTaskDropdownFallback />}>
-            <AddTaskDropdown onTaskSelect={handleTaskSelect('MIDDAY')} />
-          </Suspense>
+          <AddTaskDropdown
+            queryRef={queryRef}
+            loadQuery={loadQuery}
+            onButtonHover={handleButtonHover}
+            onTaskSelect={handleTaskSelect('MIDDAY')}
+          />
         </div>
         <WeeklyPlanRoutineSection weeklyPlanSection={daySchedule.midday} />
       </div>
       <div className="border-base-500 border p-4">
         <div className="flex">
           <h2 className="flex-1 text-2xl">Evening</h2>
-          <Suspense fallback={<AddTaskDropdownFallback />}>
-            <AddTaskDropdown onTaskSelect={handleTaskSelect('EVENING')} />
-          </Suspense>
+          <AddTaskDropdown
+            queryRef={queryRef}
+            loadQuery={loadQuery}
+            onButtonHover={handleButtonHover}
+            onTaskSelect={handleTaskSelect('EVENING')}
+          />
         </div>
         <WeeklyPlanRoutineSection weeklyPlanSection={daySchedule.evening} />
       </div>

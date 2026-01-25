@@ -1,22 +1,33 @@
-import { useState, Suspense } from 'react'
-import { graphql, useLazyLoadQuery } from 'react-relay'
-import { PlusIcon, Search, Loader2 } from 'lucide-react'
+import { useState, Suspense, useEffect, useRef } from 'react'
+import { graphql, usePreloadedQuery } from 'react-relay'
+import type { PreloadedQuery, LoadQueryOptions } from 'react-relay'
+import { Search, Loader2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useDebounceValue } from 'usehooks-ts'
 import { parseIconName } from '../utils/icons.ts'
-import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
+import { AddTaskButton } from './AddTaskButton.tsx'
+import type {
+  AddTaskDropdownQuery,
+  AddTaskDropdownQuery$variables,
+} from './__generated__/AddTaskDropdownQuery.graphql.ts'
 
 interface AddTaskDropdownProps {
+  queryRef: PreloadedQuery<AddTaskDropdownQuery> | null | undefined
+  loadQuery: (
+    variables: AddTaskDropdownQuery$variables,
+    options?: LoadQueryOptions,
+  ) => void
+  onButtonHover: () => void
   onTaskSelect: (taskId: string) => void
 }
 
 interface TaskListProps {
-  titleSearch: string | null
+  queryRef: PreloadedQuery<AddTaskDropdownQuery>
   onTaskClick: (taskId: string) => void
 }
 
-const TaskList = ({ titleSearch, onTaskClick }: TaskListProps) => {
-  const data = useLazyLoadQuery<AddTaskDropdownQuery>(
+const TaskList = ({ queryRef, onTaskClick }: TaskListProps) => {
+  const data = usePreloadedQuery<AddTaskDropdownQuery>(
     graphql`
       query AddTaskDropdownQuery($titleSearch: String) {
         tasks(first: 100, titleSearch: $titleSearch) {
@@ -30,7 +41,7 @@ const TaskList = ({ titleSearch, onTaskClick }: TaskListProps) => {
         }
       }
     `,
-    { titleSearch },
+    queryRef,
   )
 
   return (
@@ -62,9 +73,23 @@ const TaskListFallback = () => (
   </div>
 )
 
-export const AddTaskDropdown = ({ onTaskSelect }: AddTaskDropdownProps) => {
+export const AddTaskDropdown = ({
+  queryRef,
+  loadQuery,
+  onButtonHover,
+  onTaskSelect,
+}: AddTaskDropdownProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearch] = useDebounceValue(searchQuery, 300)
+
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    loadQuery({ titleSearch: debouncedSearch || null })
+  }, [debouncedSearch, loadQuery])
 
   const handleTaskClick = (taskId: string) => {
     onTaskSelect(taskId)
@@ -73,12 +98,15 @@ export const AddTaskDropdown = ({ onTaskSelect }: AddTaskDropdownProps) => {
     activeElement?.blur()
   }
 
+  const handleDropdownBlur = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setSearchQuery('')
+    }
+  }
+
   return (
-    <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn pr-2.5 pl-1.5">
-        <PlusIcon />
-        Add task
-      </div>
+    <div className="dropdown dropdown-end" onBlur={handleDropdownBlur}>
+      <AddTaskButton onMouseEnter={onButtonHover} />
       <div
         tabIndex={0}
         className="dropdown-content bg-base-100 rounded-box z-10 mt-2 w-64 p-2 shadow-lg"
@@ -95,10 +123,7 @@ export const AddTaskDropdown = ({ onTaskSelect }: AddTaskDropdownProps) => {
           />
         </label>
         <Suspense fallback={<TaskListFallback />}>
-          <TaskList
-            titleSearch={debouncedSearch || null}
-            onTaskClick={handleTaskClick}
-          />
+          {queryRef && <TaskList queryRef={queryRef} onTaskClick={handleTaskClick} />}
         </Suspense>
       </div>
     </div>

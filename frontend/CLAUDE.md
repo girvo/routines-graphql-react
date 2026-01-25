@@ -5,3 +5,5 @@ NEVER write inline utility functions. ALWAYS check `src/utils/` first and add ne
 ALWAYS check usehooks-ts first instead of writing your own utility function.
 
 NEVER write barrel files: re-export index.ts files are BANNED. NEVER.
+
+DO NOT use the useLazyLoadQuery hook without checking with me first. It is unacceptable to use.
