@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<902a9bb68fa6ddceac6b964fb1645ff5>>
+ * @generated SignedSource<<c25dfb88995ec631fcef8e2283c6c3f6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,9 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type AddTaskDropdownQuery$variables = Record<PropertyKey, never>;
+export type AddTaskDropdownQuery$variables = {
+  titleSearch?: string | null | undefined;
+};
 export type AddTaskDropdownQuery$data = {
   readonly tasks: {
     readonly edges: ReadonlyArray<{
@@ -29,12 +31,24 @@ export type AddTaskDropdownQuery = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "titleSearch"
+  }
+],
+v1 = [
+  {
     "alias": null,
     "args": [
       {
         "kind": "Literal",
         "name": "first",
         "value": 100
+      },
+      {
+        "kind": "Variable",
+        "name": "titleSearch",
+        "variableName": "titleSearch"
       }
     ],
     "concreteType": "TaskConnection",
@@ -86,37 +100,37 @@ var v0 = [
         "storageKey": null
       }
     ],
-    "storageKey": "tasks(first:100)"
+    "storageKey": null
   }
 ];
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "AddTaskDropdownQuery",
-    "selections": (v0/*: any*/),
+    "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "AddTaskDropdownQuery",
-    "selections": (v0/*: any*/)
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "2676bae148b2b3012ac13cf33dd3cfa5",
+    "cacheID": "e9c569f5d2af0d5403c754b79d308d1c",
     "id": null,
     "metadata": {},
     "name": "AddTaskDropdownQuery",
     "operationKind": "query",
-    "text": "query AddTaskDropdownQuery {\n  tasks(first: 100) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
+    "text": "query AddTaskDropdownQuery(\n  $titleSearch: String\n) {\n  tasks(first: 100, titleSearch: $titleSearch) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6833292dd1e2ee52a64dd61a4269ab38";
+(node as any).hash = "c37aeef7bdca643676c871009c945f8c";
 
 export default node;
