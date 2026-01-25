@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fd9afbe0a0cea4160390fbe6036a33c2>>
+ * @generated SignedSource<<1ad043a1343c97f46df91c13cecb6320>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,24 +10,41 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type AddTaskDropdownQuery$variables = Record<PropertyKey, never>;
-export type AddTaskDropdownQuery$data = {
+export type AddTaskDropdownTasksRefetchQuery$variables = {
+  titleSearch?: string | null | undefined;
+};
+export type AddTaskDropdownTasksRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdownTasksFragment">;
 };
-export type AddTaskDropdownQuery = {
-  response: AddTaskDropdownQuery$data;
-  variables: AddTaskDropdownQuery$variables;
+export type AddTaskDropdownTasksRefetchQuery = {
+  response: AddTaskDropdownTasksRefetchQuery$data;
+  variables: AddTaskDropdownTasksRefetchQuery$variables;
 };
 
-const node: ConcreteRequest = {
+const node: ConcreteRequest = (function(){
+var v0 = [
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "titleSearch"
+  }
+],
+v1 = {
+  "kind": "Variable",
+  "name": "titleSearch",
+  "variableName": "titleSearch"
+};
+return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "AddTaskDropdownQuery",
+    "name": "AddTaskDropdownTasksRefetchQuery",
     "selections": [
       {
-        "args": null,
+        "args": [
+          (v1/*: any*/)
+        ],
         "kind": "FragmentSpread",
         "name": "AddTaskDropdownTasksFragment"
       }
@@ -37,9 +54,9 @@ const node: ConcreteRequest = {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "AddTaskDropdownQuery",
+    "name": "AddTaskDropdownTasksRefetchQuery",
     "selections": [
       {
         "alias": null,
@@ -48,7 +65,8 @@ const node: ConcreteRequest = {
             "kind": "Literal",
             "name": "first",
             "value": 5
-          }
+          },
+          (v1/*: any*/)
         ],
         "concreteType": "TaskConnection",
         "kind": "LinkedField",
@@ -99,20 +117,21 @@ const node: ConcreteRequest = {
             "storageKey": null
           }
         ],
-        "storageKey": "tasks(first:5)"
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "a2c2b305c88da2761d5edcb629119d06",
+    "cacheID": "4d49ec2a29f074cfaf4256aba917ce1b",
     "id": null,
     "metadata": {},
-    "name": "AddTaskDropdownQuery",
+    "name": "AddTaskDropdownTasksRefetchQuery",
     "operationKind": "query",
-    "text": "query AddTaskDropdownQuery {\n  ...AddTaskDropdownTasksFragment\n}\n\nfragment AddTaskDropdownTasksFragment on Query {\n  tasks(first: 5) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
+    "text": "query AddTaskDropdownTasksRefetchQuery(\n  $titleSearch: String = null\n) {\n  ...AddTaskDropdownTasksFragment_3WkQrj\n}\n\nfragment AddTaskDropdownTasksFragment_3WkQrj on Query {\n  tasks(first: 5, titleSearch: $titleSearch) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
   }
 };
+})();
 
-(node as any).hash = "78cb5cff033a8c0193ebf25c29c56b46";
+(node as any).hash = "69ab2859893e1d78eb59b3a1c8a7435e";
 
 export default node;

@@ -1,36 +1,35 @@
-import { useState, Suspense, useEffect, useRef } from 'react'
-import { graphql, usePreloadedQuery } from 'react-relay'
-import type { PreloadedQuery, LoadQueryOptions } from 'react-relay'
+import { useState, Suspense, useEffect, useRef, useTransition } from 'react'
+import { graphql, usePreloadedQuery, useRefetchableFragment } from 'react-relay'
+import type { PreloadedQuery } from 'react-relay'
 import { Search, Loader2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useDebounceValue } from 'usehooks-ts'
 import { parseIconName } from '../utils/icons.ts'
 import { AddTaskButton } from './AddTaskButton.tsx'
-import type {
-  AddTaskDropdownQuery,
-  AddTaskDropdownQuery$variables,
-} from './__generated__/AddTaskDropdownQuery.graphql.ts'
+import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
+import type { AddTaskDropdownTasksFragment$key } from './__generated__/AddTaskDropdownTasksFragment.graphql.ts'
 
 interface AddTaskDropdownProps {
   queryRef: PreloadedQuery<AddTaskDropdownQuery> | null | undefined
-  loadQuery: (
-    variables: AddTaskDropdownQuery$variables,
-    options?: LoadQueryOptions,
-  ) => void
   onButtonHover: () => void
   onTaskSelect: (taskId: string) => void
 }
 
 interface TaskListProps {
-  queryRef: PreloadedQuery<AddTaskDropdownQuery>
+  fragmentRef: AddTaskDropdownTasksFragment$key
+  searchQuery: string
   onTaskClick: (taskId: string) => void
 }
 
-const TaskList = ({ queryRef, onTaskClick }: TaskListProps) => {
-  const data = usePreloadedQuery<AddTaskDropdownQuery>(
+const TaskList = ({ fragmentRef, searchQuery, onTaskClick }: TaskListProps) => {
+  const [data, refetch] = useRefetchableFragment(
     graphql`
-      query AddTaskDropdownQuery($titleSearch: String) {
-        tasks(first: 100, titleSearch: $titleSearch) {
+      fragment AddTaskDropdownTasksFragment on Query
+      @refetchable(queryName: "AddTaskDropdownTasksRefetchQuery")
+      @argumentDefinitions(
+        titleSearch: { type: "String", defaultValue: null }
+      ) {
+        tasks(first: 5, titleSearch: $titleSearch) {
           edges {
             node {
               id
@@ -41,8 +40,22 @@ const TaskList = ({ queryRef, onTaskClick }: TaskListProps) => {
         }
       }
     `,
-    queryRef,
+    fragmentRef,
   )
+
+  const [debouncedSearch] = useDebounceValue(searchQuery, 300)
+  const [isPending, startTransition] = useTransition()
+
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    startTransition(() => {
+      refetch({ titleSearch: debouncedSearch || null })
+    })
+  }, [debouncedSearch, refetch])
 
   return (
     <ul className="menu menu-sm mt-2 max-h-60 w-full flex-nowrap gap-2 overflow-y-auto p-0">
@@ -52,7 +65,7 @@ const TaskList = ({ queryRef, onTaskClick }: TaskListProps) => {
         </li>
       ) : (
         data.tasks.edges.map(({ node }) => (
-          <li key={node.id}>
+          <li key={node.id} className={isPending ? 'opacity-50' : ''}>
             <button
               className="flex w-full items-center gap-2"
               onClick={() => onTaskClick(node.id)}
@@ -73,23 +86,25 @@ const TaskListFallback = () => (
   </div>
 )
 
-export const AddTaskDropdown = ({
-  queryRef,
-  loadQuery,
-  onButtonHover,
-  onTaskSelect,
-}: AddTaskDropdownProps) => {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [debouncedSearch] = useDebounceValue(searchQuery, 300)
+interface AddTaskDropdownContentProps {
+  queryRef: PreloadedQuery<AddTaskDropdownQuery>
+  onTaskSelect: (taskId: string) => void
+}
 
-  const isFirstRender = useRef(true)
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-    loadQuery({ titleSearch: debouncedSearch || null })
-  }, [debouncedSearch, loadQuery])
+const AddTaskDropdownContent = ({
+  queryRef,
+  onTaskSelect,
+}: AddTaskDropdownContentProps) => {
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const data = usePreloadedQuery(
+    graphql`
+      query AddTaskDropdownQuery {
+        ...AddTaskDropdownTasksFragment
+      }
+    `,
+    queryRef,
+  )
 
   const handleTaskClick = (taskId: string) => {
     onTaskSelect(taskId)
@@ -98,9 +113,36 @@ export const AddTaskDropdown = ({
     activeElement?.blur()
   }
 
+  return (
+    <>
+      <label className="input input-ghost input-sm pl-1">
+        <Search className="h-[1em] opacity-50" />
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          className="grow"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          autoFocus
+        />
+      </label>
+      <TaskList
+        fragmentRef={data}
+        searchQuery={searchQuery}
+        onTaskClick={handleTaskClick}
+      />
+    </>
+  )
+}
+
+export const AddTaskDropdown = ({
+  queryRef,
+  onButtonHover,
+  onTaskSelect,
+}: AddTaskDropdownProps) => {
   const handleDropdownBlur = (e: React.FocusEvent) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-      setSearchQuery('')
+      // Reset search handled by AddTaskDropdownContent unmounting/remounting
     }
   }
 
@@ -111,19 +153,13 @@ export const AddTaskDropdown = ({
         tabIndex={0}
         className="dropdown-content bg-base-100 rounded-box z-10 mt-2 w-64 p-2 shadow-lg"
       >
-        <label className="input input-ghost input-sm pl-1">
-          <Search className="h-[1em] opacity-50" />
-          <input
-            type="text"
-            placeholder="Search tasks..."
-            className="grow"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            autoFocus
-          />
-        </label>
         <Suspense fallback={<TaskListFallback />}>
-          {queryRef && <TaskList queryRef={queryRef} onTaskClick={handleTaskClick} />}
+          {queryRef && (
+            <AddTaskDropdownContent
+              queryRef={queryRef}
+              onTaskSelect={onTaskSelect}
+            />
+          )}
         </Suspense>
       </div>
     </div>

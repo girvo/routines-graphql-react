@@ -32,7 +32,9 @@ export const WeeklyPlanDay = ({ day }: WeeklyPlanDayProps) => {
   )
 
   const handleButtonHover = () => {
-    loadQuery({ titleSearch: null })
+    if (!queryRef) {
+      loadQuery({})
+    }
   }
 
   const handleTaskSelect = (section: string) => (taskId: string) => {
@@ -45,7 +47,6 @@ export const WeeklyPlanDay = ({ day }: WeeklyPlanDayProps) => {
         label="Morning"
         sectionData={daySchedule.morning}
         queryRef={queryRef}
-        loadQuery={loadQuery}
         onButtonHover={handleButtonHover}
         onTaskSelect={handleTaskSelect('MORNING')}
       />
@@ -53,7 +54,6 @@ export const WeeklyPlanDay = ({ day }: WeeklyPlanDayProps) => {
         label="Midday"
         sectionData={daySchedule.midday}
         queryRef={queryRef}
-        loadQuery={loadQuery}
         onButtonHover={handleButtonHover}
         onTaskSelect={handleTaskSelect('MIDDAY')}
       />
@@ -61,7 +61,6 @@ export const WeeklyPlanDay = ({ day }: WeeklyPlanDayProps) => {
         label="Evening"
         sectionData={daySchedule.evening}
         queryRef={queryRef}
-        loadQuery={loadQuery}
         onButtonHover={handleButtonHover}
         onTaskSelect={handleTaskSelect('EVENING')}
       />
