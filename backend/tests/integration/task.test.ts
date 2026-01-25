@@ -249,4 +249,93 @@ describe('Task queries', () => {
       'Task to select 21',
     )
   })
+
+  it('can filter tasks by title using titleSearch', async () => {
+    const { userToken } = await createTestUser()
+
+    await Promise.all([
+      createTask({ title: 'Morning meditation', yoga, userToken }),
+      createTask({ title: 'Evening meditation', yoga, userToken }),
+      createTask({ title: 'Take vitamins', yoga, userToken }),
+      createTask({ title: 'Read a book', yoga, userToken }),
+    ])
+
+    const searchResult = await executeGraphQL(
+      graphql(`
+        query TasksTitleSearch($titleSearch: String) {
+          tasks(first: 10, titleSearch: $titleSearch) {
+            edges {
+              node {
+                title
+              }
+            }
+          }
+        }
+      `),
+      { titleSearch: 'meditation' },
+      { yoga, userToken },
+    )
+
+    expect(searchResult.errors).toBeUndefined()
+    expect(searchResult.data?.tasks.edges.length).toEqual(2)
+    expect(searchResult.data?.tasks.edges.map(e => e.node.title)).toEqual(
+      expect.arrayContaining(['Morning meditation', 'Evening meditation']),
+    )
+  })
+
+  it('titleSearch is case-insensitive', async () => {
+    const { userToken } = await createTestUser()
+
+    await createTask({ title: 'Morning Meditation', yoga, userToken })
+
+    const searchResult = await executeGraphQL(
+      graphql(`
+        query TasksTitleSearchCaseInsensitive($titleSearch: String) {
+          tasks(first: 10, titleSearch: $titleSearch) {
+            edges {
+              node {
+                title
+              }
+            }
+          }
+        }
+      `),
+      { titleSearch: 'MEDITATION' },
+      { yoga, userToken },
+    )
+
+    expect(searchResult.errors).toBeUndefined()
+    expect(searchResult.data?.tasks.edges.length).toEqual(1)
+    expect(searchResult.data?.tasks.edges[0].node.title).toEqual(
+      'Morning Meditation',
+    )
+  })
+
+  it('returns all tasks when titleSearch is not provided', async () => {
+    const { userToken } = await createTestUser()
+
+    await Promise.all([
+      createTask({ title: 'Task A', yoga, userToken }),
+      createTask({ title: 'Task B', yoga, userToken }),
+    ])
+
+    const searchResult = await executeGraphQL(
+      graphql(`
+        query TasksNoTitleSearch {
+          tasks(first: 10) {
+            edges {
+              node {
+                title
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+
+    expect(searchResult.errors).toBeUndefined()
+    expect(searchResult.data?.tasks.edges.length).toEqual(2)
+  })
 })

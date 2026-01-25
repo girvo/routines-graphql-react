@@ -70,6 +70,7 @@ export const createTaskRepository = (db: Kysely<Database>) => {
     async findByUserIdPaginated(
       userId: number,
       pagination: PaginationArgs,
+      options?: { titleSearch?: string | null },
     ): Promise<TaskRow[]> {
       const direction: 'asc' | 'desc' = pagination.after
         ? taskCursor.decode(pagination.after).direction
@@ -83,6 +84,10 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         .orderBy('created_at', direction)
         .orderBy('id', 'asc')
         .limit(pagination.first + 1)
+
+      if (options?.titleSearch) {
+        query = query.where('title', 'like', `%${options.titleSearch}%`)
+      }
 
       if (pagination.after) {
         const cursor = taskCursor.decode(pagination.after)

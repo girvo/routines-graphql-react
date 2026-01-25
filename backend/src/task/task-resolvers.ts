@@ -28,7 +28,7 @@ export const resolveTaskAsNode: NodeResolver<'Task'> = async (id, context) => {
 
 export const tasksResolver: QueryResolvers<Context>['tasks'] = async (
   _parent,
-  { first, after },
+  { first, after, titleSearch },
   context,
 ) => {
   assertAuthenticated(context)
@@ -41,6 +41,7 @@ export const tasksResolver: QueryResolvers<Context>['tasks'] = async (
   const rows = await context.taskRepo.findByUserIdPaginated(
     context.currentUser.id,
     { first: first ?? 10, after },
+    { titleSearch },
   )
 
   const connection = buildTaskConnection(rows, take, direction)

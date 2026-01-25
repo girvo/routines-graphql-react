@@ -33,7 +33,7 @@ type Query {
   dailyRoutine(date: DateTime): DailyRoutinePayload!
 
   weeklySchedule: WeeklySchedulePayload!
-  tasks(first: NonNegativeInt, after: String): TaskConnection!
+  tasks(first: NonNegativeInt, after: String, titleSearch: String): TaskConnection!
 
   taskCompletions(
     first: NonNegativeInt

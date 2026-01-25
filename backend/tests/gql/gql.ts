@@ -37,6 +37,9 @@ type Documents = {
     "\n        mutation DeleteTask($taskId: ID!) {\n          deleteTask(taskId: $taskId) {\n            deletedId\n          }\n        }\n      ": typeof types.DeleteTaskDocument,
     "\n        query TasksTestOne {\n          tasks(first: 1) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": typeof types.TasksTestOneDocument,
     "\n      query PaginatedTasks($after: String) {\n        tasks(first: 10, after: $after) {\n          edges {\n            node {\n              id\n              title\n            }\n          }\n          pageInfo {\n            hasNextPage\n            endCursor\n            startCursor\n          }\n        }\n      }\n    ": typeof types.PaginatedTasksDocument,
+    "\n        query TasksTitleSearch($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": typeof types.TasksTitleSearchDocument,
+    "\n        query TasksTitleSearchCaseInsensitive($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": typeof types.TasksTitleSearchCaseInsensitiveDocument,
+    "\n        query TasksNoTitleSearch {\n          tasks(first: 10) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": typeof types.TasksNoTitleSearchDocument,
 };
 const documents: Documents = {
     "\n  mutation CreateRoutineSlot($input: CreateRoutineSlotInput!) {\n    createRoutineSlot(input: $input) {\n      routineSlotEdge {\n        node {\n          id\n          task {\n            id\n            title\n          }\n          dayOfWeek\n          section\n          createdAt\n        }\n        cursor\n      }\n    }\n  }\n": types.CreateRoutineSlotDocument,
@@ -62,6 +65,9 @@ const documents: Documents = {
     "\n        mutation DeleteTask($taskId: ID!) {\n          deleteTask(taskId: $taskId) {\n            deletedId\n          }\n        }\n      ": types.DeleteTaskDocument,
     "\n        query TasksTestOne {\n          tasks(first: 1) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": types.TasksTestOneDocument,
     "\n      query PaginatedTasks($after: String) {\n        tasks(first: 10, after: $after) {\n          edges {\n            node {\n              id\n              title\n            }\n          }\n          pageInfo {\n            hasNextPage\n            endCursor\n            startCursor\n          }\n        }\n      }\n    ": types.PaginatedTasksDocument,
+    "\n        query TasksTitleSearch($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": types.TasksTitleSearchDocument,
+    "\n        query TasksTitleSearchCaseInsensitive($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": types.TasksTitleSearchCaseInsensitiveDocument,
+    "\n        query TasksNoTitleSearch {\n          tasks(first: 10) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      ": types.TasksNoTitleSearchDocument,
 };
 
 /**
@@ -170,6 +176,18 @@ export function graphql(source: "\n        query TasksTestOne {\n          tasks
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n      query PaginatedTasks($after: String) {\n        tasks(first: 10, after: $after) {\n          edges {\n            node {\n              id\n              title\n            }\n          }\n          pageInfo {\n            hasNextPage\n            endCursor\n            startCursor\n          }\n        }\n      }\n    "): (typeof documents)["\n      query PaginatedTasks($after: String) {\n        tasks(first: 10, after: $after) {\n          edges {\n            node {\n              id\n              title\n            }\n          }\n          pageInfo {\n            hasNextPage\n            endCursor\n            startCursor\n          }\n        }\n      }\n    "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n        query TasksTitleSearch($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      "): (typeof documents)["\n        query TasksTitleSearch($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n        query TasksTitleSearchCaseInsensitive($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      "): (typeof documents)["\n        query TasksTitleSearchCaseInsensitive($titleSearch: String) {\n          tasks(first: 10, titleSearch: $titleSearch) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n        query TasksNoTitleSearch {\n          tasks(first: 10) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      "): (typeof documents)["\n        query TasksNoTitleSearch {\n          tasks(first: 10) {\n            edges {\n              node {\n                title\n              }\n            }\n          }\n        }\n      "];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

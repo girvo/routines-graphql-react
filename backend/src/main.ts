@@ -166,5 +166,6 @@ if (import.meta.main) {
     })
   }
 
+  // Port 4000 is hardcoded for now
   await app.listen({ port: 4000, host: '0.0.0.0' })
 }

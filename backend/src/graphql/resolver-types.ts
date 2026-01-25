@@ -236,6 +236,7 @@ export type QueryTaskCompletionsArgs = {
 export type QueryTasksArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
+  titleSearch?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RoutineSlot = Node & {
