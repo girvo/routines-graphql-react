@@ -7,6 +7,8 @@ import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { fromGlobalId } from '../globalId.ts'
 import type { DayOfWeek, DaySection } from '../database/types.ts'
+import { GraphQLError } from 'graphql'
+import { SqliteError } from 'better-sqlite3'
 
 export const createRoutineSlot: MutationResolvers<Context>['createRoutineSlot'] =
   async (_parent, { input }, context) => {
@@ -14,12 +16,21 @@ export const createRoutineSlot: MutationResolvers<Context>['createRoutineSlot'] 
 
     const taskId = fromGlobalId(input.taskId, 'Task')
 
-    const routineSlotRow = await context.routineRepo.createRoutineSlot(
-      context.currentUser.id,
-      taskId,
-      input.dayOfWeek as DayOfWeek,
-      input.section as DaySection,
-    )
+    let routineSlotRow
+    try {
+      routineSlotRow = await context.routineRepo.createRoutineSlot(
+        context.currentUser.id,
+        taskId,
+        input.dayOfWeek as DayOfWeek,
+        input.section as DaySection,
+      )
+    } catch (error) {
+      if (error instanceof SqliteError && error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+        throw new GraphQLError('This task is already scheduled for this time slot')
+      }
+      throw error
+    }
+
     const routineSlot = tableToDomain(routineSlotRow)
     const edge = buildRoutineSlotEdge(routineSlot)
 

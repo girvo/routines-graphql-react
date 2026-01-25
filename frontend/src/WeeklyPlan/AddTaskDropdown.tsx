@@ -10,11 +10,13 @@ import { Search, Loader2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useDebounceValue } from 'usehooks-ts'
 import { parseIconName } from '../utils/icons.ts'
+import { getErrorMessage } from '../utils/errors.ts'
 import { AddTaskButton } from './AddTaskButton.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { AddTaskDropdownTasksFragment$key } from './__generated__/AddTaskDropdownTasksFragment.graphql.ts'
 import type { DaySelection } from './days.ts'
 import type { AddTaskDropdownRoutineSlotMutation } from './__generated__/AddTaskDropdownRoutineSlotMutation.graphql.ts'
+import { useToast } from '../toast/ToastContext.ts'
 
 interface TaskListProps {
   fragmentRef: AddTaskDropdownTasksFragment$key
@@ -108,6 +110,7 @@ const AddTaskDropdownContent = ({
   daySection,
   connectionId,
 }: AddTaskDropdownContentProps) => {
+  const { showError } = useToast()
   const [searchQuery, setSearchQuery] = useState('')
 
   const data = usePreloadedQuery(
@@ -159,10 +162,13 @@ const AddTaskDropdownContent = ({
         daySection,
         connectionId,
       },
-      onError: err => {
-        console.log('Got an error!', err.source)
-        // console.debug(err)
+      onCompleted: (_response, errors) => {
+        if (errors) {
+          errors.forEach(error => showError(getErrorMessage(error)))
+          return
+        }
       },
+      onError: err => showError(getErrorMessage(err)),
     })
 
     setSearchQuery('')

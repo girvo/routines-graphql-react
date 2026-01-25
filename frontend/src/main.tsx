@@ -5,6 +5,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { environment } from './relay/environment'
 import { RelayEnvironmentProvider } from 'react-relay'
 import { AuthProvider } from './auth/AuthProvider.tsx'
+import { ToastProvider } from './toast/ToastProvider.tsx'
 import { AppError } from './AppError.tsx'
 import './styles.css'
 
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')!).render(
       <ErrorBoundary fallbackRender={AppError}>
         <Suspense fallback="Loading...">
           <AuthProvider>
-            <App />
+            <ToastProvider>
+              <App />
+            </ToastProvider>
           </AuthProvider>
         </Suspense>
       </ErrorBoundary>
