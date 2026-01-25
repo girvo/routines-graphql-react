@@ -1,4 +1,5 @@
 import { graphql, useFragment } from 'react-relay'
+import { RoutineSlotItem } from './RoutineSlotItem.tsx'
 import type { WeeklyPlanRoutineSectionFragment$key } from './__generated__/WeeklyPlanRoutineSectionFragment.graphql'
 
 interface WeeklyPlanRoutineSectionProps {
@@ -14,10 +15,8 @@ export const WeeklyPlanRoutineSection = ({
         edges {
           node {
             id
-            createdAt
-            section
             task {
-              ...TaskDisplay
+              ...RoutineSlotItem
             }
           }
         }
@@ -27,14 +26,14 @@ export const WeeklyPlanRoutineSection = ({
   )
 
   if (routine.edges.length === 0) {
-    return <div className="text-md flex text-center">No tasks addded</div>
+    return <div className="py-2 text-base-content/50">No tasks added</div>
   }
 
   return (
-    <div className="flex flex-row">
-      {routine.edges.map(edge => {
-        return <div key={edge.node.id}>{edge.node.id}</div>
-      })}
+    <div className="mt-2 flex flex-wrap gap-2">
+      {routine.edges.map(edge => (
+        <RoutineSlotItem key={edge.node.id} task={edge.node.task} />
+      ))}
     </div>
   )
 }

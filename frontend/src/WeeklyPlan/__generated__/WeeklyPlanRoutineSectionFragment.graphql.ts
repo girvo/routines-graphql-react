@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bd7b2ed7b15beb5d591ff49113f5b57f>>
+ * @generated SignedSource<<9e555e17dbf56d8851e85ca24669a4c9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,13 @@
 // @ts-nocheck
 
 import { ReaderFragment } from 'relay-runtime';
-export type DaySection = "EVENING" | "MIDDAY" | "MORNING" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type WeeklyPlanRoutineSectionFragment$data = {
   readonly edges: ReadonlyArray<{
     readonly node: {
-      readonly createdAt: any;
       readonly id: string;
-      readonly section: DaySection;
       readonly task: {
-        readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
+        readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem">;
       };
     };
   }>;
@@ -61,20 +58,6 @@ const node: ReaderFragment = {
             {
               "alias": null,
               "args": null,
-              "kind": "ScalarField",
-              "name": "createdAt",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "section",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
               "concreteType": "Task",
               "kind": "LinkedField",
               "name": "task",
@@ -83,7 +66,7 @@ const node: ReaderFragment = {
                 {
                   "args": null,
                   "kind": "FragmentSpread",
-                  "name": "TaskDisplay"
+                  "name": "RoutineSlotItem"
                 }
               ],
               "storageKey": null
@@ -99,6 +82,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0d2d6b387b158b8ab536317c09308568";
+(node as any).hash = "7a7cc9a0115084afd534de4fcd063e4e";
 
 export default node;
