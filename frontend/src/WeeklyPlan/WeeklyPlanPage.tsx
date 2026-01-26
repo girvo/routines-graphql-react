@@ -56,7 +56,7 @@ const WeeklyPlanPage = ({ queries }: Props) => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex flex-1 flex-col md:flex-row">
       {/* Mobile: Day selector header */}
       <div className="border-base-300 flex items-center justify-between border-b p-4 md:hidden">
         <button className="btn btn-ghost btn-sm" onClick={goToPreviousDay}>

@@ -158,7 +158,7 @@ export const AppShell = () => {
         <DesktopSidebar />
         <div className="flex flex-1 flex-col">
           <Header />
-          <main className="flex-1">
+          <main className="flex flex-1">
             <Suspense
               key={location.pathname}
               fallback={Loading ? <Loading /> : 'Loading...'}

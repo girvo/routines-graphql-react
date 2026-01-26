@@ -223,7 +223,7 @@ export const AddTaskDropdown = ({
       <AddTaskButton onMouseEnter={onButtonHover} />
       <div
         tabIndex={0}
-        className="dropdown-content bg-base-100 rounded-box z-10 mt-2 w-64 p-2 shadow-lg"
+        className="dropdown-content bg-base-100 rounded-box z-10 mt-2 w-64 border border-gray-200 p-2 shadow-xl"
       >
         <Suspense fallback={<TaskListFallback />}>
           {queryRef && (

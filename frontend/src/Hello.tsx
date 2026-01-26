@@ -14,9 +14,5 @@ export const Hello = () => {
     {},
   )
 
-  return (
-    <div>
-      <div>{data.me.id}</div>
-    </div>
-  )
+  return <div>{data.me.id}</div>
 }

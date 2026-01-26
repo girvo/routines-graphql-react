@@ -53,7 +53,7 @@ export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-2 self-center p-4 md:max-w-5xl md:p-2">
+    <div className="flex flex-1 flex-col gap-2 p-4 md:max-w-5xl md:p-2">
       <DaySection
         label="Morning"
         sectionData={daySchedule.morning}

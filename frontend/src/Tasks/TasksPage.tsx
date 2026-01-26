@@ -34,7 +34,7 @@ const TasksPage = ({ queries }: Props) => {
 
   return (
     <>
-      <div className="p-4 md:px-4 md:py-0">
+      <div className="flex-1 p-4 md:px-4 md:py-0">
         <table className="w-full border-separate border-spacing-y-3 md:table md:table-fixed md:border-spacing-0">
           <thead className="hidden md:table-header-group">
             <tr>
