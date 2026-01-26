@@ -17,6 +17,7 @@ import {
   HeaderActionsContext,
   type HeaderAction,
 } from './utils/header-actions.ts'
+import { handleEscapeBlur } from './utils/form.ts'
 
 interface RouteHandle {
   title?: string
@@ -56,6 +57,7 @@ const Header = () => {
           <ul
             tabIndex={0}
             className="dropdown-content menu bg-base-200 text-base-content rounded-box z-10 w-52 p-2 shadow-sm"
+            onKeyDown={handleEscapeBlur}
           >
             <li>
               <NavLink to="/settings">Settings</NavLink>

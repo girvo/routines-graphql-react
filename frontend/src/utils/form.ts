@@ -7,3 +7,9 @@ export const handleEnterKeySubmit =
       onSubmit()
     }
   }
+
+export const handleEscapeBlur = (event: KeyboardEvent<HTMLElement>) => {
+  if (event.key === 'Escape') {
+    ;(document.activeElement as HTMLElement | null)?.blur()
+  }
+}

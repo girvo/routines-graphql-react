@@ -10,6 +10,7 @@ import { Search, Loader2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useDebounceValue } from 'usehooks-ts'
 import { parseIconName } from '../utils/icons.ts'
+import { handleEscapeBlur } from '../utils/form.ts'
 import { getErrorMessage } from '../utils/errors.ts'
 import { AddTaskButton } from './AddTaskButton.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
@@ -186,7 +187,6 @@ const AddTaskDropdownContent = ({
           className="grow"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          autoFocus
         />
       </label>
       <TaskList
@@ -212,18 +212,27 @@ export const AddTaskDropdown = ({
   onButtonHover,
   connectionId,
 }: AddTaskDropdownProps) => {
-  const handleDropdownBlur = (e: React.FocusEvent) => {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      // Reset search handled by AddTaskDropdownContent unmounting/remounting
-    }
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const handleDropdownFocus = () => {
+    setTimeout(() => {
+      dropdownRef.current
+        ?.querySelector<HTMLInputElement>('.dropdown-content input')
+        ?.focus()
+    }, 50)
   }
 
   return (
-    <div className="dropdown dropdown-end" onBlur={handleDropdownBlur}>
+    <div
+      ref={dropdownRef}
+      className="dropdown dropdown-end"
+      onFocus={handleDropdownFocus}
+    >
       <AddTaskButton onMouseEnter={onButtonHover} />
       <div
         tabIndex={0}
         className="dropdown-content bg-base-100 rounded-box z-10 mt-2 w-64 border border-gray-200 p-2 shadow-xl"
+        onKeyDown={handleEscapeBlur}
       >
         <Suspense fallback={<TaskListFallback />}>
           {queryRef && (
