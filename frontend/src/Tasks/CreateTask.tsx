@@ -1,4 +1,4 @@
-import { useCallback, type Dispatch, type SetStateAction } from 'react'
+import { useCallback, type Dispatch, type KeyboardEvent, type SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { useMutation, graphql } from 'react-relay'
@@ -23,6 +23,7 @@ export const CreateTask = ({
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<TaskFormData>({
     resolver: arktypeResolver(taskFormSchema),
     defaultValues: {
@@ -52,6 +53,18 @@ export const CreateTask = ({
     setIsCreating(false)
   }, [setIsCreating])
 
+  const handleEscapeCancel = useCallback(
+    (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Escape') {
+        const { title, icon } = getValues()
+        if (!title && !icon) {
+          close()
+        }
+      }
+    },
+    [getValues, close],
+  )
+
   const onSubmit = (data: TaskFormData) => {
     createTask({
       variables: {
@@ -76,8 +89,12 @@ export const CreateTask = ({
           type="text"
           placeholder="Task name"
           className={`input w-full ${errors.title ? 'input-error' : ''}`}
+          autoFocus
           {...register('title')}
-          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
+          onKeyDown={event => {
+            handleEscapeCancel(event)
+            handleEnterKeySubmit(handleSubmit(onSubmit))(event)
+          }}
         />
         {errors.title?.message && (
           <span className="text-error mt-1 text-xs">
@@ -92,7 +109,10 @@ export const CreateTask = ({
           placeholder="Lucide icon name"
           className={`input w-full ${errors.icon ? 'input-error' : ''}`}
           {...register('icon')}
-          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
+          onKeyDown={event => {
+            handleEscapeCancel(event)
+            handleEnterKeySubmit(handleSubmit(onSubmit))(event)
+          }}
         />
         {errors.icon?.message && (
           <span className="text-error mt-1 text-xs">
