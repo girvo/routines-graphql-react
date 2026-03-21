@@ -61,7 +61,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "relay-compiler": "^20.1.1",
     "relay-test-utils": "^20.1.1",
-    "rolldown-plugin-relay": "^0.1.1",
+    "rolldown-plugin-relay": "^0.1.2",
     "storybook": "^10.1.7",
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.3",
