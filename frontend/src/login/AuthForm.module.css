@@ -1,0 +1,165 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    min-height: 100vh;
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: 24rem;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: var(--border-width) solid var(--stroke-line);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.title {
+  composes: typo-title from global;
+  margin-bottom: var(--space-5);
+  text-align: center;
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  composes: typo-body typo-md from global;
+  height: var(--control-h);
+  padding: 0 var(--control-padding-x);
+  border-radius: var(--control-radius);
+  border: var(--border-width) solid var(--stroke-line);
+  background: var(--surface);
+  color: var(--text-ink);
+  outline: none;
+  transition:
+    border-color var(--transition-default),
+    box-shadow var(--transition-default);
+}
+
+.input::placeholder {
+  color: var(--text-muted-soft);
+}
+
+.input:hover {
+  border-color: var(--stroke-line-medium);
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.inputError {
+  border-color: var(--color-error);
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-error) 20%, transparent);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fieldError {
+  color: var(--color-error);
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+}
+
+.submitButton {
+  composes: typo-button typo-md from global;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--control-gap);
+  height: var(--control-h);
+  padding: 0 var(--control-padding-x);
+  border-radius: var(--control-radius);
+  background: var(--accent);
+  color: #ffffff;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-default),
+    border-color var(--transition-default),
+    color var(--transition-default),
+    box-shadow var(--transition-default);
+  white-space: nowrap;
+  margin-top: var(--space-1);
+  width: 100%;
+  border: none;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.submitButton:active:not(:disabled) {
+  background: var(--accent-active);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.linkButton {
+  composes: typo-button typo-md from global;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--control-gap);
+  height: var(--control-h);
+  padding: 0 var(--control-padding-x);
+  border-radius: var(--control-radius);
+  background: transparent;
+  color: var(--text-ink-2);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-default),
+    border-color var(--transition-default),
+    color var(--transition-default);
+  white-space: nowrap;
+  margin-top: var(--space-2);
+  width: 100%;
+  border: none;
+  text-decoration: none;
+}
+
+.linkButton:hover:not(:disabled) {
+  color: var(--text-ink);
+}
+
+.linkButton:active:not(:disabled) {
+  color: var(--text-ink);
+  opacity: 0.7;
+}
+
+.networkError {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-error) 8%, var(--surface));
+  border: var(--border-width) solid color-mix(in srgb, var(--color-error) 30%, var(--stroke-line));
+  color: var(--color-error);
+  font-size: var(--fs-sm);
+}

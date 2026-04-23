@@ -1,174 +1,137 @@
-import { useActionState, use } from 'react'
+import { use } from 'react'
+import { useForm } from 'react-hook-form'
+import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { type } from 'arktype'
 import { cn } from '../utils/tailwind'
 import { capitalise } from '../utils/text'
 import { AuthContext } from '../auth/auth-store'
-import { authSchema, authResponse } from './auth-types'
-import {
-  container,
-  card,
-  formGroup,
-  input,
-  submitButton,
-  linkButton,
-} from './auth-styles'
+import { authSchema, authResponse, type AuthFormData } from './auth-types'
+import styles from './AuthForm.module.css'
 import { NavLink } from 'react-router-dom'
 
 export const Login = () => {
   const { setAccessToken } = use(AuthContext)
 
-  // Login handler
-  const [state, formAction, isPending] = useActionState(
-    async (_: unknown, formData: FormData) => {
-      const email = formData.get('email')
-      const password = formData.get('password')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<AuthFormData>({
+    resolver: arktypeResolver(authSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
-      const result = authSchema({
-        email,
-        password,
+  const onSubmit = async (data: AuthFormData) => {
+    try {
+      const httpResponse = await fetch('/api/login', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
       })
 
-      if (result instanceof type.errors) {
-        const errors: Record<string, string> = {}
-        result.forEach(error => {
-          errors[error.path.toString()] = error.message
-        })
-        return {
-          errors,
-          email: String(email ?? ''),
-          password: String(password ?? ''),
-        }
+      const json = await httpResponse.json()
+
+      if (!httpResponse.ok) {
+        const errorMessage = json.message || json.error || 'Request failed'
+        setError('root', { message: errorMessage })
+        return
       }
 
-      try {
-        const { email, password } = result
-        const httpResponse = await fetch('/api/login', {
-          method: 'POST',
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'same-origin',
-        })
+      const validatedResponse = authResponse(json)
 
-        const json = await httpResponse.json()
-
-        if (!httpResponse.ok) {
-          const errorMessage = json.message || json.error || 'Request failed'
-          return {
-            success: false,
-            errors: { network: errorMessage } as Record<string, string>,
-          }
-        }
-
-        const validatedResponse = authResponse(json)
-
-        if (validatedResponse instanceof type.errors) {
-          console.error(
-            'Invalid response from server:',
-            validatedResponse.summary,
-          )
-          return {
-            success: false,
-            errors: { network: 'Invalid server response' },
-          }
-        }
-
-        if (validatedResponse.success) {
-          setAccessToken(validatedResponse.accessToken)
-          return { success: true }
-        }
-
-        return {
-          success: false,
-          errors: { network: validatedResponse.errors[0].message } as Record<
-            string,
-            string
-          >,
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          console.error(err)
-          return {
-            success: false,
-            errors: { network: err.message } as Record<string, string>,
-          }
-        }
-
-        return { success: false }
+      if (validatedResponse instanceof type.errors) {
+        console.error(
+          'Invalid response from server:',
+          validatedResponse.summary,
+        )
+        setError('root', { message: 'Invalid server response' })
+        return
       }
-    },
-    {
-      success: false,
-      errors: {},
-    },
-  )
+
+      if (validatedResponse.success) {
+        setAccessToken(validatedResponse.accessToken)
+        return
+      }
+
+      setError('root', { message: validatedResponse.errors[0].message })
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err)
+        setError('root', { message: err.message })
+      }
+    }
+  }
 
   return (
-    <div className={container}>
-      <div className={card}>
-        <h1 className="mb-8 text-center text-4xl font-bold">Login</h1>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Login</h1>
         <form
-          className="flex flex-col gap-4"
-          action={formAction}
-          method="POST"
+          className={styles.form}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
-          <div className={formGroup}>
+          <div className={styles.fieldGroup}>
             <label htmlFor="email" className="sr-only">
               Email
             </label>
             <input
               id="email"
-              name="email"
               type="email"
               placeholder="Email"
-              defaultValue={state?.email}
+              {...register('email')}
               className={cn(
-                input,
-                state?.errors?.email && !isPending && 'input-error',
+                styles.input,
+                errors.email && !isSubmitting && styles.inputError,
               )}
-              disabled={isPending}
+              disabled={isSubmitting}
             />
-            {state?.errors?.email && !isPending && (
-              <span className="text-error mt-1 text-sm">
-                {capitalise(state.errors.email)}
+            {errors.email?.message && !isSubmitting && (
+              <span className={styles.fieldError}>
+                {capitalise(errors.email.message)}
               </span>
             )}
           </div>
-          <div className={formGroup}>
+          <div className={styles.fieldGroup}>
             <label htmlFor="password" className="sr-only">
               Password
             </label>
             <input
               id="password"
-              name="password"
               type="password"
               placeholder="Password"
-              defaultValue={state?.password}
+              {...register('password')}
               className={cn(
-                input,
-                state?.errors?.password && !isPending && 'input-error',
+                styles.input,
+                errors.password && !isSubmitting && styles.inputError,
               )}
-              disabled={isPending}
+              disabled={isSubmitting}
             />
-            {state?.errors?.password && !isPending && (
-              <span className="text-error mt-1 text-sm">
-                {capitalise(state.errors.password)}
+            {errors.password?.message && !isSubmitting && (
+              <span className={styles.fieldError}>
+                {capitalise(errors.password.message)}
               </span>
             )}
           </div>
-          <button type="submit" className={submitButton} disabled={isPending}>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={isSubmitting}
+          >
             Login
           </button>
-          {state?.errors?.network && (
-            <div className="alert alert-error">
-              {capitalise(state.errors.network)}
+          {errors.root?.message && (
+            <div className={styles.networkError}>
+              {capitalise(errors.root.message)}
             </div>
           )}
         </form>
-        <NavLink to="/register" className={linkButton}>
+        <NavLink to="/register" className={styles.linkButton}>
           Don't have an account? Register
         </NavLink>
       </div>

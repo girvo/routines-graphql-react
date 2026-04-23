@@ -5,6 +5,8 @@ export const authSchema = type({
   password: 'string',
 })
 
+export type AuthFormData = typeof authSchema.infer
+
 export const authSuccessResponse = type({
   success: 'true',
   accessToken: 'string',
