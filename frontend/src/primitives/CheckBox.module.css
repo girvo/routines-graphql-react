@@ -1,0 +1,99 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.labelText {
+  composes: typo-body typo-lg from global;
+  color: var(--text-ink-2);
+}
+
+.root.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: var(--border-width-md) solid var(--stroke-line-medium);
+  box-sizing: border-box;
+  transition:
+    background-color var(--transition-default),
+    border-color var(--transition-default);
+}
+
+.md .box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+}
+
+.sm .box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.check {
+  color: #ffffff;
+  opacity: 0;
+}
+
+.md .check {
+  width: 14px;
+  height: 14px;
+}
+
+.sm .check {
+  width: 12px;
+  height: 12px;
+}
+
+.root:hover:not(.disabled) .box {
+  border-color: var(--stroke-line-strong);
+}
+
+.root:active:not(.disabled) .box {
+  border-color: var(--text-muted-soft);
+}
+
+.input:checked + .box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.input:checked + .box .check {
+  opacity: 1;
+}
+
+.root:hover:not(.disabled) .input:checked + .box {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.root:active:not(.disabled) .input:checked + .box {
+  background: var(--accent-active);
+  border-color: var(--accent-active);
+}
+
+.input:focus-visible + .box {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

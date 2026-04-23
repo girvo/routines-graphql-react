@@ -18,6 +18,8 @@ import {
   type HeaderAction,
 } from './utils/header-actions.ts'
 import { handleEscapeBlur } from './utils/form.ts'
+import { cn } from './utils/tailwind.ts'
+import styles from './AppShell.module.css'
 
 interface RouteHandle {
   title?: string
@@ -35,35 +37,41 @@ const Header = () => {
   const { actions } = use(HeaderActionsContext)
 
   return (
-    <div className="navbar bg-neutral text-neutral-content shadow-sm">
-      <div className="flex-1 pl-4">
-        <span className="text-xl">{currentTitle ?? 'Routines'}</span>
-      </div>
-      <div className="flex gap-1 pr-4">
+    <div className={styles.navbar}>
+      <span className={styles.title}>{currentTitle ?? 'Routines'}</span>
+      <div className={styles.actions}>
         {actions.map(action => (
           <button
             key={action.id}
-            className="btn btn-outline pr-2.5 pl-1.5"
+            className={styles.actionButton}
             onClick={action.onClick}
           >
-            <action.icon className="h-5 w-5 translate-y-px" />
+            <action.icon className={styles.actionIcon} />
             {action.label}
           </button>
         ))}
-        <div className="dropdown dropdown-end lg:hidden">
-          <div tabIndex={0} role="button" className="btn btn-square btn-ghost">
-            <EllipsisVertical className="h-5 w-5 translate-y-px" />
+        <div className={styles.dropdown}>
+          <div
+            tabIndex={0}
+            role="button"
+            className={styles.dropdownTrigger}
+          >
+            <EllipsisVertical className={styles.actionIcon} />
           </div>
           <ul
             tabIndex={0}
-            className="dropdown-content menu bg-base-200 text-base-content rounded-box z-10 w-52 p-2 shadow-sm"
+            className={styles.dropdownMenu}
             onKeyDown={handleEscapeBlur}
           >
             <li>
-              <NavLink to="/settings">Settings</NavLink>
+              <NavLink to="/settings" className={styles.dropdownItem}>
+                Settings
+              </NavLink>
             </li>
             <li>
-              <a onClick={clearAccessToken}>Logout</a>
+              <a className={styles.dropdownItem} onClick={clearAccessToken}>
+                Logout
+              </a>
             </li>
           </ul>
         </div>
@@ -72,68 +80,62 @@ const Header = () => {
   )
 }
 
+const dockItemClass = ({ isActive }: { isActive: boolean }) =>
+  cn(styles.dockItem, isActive && styles.dockItemActive)
+
 const MobileDock = () => (
-  <div className="dock lg:hidden">
-    <NavLink
-      to="/"
-      className={({ isActive }) => (isActive ? 'dock-active text-primary' : '')}
-    >
+  <nav className={styles.dock}>
+    <NavLink to="/" className={dockItemClass} end>
       <Calendar1 />
-      <span className="dock-label">Today</span>
+      <span className={styles.dockLabel}>Today</span>
     </NavLink>
-    <NavLink
-      to="/weekly"
-      className={({ isActive }) => (isActive ? 'dock-active text-primary' : '')}
-    >
+    <NavLink to="/weekly" className={dockItemClass}>
       <CalendarDays />
-      <span className="dock-label">Weekly plan</span>
+      <span className={styles.dockLabel}>Weekly plan</span>
     </NavLink>
-    <NavLink
-      to="/tasks"
-      className={({ isActive }) => (isActive ? 'dock-active text-primary' : '')}
-    >
+    <NavLink to="/tasks" className={dockItemClass}>
       <LayoutList />
-      <span className="dock-label">Tasks</span>
+      <span className={styles.dockLabel}>Tasks</span>
     </NavLink>
-  </div>
+  </nav>
 )
+
+const sidebarItemClass = ({ isActive }: { isActive: boolean }) =>
+  cn(styles.sidebarItem, isActive && styles.sidebarItemActive)
 
 const DesktopSidebar = () => {
   const { clearAccessToken } = use(AuthContext)
 
   return (
-    <aside className="bg-base-200 hidden min-h-screen w-80 shrink-0 lg:flex lg:flex-col">
-      <ul className="menu w-full gap-2 p-4">
+    <aside className={styles.sidebar}>
+      <ul className={styles.sidebarNav}>
         <li>
-          <NavLink
-            className={({ isActive }) => (isActive ? 'menu-active' : '')}
-            to="/"
-          >
+          <NavLink className={sidebarItemClass} to="/" end>
             Today
           </NavLink>
         </li>
         <li>
-          <NavLink
-            className={({ isActive }) => (isActive ? 'menu-active' : '')}
-            to="/weekly"
-          >
+          <NavLink className={sidebarItemClass} to="/weekly">
             Weekly plan
           </NavLink>
         </li>
         <li>
-          <NavLink
-            className={({ isActive }) => (isActive ? 'menu-active' : '')}
-            to="/tasks"
-          >
+          <NavLink className={sidebarItemClass} to="/tasks">
             All tasks
           </NavLink>
         </li>
-        <span className="divider mt-0 mb-0" />
         <li>
-          <NavLink to="/settings">Settings</NavLink>
+          <span className={styles.divider} />
         </li>
         <li>
-          <a onClick={clearAccessToken}>Logout</a>
+          <NavLink className={sidebarItemClass} to="/settings">
+            Settings
+          </NavLink>
+        </li>
+        <li>
+          <a className={styles.sidebarItem} onClick={clearAccessToken}>
+            Logout
+          </a>
         </li>
       </ul>
     </aside>
@@ -156,11 +158,11 @@ export const AppShell = () => {
 
   return (
     <HeaderActionsContext value={{ actions, setActions, clearActions }}>
-      <div className="flex min-h-screen">
+      <div className={styles.shell}>
         <DesktopSidebar />
-        <div className="flex flex-1 flex-col">
+        <div className={styles.content}>
           <Header />
-          <main className="flex flex-1">
+          <main className={styles.main}>
             <Suspense
               key={location.pathname}
               fallback={Loading ? <Loading /> : 'Loading...'}

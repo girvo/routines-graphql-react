@@ -4,6 +4,11 @@ import '../src/styles.css'
 
 const preview: Preview = {
   parameters: {
+    options: {
+      storySort: {
+        order: ['Design', 'Primitives', ['Text', '*'], '*'],
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,

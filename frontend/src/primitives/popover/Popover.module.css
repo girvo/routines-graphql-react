@@ -1,0 +1,9 @@
+.content {
+  background: var(--surface);
+  border: var(--border-width) solid var(--stroke-line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: var(--space-1);
+  min-width: 160px;
+  z-index: 50;
+}

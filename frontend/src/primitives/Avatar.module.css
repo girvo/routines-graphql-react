@@ -1,0 +1,13 @@
+.root {
+  composes: typo-body typo-sm typo-medium from global;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--control-radius);
+  background: var(--surface-avatar-bg);
+  color: var(--text-ink-2);
+  user-select: none;
+  flex-shrink: 0;
+}

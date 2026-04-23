@@ -30,6 +30,11 @@
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
+  "css.validate": false,
+  "stylelint.validate": ["css"],
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "relay.rootDirectory": "frontend",
   "relay.pathToConfig": "relay.config.json",
   "relay.pathToRelay": "node_modules/.bin/relay-compiler",

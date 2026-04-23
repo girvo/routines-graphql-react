@@ -1,0 +1,4 @@
+.root {
+  composes: typo-mono typo-xs from global;
+  color: var(--text-muted-soft);
+}

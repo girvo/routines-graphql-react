@@ -1,0 +1,30 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  min-width: 80px;
+  min-height: 18px;
+  box-sizing: border-box;
+}
+
+.filled {
+  background: var(--surface-soft);
+}
+
+.ghost {
+  background: transparent;
+  padding: 0;
+  min-width: 0;
+}
+
+.section {
+  composes: typo-body typo-sm typo-medium from global;
+  color: var(--text-muted);
+}
+
+.count {
+  composes: typo-mono typo-xs from global;
+  color: var(--text-muted-soft);
+}

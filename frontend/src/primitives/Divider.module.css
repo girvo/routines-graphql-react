@@ -1,0 +1,8 @@
+.root {
+  border: 0;
+  background: var(--stroke-hairline);
+  margin: 0;
+  width: 100%;
+  height: 1px;
+  flex-shrink: 0;
+}
