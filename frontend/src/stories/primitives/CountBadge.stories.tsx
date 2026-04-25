@@ -14,6 +14,7 @@ export const Default: Story = {
 }
 
 export const Gallery: Story = {
+  args: { count: 0 },
   render: () => (
     <div style={{ display: 'flex', gap: 16 }}>
       <CountBadge count={1} />

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b4ff6224a915cde635f1fae00a0618a9>>
+ * @generated SignedSource<<35dbe5ea37c318066cd502ed7e91ae0a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -143,7 +143,13 @@ return {
               },
               {
                 "alias": null,
-                "args": null,
+                "args": [
+                  {
+                    "kind": "Literal",
+                    "name": "first",
+                    "value": 100
+                  }
+                ],
                 "concreteType": "RoutineSlotConnection",
                 "kind": "LinkedField",
                 "name": "slots",
@@ -165,8 +171,14 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v1/*: any*/),
-                          (v2/*: any*/)
+                          (v2/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "section",
+                            "storageKey": null
+                          }
                         ],
                         "storageKey": null
                       }
@@ -192,7 +204,7 @@ return {
                     "storageKey": null
                   }
                 ],
-                "storageKey": null
+                "storageKey": "slots(first:100)"
               }
             ],
             "type": "Task",
@@ -204,7 +216,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "30fe4da2ec77843db13c49a9d24ceadc",
+    "cacheID": "167add6848a1f22f36f2f648e88db2bf",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -246,8 +258,17 @@ return {
           "plural": false,
           "type": "RoutineSlot"
         },
-        "node.slots.edges.node.__typename": (v3/*: any*/),
         "node.slots.edges.node.id": (v4/*: any*/),
+        "node.slots.edges.node.section": {
+          "enumValues": [
+            "MORNING",
+            "MIDDAY",
+            "EVENING"
+          ],
+          "nullable": false,
+          "plural": false,
+          "type": "DaySection"
+        },
         "node.slots.pageInfo": {
           "enumValues": null,
           "nullable": false,
@@ -265,7 +286,7 @@ return {
     },
     "name": "TaskQuery",
     "operationKind": "query",
-    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

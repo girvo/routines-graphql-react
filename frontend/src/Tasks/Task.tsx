@@ -1,14 +1,13 @@
-import { useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useState, useMemo } from 'react'
 import { graphql } from 'relay-runtime'
 import { useFragment, useMutation } from 'react-relay'
 import type { TaskDisplay$key } from './__generated__/TaskDisplay.graphql'
-import { Pencil, Trash2 } from 'lucide-react'
-import { DynamicIcon } from 'lucide-react/dynamic'
-import { parseIconName } from '../utils/icons.ts'
 import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.graphql.ts'
 import { EditTask } from './EditTask.tsx'
 import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql.ts'
+import { TaskCard } from './TaskCard.tsx'
+import { sectionCounts } from './section-counts.ts'
+import { ConfirmDialog } from '../primitives/modal/ConfirmDialog.tsx'
 
 interface TaskProps {
   task: TaskDisplay$key
@@ -16,11 +15,7 @@ interface TaskProps {
   connectionId: string
 }
 
-export const Task = ({
-  task: taskData,
-  updatable,
-  connectionId,
-}: TaskProps) => {
+export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => {
   const task = useFragment(
     graphql`
       fragment TaskDisplay on Task {
@@ -28,10 +23,11 @@ export const Task = ({
         title
         icon
         createdAt
-        slots {
+        slots(first: 100) {
           edges {
             node {
-              __typename
+              id
+              section
             }
           }
           pageInfo {
@@ -46,7 +42,7 @@ export const Task = ({
   const [isEditing, setIsEditing] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
-  const [deleteIcon] = useMutation<TaskDeleteMutation>(graphql`
+  const [deleteTask] = useMutation<TaskDeleteMutation>(graphql`
     mutation TaskDeleteMutation($taskId: ID!, $connections: [ID!]!) {
       deleteTask(taskId: $taskId) {
         deletedId @deleteEdge(connections: $connections)
@@ -54,32 +50,18 @@ export const Task = ({
     }
   `)
 
-  const onDeleteClick = () => {
-    setShowDeleteConfirm(true)
-  }
-
   const handleConfirmDelete = () => {
-    deleteIcon({
-      variables: {
-        taskId: task.id,
-        connections: [connectionId],
-      },
-    })
+    deleteTask({ variables: { taskId: task.id, connections: [connectionId] } })
     setShowDeleteConfirm(false)
-  }
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirm(false)
-  }
-
-  const onEditClick = () => {
-    setIsEditing(true)
   }
 
   const slotCount = task.slots.edges.length
   const hasMore = task.slots.pageInfo.hasNextPage
-  const slotText = `${slotCount}${hasMore ? '+' : ''}`
-  const iconName = parseIconName(task.icon)
+
+  const sections = useMemo(
+    () => sectionCounts(task.slots.edges.map(({ node }) => node.section)),
+    [task.slots.edges],
+  )
 
   if (isEditing) {
     return (
@@ -95,79 +77,25 @@ export const Task = ({
 
   return (
     <>
-      <tr className="bg-base-200 block rounded-lg md:table-row md:rounded-none md:bg-transparent">
-        {/* Task name - visible on both, with icon on mobile */}
-        <td className="block p-4 pb-2 md:table-cell md:p-3">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary text-primary-content flex size-10 shrink-0 items-center justify-center rounded-lg md:hidden">
-              <DynamicIcon name={iconName} className="size-5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-medium">{task.title}</span>
-              <span className="text-sm opacity-70 md:hidden">
-                used in {slotText} slot{slotCount !== 1 ? 's' : ''}
-              </span>
-            </div>
-          </div>
-        </td>
-
-        {/* Icon column - desktop only */}
-        <td className="hidden md:table-cell md:p-3">
-          <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded">
-            <DynamicIcon name={iconName} className="size-4" />
-          </div>
-        </td>
-
-        {/* Slots column - desktop only */}
-        <td className="hidden md:table-cell md:p-3">
-          {slotText} slot{slotCount !== 1 ? 's' : ''}
-        </td>
-
-        {/* Actions */}
-        <td className="border-base-300 block border-t p-0 md:table-cell md:border-t-0 md:p-3 md:text-center">
-          <div className="flex md:justify-center md:gap-1">
-            <button
-              className="btn btn-ghost btn-sm text-error flex-1 rounded-none rounded-bl-lg md:flex-none md:rounded"
-              onClick={onDeleteClick}
-            >
-              <Trash2 className="size-4" />
-              <span className="md:hidden">Delete</span>
-            </button>
-            <button
-              className="btn btn-ghost btn-sm flex-1 rounded-none rounded-br-lg md:flex-none md:rounded"
-              onClick={onEditClick}
-            >
-              <Pencil className="size-4" />
-              <span className="md:hidden">Edit</span>
-            </button>
-          </div>
-        </td>
-      </tr>
-
-      {showDeleteConfirm &&
-        createPortal(
-          <dialog className="modal modal-open">
-            <div className="modal-box">
-              <h3 className="text-lg font-bold">Delete Task</h3>
-              <p className="py-4">
-                Are you sure you want to delete "{task.title}"? This action
-                cannot be undone.
-              </p>
-              <div className="modal-action">
-                <button className="btn" onClick={handleCancelDelete}>
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-error"
-                  onClick={handleConfirmDelete}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </dialog>,
-          document.body,
-        )}
+      <TaskCard
+        title={task.title}
+        icon={task.icon}
+        sections={sections}
+        totalSlots={slotCount}
+        hasMoreSlots={hasMore}
+        onEdit={() => setIsEditing(true)}
+        onDelete={() => setShowDeleteConfirm(true)}
+      />
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Task"
+        confirmLabel="Delete"
+        destructive
+      >
+        Are you sure you want to delete "{task.title}"? This action cannot be undone.
+      </ConfirmDialog>
     </>
   )
 }

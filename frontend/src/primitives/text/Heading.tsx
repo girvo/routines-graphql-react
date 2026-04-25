@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType } from 'react'
-import { cn } from '../../utils/tailwind.ts'
+import { clsx } from 'clsx'
 
 type HeadingElement = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'div'
 
@@ -13,5 +13,5 @@ export const Heading = <E extends HeadingElement = 'h3'>({
   ...rest
 }: HeadingProps<E>) => {
   const Tag = (as ?? 'h3') as ElementType
-  return <Tag className={cn('typo-title', 'typo-xl', className)} {...rest} />
+  return <Tag className={clsx('typo-title', 'typo-xl', className)} {...rest} />
 }

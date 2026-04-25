@@ -1,0 +1,59 @@
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2-5);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--stroke-line);
+  border-left-width: 3px;
+  background: var(--surface);
+}
+
+.icon {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.content {
+  composes: typo-body typo-md from global;
+  flex: 1;
+  color: var(--text-ink);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.title {
+  composes: typo-body typo-md typo-semibold from global;
+  color: var(--text-ink);
+  margin: 0 0 var(--space-1);
+}
+
+.error {
+  background: var(--status-error-bg);
+  border-color: color-mix(in srgb, var(--status-error-fg) 25%, var(--stroke-line));
+  border-left-color: var(--status-error-fg);
+}
+.error .icon { color: var(--status-error-fg); }
+
+.success {
+  background: var(--status-success-bg);
+  border-color: color-mix(in srgb, var(--status-success-fg) 25%, var(--stroke-line));
+  border-left-color: var(--status-success-fg);
+}
+.success .icon { color: var(--status-success-fg); }
+
+.warning {
+  background: var(--status-warning-bg);
+  border-color: color-mix(in srgb, var(--status-warning-fg) 25%, var(--stroke-line));
+  border-left-color: var(--status-warning-fg);
+}
+.warning .icon { color: var(--status-warning-fg); }
+
+.info {
+  background: var(--status-info-bg);
+  border-color: color-mix(in srgb, var(--status-info-fg) 25%, var(--stroke-line));
+  border-left-color: var(--status-info-fg);
+}
+.info .icon { color: var(--status-info-fg); }

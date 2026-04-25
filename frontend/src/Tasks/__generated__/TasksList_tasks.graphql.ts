@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<445e0886f60bf5d20caf87471da454c9>>
+ * @generated SignedSource<<82c6569b830aa9a90e93bb900bf674d6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,7 @@ export type TasksList_tasks$data = {
       readonly node: {
         readonly $updatableFragmentSpreads: FragmentRefs<"EditTaskUpdatable">;
         readonly id: string;
+        readonly title: string;
         readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
       };
     }>;
@@ -104,6 +105,13 @@ return {
                   "storageKey": null
                 },
                 {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "title",
+                  "storageKey": null
+                },
+                {
                   "args": null,
                   "kind": "FragmentSpread",
                   "name": "TaskDisplay"
@@ -179,6 +187,6 @@ return {
 };
 })();
 
-(node as any).hash = "28f722b42a2a2e09e74d8a7585663472";
+(node as any).hash = "0fe1eb9ebd415dcc713cbf2a70664e62";
 
 export default node;

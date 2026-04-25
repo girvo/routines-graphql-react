@@ -19,6 +19,7 @@ export const Small: Story = {
 }
 
 export const Gallery: Story = {
+  args: { icon: Flower },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', gap: 8 }}>

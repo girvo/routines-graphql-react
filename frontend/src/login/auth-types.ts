@@ -1,11 +1,19 @@
 import { type } from 'arktype'
 
-export const authSchema = type({
+export const loginSchema = type({
   email: 'string.email',
   password: 'string',
 })
 
-export type AuthFormData = typeof authSchema.infer
+export const signupSchema = type({
+  email: 'string.email',
+  name: 'string>0',
+  password: 'string',
+})
+
+export type LoginFormData = typeof loginSchema.infer
+export type SignupFormData = typeof signupSchema.infer
+export type AuthFormData = SignupFormData
 
 export const authSuccessResponse = type({
   success: 'true',

@@ -1,7 +1,8 @@
 import { useState, useCallback, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { ToastContext, type Toast } from './ToastContext.ts'
-import { X } from 'lucide-react'
+import { ToastContext, type Toast as ToastData } from './ToastContext.ts'
+import { Toast } from '../primitives/Toast.tsx'
+import styles from './ToastProvider.module.css'
 
 const TOAST_DURATION = 5000
 const EXIT_ANIMATION_DURATION = 200
@@ -10,15 +11,8 @@ interface ToastProviderProps {
   children: ReactNode
 }
 
-const alertTypeClass: Record<Toast['type'], string> = {
-  error: 'alert-error',
-  success: 'alert-success',
-  warning: 'alert-warning',
-  info: 'alert-info',
-}
-
 export function ToastProvider({ children }: ToastProviderProps) {
-  const [toasts, setToasts] = useState<Toast[]>([])
+  const [toasts, setToasts] = useState<ToastData[]>([])
   const [exitingIds, setExitingIds] = useState<Set<string>>(new Set())
 
   const dismiss = useCallback((id: string) => {
@@ -34,7 +28,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
   }, [])
 
   const showToast = useCallback(
-    (message: string, type: Toast['type']) => {
+    (message: string, type: ToastData['type']) => {
       const id = crypto.randomUUID()
       setToasts(prev => [...prev, { id, message, type }])
       setTimeout(() => dismiss(id), TOAST_DURATION)
@@ -71,27 +65,16 @@ export function ToastProvider({ children }: ToastProviderProps) {
       {children}
       {toastRoot &&
         createPortal(
-          <div
-            className="toast toast-start toast-bottom z-50"
-            role="alert"
-            aria-live="assertive"
-          >
+          <div className={styles.stack} aria-live="assertive">
             {toasts.map(({ id, message, type }) => (
-              <div
+              <Toast
                 key={id}
-                className={`alert ${alertTypeClass[type]} shadow-lg animate-[slideInFromBottom_200ms_ease-out_forwards] transition-opacity duration-200 ${
-                  exitingIds.has(id) ? 'opacity-0' : 'opacity-100'
-                }`}
+                type={type}
+                exiting={exitingIds.has(id)}
+                onDismiss={() => dismiss(id)}
               >
-                <span>{message}</span>
-                <button
-                  className="btn btn-ghost btn-xs"
-                  onClick={() => dismiss(id)}
-                  aria-label="Dismiss"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+                {message}
+              </Toast>
             ))}
           </div>,
           toastRoot,

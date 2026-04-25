@@ -1,6 +1,5 @@
 import { graphql, useFragment } from 'react-relay'
-import { DynamicIcon } from 'lucide-react/dynamic'
-import { parseIconName } from '../utils/icons.ts'
+import { PlannerSlot } from './PlannerSlot.tsx'
 import type { RoutineSlotItem$key } from './__generated__/RoutineSlotItem.graphql.ts'
 
 interface RoutineSlotItemProps {
@@ -19,10 +18,5 @@ export const RoutineSlotItem = ({ task: taskRef }: RoutineSlotItemProps) => {
     taskRef,
   )
 
-  return (
-    <div className="flex items-center gap-2 rounded-lg bg-base-200 px-3 py-2">
-      <DynamicIcon name={parseIconName(task.icon)} className="size-4" />
-      <span>{task.title}</span>
-    </div>
-  )
+  return <PlannerSlot title={task.title} icon={task.icon} />
 }

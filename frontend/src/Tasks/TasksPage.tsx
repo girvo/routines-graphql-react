@@ -1,27 +1,19 @@
 import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
 import { graphql, usePreloadedQuery } from 'react-relay'
+import { useMemo, useState } from 'react'
+import { Plus, Search } from 'lucide-react'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
-import { TasksList } from './TasksList'
-import { Plus } from 'lucide-react'
-import { useState, useMemo } from 'react'
-import { useHeaderActions } from '../utils/header-actions.ts'
+import { TasksList } from './TasksList.tsx'
+import { Button } from '../primitives/Button.tsx'
+import { TextInput } from '../primitives/TextInput.tsx'
+import { usePageHeader } from '../utils/page-header.ts'
+import styles from './TasksPage.module.css'
 
 type Props = SimpleEntryPointProps<{ tasksPageQuery: TasksPageQuery }>
 
 const TasksPage = ({ queries }: Props) => {
   const [isCreating, setIsCreating] = useState(false)
-  const headerActions = useMemo(
-    () => [
-      {
-        id: 'new-task',
-        icon: Plus,
-        label: 'New Task',
-        onClick: () => setIsCreating(true),
-      },
-    ],
-    [],
-  )
-  useHeaderActions(headerActions)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const data = usePreloadedQuery<TasksPageQuery>(
     graphql`
@@ -32,26 +24,59 @@ const TasksPage = ({ queries }: Props) => {
     queries.tasksPageQuery,
   )
 
-  return (
-    <>
-      <div className="flex-1 p-4 md:px-4 md:py-0">
-        <table className="w-full border-separate border-spacing-y-3 md:table md:table-fixed md:border-spacing-0">
-          <thead className="hidden md:table-header-group">
-            <tr>
-              <th className="w-1/4">Task name</th>
-              <th className="w-1/4">Icon</th>
-              <th className="w-1/4">Used in</th>
-              <th className="w-1/4 text-center">Actions</th>
-            </tr>
-          </thead>
-          <TasksList
-            tasks={data}
-            isCreating={isCreating}
-            setIsCreating={setIsCreating}
-          />
-        </table>
+  const actions = useMemo(
+    () => (
+      <>
+        <Button
+          variant="primary"
+          size="sm"
+          leadingIcon={Plus}
+          onClick={() => setIsCreating(true)}
+        >
+          New task
+        </Button>
+        <TextInput
+          variant="filled"
+          size="sm"
+          leadingIcon={Search}
+          placeholder="Search tasks"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className={styles.desktopSearch}
+        />
+      </>
+    ),
+    [searchQuery],
+  )
+
+  const belowHeader = useMemo(
+    () => (
+      <div className={styles.mobileSearchRow}>
+        <TextInput
+          variant="filled"
+          size="sm"
+          leadingIcon={Search}
+          placeholder="Search tasks"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className={styles.mobileSearch}
+        />
       </div>
-    </>
+    ),
+    [searchQuery],
+  )
+
+  usePageHeader({ actions, belowHeader })
+
+  return (
+    <div className={styles.page}>
+      <TasksList
+        tasks={data}
+        isCreating={isCreating}
+        setIsCreating={setIsCreating}
+        searchQuery={searchQuery}
+      />
+    </div>
   )
 }
 

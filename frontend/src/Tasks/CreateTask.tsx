@@ -2,23 +2,25 @@ import { useCallback, type Dispatch, type KeyboardEvent, type SetStateAction } f
 import { useForm } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { useMutation, graphql } from 'react-relay'
+import { X, Check } from 'lucide-react'
 import { capitalise } from '../utils/text'
 import { handleEnterKeySubmit } from '../utils/form'
 import { taskFormSchema, type TaskFormData } from './task-validation'
 import type { CreateTaskMutation } from './__generated__/CreateTaskMutation.graphql'
-import { TaskFormRow } from './TaskForm/TaskFormRow'
-import { TaskFormCell } from './TaskForm/TaskFormCell'
-import { TaskFormActionButtons } from './TaskForm/TaskFormActionButtons'
+import { TextInput } from '../primitives/TextInput'
+import { Field } from '../primitives/Field'
+import { IconChip } from '../primitives/IconChip'
+import { Button } from '../primitives/Button'
+import styles from './CreateTask.module.css'
 
 interface CreateTaskProps {
   connectionId: string
   setIsCreating: Dispatch<SetStateAction<boolean>>
 }
 
-export const CreateTask = ({
-  connectionId,
-  setIsCreating,
-}: CreateTaskProps) => {
+const EmptyIcon = () => null
+
+export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => {
   const {
     register,
     handleSubmit,
@@ -26,10 +28,7 @@ export const CreateTask = ({
     getValues,
   } = useForm<TaskFormData>({
     resolver: arktypeResolver(taskFormSchema),
-    defaultValues: {
-      title: '',
-      icon: '',
-    },
+    defaultValues: { title: '', icon: '' },
   })
 
   const [createTask, loading] = useMutation<CreateTaskMutation>(graphql`
@@ -57,9 +56,7 @@ export const CreateTask = ({
     (event: KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Escape') {
         const { title, icon } = getValues()
-        if (!title && !icon) {
-          close()
-        }
+        if (!title && !icon) close()
       }
     },
     [getValues, close],
@@ -82,54 +79,68 @@ export const CreateTask = ({
     })
   }
 
+  const submit = handleSubmit(onSubmit)
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    handleEscapeCancel(event)
+    handleEnterKeySubmit(submit)(event)
+  }
+
   return (
-    <TaskFormRow>
-      <TaskFormCell variant="first">
-        <input
-          type="text"
-          placeholder="Task name"
-          className={`input w-full ${errors.title ? 'input-error' : ''}`}
-          autoFocus
-          {...register('title')}
-          onKeyDown={event => {
-            handleEscapeCancel(event)
-            handleEnterKeySubmit(handleSubmit(onSubmit))(event)
-          }}
-        />
-        {errors.title?.message && (
-          <span className="text-error mt-1 text-xs">
-            {capitalise(errors.title.message)}
-          </span>
-        )}
-      </TaskFormCell>
-
-      <TaskFormCell variant="field">
-        <input
-          type="text"
-          placeholder="Lucide icon name"
-          className={`input w-full ${errors.icon ? 'input-error' : ''}`}
-          {...register('icon')}
-          onKeyDown={event => {
-            handleEscapeCancel(event)
-            handleEnterKeySubmit(handleSubmit(onSubmit))(event)
-          }}
-        />
-        {errors.icon?.message && (
-          <span className="text-error mt-1 text-xs">
-            {capitalise(errors.icon.message)}
-          </span>
-        )}
-      </TaskFormCell>
-
-      <TaskFormCell variant="empty" />
-
-      <TaskFormCell variant="actions">
-        <TaskFormActionButtons
-          onCancel={close}
-          onSave={handleSubmit(onSubmit)}
+    <div className={styles.row}>
+      <div className={styles.iconSlot}>
+        <IconChip icon={EmptyIcon} size="md" />
+      </div>
+      <div className={styles.titleField}>
+        <Field
+          label="Task name"
+          hideLabel
+          error={errors.title?.message && capitalise(errors.title.message)}
+        >
+          <TextInput
+            placeholder="New task name"
+            error={Boolean(errors.title)}
+            autoFocus
+            {...register('title')}
+            onKeyDown={onKeyDown}
+          />
+        </Field>
+      </div>
+      <div className={styles.iconField}>
+        <Field
+          label="Icon"
+          hideLabel
+          error={errors.icon?.message && capitalise(errors.icon.message)}
+        >
+          <TextInput
+            placeholder="Lucide icon name"
+            error={Boolean(errors.icon)}
+            {...register('icon')}
+            onKeyDown={onKeyDown}
+          />
+        </Field>
+      </div>
+      <span className={styles.slotsCell}>—</span>
+      <div className={styles.actions}>
+        <Button
+          variant="ghost"
+          size="sm"
+          leadingIcon={X}
+          onClick={close}
           disabled={loading}
-        />
-      </TaskFormCell>
-    </TaskFormRow>
+          className={styles.cancelButton}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          leadingIcon={Check}
+          onClick={submit}
+          loading={loading}
+        >
+          Save
+        </Button>
+      </div>
+    </div>
   )
 }

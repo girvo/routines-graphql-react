@@ -3,9 +3,12 @@ import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
 import { graphql, usePreloadedQuery } from 'react-relay'
 import type { WeeklyPlanPageQuery } from './__generated__/WeeklyPlanPageQuery.graphql'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { capitalise } from '../utils/text'
-import { WeeklyPlanDay } from './WeeklyPlanDay'
-import { daySelectorToDayOfWeek, DAYS, type Day } from './days'
+import { capitalise } from '../utils/text.ts'
+import { Button } from '../primitives/Button.tsx'
+import { WeeklyPlanDay } from './WeeklyPlanDay.tsx'
+import { WeekDaySelector } from './WeekDaySelector.tsx'
+import { daySelectorToDayOfWeek, DAYS, type Day } from './days.ts'
+import styles from './WeeklyPlanPage.module.css'
 
 type Props = SimpleEntryPointProps<{ weeklyPlanPageQuery: WeeklyPlanPageQuery }>
 
@@ -44,46 +47,33 @@ const WeeklyPlanPage = ({ queries }: Props) => {
   )
 
   const currentIndex = DAYS.indexOf(selectedDay)
-
-  const goToPreviousDay = () => {
-    const prevIndex = currentIndex === 0 ? DAYS.length - 1 : currentIndex - 1
-    setSelectedDay(DAYS[prevIndex])
-  }
-
-  const goToNextDay = () => {
-    const nextIndex = currentIndex === DAYS.length - 1 ? 0 : currentIndex + 1
-    setSelectedDay(DAYS[nextIndex])
-  }
+  const goToPreviousDay = () =>
+    setSelectedDay(DAYS[(currentIndex - 1 + DAYS.length) % DAYS.length])
+  const goToNextDay = () => setSelectedDay(DAYS[(currentIndex + 1) % DAYS.length])
 
   return (
-    <div className="flex flex-1 flex-col md:flex-row">
-      {/* Mobile: Day selector header */}
-      <div className="border-base-300 flex items-center justify-between border-b p-4 md:hidden">
-        <button className="btn btn-ghost btn-sm" onClick={goToPreviousDay}>
-          <ChevronLeft />
-        </button>
-        <span className="text-lg font-bold">{capitalise(selectedDay)}</span>
-        <button className="btn btn-ghost btn-sm" onClick={goToNextDay}>
-          <ChevronRight />
-        </button>
+    <div className={styles.page}>
+      <div className={styles.mobileHeader}>
+        <Button
+          variant="ghost"
+          size="sm"
+          iconOnly={ChevronLeft}
+          aria-label="Previous day"
+          onClick={goToPreviousDay}
+        />
+        <span className={styles.mobileTitle}>{capitalise(selectedDay)}</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          iconOnly={ChevronRight}
+          aria-label="Next day"
+          onClick={goToNextDay}
+        />
       </div>
-
-      {/* Desktop: Vertical tabs sidebar */}
-      <ul className="menu border-base-300 hidden w-48 border-r md:block">
-        {DAYS.map(day => (
-          <li key={day}>
-            <button
-              className={selectedDay === day ? 'font-bold' : ''}
-              onClick={() => setSelectedDay(day)}
-            >
-              {capitalise(day)}
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {/* Content area */}
-      <div className="flex flex-1 justify-center">
+      <div className={styles.body}>
+        <aside className={styles.selector}>
+          <WeekDaySelector selected={selectedDay} onSelect={setSelectedDay} />
+        </aside>
         <WeeklyPlanDay
           day={schedule.weeklySchedule[selectedDay]}
           dayOfWeek={daySelectorToDayOfWeek(selectedDay)}

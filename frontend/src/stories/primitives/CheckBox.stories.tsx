@@ -20,14 +20,17 @@ const Controlled = ({ size, disabled }: { size?: 'sm' | 'md'; disabled?: boolean
 }
 
 export const Medium: Story = {
+  args: { checked: false, 'aria-label': 'Remember me' },
   render: () => <Controlled />,
 }
 
 export const Small: Story = {
+  args: { checked: false, 'aria-label': 'Remember me' },
   render: () => <Controlled size="sm" />,
 }
 
 export const NoVisibleLabel: Story = {
+  args: { checked: false, 'aria-label': 'Complete task' },
   render: () => {
     const Wrapper = () => {
       const [checked, setChecked] = useState(false)
@@ -38,6 +41,7 @@ export const NoVisibleLabel: Story = {
 }
 
 export const States: Story = {
+  args: { checked: false, 'aria-label': 'states' },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>

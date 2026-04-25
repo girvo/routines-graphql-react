@@ -3,9 +3,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--control-radius);
+  width: var(--avatar-sm);
+  height: var(--avatar-sm);
+  border-radius: var(--radius-control);
   background: var(--surface-avatar-bg);
   color: var(--text-ink-2);
   user-select: none;

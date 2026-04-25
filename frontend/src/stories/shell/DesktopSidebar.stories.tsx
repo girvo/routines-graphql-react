@@ -1,40 +1,66 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { RelayEnvironmentProvider } from 'react-relay'
+import { loadQuery } from 'react-relay'
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
+import { Suspense } from 'react'
+
 import { DesktopSidebar } from '../../shell/DesktopSidebar'
+import DesktopSidebarQueryNode from '../../shell/__generated__/DesktopSidebarQuery.graphql'
+import type { DesktopSidebarQuery } from '../../shell/__generated__/DesktopSidebarQuery.graphql'
+
+type RendererProps = { currentPath?: string }
+
+const renderer = (_props: RendererProps) => {
+  const environment = createMockEnvironment()
+  environment.mock.queueOperationResolver((op) =>
+    MockPayloadGenerator.generate(op, {
+      User() {
+        return {
+          name: 'Josh G.',
+          email: 'josh@jgirvin.com',
+          initials: 'JG',
+        }
+      },
+    }),
+  )
+
+  const user = loadQuery<DesktopSidebarQuery>(
+    environment,
+    DesktopSidebarQueryNode,
+    {},
+  )
+
+  return (
+    <div style={{ height: '100vh', display: 'flex' }}>
+      <RelayEnvironmentProvider environment={environment}>
+        <Suspense fallback="Loading...">
+          <DesktopSidebar user={user} onLogout={() => {}} />
+        </Suspense>
+      </RelayEnvironmentProvider>
+      <div style={{ flex: 1, background: '#ffffff' }} />
+    </div>
+  )
+}
 
 const meta = {
   title: 'Shell/DesktopSidebar',
-  component: DesktopSidebar,
+  component: renderer,
   parameters: { layout: 'fullscreen' },
-  decorators: [
-    Story => (
-      <div style={{ height: '100vh', display: 'flex' }}>
-        <Story />
-        <div style={{ flex: 1, background: '#ffffff' }} />
-      </div>
-    ),
-  ],
-} satisfies Meta<typeof DesktopSidebar>
+} satisfies Meta<typeof renderer>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-const user = { name: 'Josh G.', email: 'josh@jgirvin.com', initials: 'JG' }
-
-export const Today: Story = {
-  args: { user, onLogout: () => {} },
-}
+export const Today: Story = {}
 
 export const Weekly: Story = {
-  args: { user, onLogout: () => {} },
   parameters: { currentPath: '/weekly' },
 }
 
 export const Tasks: Story = {
-  args: { user, onLogout: () => {} },
   parameters: { currentPath: '/tasks' },
 }
 
 export const SettingsActive: Story = {
-  args: { user, onLogout: () => {} },
   parameters: { currentPath: '/settings' },
 }

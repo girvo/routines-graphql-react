@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType } from 'react'
-import { cn } from '../../utils/tailwind.ts'
+import { clsx } from 'clsx'
 
 type BodySize = 'sm' | 'md' | 'lg'
 type BodyElement = 'p' | 'span' | 'div' | 'label'
@@ -26,7 +26,7 @@ export const Body = <E extends BodyElement = 'p'>({
   const Tag = (as ?? 'p') as ElementType
   return (
     <Tag
-      className={cn('typo-body', sizeClass[size], strong && 'typo-medium', className)}
+      className={clsx('typo-body', sizeClass[size], strong && 'typo-medium', className)}
       {...rest}
     />
   )

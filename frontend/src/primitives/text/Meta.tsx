@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType } from 'react'
-import { cn } from '../../utils/tailwind.ts'
+import { clsx } from 'clsx'
 
 type MetaElement = 'p' | 'span' | 'div' | 'small' | 'label'
 
@@ -23,7 +23,7 @@ export const Meta = <E extends MetaElement = 'span'>({
   const Tag = (as ?? 'span') as ElementType
   return (
     <Tag
-      className={cn('typo-body', sizeClass[size], strong && 'typo-medium', className)}
+      className={clsx('typo-body', sizeClass[size], strong && 'typo-medium', className)}
       {...rest}
     />
   )

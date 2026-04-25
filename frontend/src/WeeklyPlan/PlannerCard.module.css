@@ -1,0 +1,29 @@
+.card {
+  background: var(--surface);
+  border: var(--border-width) solid var(--stroke-line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.divider {
+  height: var(--border-width);
+  background: var(--stroke-hairline);
+  flex-shrink: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.body > * + * {
+  border-top: var(--border-width) solid var(--stroke-hairline);
+}
+
+.empty {
+  composes: typo-body typo-md from global;
+  color: var(--text-muted);
+  padding: var(--space-3) var(--card-padding-x);
+}

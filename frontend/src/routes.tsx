@@ -47,7 +47,7 @@ export const authedRouteConfig: EntryPointRouteObject[] = [
         path: '/tasks',
         entryPoint: TasksPageEntryPoint,
         handle: {
-          title: 'All tasks',
+          title: 'Tasks',
           loading: () => 'Loading tasks page...',
         },
       },

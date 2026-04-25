@@ -31,22 +31,25 @@ const ITEMS = [
   { key: 'logout', icon: LogOut, label: 'Log out' },
 ]
 
+const SidebarTemplate = () => {
+  const [current, setCurrent] = useState('today')
+  return (
+    <div style={{ width: 216, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {ITEMS.map((item) => (
+        <NavItem
+          key={item.key}
+          icon={item.icon}
+          label={item.label}
+          count={item.count}
+          active={current === item.key}
+          onClick={() => setCurrent(item.key)}
+        />
+      ))}
+    </div>
+  )
+}
+
 export const Sidebar: Story = {
-  render: () => {
-    const [current, setCurrent] = useState('today')
-    return (
-      <div style={{ width: 216, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {ITEMS.map((item) => (
-          <NavItem
-            key={item.key}
-            icon={item.icon}
-            label={item.label}
-            count={item.count}
-            active={current === item.key}
-            onClick={() => setCurrent(item.key)}
-          />
-        ))}
-      </div>
-    )
-  },
+  args: { icon: Calendar, label: 'Today' },
+  render: () => <SidebarTemplate />,
 }

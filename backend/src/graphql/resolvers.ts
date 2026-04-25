@@ -5,7 +5,7 @@ import { DateTimeResolver, NonNegativeIntResolver } from 'graphql-scalars'
 import { GraphQLError } from 'graphql'
 import { decodeGlobalId } from '../globalId.ts'
 import { getUser } from '../auth/auth-context.ts'
-import { userToGraphQL } from '../user/user-domain.ts'
+import { userToGraphQL, deriveInitials } from '../user/user-domain.ts'
 import * as UserResolvers from '../user/user-resolvers.ts'
 import * as TaskResolvers from '../task/task-resolvers.ts'
 import * as TaskMutations from '../task/task-mutations.ts'
@@ -68,6 +68,9 @@ export const resolvers: Resolvers<Context> = {
     deleteRoutineSlot: RoutineSlotMutations.deleteRoutineSlot,
     completeRoutineSlot: TaskCompletionMutations.completeRoutineSlot,
     uncompleteRoutineSlot: TaskCompletionMutations.uncompleteRoutineSlot,
+  },
+  User: {
+    initials: ({ name }) => deriveInitials(name),
   },
   Task: {
     completions: TaskResolvers.completions,

@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ComponentType } from 'react'
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import { CountBadge } from './CountBadge.tsx'
 import styles from './NavItem.module.css'
 
@@ -24,7 +24,7 @@ export const NavItem = ({
   <button
     type={type}
     aria-current={active ? 'page' : undefined}
-    className={cn(styles.root, active && styles.active, className)}
+    className={clsx(styles.root, active && styles.active, className)}
     {...rest}
   >
     <Icon className={styles.icon} />

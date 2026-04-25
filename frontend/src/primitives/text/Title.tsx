@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType } from 'react'
-import { cn } from '../../utils/tailwind.ts'
+import { clsx } from 'clsx'
 
 type TitleSize = 'sm' | 'md' | 'lg'
 type TitleElement = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'div'
@@ -23,6 +23,6 @@ export const Title = <E extends TitleElement = 'h2'>({
 }: TitleProps<E>) => {
   const Tag = (as ?? 'h2') as ElementType
   return (
-    <Tag className={cn('typo-title', sizeClass[size], className)} {...rest} />
+    <Tag className={clsx('typo-title', sizeClass[size], className)} {...rest} />
   )
 }

@@ -1,19 +1,25 @@
 import { graphql, usePaginationFragment } from 'react-relay'
-import { type Dispatch, type SetStateAction } from 'react'
-import { Task } from './Task'
-import { CreateTask } from './CreateTask'
+import { useMemo, type Dispatch, type SetStateAction } from 'react'
+import { Task } from './Task.tsx'
+import { CreateTask } from './CreateTask.tsx'
+import { Button } from '../primitives/Button.tsx'
+import { TasksTableHeader } from './TasksTableHeader.tsx'
+import { usePageHeader } from '../utils/page-header.ts'
 import type { TasksList_tasks$key } from './__generated__/TasksList_tasks.graphql'
+import styles from './TasksList.module.css'
 
 interface TasksListProps {
   tasks: TasksList_tasks$key
   isCreating: boolean
   setIsCreating: Dispatch<SetStateAction<boolean>>
+  searchQuery: string
 }
 
 export const TasksList = ({
   tasks: tasksRef,
   isCreating,
   setIsCreating,
+  searchQuery,
 }: TasksListProps) => {
   const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
     graphql`
@@ -29,6 +35,7 @@ export const TasksList = ({
           edges {
             node {
               id
+              title
               ...TaskDisplay
               ...EditTaskUpdatable
             }
@@ -39,48 +46,53 @@ export const TasksList = ({
     tasksRef,
   )
 
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+  const visibleEdges = useMemo(() => {
+    if (!normalizedQuery) return data.tasks.edges
+    return data.tasks.edges.filter(({ node }) =>
+      node.title.toLowerCase().includes(normalizedQuery),
+    )
+  }, [data.tasks.edges, normalizedQuery])
+
+  const loadedCount = data.tasks.edges.length
+  const subtitle = hasNext ? `${loadedCount}+ total` : `${loadedCount} total`
+  usePageHeader({ subtitle })
+
+  const showEmpty = visibleEdges.length === 0 && !isCreating
+
   return (
-    <>
-      <tbody className="block space-y-3 md:table-row-group md:space-y-0">
-        {data.tasks.edges.length === 0 && !isCreating && (
-          <tr>
-            <td className="text-center" colSpan={4}>
-              No tasks, create some!
-            </td>
-          </tr>
-        )}
-        {isCreating && (
-          <CreateTask
-            setIsCreating={setIsCreating}
-            connectionId={data.tasks.__id}
-          />
-        )}
-        {data.tasks.edges.map(({ node }) => {
-          return (
-            <Task
-              key={node.id}
-              task={node}
-              updatable={node}
-              connectionId={data.tasks.__id}
-            />
-          )
-        })}
-      </tbody>
-      {hasNext && (
-        <tfoot>
-          <tr>
-            <td colSpan={4} className="p-4 text-center">
-              <button
-                className="btn btn-primary"
-                onClick={() => loadNext(20)}
-                disabled={isLoadingNext}
-              >
-                {isLoadingNext ? 'Loading...' : 'Load More'}
-              </button>
-            </td>
-          </tr>
-        </tfoot>
+    <div className={styles.card}>
+      <TasksTableHeader />
+      {isCreating && (
+        <CreateTask setIsCreating={setIsCreating} connectionId={data.tasks.__id} />
       )}
-    </>
+      {showEmpty && (
+        <div className={styles.empty}>
+          {normalizedQuery
+            ? `No tasks match "${searchQuery}"`
+            : 'No tasks, create some!'}
+        </div>
+      )}
+      {visibleEdges.map(({ node }) => (
+        <Task
+          key={node.id}
+          task={node}
+          updatable={node}
+          connectionId={data.tasks.__id}
+        />
+      ))}
+      {hasNext && !normalizedQuery && (
+        <div className={styles.loadMore}>
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => loadNext(20)}
+            loading={isLoadingNext}
+          >
+            Load more
+          </Button>
+        </div>
+      )}
+    </div>
   )
 }

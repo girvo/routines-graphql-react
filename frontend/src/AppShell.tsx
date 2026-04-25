@@ -1,178 +1,122 @@
-import { Suspense, use, useState, useCallback } from 'react'
-import { AuthContext } from './auth/auth-store.ts'
 import {
-  NavLink,
+  Suspense,
+  use,
+  useCallback,
+  useState,
+  type ReactNode,
+} from 'react'
+import {
   Outlet,
   useLocation,
   useMatches,
+  useNavigate,
   type UIMatch,
 } from 'react-router-dom'
+import { useQueryLoader } from 'react-relay'
+import { AuthContext } from './auth/auth-store.ts'
 import {
-  Calendar1,
-  CalendarDays,
-  EllipsisVertical,
-  LayoutList,
-} from 'lucide-react'
-import {
-  HeaderActionsContext,
-  type HeaderAction,
-} from './utils/header-actions.ts'
-import { handleEscapeBlur } from './utils/form.ts'
-import { cn } from './utils/tailwind.ts'
-import styles from './AppShell.module.css'
+  PageHeaderContext,
+  type PageHeaderSlots,
+} from './utils/page-header.ts'
+import { AppShellFrame } from './shell/AppShellFrame.tsx'
+import { DesktopSidebar } from './shell/DesktopSidebar.tsx'
+import { MobileDock } from './shell/MobileDock.tsx'
+import { TopBar } from './shell/TopBar.tsx'
+import DesktopSidebarQueryNode from './shell/__generated__/DesktopSidebarQuery.graphql.ts'
+import type { DesktopSidebarQuery } from './shell/__generated__/DesktopSidebarQuery.graphql.ts'
 
 interface RouteHandle {
   title?: string
-  loading?: () => React.ReactNode
+  subtitle?: string
+  loading?: () => ReactNode
 }
 
-const Header = () => {
-  const matches = useMatches() as UIMatch<unknown, RouteHandle>[]
-  const currentTitle = matches
-    .filter(match => match.handle?.title)
-    .map(match => match.handle.title)
-    .pop()
+type TopBarSlotProps = {
+  title: string
+  routeSubtitle?: ReactNode
+  onLogout: () => void
+}
 
-  const { clearAccessToken } = use(AuthContext)
-  const { actions } = use(HeaderActionsContext)
-
+const TopBarSlot = ({ title, routeSubtitle, onLogout }: TopBarSlotProps) => {
+  const { subtitle, actions } = use(PageHeaderContext)
   return (
-    <div className={styles.navbar}>
-      <span className={styles.title}>{currentTitle ?? 'Routines'}</span>
-      <div className={styles.actions}>
-        {actions.map(action => (
-          <button
-            key={action.id}
-            className={styles.actionButton}
-            onClick={action.onClick}
-          >
-            <action.icon className={styles.actionIcon} />
-            {action.label}
-          </button>
-        ))}
-        <div className={styles.dropdown}>
-          <div
-            tabIndex={0}
-            role="button"
-            className={styles.dropdownTrigger}
-          >
-            <EllipsisVertical className={styles.actionIcon} />
-          </div>
-          <ul
-            tabIndex={0}
-            className={styles.dropdownMenu}
-            onKeyDown={handleEscapeBlur}
-          >
-            <li>
-              <NavLink to="/settings" className={styles.dropdownItem}>
-                Settings
-              </NavLink>
-            </li>
-            <li>
-              <a className={styles.dropdownItem} onClick={clearAccessToken}>
-                Logout
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <TopBar
+      title={title}
+      subtitle={subtitle ?? routeSubtitle}
+      actions={actions}
+      onLogout={onLogout}
+    />
   )
 }
 
-const dockItemClass = ({ isActive }: { isActive: boolean }) =>
-  cn(styles.dockItem, isActive && styles.dockItemActive)
-
-const MobileDock = () => (
-  <nav className={styles.dock}>
-    <NavLink to="/" className={dockItemClass} end>
-      <Calendar1 />
-      <span className={styles.dockLabel}>Today</span>
-    </NavLink>
-    <NavLink to="/weekly" className={dockItemClass}>
-      <CalendarDays />
-      <span className={styles.dockLabel}>Weekly plan</span>
-    </NavLink>
-    <NavLink to="/tasks" className={dockItemClass}>
-      <LayoutList />
-      <span className={styles.dockLabel}>Tasks</span>
-    </NavLink>
-  </nav>
-)
-
-const sidebarItemClass = ({ isActive }: { isActive: boolean }) =>
-  cn(styles.sidebarItem, isActive && styles.sidebarItemActive)
-
-const DesktopSidebar = () => {
-  const { clearAccessToken } = use(AuthContext)
-
-  return (
-    <aside className={styles.sidebar}>
-      <ul className={styles.sidebarNav}>
-        <li>
-          <NavLink className={sidebarItemClass} to="/" end>
-            Today
-          </NavLink>
-        </li>
-        <li>
-          <NavLink className={sidebarItemClass} to="/weekly">
-            Weekly plan
-          </NavLink>
-        </li>
-        <li>
-          <NavLink className={sidebarItemClass} to="/tasks">
-            All tasks
-          </NavLink>
-        </li>
-        <li>
-          <span className={styles.divider} />
-        </li>
-        <li>
-          <NavLink className={sidebarItemClass} to="/settings">
-            Settings
-          </NavLink>
-        </li>
-        <li>
-          <a className={styles.sidebarItem} onClick={clearAccessToken}>
-            Logout
-          </a>
-        </li>
-      </ul>
-    </aside>
-  )
+const BelowHeaderSlot = () => {
+  const { belowHeader } = use(PageHeaderContext)
+  return <>{belowHeader}</>
 }
 
 export const AppShell = () => {
-  const [actions, setActionsState] = useState<HeaderAction[]>([])
+  const [slots, setSlotsState] = useState<PageHeaderSlots>({
+    subtitle: null,
+    actions: null,
+    belowHeader: null,
+  })
   const matches = useMatches() as UIMatch<unknown, RouteHandle>[]
   const location = useLocation()
-  const Loading = matches.findLast(m => m.handle?.loading)?.handle?.loading
+  const navigate = useNavigate()
+  const { clearAccessToken } = use(AuthContext)
 
-  const setActions = useCallback((newActions: HeaderAction[]) => {
-    setActionsState(newActions)
+  const handleLogout = useCallback(() => {
+    void fetch('/api/logout', {
+      method: 'POST',
+      credentials: 'same-origin',
+      keepalive: true,
+    })
+    clearAccessToken()
+    navigate('/', { replace: true })
+  }, [clearAccessToken, navigate])
+
+  const [user, loadUser] = useQueryLoader<DesktopSidebarQuery>(DesktopSidebarQueryNode)
+
+  // TODO: promote AppShell to an EntryPointRouteObject (see TasksPage.entrypoint.ts for
+  // the pattern) so the user query fires during route resolution, before this component
+  // renders. Until then, useState's lazy initializer fires loadUser on the first render
+  // body — earlier than useEffect/useLayoutEffect, which both run post-commit.
+  useState(() => {
+    loadUser({})
+    return null
+  })
+
+  const title = matches.findLast((m) => m.handle?.title)?.handle?.title ?? 'Routines'
+  const routeSubtitle = matches.findLast((m) => m.handle?.subtitle)?.handle?.subtitle
+  const Loading = matches.findLast((m) => m.handle?.loading)?.handle?.loading
+
+  const setSlots = useCallback((next: Partial<PageHeaderSlots>) => {
+    setSlotsState((prev) => ({ ...prev, ...next }))
   }, [])
 
-  const clearActions = useCallback(() => {
-    setActionsState([])
+  const clearSlots = useCallback((keys: Array<keyof PageHeaderSlots>) => {
+    setSlotsState((prev) => {
+      const next = { ...prev }
+      for (const key of keys) next[key] = null
+      return next
+    })
   }, [])
 
   return (
-    <HeaderActionsContext value={{ actions, setActions, clearActions }}>
-      <div className={styles.shell}>
-        <DesktopSidebar />
-        <div className={styles.content}>
-          <Header />
-          <main className={styles.main}>
-            <Suspense
-              key={location.pathname}
-              fallback={Loading ? <Loading /> : 'Loading...'}
-            >
-              <Outlet />
-            </Suspense>
-          </main>
-          <MobileDock />
-        </div>
-      </div>
-    </HeaderActionsContext>
+    <PageHeaderContext value={{ ...slots, setSlots, clearSlots }}>
+      <AppShellFrame
+        sidebar={<DesktopSidebar user={user} onLogout={handleLogout} />}
+        topBar={<TopBarSlot title={title} routeSubtitle={routeSubtitle} onLogout={handleLogout} />}
+        belowHeader={<BelowHeaderSlot />}
+        dock={<MobileDock />}
+      >
+        <Suspense
+          key={location.pathname}
+          fallback={Loading ? <Loading /> : 'Loading...'}
+        >
+          <Outlet />
+        </Suspense>
+      </AppShellFrame>
+    </PageHeaderContext>
   )
 }

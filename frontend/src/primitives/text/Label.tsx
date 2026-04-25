@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType } from 'react'
-import { cn } from '../../utils/tailwind.ts'
+import { clsx } from 'clsx'
 
 type LabelVariant = 'default' | 'tight'
 type LabelElement = 'label' | 'span' | 'div'
@@ -17,5 +17,5 @@ export const Label = <E extends LabelElement = 'label'>({
 }: LabelProps<E>) => {
   const Tag = (as ?? 'label') as ElementType
   const role = variant === 'tight' ? 'typo-label-tight' : 'typo-label'
-  return <Tag className={cn(role, className)} {...rest} />
+  return <Tag className={clsx(role, className)} {...rest} />
 }

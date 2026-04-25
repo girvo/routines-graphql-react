@@ -8,15 +8,15 @@
 }
 
 .sm {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: var(--control-h-sm);
+  height: var(--control-h-sm);
+  border-radius: var(--radius-control);
 }
 
 .md {
-  width: 32px;
-  height: 32px;
-  border-radius: 7px;
+  width: var(--control-h-md);
+  height: var(--control-h-md);
+  border-radius: var(--radius-control);
 }
 
 .icon {

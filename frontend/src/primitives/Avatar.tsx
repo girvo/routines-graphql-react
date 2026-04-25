@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import styles from './Avatar.module.css'
 
 type AvatarProps = {
@@ -9,7 +9,7 @@ type AvatarProps = {
 export const Avatar = ({ initials, className, ...rest }: AvatarProps) => (
   <span
     aria-hidden={initials ? undefined : true}
-    className={cn(styles.root, className)}
+    className={clsx(styles.root, className)}
     {...rest}
   >
     {initials}

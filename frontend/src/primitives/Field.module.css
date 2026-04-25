@@ -1,0 +1,32 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.label {
+  composes: typo-body typo-sm typo-medium from global;
+  color: var(--text-ink-2);
+}
+
+.labelSrOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hint {
+  composes: typo-body typo-xs from global;
+  color: var(--text-muted);
+}
+
+.error {
+  composes: typo-body typo-xs from global;
+  color: var(--status-error-fg);
+}

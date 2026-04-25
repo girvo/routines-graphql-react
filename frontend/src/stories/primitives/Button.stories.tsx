@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react'
 import { Button } from '../../primitives/Button'
 
 const meta = {
@@ -22,11 +22,16 @@ export const Ghost: Story = {
   args: { variant: 'ghost', children: 'Cancel' },
 }
 
+export const Destructive: Story = {
+  args: { variant: 'destructive', children: 'Delete', leadingIcon: Trash2 },
+}
+
 export const IconOnly: Story = {
   args: { variant: 'secondary', iconOnly: ChevronLeft, 'aria-label': 'Previous' },
 }
 
 export const States: Story = {
+  args: { children: 'Button' },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
       <div style={{ display: 'flex', gap: 8 }}>
@@ -44,6 +49,11 @@ export const States: Story = {
         <Button variant="ghost" disabled>Cancel</Button>
         <Button variant="secondary" iconOnly={ChevronLeft} aria-label="Prev" />
         <Button variant="secondary" iconOnly={ChevronRight} aria-label="Next" />
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Button variant="destructive" leadingIcon={Trash2}>Delete</Button>
+        <Button variant="destructive" leadingIcon={Trash2} disabled>Delete</Button>
+        <Button variant="destructive" loading>Deleting</Button>
       </div>
     </div>
   ),

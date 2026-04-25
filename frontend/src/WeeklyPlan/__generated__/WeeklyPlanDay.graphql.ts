@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7b2d63f80a17e6a6befe6c6965b10ebb>>
+ * @generated SignedSource<<dcb8fea83a30708d05b4ea1431654244>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,21 +18,21 @@ export type WeeklyPlanDay$data = {
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
     }>;
-    readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanRoutineSectionFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"DaySection_section">;
   };
   readonly midday: {
     readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
     }>;
-    readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanRoutineSectionFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"DaySection_section">;
   };
   readonly morning: {
     readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
     }>;
-    readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanRoutineSectionFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"DaySection_section">;
   };
   readonly " $fragmentType": "WeeklyPlanDay";
 };
@@ -82,7 +82,7 @@ var v0 = [
   {
     "args": null,
     "kind": "FragmentSpread",
-    "name": "WeeklyPlanRoutineSectionFragment"
+    "name": "DaySection_section"
   },
   {
     "alias": null,
@@ -198,6 +198,6 @@ return {
 };
 })();
 
-(node as any).hash = "3c574c490c148d5bea1570a57a979846";
+(node as any).hash = "659ca6128965284c8ebfef7a836ad666";
 
 export default node;

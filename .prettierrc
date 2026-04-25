@@ -3,7 +3,5 @@
   "useTabs": false,
   "semi": false,
   "singleQuote": true,
-  "arrowParens": "avoid",
-  "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindFunctions": ["clsx", "cn"]
+  "arrowParens": "avoid"
 }

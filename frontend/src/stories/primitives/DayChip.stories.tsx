@@ -24,30 +24,34 @@ export const Disabled: Story = {
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
-export const Week: Story = {
-  render: () => {
-    const [selected, setSelected] = useState<Set<string>>(
+const WeekTemplate = () => {
+  const [selected, setSelected] = useState<Set<string>>(
+
       () => new Set(['Mon', 'Wed', 'Fri']),
     )
-    const toggle = (day: string) => {
-      setSelected((prev) => {
-        const next = new Set(prev)
-        if (next.has(day)) next.delete(day)
-        else next.add(day)
-        return next
-      })
-    }
-    return (
-      <div style={{ display: 'flex', gap: 6 }}>
-        {DAYS.map((day) => (
-          <DayChip
-            key={day}
-            day={day}
-            selected={selected.has(day)}
-            onClick={() => toggle(day)}
-          />
-        ))}
-      </div>
-    )
-  },
+  const toggle = (day: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(day)) next.delete(day)
+      else next.add(day)
+      return next
+    })
+  }
+  return (
+    <div style={{ display: 'flex', gap: 6 }}>
+      {DAYS.map((day) => (
+        <DayChip
+          key={day}
+          day={day}
+          selected={selected.has(day)}
+          onClick={() => toggle(day)}
+        />
+      ))}
+    </div>
+  )
+}
+
+export const Week: Story = {
+  args: { day: 'Mon' },
+  render: () => <WeekTemplate />,
 }

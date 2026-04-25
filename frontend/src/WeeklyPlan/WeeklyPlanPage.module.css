@@ -1,0 +1,48 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.mobileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--stroke-hairline);
+}
+
+.mobileTitle {
+  composes: typo-title typo-lg typo-semibold from global;
+  color: var(--text-ink);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.selector {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .mobileHeader {
+    display: none;
+  }
+
+  .body {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 18px;
+    padding: var(--page-padding-x);
+  }
+
+  .selector {
+    display: block;
+  }
+}

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<33b558f7587730c7bac6149a52cdf318>>
+ * @generated SignedSource<<fbf18ddb3fb69b9288ab11dff00ec431>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -136,7 +136,13 @@ return {
               },
               {
                 "alias": null,
-                "args": null,
+                "args": [
+                  {
+                    "kind": "Literal",
+                    "name": "first",
+                    "value": 100
+                  }
+                ],
                 "concreteType": "RoutineSlotConnection",
                 "kind": "LinkedField",
                 "name": "slots",
@@ -158,14 +164,14 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
+                          (v2/*: any*/),
                           {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "__typename",
+                            "name": "section",
                             "storageKey": null
-                          },
-                          (v2/*: any*/)
+                          }
                         ],
                         "storageKey": null
                       }
@@ -191,7 +197,7 @@ return {
                     "storageKey": null
                   }
                 ],
-                "storageKey": null
+                "storageKey": "slots(first:100)"
               }
             ],
             "storageKey": null
@@ -202,12 +208,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "58f6cee1eaa838243e8670a0be1aed51",
+    "cacheID": "c8a58a1caac91a595a5cfe2257976f3a",
     "id": null,
     "metadata": {},
     "name": "EditTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...TaskDisplay\n      id\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...TaskDisplay\n      id\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

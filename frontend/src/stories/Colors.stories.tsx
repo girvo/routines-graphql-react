@@ -14,9 +14,7 @@ const groups: Group[] = [
       { name: 'Bg', cssVar: '--surface-bg' },
       { name: 'Bg Soft', cssVar: '--surface-bg-soft' },
       { name: 'Soft', cssVar: '--surface-soft' },
-      { name: 'Table Head', cssVar: '--surface-table-head' },
       { name: 'Avatar Bg', cssVar: '--surface-avatar-bg' },
-      { name: 'Inline Create', cssVar: '--surface-inline-create' },
     ],
   },
   {
@@ -32,6 +30,8 @@ const groups: Group[] = [
     heading: 'Stroke',
     tokens: [
       { name: 'Line', cssVar: '--stroke-line' },
+      { name: 'Line Medium', cssVar: '--stroke-line-medium' },
+      { name: 'Line Strong', cssVar: '--stroke-line-strong' },
       { name: 'Hairline', cssVar: '--stroke-hairline' },
     ],
   },

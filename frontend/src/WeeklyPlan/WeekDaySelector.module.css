@@ -1,0 +1,82 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px var(--space-2-5);
+  background: var(--surface-bg-soft);
+  border: var(--border-width) solid var(--stroke-line);
+  border-radius: var(--radius-lg);
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.heading {
+  composes: typo-label typo-xs typo-semibold typo-ls-wide-md from global;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 0 var(--space-2-5) 6px;
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: var(--control-h-md);
+  padding: 0 var(--space-2-5);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  color: var(--text-ink-2);
+  transition:
+    background-color var(--transition-default),
+    border-color var(--transition-default);
+}
+
+.day:hover:not(.active) {
+  background: var(--surface-soft);
+}
+
+.day:focus-visible {
+  outline: var(--outline-width) solid var(--accent);
+  outline-offset: var(--outline-offset);
+}
+
+.active {
+  background: var(--surface);
+  border-color: var(--stroke-line);
+}
+
+.dl {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--text-muted-soft);
+  flex-shrink: 0;
+}
+
+.active .dot {
+  background: var(--accent);
+}
+
+.name {
+  composes: typo-body typo-md from global;
+  color: var(--text-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  composes: typo-mono typo-xs from global;
+  color: var(--text-muted-soft);
+}

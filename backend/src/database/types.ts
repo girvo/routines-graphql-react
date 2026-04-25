@@ -11,6 +11,7 @@ export interface Database {
 export interface UsersTable {
   id: Generated<number>
   email: string
+  name: string
   password_hash: string
   created_at: ColumnType<string, string | undefined, never>
   updated_at: ColumnType<string | null, string | undefined, string>

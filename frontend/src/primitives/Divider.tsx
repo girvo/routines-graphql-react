@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import styles from './Divider.module.css'
 
 type DividerProps = {
@@ -11,7 +11,7 @@ export const Divider = ({ inset, className, style, ...rest }: DividerProps) => {
   return (
     <hr
       role="separator"
-      className={cn(styles.root, className)}
+      className={clsx(styles.root, className)}
       style={{ ...insetStyle, ...style }}
       {...rest}
     />

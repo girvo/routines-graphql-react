@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
-import { AppShell } from '../../shell/AppShell'
+import { AppShellFrame } from '../../shell/AppShellFrame'
 
 const meta = {
-  title: 'Shell/AppShell',
-  component: AppShell,
+  title: 'Shell/AppShellFrame',
+  component: AppShellFrame,
   parameters: { layout: 'fullscreen' },
-} satisfies Meta<typeof AppShell>
+} satisfies Meta<typeof AppShellFrame>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -32,25 +32,28 @@ const slot = (label: string, bg: string, height?: number): ReactNode => (
 )
 
 export const Default: Story = {
+  args: { children: null },
   render: () => (
-    <AppShell
+    <AppShellFrame
       sidebar={<div style={{ width: 240, height: '100%' }}>{slot('Sidebar (240)', '#f5f5f5')}</div>}
       topBar={slot('TopBar (48)', '#fafafa', 48)}
       dock={slot('Dock (56)', '#fafafa', 56)}
     >
       {slot('Main content', '#ffffff')}
-    </AppShell>
+    </AppShellFrame>
   ),
 }
 
 export const NoSidebar: Story = {
+  args: { children: null },
   render: () => (
-    <AppShell topBar={slot('TopBar', '#fafafa', 48)} dock={slot('Dock', '#fafafa', 56)}>
+    <AppShellFrame topBar={slot('TopBar', '#fafafa', 48)} dock={slot('Dock', '#fafafa', 56)}>
       {slot('Main content', '#ffffff')}
-    </AppShell>
+    </AppShellFrame>
   ),
 }
 
 export const OnlyMain: Story = {
-  render: () => <AppShell>{slot('Main content', '#ffffff')}</AppShell>,
+  args: { children: null },
+  render: () => <AppShellFrame>{slot('Main content', '#ffffff')}</AppShellFrame>,
 }

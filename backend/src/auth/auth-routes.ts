@@ -17,13 +17,23 @@ import {
 import { createUserRepository } from '../user/user-repository.ts'
 import { db } from '../database/index.ts'
 
-const AuthSchema = type({
+const LoginSchema = type({
   email: 'string.email',
   password: 'string>5',
 })
 
-const schema = {
-  body: AuthSchema.toJsonSchema({ dialect: null }),
+const SignupSchema = type({
+  email: 'string.email',
+  name: 'string>0',
+  password: 'string>5',
+})
+
+const loginSchema = {
+  body: LoginSchema.toJsonSchema({ dialect: null }),
+}
+
+const signupSchema = {
+  body: SignupSchema.toJsonSchema({ dialect: null }),
 }
 
 const loginError = {
@@ -41,8 +51,8 @@ export const authRoutes = async (fastify: FastifyInstance) => {
   const userRepo = createUserRepository(db)
   const refreshTokenRepo = createRefreshTokenRepository(db)
 
-  fastify.post('/api/login', { schema }, async (request, reply) => {
-    const body = request.body as typeof AuthSchema.infer
+  fastify.post('/api/login', { schema: loginSchema }, async (request, reply) => {
+    const body = request.body as typeof LoginSchema.infer
     try {
       const user = await userRepo
         .findByEmail(body.email)
@@ -85,12 +95,12 @@ export const authRoutes = async (fastify: FastifyInstance) => {
     }
   })
 
-  fastify.post('/api/signup', { schema }, async (request, reply) => {
-    const body = request.body as typeof AuthSchema.infer
+  fastify.post('/api/signup', { schema: signupSchema }, async (request, reply) => {
+    const body = request.body as typeof SignupSchema.infer
     try {
       const passHash = await hash(body.password, 10)
       const user = await userRepo
-        .createUser(body.email, passHash)
+        .createUser(body.email, body.name, passHash)
         .then(User.tableToDomain)
 
       const token = createAccessToken(user.id, env.JWT_SECRET)

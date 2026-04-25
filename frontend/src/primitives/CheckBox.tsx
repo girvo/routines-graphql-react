@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
 import { Check } from 'lucide-react'
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import styles from './CheckBox.module.css'
 
 type CheckBoxBase = {
@@ -37,7 +37,7 @@ export const CheckBox = ({
   children,
   ...rest
 }: CheckBoxProps) => (
-  <label className={cn(styles.root, styles[size], disabled && styles.disabled, className)}>
+  <label className={clsx(styles.root, styles[size], disabled && styles.disabled, className)}>
     <input
       type="checkbox"
       className={styles.input}

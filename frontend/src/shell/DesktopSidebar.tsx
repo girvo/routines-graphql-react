@@ -1,8 +1,16 @@
-import type { ComponentType } from 'react'
+import { Suspense, type ComponentType } from 'react'
 import { NavLink } from 'react-router-dom'
+import {
+  graphql,
+  useFragment,
+  usePreloadedQuery,
+  type PreloadedQuery,
+} from 'react-relay'
 import { Calendar1, CalendarDays, LayoutList, Settings, LogOut } from 'lucide-react'
 import { Avatar } from '../primitives/Avatar.tsx'
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
+import type { DesktopSidebarQuery } from './__generated__/DesktopSidebarQuery.graphql.ts'
+import type { DesktopSidebar_me$key } from './__generated__/DesktopSidebar_me.graphql'
 import styles from './DesktopSidebar.module.css'
 
 type IconComponent = ComponentType<{ className?: string }>
@@ -38,8 +46,48 @@ const UserCard = ({ name, email, initials }: UserCardProps) => (
   </div>
 )
 
+const UserCardSkeleton = () => (
+  <div className={styles.userCard} aria-hidden="true">
+    <Avatar initials="" />
+    <div className={styles.userCol}>
+      <span className={styles.userName}>&nbsp;</span>
+      <span className={styles.userEmail}>&nbsp;</span>
+    </div>
+  </div>
+)
+
+type LoadedUserCardProps = { user: PreloadedQuery<DesktopSidebarQuery> }
+
+const LoadedUserCard = ({ user }: LoadedUserCardProps) => {
+  const data = usePreloadedQuery<DesktopSidebarQuery>(
+    graphql`
+      query DesktopSidebarQuery {
+        me {
+          ...DesktopSidebar_me
+        }
+      }
+    `,
+    user,
+  )
+  return <UserCardFromFragment me={data.me} />
+}
+
+const UserCardFromFragment = ({ me }: { me: DesktopSidebar_me$key }) => {
+  const data = useFragment(
+    graphql`
+      fragment DesktopSidebar_me on User {
+        name
+        email
+        initials
+      }
+    `,
+    me,
+  )
+  return <UserCard name={data.name} email={data.email} initials={data.initials} />
+}
+
 const itemClass = ({ isActive }: { isActive: boolean }) =>
-  cn(styles.item, isActive && styles.itemActive)
+  clsx(styles.item, isActive && styles.itemActive)
 
 type NavItemLinkProps = { route: NavRoute }
 
@@ -54,7 +102,7 @@ const NavItemLink = ({ route }: NavItemLinkProps) => {
 }
 
 type DesktopSidebarProps = {
-  user: UserCardProps
+  user: PreloadedQuery<DesktopSidebarQuery> | null | undefined
   onLogout: () => void
 }
 
@@ -85,6 +133,12 @@ export const DesktopSidebar = ({ user, onLogout }: DesktopSidebarProps) => (
 
     <div className={styles.spacer} />
 
-    <UserCard {...user} />
+    {user ? (
+      <Suspense fallback={<UserCardSkeleton />}>
+        <LoadedUserCard user={user} />
+      </Suspense>
+    ) : (
+      <UserCardSkeleton />
+    )}
   </nav>
 )

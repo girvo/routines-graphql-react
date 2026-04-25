@@ -12,7 +12,7 @@ import {
 } from 'react'
 import type { MouseEvent, ReactElement, ReactNode, Ref, RefObject } from 'react'
 import { createPortal } from 'react-dom'
-import { cn } from '../../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import { computePosition, type Placement } from './helpers.ts'
 import styles from './Popover.module.css'
 
@@ -168,7 +168,7 @@ export const PopoverContent = ({ children, className }: PopoverContentProps) => 
       ref={contentRef}
       id={contentId}
       role="dialog"
-      className={cn(styles.content, className)}
+      className={clsx(styles.content, className)}
       style={{ position: 'absolute', top: 0, left: 0, visibility: 'hidden' }}
     >
       {children}

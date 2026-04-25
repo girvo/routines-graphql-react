@@ -1,0 +1,31 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2-5) var(--page-padding-x);
+  min-height: 42px;
+}
+
+.hl {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.title {
+  composes: typo-label typo-xs typo-semibold typo-ls-wide-md from global;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.count {
+  composes: typo-mono typo-xs from global;
+  color: var(--text-muted-soft);
+}
+
+.dense {
+  padding: var(--space-2-5) var(--space-2-5) var(--space-2-5) var(--card-padding-x);
+  min-height: var(--row-h-md);
+}

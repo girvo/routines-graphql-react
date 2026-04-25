@@ -330,6 +330,8 @@ export type User = Node & {
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  initials: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type WeeklySchedulePayload = {

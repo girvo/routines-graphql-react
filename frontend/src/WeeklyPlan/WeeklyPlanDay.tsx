@@ -4,6 +4,7 @@ import type { WeeklyPlanDay$key } from './__generated__/WeeklyPlanDay.graphql'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import AddTaskDropdownQueryNode from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { DayOfWeek } from './days.ts'
+import styles from './WeeklyPlanDay.module.css'
 
 interface WeeklyPlanDayProps {
   day: WeeklyPlanDay$key
@@ -17,25 +18,24 @@ export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
         dayOfWeek
         morning(first: 100) @connection(key: "WeeklyPlanDaySlots_morning") {
           __id
-          # This feels like a hack... not sure I should be doing it this way?
           edges {
             cursor
           }
-          ...WeeklyPlanRoutineSectionFragment
+          ...DaySection_section
         }
         midday(first: 100) @connection(key: "WeeklyPlanDaySlots_midday") {
           __id
           edges {
             cursor
           }
-          ...WeeklyPlanRoutineSectionFragment
+          ...DaySection_section
         }
         evening(first: 100) @connection(key: "WeeklyPlanDaySlots_evening") {
           __id
           edges {
             cursor
           }
-          ...WeeklyPlanRoutineSectionFragment
+          ...DaySection_section
         }
       }
     `,
@@ -53,10 +53,10 @@ export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-2 p-4 md:max-w-5xl md:p-2">
+    <div className={styles.day}>
       <DaySection
         label="Morning"
-        sectionData={daySchedule.morning}
+        section={daySchedule.morning}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="MORNING"
@@ -65,7 +65,7 @@ export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
       />
       <DaySection
         label="Midday"
-        sectionData={daySchedule.midday}
+        section={daySchedule.midday}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="MIDDAY"
@@ -74,7 +74,7 @@ export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
       />
       <DaySection
         label="Evening"
-        sectionData={daySchedule.evening}
+        section={daySchedule.evening}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="EVENING"

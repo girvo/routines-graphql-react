@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<622375bfa98ec5da16a63bbc4bc03cd0>>
+ * @generated SignedSource<<9f05b59ecd066c8ae4c755415f5e694b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ReaderFragment } from 'relay-runtime';
+export type DaySection = "EVENING" | "MIDDAY" | "MORNING" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type TaskDisplay$data = {
   readonly createdAt: any;
@@ -17,7 +18,8 @@ export type TaskDisplay$data = {
   readonly slots: {
     readonly edges: ReadonlyArray<{
       readonly node: {
-        readonly __typename: "RoutineSlot";
+        readonly id: string;
+        readonly section: DaySection;
       };
     }>;
     readonly pageInfo: {
@@ -32,19 +34,21 @@ export type TaskDisplay$key = {
   readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "TaskDisplay",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -68,7 +72,13 @@ const node: ReaderFragment = {
     },
     {
       "alias": null,
-      "args": null,
+      "args": [
+        {
+          "kind": "Literal",
+          "name": "first",
+          "value": 100
+        }
+      ],
       "concreteType": "RoutineSlotConnection",
       "kind": "LinkedField",
       "name": "slots",
@@ -90,11 +100,12 @@ const node: ReaderFragment = {
               "name": "node",
               "plural": false,
               "selections": [
+                (v0/*: any*/),
                 {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
-                  "name": "__typename",
+                  "name": "section",
                   "storageKey": null
                 }
               ],
@@ -122,13 +133,14 @@ const node: ReaderFragment = {
           "storageKey": null
         }
       ],
-      "storageKey": null
+      "storageKey": "slots(first:100)"
     }
   ],
   "type": "Task",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "64b57859ca3ec890fe40ee6ede28486e";
+(node as any).hash = "bdb1ce3e52949ecc25eaec9e88570200";
 
 export default node;

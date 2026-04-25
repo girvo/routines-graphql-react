@@ -1,0 +1,44 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  padding: var(--space-2-5) var(--page-padding-x);
+  min-height: var(--row-h-md);
+  background: transparent;
+  border: 0;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-muted);
+  transition: background-color var(--transition-default);
+}
+
+.root:hover:not(:disabled) {
+  background: var(--surface-soft);
+}
+
+.root:focus-visible {
+  outline: var(--outline-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--outline-offset));
+}
+
+.plusBox {
+  width: var(--avatar-sm);
+  height: var(--avatar-sm);
+  border-radius: var(--radius-md);
+  border: var(--border-width) dashed var(--stroke-line-medium);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.icon {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.label {
+  composes: typo-body typo-lg typo-medium from global;
+}

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e274b59d4ba0e368f6f292c80a74e233>>
+ * @generated SignedSource<<b70677ae9fabdae95fa2218a6234f0d5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -55,13 +55,6 @@ v2 = {
   "storageKey": null
 },
 v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -149,7 +142,13 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": null,
+                    "args": [
+                      {
+                        "kind": "Literal",
+                        "name": "first",
+                        "value": 100
+                      }
+                    ],
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
                     "name": "slots",
@@ -171,8 +170,14 @@ return {
                             "name": "node",
                             "plural": false,
                             "selections": [
-                              (v3/*: any*/),
-                              (v2/*: any*/)
+                              (v2/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "section",
+                                "storageKey": null
+                              }
                             ],
                             "storageKey": null
                           }
@@ -187,14 +192,20 @@ return {
                         "name": "pageInfo",
                         "plural": false,
                         "selections": [
-                          (v4/*: any*/)
+                          (v3/*: any*/)
                         ],
                         "storageKey": null
                       }
                     ],
-                    "storageKey": null
+                    "storageKey": "slots(first:100)"
                   },
-                  (v3/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "__typename",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
               },
@@ -223,7 +234,7 @@ return {
                 "name": "endCursor",
                 "storageKey": null
               },
-              (v4/*: any*/)
+              (v3/*: any*/)
             ],
             "storageKey": null
           },
@@ -254,16 +265,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b11d3d3c8b42fe24d3612b184cbebc90",
+    "cacheID": "6d6782e1b55c33680a04259ce7016218",
     "id": null,
     "metadata": {},
     "name": "TasksListPaginationQuery",
     "operationKind": "query",
-    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "28f722b42a2a2e09e74d8a7585663472";
+(node as any).hash = "0fe1eb9ebd415dcc713cbf2a70664e62";
 
 export default node;

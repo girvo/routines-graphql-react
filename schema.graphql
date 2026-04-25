@@ -60,6 +60,8 @@ type Mutation {
 type User implements Node {
   id: ID!
   email: String!
+  name: String!
+  initials: String!
   createdAt: DateTime!
 }
 

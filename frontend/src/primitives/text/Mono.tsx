@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType } from 'react'
-import { cn } from '../../utils/tailwind.ts'
+import { clsx } from 'clsx'
 
 type MonoSize = 'xs' | 'sm'
 type MonoElement = 'code' | 'span' | 'div' | 'pre'
@@ -16,5 +16,5 @@ export const Mono = <E extends MonoElement = 'code'>({
   ...rest
 }: MonoProps<E>) => {
   const Tag = (as ?? 'code') as ElementType
-  return <Tag className={cn('typo-mono', `typo-${size}`, className)} {...rest} />
+  return <Tag className={clsx('typo-mono', `typo-${size}`, className)} {...rest} />
 }

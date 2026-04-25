@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<85ba16073449f0bc41858326f569938d>>
+ * @generated SignedSource<<a3faffcc9e3f74cbf4b64f80f24750cf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -184,7 +184,13 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": null,
+                    "args": [
+                      {
+                        "kind": "Literal",
+                        "name": "first",
+                        "value": 100
+                      }
+                    ],
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
                     "name": "slots",
@@ -206,14 +212,14 @@ return {
                             "name": "node",
                             "plural": false,
                             "selections": [
+                              (v5/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
                                 "kind": "ScalarField",
-                                "name": "__typename",
+                                "name": "section",
                                 "storageKey": null
-                              },
-                              (v5/*: any*/)
+                              }
                             ],
                             "storageKey": null
                           }
@@ -239,7 +245,7 @@ return {
                         "storageKey": null
                       }
                     ],
-                    "storageKey": null
+                    "storageKey": "slots(first:100)"
                   }
                 ],
                 "storageKey": null
@@ -270,12 +276,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e1c7125429cc605f9523e269c60ba594",
+    "cacheID": "070e446194c388657697a384232fe14b",
     "id": null,
     "metadata": {},
     "name": "CreateTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...TaskDisplay\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots {\n    edges {\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...TaskDisplay\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

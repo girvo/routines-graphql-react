@@ -1,0 +1,36 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    flex: 1;
+    background: var(--surface);
+    border: var(--border-width) solid var(--stroke-line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .headerDivider {
+    height: var(--border-width);
+    background: var(--stroke-hairline);
+  }
+
+  .body > * + * {
+    border-top: var(--border-width) solid var(--stroke-hairline);
+  }
+}
+
+@media (max-width: 1023px) {
+  .headerDivider {
+    display: none;
+  }
+}
+
+.empty {
+  composes: typo-body typo-md from global;
+  color: var(--text-muted);
+  padding: var(--space-3) var(--page-padding-x);
+}

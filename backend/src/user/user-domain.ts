@@ -6,6 +6,7 @@ import type { UserRow } from './user-repository.ts'
 const UserDomain = type({
   id: 'number',
   email: 'string',
+  name: 'string',
   passwordHash: 'string',
   createdAt: 'Date',
   updatedAt: 'Date | null',
@@ -18,6 +19,7 @@ export const tableToDomain = (input: UserRow): UserDomain => {
   const result = UserDomain({
     id: input.id,
     email: input.email,
+    name: input.name,
     passwordHash: input.password_hash,
     createdAt: parseISO(input.created_at),
     updatedAt: input.updated_at ? parseISO(input.updated_at) : null,
@@ -31,7 +33,17 @@ export const userToGraphQL = (user: UserDomain) => ({
   __typename: 'User' as const,
   id: toGlobalId('User', user.id),
   email: user.email,
+  name: user.name,
   createdAt: user.createdAt,
 })
 
 export type UserNode = ReturnType<typeof userToGraphQL>
+
+export const deriveInitials = (name: string): string => {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  return parts
+    .slice(0, 2)
+    .map((p) => p[0].toUpperCase())
+    .join('')
+}

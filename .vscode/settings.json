@@ -25,13 +25,13 @@
     "strings": "on"
   },
   // prioritize ArkType's "type" for autoimports
-  "typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
-  // For tailwind cn utility function
-  "tailwindCSS.experimental.classRegex": [
-    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+    "^(node:)?os$"
   ],
   "css.validate": false,
-  "stylelint.validate": ["css"],
+  "stylelint.validate": [
+    "css"
+  ],
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

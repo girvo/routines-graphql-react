@@ -22,6 +22,10 @@
   flex-shrink: 0;
 }
 
+.belowHeader {
+  flex-shrink: 0;
+}
+
 .main {
   flex: 1;
   overflow: auto;
@@ -35,6 +39,7 @@
 @media (min-width: 1024px) {
   .sidebar {
     display: block;
+    border-right: var(--border-width) solid var(--stroke-line);
   }
   .dock {
     display: none;

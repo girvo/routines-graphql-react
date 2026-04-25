@@ -1,0 +1,96 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: 62px;
+  padding: 14px var(--space-4);
+  background: var(--surface);
+  border-bottom: var(--border-width) solid var(--stroke-line);
+  box-sizing: border-box;
+}
+
+.titleCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.title {
+  composes: typo-title typo-xl typo-semibold from global;
+  color: var(--text-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subtitle {
+  composes: typo-body typo-sm from global;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  padding: var(--space-1);
+}
+
+.menuItem {
+  composes: typo-body typo-md from global;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-ink-2);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  width: 100%;
+}
+
+.menuItem:hover {
+  background: var(--surface-soft);
+  color: var(--text-ink);
+}
+
+.menuItem:focus-visible {
+  outline: var(--outline-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--outline-offset));
+}
+
+.menuIcon {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .root {
+    padding: 14px 28px;
+  }
+  .overflow {
+    display: none;
+  }
+}

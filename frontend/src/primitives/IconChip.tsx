@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import styles from './IconChip.module.css'
 
 type IconComponent = ComponentType<{ className?: string }>
@@ -17,7 +17,7 @@ export const IconChip = ({
   className,
   ...rest
 }: IconChipProps) => (
-  <span className={cn(styles.chip, styles[size], className)} {...rest}>
+  <span className={clsx(styles.chip, styles[size], className)} {...rest}>
     <Icon className={styles.icon} />
   </span>
 )

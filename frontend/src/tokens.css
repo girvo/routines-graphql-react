@@ -3,9 +3,7 @@
   --surface-bg: #fafafa;
   --surface-bg-soft: #fcfcfc;
   --surface-soft: #efefef;
-  --surface-table-head: #fafafa;
   --surface-avatar-bg: #e8e8e8;
-  --surface-inline-create: #fcfcff;
 
   --text-ink: #0a0a0a;
   --text-ink-2: #404040;
@@ -21,15 +19,38 @@
   --accent-hover: #276a4c;
   --accent-active: #1f573e;
 
+  --accent-danger: #b23a2f;
+  --accent-danger-hover: #9a3027;
+  --accent-danger-active: #7e251d;
+
+  --overlay-scrim: rgba(10, 10, 10, 0.4);
+
+  --status-error-bg: #fdecea;
+  --status-error-fg: #b23a2f;
+  --status-success-bg: #e8f3ee;
+  --status-success-fg: #2f7d5b;
+  --status-warning-bg: #fdf3e1;
+  --status-warning-fg: #9a6b1f;
+  --status-info-bg: #eaf1fb;
+  --status-info-fg: #2f5db2;
+
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-modal: 0 12px 40px rgba(0, 0, 0, 0.18);
+
   --border-width: 1px;
-  --border-width-md: 1.5px;
+  --outline-width: 2px;
+  --outline-offset: 2px;
 
   --icon-sm: 16px;
   --icon-md: 20px;
 
-  --control-h: 28px;
-  --control-radius: 8px;
-  --control-padding-x: 12px;
+  --avatar-sm: 26px;
+
+  --control-h-sm: 28px;
+  --control-h-md: 32px;
+  --control-h-lg: 36px;
+  --control-padding-x-sm: 10px;
+  --control-padding-x-md: 12px;
   --control-gap: 6px;
 
   --transition-default: 120ms ease;
@@ -56,10 +77,17 @@
 
   --radius-sm: 4px;
   --radius-md: 6px;
+  --radius-control: 7px;
   --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  --card-padding-x: 18px;
+  --page-padding-x: 20px;
+  --row-h-md: 46px;
 
   --space-1: 4px;
   --space-2: 8px;
+  --space-2-5: 10px;
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 20px;

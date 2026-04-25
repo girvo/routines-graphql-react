@@ -25,15 +25,11 @@ export const WeeklyPlanRoutineSection = ({
     weeklyPlan,
   )
 
-  if (routine.edges.length === 0) {
-    return <div className="text-base-content/50 py-2">No tasks added</div>
-  }
-
   return (
-    <div className="mt-2 flex flex-wrap gap-2">
-      {routine.edges.map(edge => (
+    <>
+      {routine.edges.map((edge) => (
         <RoutineSlotItem key={edge.node.id} task={edge.node.task} />
       ))}
-    </div>
+    </>
   )
 }

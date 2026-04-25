@@ -3,7 +3,6 @@
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "meta.relay",
-    "bradlc.vscode-tailwindcss",
     "GraphQL.vscode-graphql"
   ]
 }

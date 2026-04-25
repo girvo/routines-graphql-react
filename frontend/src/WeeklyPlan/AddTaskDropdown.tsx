@@ -6,18 +6,21 @@ import {
   useRefetchableFragment,
 } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
-import { Search, Loader2 } from 'lucide-react'
+import { Plus, Search, Loader2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useDebounceValue } from 'usehooks-ts'
 import { parseIconName } from '../utils/icons.ts'
-import { handleEscapeBlur } from '../utils/form.ts'
 import { getErrorMessage } from '../utils/errors.ts'
-import { AddTaskButton } from './AddTaskButton.tsx'
+import { clsx } from 'clsx'
+import { Button } from '../primitives/Button.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { AddTaskDropdownTasksFragment$key } from './__generated__/AddTaskDropdownTasksFragment.graphql.ts'
 import type { DaySelection } from './days.ts'
 import type { AddTaskDropdownRoutineSlotMutation } from './__generated__/AddTaskDropdownRoutineSlotMutation.graphql.ts'
 import { useToast } from '../toast/ToastContext.ts'
+import { Popover, PopoverTrigger, PopoverContent } from '../primitives/popover/Popover.tsx'
+import { TextInput } from '../primitives/TextInput.tsx'
+import styles from './AddTaskDropdown.module.css'
 
 interface TaskListProps {
   fragmentRef: AddTaskDropdownTasksFragment$key
@@ -26,7 +29,6 @@ interface TaskListProps {
   onTaskClick: (taskId: string) => void
 }
 
-// TODO: Refactor the actual display of the task to be a component w/ fragment
 const TaskList = ({
   fragmentRef,
   searchQuery,
@@ -68,41 +70,39 @@ const TaskList = ({
     })
   }, [debouncedSearch, refetch])
 
+  if (data.tasks.edges.length === 0) {
+    return <div className={styles.empty}>No tasks found</div>
+  }
+
   return (
-    <ul className="menu menu-sm mt-2 max-h-60 w-full flex-nowrap gap-2 overflow-y-auto p-0">
-      {data.tasks.edges.length === 0 ? (
-        <li className="text-base-content/50 p-3 text-center text-sm">
-          No tasks found
-        </li>
-      ) : (
-        data.tasks.edges.map(({ node }) => (
-          <li
-            key={node.id}
-            className={isPending || isLoading ? 'opacity-50' : ''}
+    <ul className={clsx(styles.list, (isPending || isLoading) && styles.pending)}>
+      {data.tasks.edges.map(({ node }) => (
+        <li key={node.id}>
+          <button
+            type="button"
+            className={styles.option}
+            onClick={() => !isLoading && onTaskClick(node.id)}
+            disabled={isLoading}
           >
-            <button
-              className="flex w-full items-center gap-2"
-              onClick={() => !isLoading && onTaskClick(node.id)}
-            >
-              <DynamicIcon name={parseIconName(node.icon)} className="size-4" />
-              <span>{node.title}</span>
-            </button>
-          </li>
-        ))
-      )}
+            <DynamicIcon name={parseIconName(node.icon)} className={styles.optionIcon} />
+            <span>{node.title}</span>
+          </button>
+        </li>
+      ))}
     </ul>
   )
 }
 
 const TaskListFallback = () => (
-  <div className="flex h-20 items-center justify-center">
-    <Loader2 className="text-base-content/50 size-5 animate-spin" />
+  <div className={styles.fallback}>
+    <Loader2 className={styles.spinner} aria-hidden />
   </div>
 )
 
 interface AddTaskDropdownContentProps extends DaySelection {
   queryRef: PreloadedQuery<AddTaskDropdownQuery>
   connectionId: string
+  onDone: () => void
 }
 
 const AddTaskDropdownContent = ({
@@ -110,9 +110,15 @@ const AddTaskDropdownContent = ({
   dayOfWeek,
   daySection,
   connectionId,
+  onDone,
 }: AddTaskDropdownContentProps) => {
   const { showError } = useToast()
   const [searchQuery, setSearchQuery] = useState('')
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    searchRef.current?.focus()
+  }, [])
 
   const data = usePreloadedQuery(
     graphql`
@@ -155,40 +161,28 @@ const AddTaskDropdownContent = ({
 
   const handleTaskClick = (taskId: string) => {
     if (isLoading) return
-
     createRoutineSlot({
-      variables: {
-        taskId,
-        dayOfWeek,
-        daySection,
-        connectionId,
-      },
+      variables: { taskId, dayOfWeek, daySection, connectionId },
       onCompleted: (_response, errors) => {
-        if (errors) {
-          errors.forEach(error => showError(getErrorMessage(error)))
-          return
-        }
+        if (errors) errors.forEach(error => showError(getErrorMessage(error)))
       },
       onError: err => showError(getErrorMessage(err)),
     })
-
     setSearchQuery('')
-    const activeElement = document.activeElement as HTMLElement | null
-    activeElement?.blur()
+    onDone()
   }
 
   return (
     <>
-      <label className="input input-ghost input-sm pl-1">
-        <Search className="h-[1em] opacity-50" />
-        <input
-          type="text"
-          placeholder="Search tasks..."
-          className="grow"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
-      </label>
+      <TextInput
+        ref={searchRef}
+        variant="filled"
+        size="sm"
+        leadingIcon={Search}
+        placeholder="Search tasks..."
+        value={searchQuery}
+        onChange={e => setSearchQuery(e.target.value)}
+      />
       <TaskList
         fragmentRef={data}
         searchQuery={searchQuery}
@@ -212,28 +206,21 @@ export const AddTaskDropdown = ({
   onButtonHover,
   connectionId,
 }: AddTaskDropdownProps) => {
-  const dropdownRef = useRef<HTMLDivElement>(null)
-
-  const handleDropdownFocus = () => {
-    setTimeout(() => {
-      dropdownRef.current
-        ?.querySelector<HTMLInputElement>('.dropdown-content input')
-        ?.focus()
-    }, 50)
-  }
+  const [open, setOpen] = useState(false)
 
   return (
-    <div
-      ref={dropdownRef}
-      className="dropdown dropdown-end"
-      onFocus={handleDropdownFocus}
-    >
-      <AddTaskButton onMouseEnter={onButtonHover} />
-      <div
-        tabIndex={0}
-        className="dropdown-content bg-base-100 rounded-box z-10 mt-2 w-64 border border-gray-200 p-2 shadow-xl"
-        onKeyDown={handleEscapeBlur}
-      >
+    <Popover open={open} onOpenChange={setOpen} placement="bottom-end">
+      <PopoverTrigger>
+        <Button
+          variant="secondary"
+          size="sm"
+          leadingIcon={Plus}
+          onMouseEnter={onButtonHover}
+        >
+          Add task
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className={styles.content}>
         <Suspense fallback={<TaskListFallback />}>
           {queryRef && (
             <AddTaskDropdownContent
@@ -241,10 +228,11 @@ export const AddTaskDropdown = ({
               connectionId={connectionId}
               dayOfWeek={dayOfWeek}
               daySection={daySection}
+              onDone={() => setOpen(false)}
             />
           )}
         </Suspense>
-      </div>
-    </div>
+      </PopoverContent>
+    </Popover>
   )
 }

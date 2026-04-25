@@ -1,15 +1,20 @@
 import { useCallback, type Dispatch, type SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
+import { X, Check } from 'lucide-react'
+import { useMutation, graphql } from 'react-relay'
+import { DynamicIcon } from 'lucide-react/dynamic'
 import { capitalise } from '../utils/text'
 import { handleEnterKeySubmit } from '../utils/form'
 import { taskFormSchema, type TaskFormData } from './task-validation'
-import { TaskFormRow } from './TaskForm/TaskFormRow'
-import { TaskFormCell } from './TaskForm/TaskFormCell'
-import { TaskFormActionButtons } from './TaskForm/TaskFormActionButtons'
-import { useMutation, graphql } from 'react-relay'
+import { TextInput } from '../primitives/TextInput'
+import { Field } from '../primitives/Field'
+import { IconChip } from '../primitives/IconChip'
+import { Button } from '../primitives/Button'
+import { parseIconName } from '../utils/icons.ts'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
 import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql'
+import styles from './CreateTask.module.css'
 
 interface EditTaskProps {
   taskId: string
@@ -32,10 +37,7 @@ export const EditTask = ({
     formState: { errors },
   } = useForm<TaskFormData>({
     resolver: arktypeResolver(taskFormSchema),
-    defaultValues: {
-      title: title,
-      icon: icon ?? '',
-    },
+    defaultValues: { title, icon: icon ?? '' },
   })
 
   const [updateTask, loading] = useMutation<EditTaskMutation>(graphql`
@@ -53,14 +55,9 @@ export const EditTask = ({
   }, [setIsEditing])
 
   const onSubmit = (formData: TaskFormData) => {
-    console.log({ taskId, ...formData })
     updateTask({
       variables: {
-        input: {
-          taskId,
-          title: formData.title,
-          icon: formData.icon,
-        },
+        input: { taskId, title: formData.title, icon: formData.icon },
       },
       optimisticUpdater: store => {
         const { updatableData } =
@@ -82,47 +79,66 @@ export const EditTask = ({
     close()
   }
 
+  const submit = handleSubmit(onSubmit)
+  const iconName = parseIconName(icon)
+  const IconGlyph = ({ className }: { className?: string }) => (
+    <DynamicIcon name={iconName} className={className} />
+  )
+
   return (
-    <TaskFormRow>
-      <TaskFormCell variant="first">
-        <input
-          type="text"
-          placeholder="Task name"
-          className={`input w-full ${errors.title ? 'input-error' : ''}`}
-          {...register('title')}
-          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
-        />
-        {errors.title?.message && (
-          <span className="text-error mt-1 text-xs">
-            {capitalise(errors.title.message)}
-          </span>
-        )}
-      </TaskFormCell>
-
-      <TaskFormCell variant="field">
-        <input
-          type="text"
-          placeholder="Lucide icon name"
-          className={`input w-full ${errors.icon ? 'input-error' : ''}`}
-          {...register('icon')}
-          onKeyDown={handleEnterKeySubmit(handleSubmit(onSubmit))}
-        />
-        {errors.icon?.message && (
-          <span className="text-error mt-1 text-xs">
-            {capitalise(errors.icon.message)}
-          </span>
-        )}
-      </TaskFormCell>
-
-      <TaskFormCell variant="empty" />
-
-      <TaskFormCell variant="actions">
-        <TaskFormActionButtons
-          onCancel={close}
-          onSave={handleSubmit(onSubmit)}
+    <div className={styles.row}>
+      <div className={styles.iconSlot}>
+        <IconChip icon={IconGlyph} size="md" />
+      </div>
+      <div className={styles.titleField}>
+        <Field
+          label="Task name"
+          hideLabel
+          error={errors.title?.message && capitalise(errors.title.message)}
+        >
+          <TextInput
+            placeholder="Task name"
+            error={Boolean(errors.title)}
+            {...register('title')}
+            onKeyDown={handleEnterKeySubmit(submit)}
+          />
+        </Field>
+      </div>
+      <div className={styles.iconField}>
+        <Field
+          label="Icon"
+          hideLabel
+          error={errors.icon?.message && capitalise(errors.icon.message)}
+        >
+          <TextInput
+            placeholder="Lucide icon name"
+            error={Boolean(errors.icon)}
+            {...register('icon')}
+            onKeyDown={handleEnterKeySubmit(submit)}
+          />
+        </Field>
+      </div>
+      <span className={styles.slotsCell}>—</span>
+      <div className={styles.actions}>
+        <Button
+          variant="ghost"
+          size="sm"
+          leadingIcon={X}
+          onClick={close}
           disabled={loading}
-        />
-      </TaskFormCell>
-    </TaskFormRow>
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          leadingIcon={Check}
+          onClick={submit}
+          loading={loading}
+        >
+          Save
+        </Button>
+      </div>
+    </div>
   )
 }

@@ -4,6 +4,7 @@ import type { Database } from '../database/types.ts'
 export interface UserRow {
   id: number
   email: string
+  name: string
   password_hash: string
   created_at: string
   updated_at: string | null
@@ -38,11 +39,16 @@ export const createUserRepository = (db: Kysely<Database>) => {
         .executeTakeFirstOrThrow()
     },
 
-    async createUser(email: string, passwordHash: string): Promise<UserRow> {
+    async createUser(
+      email: string,
+      name: string,
+      passwordHash: string,
+    ): Promise<UserRow> {
       return db
         .insertInto('users')
         .values({
           email: email,
+          name: name,
           password_hash: passwordHash,
         })
         .returningAll()

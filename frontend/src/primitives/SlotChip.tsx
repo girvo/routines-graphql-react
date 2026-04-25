@@ -1,4 +1,4 @@
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import styles from './SlotChip.module.css'
 
 type SlotChipProps = {
@@ -14,7 +14,7 @@ export const SlotChip = ({
   variant = 'filled',
   className,
 }: SlotChipProps) => (
-  <span className={cn(styles.root, styles[variant], className)}>
+  <span className={clsx(styles.root, styles[variant], className)}>
     <span className={styles.section}>{section}</span>
     <span className={styles.count}>×{count}</span>
   </span>

@@ -1,17 +1,11 @@
-import type { ReactNode } from 'react'
+import type { HTMLAttributes } from 'react'
+import { clsx } from 'clsx'
+import styles from './Card.module.css'
 
-interface CardProps {
-  children: ReactNode
-}
-
-export const Card = ({ children }: CardProps) => (
-  <div className="card card-border bg-base-100">{children}</div>
+export const Card = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={clsx(styles.card, className)} {...rest} />
 )
 
-interface CardBodyProps {
-  children: ReactNode
-}
-
-export const CardBody = ({ children }: CardBodyProps) => (
-  <div className="card-body">{children}</div>
+export const CardBody = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => (
+  <div className={clsx(styles.body, className)} {...rest} />
 )

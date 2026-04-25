@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1c616bb499fe9195e404759166152f25>>
+ * @generated SignedSource<<4edeb793d4f52751ba6479b212e2493b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -60,10 +60,17 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v3 = [
+v4 = [
   {
     "alias": null,
     "args": null,
@@ -87,14 +94,8 @@ v3 = [
         "name": "node",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
           (v2/*: any*/),
+          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -103,7 +104,7 @@ v3 = [
             "name": "task",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -123,7 +124,8 @@ v3 = [
           }
         ],
         "storageKey": null
-      }
+      },
+      (v2/*: any*/)
     ],
     "storageKey": null
   },
@@ -165,7 +167,7 @@ v3 = [
     ]
   }
 ],
-v4 = [
+v5 = [
   {
     "alias": null,
     "args": null,
@@ -180,7 +182,7 @@ v4 = [
     "kind": "LinkedField",
     "name": "morning",
     "plural": false,
-    "selections": (v3/*: any*/),
+    "selections": (v4/*: any*/),
     "storageKey": "morning(first:100)"
   },
   {
@@ -199,7 +201,7 @@ v4 = [
     "kind": "LinkedField",
     "name": "midday",
     "plural": false,
-    "selections": (v3/*: any*/),
+    "selections": (v4/*: any*/),
     "storageKey": "midday(first:100)"
   },
   {
@@ -218,7 +220,7 @@ v4 = [
     "kind": "LinkedField",
     "name": "evening",
     "plural": false,
-    "selections": (v3/*: any*/),
+    "selections": (v4/*: any*/),
     "storageKey": "evening(first:100)"
   },
   {
@@ -344,7 +346,7 @@ return {
             "kind": "LinkedField",
             "name": "monday",
             "plural": false,
-            "selections": (v4/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": null
           },
           {
@@ -354,7 +356,7 @@ return {
             "kind": "LinkedField",
             "name": "tuesday",
             "plural": false,
-            "selections": (v4/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": null
           },
           {
@@ -364,7 +366,7 @@ return {
             "kind": "LinkedField",
             "name": "wednesday",
             "plural": false,
-            "selections": (v4/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": null
           },
           {
@@ -374,7 +376,7 @@ return {
             "kind": "LinkedField",
             "name": "thursday",
             "plural": false,
-            "selections": (v4/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": null
           },
           {
@@ -384,7 +386,7 @@ return {
             "kind": "LinkedField",
             "name": "friday",
             "plural": false,
-            "selections": (v4/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": null
           },
           {
@@ -394,7 +396,7 @@ return {
             "kind": "LinkedField",
             "name": "saturday",
             "plural": false,
-            "selections": (v4/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": null
           },
           {
@@ -404,7 +406,7 @@ return {
             "kind": "LinkedField",
             "name": "sunday",
             "plural": false,
-            "selections": (v4/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": null
           }
         ],
@@ -413,12 +415,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "96f151b5f77895ceb14c3fa0d7025467",
+    "cacheID": "85aed2478907c17b3e39b17383060236",
     "id": null,
     "metadata": {},
     "name": "WeeklyPlanPageQuery",
     "operationKind": "query",
-    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay\n    }\n    tuesday {\n      ...WeeklyPlanDay\n    }\n    wednesday {\n      ...WeeklyPlanDay\n    }\n    thursday {\n      ...WeeklyPlanDay\n    }\n    friday {\n      ...WeeklyPlanDay\n    }\n    saturday {\n      ...WeeklyPlanDay\n    }\n    sunday {\n      ...WeeklyPlanDay\n    }\n  }\n}\n\nfragment RoutineSlotItem on Task {\n  id\n  title\n  icon\n}\n\nfragment WeeklyPlanDay on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...WeeklyPlanRoutineSectionFragment\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...WeeklyPlanRoutineSectionFragment\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...WeeklyPlanRoutineSectionFragment\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSectionFragment on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      task {\n        ...RoutineSlotItem\n        id\n      }\n    }\n  }\n}\n"
+    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay\n    }\n    tuesday {\n      ...WeeklyPlanDay\n    }\n    wednesday {\n      ...WeeklyPlanDay\n    }\n    thursday {\n      ...WeeklyPlanDay\n    }\n    friday {\n      ...WeeklyPlanDay\n    }\n    saturday {\n      ...WeeklyPlanDay\n    }\n    sunday {\n      ...WeeklyPlanDay\n    }\n  }\n}\n\nfragment DaySection_section on RoutineSlotConnection {\n  edges {\n    __typename\n  }\n  ...WeeklyPlanRoutineSectionFragment\n}\n\nfragment RoutineSlotItem on Task {\n  id\n  title\n  icon\n}\n\nfragment WeeklyPlanDay on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSectionFragment on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      task {\n        ...RoutineSlotItem\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();

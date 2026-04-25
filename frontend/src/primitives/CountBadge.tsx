@@ -1,4 +1,4 @@
-import { cn } from '../utils/tailwind.ts'
+import { clsx } from 'clsx'
 import styles from './CountBadge.module.css'
 
 type CountBadgeProps = {
@@ -7,5 +7,5 @@ type CountBadgeProps = {
 }
 
 export const CountBadge = ({ count, className }: CountBadgeProps) => (
-  <span className={cn(styles.root, className)}>{count}</span>
+  <span className={clsx(styles.root, className)}>{count}</span>
 )
