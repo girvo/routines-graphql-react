@@ -4,7 +4,7 @@ import { Login } from './login/Login.tsx'
 import { Register } from './login/Register.tsx'
 import { RouteErrorBoundary } from './AppError.tsx'
 import { Routine } from './Routine.tsx'
-import { AppShell } from './AppShell.tsx'
+import { AppShellEntryPoint } from './AppShell.entrypoint.ts'
 import { TasksPageEntryPoint } from './Tasks/TasksPage.entrypoint.ts'
 import { WeeklyPlanPageEntryPoint } from './WeeklyPlan/WeeklyPlanPage.entrypoint.ts'
 
@@ -34,7 +34,7 @@ export const unAuthedRouteConfig: RouteObject[] = [
 export const authedRouteConfig: EntryPointRouteObject[] = [
   {
     ErrorBoundary: RouteErrorBoundary,
-    Component: AppShell,
+    entryPoint: AppShellEntryPoint,
     children: [
       {
         path: '/',

@@ -12,7 +12,7 @@ import {
   useNavigate,
   type UIMatch,
 } from 'react-router-dom'
-import { useQueryLoader } from 'react-relay'
+import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
 import { AuthContext } from './auth/auth-store.ts'
 import {
   PageHeaderContext,
@@ -22,7 +22,6 @@ import { AppShellFrame } from './shell/AppShellFrame.tsx'
 import { DesktopSidebar } from './shell/DesktopSidebar.tsx'
 import { MobileDock } from './shell/MobileDock.tsx'
 import { TopBar } from './shell/TopBar.tsx'
-import DesktopSidebarQueryNode from './shell/__generated__/DesktopSidebarQuery.graphql.ts'
 import type { DesktopSidebarQuery } from './shell/__generated__/DesktopSidebarQuery.graphql.ts'
 
 interface RouteHandle {
@@ -54,7 +53,9 @@ const BelowHeaderSlot = () => {
   return <>{belowHeader}</>
 }
 
-export const AppShell = () => {
+type Props = SimpleEntryPointProps<{ userQuery: DesktopSidebarQuery }>
+
+const AppShell = ({ queries }: Props) => {
   const [slots, setSlotsState] = useState<PageHeaderSlots>({
     subtitle: null,
     actions: null,
@@ -75,17 +76,6 @@ export const AppShell = () => {
     navigate('/', { replace: true })
   }, [clearAccessToken, navigate])
 
-  const [user, loadUser] = useQueryLoader<DesktopSidebarQuery>(DesktopSidebarQueryNode)
-
-  // TODO: promote AppShell to an EntryPointRouteObject (see TasksPage.entrypoint.ts for
-  // the pattern) so the user query fires during route resolution, before this component
-  // renders. Until then, useState's lazy initializer fires loadUser on the first render
-  // body — earlier than useEffect/useLayoutEffect, which both run post-commit.
-  useState(() => {
-    loadUser({})
-    return null
-  })
-
   const title = matches.findLast((m) => m.handle?.title)?.handle?.title ?? 'Routines'
   const routeSubtitle = matches.findLast((m) => m.handle?.subtitle)?.handle?.subtitle
   const Loading = matches.findLast((m) => m.handle?.loading)?.handle?.loading
@@ -105,7 +95,7 @@ export const AppShell = () => {
   return (
     <PageHeaderContext value={{ ...slots, setSlots, clearSlots }}>
       <AppShellFrame
-        sidebar={<DesktopSidebar user={user} onLogout={handleLogout} />}
+        sidebar={<DesktopSidebar user={queries.userQuery} onLogout={handleLogout} />}
         topBar={<TopBarSlot title={title} routeSubtitle={routeSubtitle} onLogout={handleLogout} />}
         belowHeader={<BelowHeaderSlot />}
         dock={<MobileDock />}
@@ -120,3 +110,5 @@ export const AppShell = () => {
     </PageHeaderContext>
   )
 }
+
+export default AppShell
