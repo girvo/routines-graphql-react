@@ -12,9 +12,19 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
   async (_parent, { routineSlotId }, context) => {
     assertAuthenticated(context)
 
+    const decodedRoutineSlotId = fromGlobalId(routineSlotId, 'RoutineSlot')
+
+    const routineSlot = await context.routineRepo.findByIdAndUserId(
+      decodedRoutineSlotId,
+      context.currentUser.id,
+    )
+    if (!routineSlot) {
+      throw new GraphQLError('Routine slot not found')
+    }
+
     const completionRow = await context.taskCompletionRepo.createCompletion(
       context.currentUser.id,
-      fromGlobalId(routineSlotId, 'RoutineSlot'),
+      decodedRoutineSlotId,
     )
 
     const completion = tableToDomain(completionRow)

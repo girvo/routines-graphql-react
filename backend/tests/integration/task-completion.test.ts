@@ -235,6 +235,59 @@ describe('Task completion mutations', () => {
       /UNIQUE constraint failed:/,
     )
   })
+
+  it('cannot complete a routine slot owned by another user', async () => {
+    const { userToken: ownerToken } = await createTestUser()
+    const { userToken: otherToken } = await createTestUser()
+
+    const task = await createTask({ title: 'Owner task', yoga, userToken: ownerToken })
+    const taskId = task.data!.createTask!.taskEdge.node.id
+
+    const slot = await createRoutineSlot({
+      input: { taskId, dayOfWeek: 'MONDAY', section: 'MORNING' },
+      yoga,
+      userToken: ownerToken,
+    })
+    const routineSlotId = slot.data!.createRoutineSlot!.routineSlotEdge.node.id
+
+    const result = await executeGraphQL(
+      graphql(`
+        mutation CannotCompleteOtherUsersRoutineSlot($routineSlotId: ID!) {
+          completeRoutineSlot(routineSlotId: $routineSlotId) {
+            taskCompletionEdge {
+              node {
+                id
+              }
+            }
+          }
+        }
+      `),
+      { routineSlotId },
+      { yoga, userToken: otherToken },
+    )
+
+    expect(result.errors).toBeDefined()
+    expect(result.errors?.[0].message).toBe('Routine slot not found')
+
+    const otherCompletions = await executeGraphQL(
+      graphql(`
+        query OtherUsersCompletionsAfterUnauthorizedComplete {
+          taskCompletions(first: 10) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken: otherToken },
+    )
+
+    expect(otherCompletions.errors).toBeUndefined()
+    expect(otherCompletions.data?.taskCompletions.edges.length).toBe(0)
+  })
 })
 
 describe('Task.completions query resolver', () => {

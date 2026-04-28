@@ -16,6 +16,11 @@ export const createRoutineSlot: MutationResolvers<Context>['createRoutineSlot'] 
 
     const taskId = fromGlobalId(input.taskId, 'Task')
 
+    const task = await context.taskRepo.findByIdAndUserId(taskId, context.currentUser.id)
+    if (!task) {
+      throw new GraphQLError('Task not found')
+    }
+
     let routineSlotRow
     try {
       routineSlotRow = await context.routineRepo.createRoutineSlot(

@@ -64,7 +64,8 @@ const NodeQuery = graphql(`
 
 describe('Node resolver', () => {
   it('correctly resolves the User node', async () => {
-    const { userToken, globalId } = await createTestUser()
+    const testEmail = 'test@example.com'
+    const { userToken, globalId } = await createTestUser({ email: testEmail })
 
     const userNode = await executeGraphQL(
       NodeQuery,
@@ -73,7 +74,7 @@ describe('Node resolver', () => {
     )
 
     assert(userNode.data?.node?.__typename === 'User', 'Got a user back')
-    expect(userNode.data?.node.email).toBe('test@example.com')
+    expect(userNode.data?.node.email).toBe(testEmail)
     expect(userNode.data?.node.id).toBe(globalId)
   })
 

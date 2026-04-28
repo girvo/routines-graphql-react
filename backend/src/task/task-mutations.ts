@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql'
 import { tableToDomain, taskToGraphQL } from './task-domain.ts'
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
@@ -38,7 +39,14 @@ export const deleteTask: MutationResolvers<Context>['deleteTask'] = async (
 ) => {
   assertAuthenticated(context)
 
-  await context.taskRepo.deleteTask(fromGlobalId(taskId, 'Task'))
+  const result = await context.taskRepo.deleteTask(
+    fromGlobalId(taskId, 'Task'),
+    context.currentUser.id,
+  )
+
+  if (result.numUpdatedRows < 1n) {
+    throw new GraphQLError('Task not found')
+  }
 
   return {
     deletedId: taskId,

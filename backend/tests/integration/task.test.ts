@@ -143,6 +143,49 @@ describe('Task mutations', () => {
       createResult.data?.createTask?.taskEdge.node.id,
     )
   })
+
+  it('cannot delete a task owned by another user', async () => {
+    const { userToken: ownerToken } = await createTestUser()
+    const { userToken: otherToken } = await createTestUser()
+
+    const task = await createTask({ title: 'Owner task', yoga, userToken: ownerToken })
+    const taskId = task.data!.createTask!.taskEdge.node.id
+
+    const deleteResult = await executeGraphQL(
+      graphql(`
+        mutation CannotDeleteOtherUsersTask($taskId: ID!) {
+          deleteTask(taskId: $taskId) {
+            deletedId
+          }
+        }
+      `),
+      { taskId },
+      { yoga, userToken: otherToken },
+    )
+
+    expect(deleteResult.errors).toBeDefined()
+    expect(deleteResult.errors?.[0].message).toBe('Task not found')
+
+    const ownerTasks = await executeGraphQL(
+      graphql(`
+        query OwnerTasksAfterUnauthorizedDelete {
+          tasks(first: 10) {
+            edges {
+              node {
+                title
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken: ownerToken },
+    )
+
+    expect(ownerTasks.errors).toBeUndefined()
+    expect(ownerTasks.data?.tasks.edges.length).toBe(1)
+    expect(ownerTasks.data?.tasks.edges[0].node.title).toBe('Owner task')
+  })
 })
 
 describe('Task queries', () => {

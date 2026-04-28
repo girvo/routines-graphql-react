@@ -106,6 +106,62 @@ describe('Routine mutations', () => {
     expect(result.errors).toBeUndefined()
     expect(result.data?.deleteRoutineSlot?.deletedId).toBe(routineSlot.id)
   })
+
+  it('cannot create a routine slot for a task owned by another user', async () => {
+    const { userToken: ownerToken } = await createTestUser()
+    const { userToken: otherToken } = await createTestUser()
+
+    const task = await createTask({ title: 'Owner task', yoga, userToken: ownerToken })
+    const taskId = task.data!.createTask!.taskEdge.node.id
+
+    const result = await executeGraphQL(
+      graphql(`
+        mutation CannotCreateRoutineSlotForOtherUsersTask($input: CreateRoutineSlotInput!) {
+          createRoutineSlot(input: $input) {
+            routineSlotEdge {
+              node {
+                id
+              }
+            }
+          }
+        }
+      `),
+      {
+        input: {
+          taskId,
+          dayOfWeek: 'MONDAY',
+          section: 'MORNING',
+        },
+      },
+      { yoga, userToken: otherToken },
+    )
+
+    expect(result.errors).toBeDefined()
+    expect(result.errors?.[0].message).toBe('Task not found')
+
+    const otherSchedule = await executeGraphQL(
+      graphql(`
+        query OtherUsersMondayMorningAfterUnauthorizedSlotCreate {
+          weeklySchedule {
+            monday {
+              morning(first: 10) {
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken: otherToken },
+    )
+
+    expect(otherSchedule.errors).toBeUndefined()
+    expect(otherSchedule.data?.weeklySchedule.monday.morning.edges.length).toBe(0)
+  })
 })
 
 describe('Task.slots query resolver', () => {

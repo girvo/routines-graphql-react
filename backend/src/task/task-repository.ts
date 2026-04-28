@@ -149,13 +149,14 @@ export const createTaskRepository = (db: Kysely<Database>) => {
         .executeTakeFirstOrThrow()
     },
 
-    async deleteTask(id: number): Promise<void> {
-      await db
+    async deleteTask(id: number, userId: number) {
+      return db
         .updateTable('tasks')
         .set({ deleted_at: getCurrentTimestamp() })
         .where('id', '=', id)
+        .where('user_id', '=', userId)
         .where('deleted_at', 'is', null)
-        .execute()
+        .executeTakeFirstOrThrow()
     },
   }
 }
