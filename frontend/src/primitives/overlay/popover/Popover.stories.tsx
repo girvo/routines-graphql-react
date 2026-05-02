@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MoreHorizontal, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '../Button'
+import { Button } from '../../Button'
 import { Popover, PopoverContent, PopoverTrigger } from './Popover'
 
 const meta = {
-  title: 'Primitives/Popover',
+  title: 'Primitives/Overlay/Popover',
   component: Popover,
 } satisfies Meta<typeof Popover>
 

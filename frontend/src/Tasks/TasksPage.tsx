@@ -5,7 +5,7 @@ import { Plus, Search } from 'lucide-react'
 import { type TasksPageQuery } from './__generated__/TasksPageQuery.graphql'
 import { TasksList } from './TasksList.tsx'
 import { Button } from '../primitives/Button.tsx'
-import { TextInput } from '../primitives/TextInput.tsx'
+import { TextInput } from '../primitives/form/TextInput.tsx'
 import { usePageHeader } from '../utils/page-header.ts'
 import styles from './TasksPage.module.css'
 

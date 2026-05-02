@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Button } from '../Button'
+import { Button } from '../../Button'
 import { Modal } from './Modal'
 import { ConfirmDialog } from './ConfirmDialog'
 
 const meta = {
-  title: 'Primitives/Modal',
+  title: 'Primitives/Overlay/Modal',
   component: Modal,
 } satisfies Meta<typeof Modal>
 

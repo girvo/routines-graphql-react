@@ -1,19 +1,19 @@
 import type { ButtonHTMLAttributes } from 'react'
 import { clsx } from 'clsx'
-import styles from './DayChip.module.css'
+import styles from './DayToggle.module.css'
 
-type DayChipProps = {
+type DayToggleProps = {
   day: string
   selected?: boolean
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>
 
-export const DayChip = ({
+export const DayToggle = ({
   day,
   selected = false,
   className,
   type = 'button',
   ...rest
-}: DayChipProps) => (
+}: DayToggleProps) => (
   <button
     type={type}
     aria-pressed={selected}

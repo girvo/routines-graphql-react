@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { SlotChip } from './SlotChip'
+import { SlotBadge } from './SlotBadge'
 
 const meta = {
-  title: 'Primitives/SlotChip',
-  component: SlotChip,
-} satisfies Meta<typeof SlotChip>
+  title: 'Primitives/Badge/SlotBadge',
+  component: SlotBadge,
+} satisfies Meta<typeof SlotBadge>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -22,14 +22,14 @@ export const Gallery: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', gap: 8 }}>
-        <SlotChip section="Morning" count={5} />
-        <SlotChip section="Afternoon" count={3} />
-        <SlotChip section="Evening" count={2} />
+        <SlotBadge section="Morning" count={5} />
+        <SlotBadge section="Afternoon" count={3} />
+        <SlotBadge section="Evening" count={2} />
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
-        <SlotChip section="Morning" count={5} variant="ghost" />
-        <SlotChip section="Afternoon" count={3} variant="ghost" />
-        <SlotChip section="Evening" count={2} variant="ghost" />
+        <SlotBadge section="Morning" count={5} variant="ghost" />
+        <SlotBadge section="Afternoon" count={3} variant="ghost" />
+        <SlotBadge section="Evening" count={2} variant="ghost" />
       </div>
     </div>
   ),

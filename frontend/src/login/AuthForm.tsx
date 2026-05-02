@@ -11,8 +11,8 @@ import {
   authResponse,
   type AuthFormData,
 } from './auth-types'
-import { Field } from '../primitives/Field'
-import { TextInput } from '../primitives/TextInput'
+import { Field } from '../primitives/form/Field'
+import { TextInput } from '../primitives/form/TextInput'
 import { Button } from '../primitives/Button'
 import { Alert } from '../primitives/Alert'
 import { Title } from '../primitives/text/Title'

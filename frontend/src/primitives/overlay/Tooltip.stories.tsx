@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { X, Pencil, Trash2 } from 'lucide-react'
-import { Button } from './Button'
+import { Button } from '../Button'
 import { Tooltip } from './Tooltip'
 
 const meta = {
-  title: 'Primitives/Tooltip',
+  title: 'Primitives/Overlay/Tooltip',
   component: Tooltip,
 } satisfies Meta<typeof Tooltip>
 

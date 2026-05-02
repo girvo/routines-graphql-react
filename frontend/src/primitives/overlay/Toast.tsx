@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { CheckCircle2, AlertTriangle, XCircle, Info, X } from 'lucide-react'
 import { clsx } from 'clsx'
-import { Button } from './Button.tsx'
+import { Button } from '../Button.tsx'
 import styles from './Toast.module.css'
 
 export type ToastType = 'error' | 'success' | 'warning' | 'info'

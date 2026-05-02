@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { DayChip } from './DayChip'
+import { DayToggle } from './DayToggle'
 
 const meta = {
-  title: 'Primitives/DayChip',
-  component: DayChip,
-} satisfies Meta<typeof DayChip>
+  title: 'Primitives/Form/DayToggle',
+  component: DayToggle,
+} satisfies Meta<typeof DayToggle>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -40,7 +40,7 @@ const WeekTemplate = () => {
   return (
     <div style={{ display: 'flex', gap: 6 }}>
       {DAYS.map((day) => (
-        <DayChip
+        <DayToggle
           key={day}
           day={day}
           selected={selected.has(day)}

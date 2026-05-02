@@ -1,7 +1,7 @@
 import { useState, useCallback, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { ToastContext, type Toast as ToastData } from './ToastContext.ts'
-import { Toast } from '../primitives/Toast.tsx'
+import { Toast } from '../primitives/overlay/Toast.tsx'
 import styles from './ToastProvider.module.css'
 
 const TOAST_DURATION = 5000

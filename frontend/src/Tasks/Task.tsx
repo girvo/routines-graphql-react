@@ -8,10 +8,10 @@ import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.grap
 import { EditTask } from './EditTask.tsx'
 import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql.ts'
 import { sectionCounts, sectionLabel } from './section-counts.ts'
-import { ConfirmDialog } from '../primitives/modal/ConfirmDialog.tsx'
-import { IconChip } from '../primitives/IconChip.tsx'
+import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
+import { IconBadge } from '../primitives/badge/IconBadge.tsx'
 import { Button } from '../primitives/Button.tsx'
-import { Popover, PopoverContent, PopoverTrigger } from '../primitives/popover/Popover.tsx'
+import { Popover, PopoverContent, PopoverTrigger } from '../primitives/overlay/popover/Popover.tsx'
 import { parseIconName } from '../utils/icons.ts'
 import styles from './Task.module.css'
 
@@ -97,7 +97,7 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
     <>
       <div className={styles.root}>
         <span className={styles.iconChip}>
-          <IconChip icon={IconGlyph} size="md" />
+          <IconBadge icon={IconGlyph} size="md" />
         </span>
         <span className={styles.title}>{task.title}</span>
         <div className={styles.used}>

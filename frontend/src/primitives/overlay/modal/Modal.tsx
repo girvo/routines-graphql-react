@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, type MouseEvent, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { clsx } from 'clsx'
-import { Title } from '../text/Title.tsx'
+import { Title } from '../../text/Title.tsx'
 import styles from './Modal.module.css'
 
 type ModalProps = {

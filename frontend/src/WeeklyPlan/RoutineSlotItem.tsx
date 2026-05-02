@@ -5,7 +5,7 @@ import type { RoutineSlotItem$key } from './__generated__/RoutineSlotItem.graphq
 import type { RoutineSlotItemMutation } from './__generated__/RoutineSlotItemMutation.graphql.ts'
 import styles from './RoutineSlotItem.module.css'
 import { Button } from '../primitives/Button.tsx'
-import { Tooltip } from '../primitives/Tooltip.tsx'
+import { Tooltip } from '../primitives/overlay/Tooltip.tsx'
 import { Loader, X } from 'lucide-react'
 
 interface RoutineSlotItemProps {

@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ComponentType } from 'react'
 import { clsx } from 'clsx'
-import { CountBadge } from './CountBadge.tsx'
+import { CountBadge } from './badge/CountBadge.tsx'
 import styles from './NavItem.module.css'
 
 type IconComponent = ComponentType<{ className?: string }>

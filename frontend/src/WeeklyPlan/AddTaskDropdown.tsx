@@ -22,8 +22,8 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '../primitives/popover/Popover.tsx'
-import { TextInput } from '../primitives/TextInput.tsx'
+} from '../primitives/overlay/popover/Popover.tsx'
+import { TextInput } from '../primitives/form/TextInput.tsx'
 import styles from './AddTaskDropdown.module.css'
 
 interface TaskListProps {

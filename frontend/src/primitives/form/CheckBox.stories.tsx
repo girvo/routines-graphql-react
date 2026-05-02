@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { CheckBox } from './CheckBox'
 
 const meta = {
-  title: 'Primitives/CheckBox',
+  title: 'Primitives/Form/CheckBox',
   component: CheckBox,
 } satisfies Meta<typeof CheckBox>
 

@@ -4,7 +4,7 @@ import { Search } from 'lucide-react'
 import { TextInput } from './TextInput'
 
 const meta = {
-  title: 'Primitives/TextInput',
+  title: 'Primitives/Form/TextInput',
   component: TextInput,
 } satisfies Meta<typeof TextInput>
 

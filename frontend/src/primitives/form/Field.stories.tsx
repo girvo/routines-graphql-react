@@ -3,7 +3,7 @@ import { Field } from './Field'
 import { TextInput } from './TextInput'
 
 const meta = {
-  title: 'Primitives/Field',
+  title: 'Primitives/Form/Field',
   component: Field,
 } satisfies Meta<typeof Field>
 

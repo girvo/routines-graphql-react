@@ -7,9 +7,9 @@ import { capitalise } from '../utils/text'
 import { handleEnterKeySubmit } from '../utils/form'
 import { taskFormSchema, type TaskFormData } from './task-validation'
 import type { CreateTaskMutation } from './__generated__/CreateTaskMutation.graphql'
-import { TextInput } from '../primitives/TextInput'
-import { Field } from '../primitives/Field'
-import { IconChip } from '../primitives/IconChip'
+import { TextInput } from '../primitives/form/TextInput'
+import { Field } from '../primitives/form/Field'
+import { IconBadge } from '../primitives/badge/IconBadge'
 import { Button } from '../primitives/Button'
 import styles from './CreateTask.module.css'
 
@@ -88,7 +88,7 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
   return (
     <div className={styles.row}>
       <div className={styles.iconSlot}>
-        <IconChip icon={EmptyIcon} size="md" />
+        <IconBadge icon={EmptyIcon} size="md" />
       </div>
       <div className={styles.titleField}>
         <Field

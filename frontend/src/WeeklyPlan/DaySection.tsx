@@ -1,6 +1,6 @@
 import { graphql, useFragment } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
-import { SectionHeader } from '../primitives/SectionHeader.tsx'
+import { SectionHeader } from '../primitives/layout/SectionHeader.tsx'
 import { AddTaskDropdown } from './AddTaskDropdown.tsx'
 import { WeeklyPlanRoutineSection } from './WeeklyPlanRoutineSection.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'

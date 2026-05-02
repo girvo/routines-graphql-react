@@ -7,9 +7,9 @@ import { DynamicIcon } from 'lucide-react/dynamic'
 import { capitalise } from '../utils/text'
 import { handleEnterKeySubmit } from '../utils/form'
 import { taskFormSchema, type TaskFormData } from './task-validation'
-import { TextInput } from '../primitives/TextInput'
-import { Field } from '../primitives/Field'
-import { IconChip } from '../primitives/IconChip'
+import { TextInput } from '../primitives/form/TextInput'
+import { Field } from '../primitives/form/Field'
+import { IconBadge } from '../primitives/badge/IconBadge'
 import { Button } from '../primitives/Button'
 import { parseIconName } from '../utils/icons.ts'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
@@ -88,7 +88,7 @@ export const EditTask = ({
   return (
     <div className={styles.row}>
       <div className={styles.iconSlot}>
-        <IconChip icon={IconGlyph} size="md" />
+        <IconBadge icon={IconGlyph} size="md" />
       </div>
       <div className={styles.titleField}>
         <Field

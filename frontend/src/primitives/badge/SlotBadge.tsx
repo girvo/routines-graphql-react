@@ -1,19 +1,19 @@
 import { clsx } from 'clsx'
-import styles from './SlotChip.module.css'
+import styles from './SlotBadge.module.css'
 
-type SlotChipProps = {
+type SlotBadgeProps = {
   section: string
   count: number
   variant?: 'filled' | 'ghost'
   className?: string
 }
 
-export const SlotChip = ({
+export const SlotBadge = ({
   section,
   count,
   variant = 'filled',
   className,
-}: SlotChipProps) => (
+}: SlotBadgeProps) => (
   <span className={clsx(styles.root, styles[variant], className)}>
     <span className={styles.section}>{section}</span>
     <span className={styles.count}>×{count}</span>

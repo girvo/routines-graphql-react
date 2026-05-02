@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { MoreVertical, Settings, LogOut } from 'lucide-react'
 import { Button } from '../primitives/Button.tsx'
-import { Popover, PopoverContent, PopoverTrigger } from '../primitives/popover/Popover.tsx'
+import { Popover, PopoverContent, PopoverTrigger } from '../primitives/overlay/popover/Popover.tsx'
 import styles from './TopBar.module.css'
 
 type TopBarProps = {
