@@ -1,6 +1,7 @@
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { graphql, useFragment, useMutation } from 'react-relay'
 import { parseIconName } from '../utils/icons.ts'
+import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { RoutineSlotItem$key } from './__generated__/RoutineSlotItem.graphql.ts'
 import type { RoutineSlotItemMutation } from './__generated__/RoutineSlotItemMutation.graphql.ts'
 import styles from './RoutineSlotItem.module.css'
@@ -33,6 +34,8 @@ export const RoutineSlotItem = ({
     `,
     routineSlotRef,
   )
+
+  const { showPayloadErrors, showError } = useMutationErrorHandler()
 
   const [deleteItem, isLoading] = useMutation<RoutineSlotItemMutation>(graphql`
     mutation RoutineSlotItemMutation(
@@ -76,6 +79,10 @@ export const RoutineSlotItem = ({
               routineSlotId: routineSlot.id,
               connections: [connectionId],
             },
+            onCompleted: (_response, errors) => {
+              showPayloadErrors(errors)
+            },
+            onError: showError,
           })
         }}
         title="Are you sure?"

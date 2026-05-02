@@ -10,14 +10,13 @@ import { Plus, Search, Loader2 } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useDebounceValue } from 'usehooks-ts'
 import { parseIconName } from '../utils/icons.ts'
-import { getErrorMessage } from '../utils/errors.ts'
+import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { clsx } from 'clsx'
 import { Button } from '../primitives/Button.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { AddTaskDropdownTasksFragment$key } from './__generated__/AddTaskDropdownTasksFragment.graphql.ts'
 import type { DaySelection } from './days.ts'
 import type { AddTaskDropdownRoutineSlotMutation } from './__generated__/AddTaskDropdownRoutineSlotMutation.graphql.ts'
-import { useToast } from '../toast/ToastContext.ts'
 import {
   Popover,
   PopoverTrigger,
@@ -121,7 +120,7 @@ const AddTaskDropdownContent = ({
   connectionId,
   onDone,
 }: AddTaskDropdownContentProps) => {
-  const { showError } = useToast()
+  const { showPayloadErrors, showError } = useMutationErrorHandler()
   const [searchQuery, setSearchQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
 
@@ -173,9 +172,9 @@ const AddTaskDropdownContent = ({
     createRoutineSlot({
       variables: { taskId, dayOfWeek, daySection, connectionId },
       onCompleted: (_response, errors) => {
-        if (errors) errors.forEach(error => showError(getErrorMessage(error)))
+        showPayloadErrors(errors)
       },
-      onError: err => showError(getErrorMessage(err)),
+      onError: showError,
     })
     setSearchQuery('')
     onDone()

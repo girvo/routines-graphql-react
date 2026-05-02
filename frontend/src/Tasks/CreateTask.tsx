@@ -11,6 +11,7 @@ import { TextInput } from '../primitives/form/TextInput'
 import { Field } from '../primitives/form/Field'
 import { IconBadge } from '../primitives/badge/IconBadge'
 import { Button } from '../primitives/Button'
+import { useMutationErrorHandler } from '../relay/use-mutation-error-handler'
 import styles from './CreateTask.module.css'
 
 interface CreateTaskProps {
@@ -30,6 +31,8 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
     resolver: arktypeResolver(taskFormSchema),
     defaultValues: { title: '', icon: '' },
   })
+
+  const { showPayloadErrors, showError } = useMutationErrorHandler()
 
   const [createTask, loading] = useMutation<CreateTaskMutation>(graphql`
     mutation CreateTaskMutation(
@@ -70,12 +73,10 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
         connections: [connectionId],
       },
       onCompleted: (_response, errors) => {
-        if ((errors?.length ?? 0) > 0) {
-          console.error(errors)
-          return
-        }
+        if (showPayloadErrors(errors)) return
         close()
       },
+      onError: showError,
     })
   }
 

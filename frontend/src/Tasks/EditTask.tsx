@@ -12,6 +12,7 @@ import { Field } from '../primitives/form/Field'
 import { IconBadge } from '../primitives/badge/IconBadge'
 import { Button } from '../primitives/Button'
 import { parseIconName } from '../utils/icons.ts'
+import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
 import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql'
 import styles from './CreateTask.module.css'
@@ -39,6 +40,8 @@ export const EditTask = ({
     resolver: arktypeResolver(taskFormSchema),
     defaultValues: { title, icon: icon ?? '' },
   })
+
+  const { showPayloadErrors, showError } = useMutationErrorHandler()
 
   const [updateTask, loading] = useMutation<EditTaskMutation>(graphql`
     mutation EditTaskMutation($input: UpdateTaskInput!) {
@@ -74,7 +77,11 @@ export const EditTask = ({
         updatableData.title = formData.title
         updatableData.icon = formData.icon
       },
-      onCompleted: () => close(),
+      onCompleted: (_response, errors) => {
+        if (showPayloadErrors(errors)) return
+        close()
+      },
+      onError: showError,
     })
     close()
   }

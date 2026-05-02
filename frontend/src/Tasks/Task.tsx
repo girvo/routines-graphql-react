@@ -13,6 +13,7 @@ import { IconBadge } from '../primitives/badge/IconBadge.tsx'
 import { Button } from '../primitives/Button.tsx'
 import { Popover, PopoverContent, PopoverTrigger } from '../primitives/overlay/popover/Popover.tsx'
 import { parseIconName } from '../utils/icons.ts'
+import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import styles from './Task.module.css'
 
 interface TaskProps {
@@ -53,6 +54,8 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
   const [isEditing, setIsEditing] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
+  const { showPayloadErrors, showError } = useMutationErrorHandler()
+
   const [deleteTask] = useMutation<TaskDeleteMutation>(graphql`
     mutation TaskDeleteMutation($taskId: ID!, $connections: [ID!]!) {
       deleteTask(taskId: $taskId) {
@@ -62,7 +65,13 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
   `)
 
   const handleConfirmDelete = () => {
-    deleteTask({ variables: { taskId: task.id, connections: [connectionId] } })
+    deleteTask({
+      variables: { taskId: task.id, connections: [connectionId] },
+      onCompleted: (_response, errors) => {
+        showPayloadErrors(errors)
+      },
+      onError: showError,
+    })
     setShowDeleteConfirm(false)
   }
 
