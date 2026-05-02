@@ -1,0 +1,34 @@
+.trigger {
+  display: inline-flex;
+}
+
+.tooltip {
+  composes: typo-medium typo-sm from global;
+  background: var(--text-ink);
+  color: var(--surface);
+  padding: 4px 8px;
+  border-radius: var(--radius-control);
+  pointer-events: none;
+  z-index: 100;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.caret {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.caret[data-side='top'] {
+  top: 100%;
+  border-top: 5px solid var(--text-ink);
+}
+
+.caret[data-side='bottom'] {
+  bottom: 100%;
+  border-bottom: 5px solid var(--text-ink);
+}

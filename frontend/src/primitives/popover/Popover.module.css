@@ -1,3 +1,7 @@
+.trigger {
+  display: inline-flex;
+}
+
 .content {
   background: var(--surface);
   border: var(--border-width) solid var(--stroke-line);

@@ -8,6 +8,7 @@ type IconComponent = ComponentType<{ className?: string }>
 type CommonProps = {
   variant?: 'primary' | 'secondary' | 'ghost' | 'destructive'
   size?: 'sm' | 'md'
+  align?: 'center' | 'start'
   loading?: boolean
   fullWidth?: boolean
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>
@@ -46,6 +47,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     {
       variant = 'secondary',
       size = 'md',
+      align = 'center',
       loading = false,
       fullWidth = false,
       type = 'button',
@@ -90,6 +92,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           styles[variant],
           styles[size],
           isIconOnly && styles.iconOnly,
+          align === 'start' && styles.alignStart,
           loading && styles.loading,
           fullWidth && styles.fullWidth,
           className,

@@ -127,6 +127,10 @@
   width: 100%;
 }
 
+.alignStart {
+  justify-content: flex-start;
+}
+
 @keyframes button-spin {
   from {
     transform: rotate(0deg);

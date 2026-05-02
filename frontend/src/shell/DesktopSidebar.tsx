@@ -30,22 +30,6 @@ const primaryRoutes: NavRoute[] = [
 
 const secondaryRoutes: NavRoute[] = [{ to: '/settings', label: 'Settings', icon: Settings }]
 
-type UserCardProps = {
-  name: string
-  email: string
-  initials: string
-}
-
-const UserCard = ({ name, email, initials }: UserCardProps) => (
-  <div className={styles.userCard}>
-    <Avatar initials={initials} />
-    <div className={styles.userCol}>
-      <span className={styles.userName}>{name}</span>
-      <span className={styles.userEmail}>{email}</span>
-    </div>
-  </div>
-)
-
 const UserCardSkeleton = () => (
   <div className={styles.userCard} aria-hidden="true">
     <Avatar initials="" />
@@ -69,10 +53,10 @@ const LoadedUserCard = ({ user }: LoadedUserCardProps) => {
     `,
     user,
   )
-  return <UserCardFromFragment me={data.me} />
+  return <UserCard me={data.me} />
 }
 
-const UserCardFromFragment = ({ me }: { me: DesktopSidebar_me$key }) => {
+const UserCard = ({ me }: { me: DesktopSidebar_me$key }) => {
   const data = useFragment(
     graphql`
       fragment DesktopSidebar_me on User {
@@ -83,7 +67,15 @@ const UserCardFromFragment = ({ me }: { me: DesktopSidebar_me$key }) => {
     `,
     me,
   )
-  return <UserCard name={data.name} email={data.email} initials={data.initials} />
+  return (
+    <div className={styles.userCard}>
+      <Avatar initials={data.initials} />
+      <div className={styles.userCol}>
+        <span className={styles.userName}>{data.name}</span>
+        <span className={styles.userEmail}>{data.email}</span>
+      </div>
+    </div>
+  )
 }
 
 const itemClass = ({ isActive }: { isActive: boolean }) =>

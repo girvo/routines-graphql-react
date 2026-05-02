@@ -1,7 +1,5 @@
 import {
-  cloneElement,
   createContext,
-  isValidElement,
   use,
   useCallback,
   useEffect,
@@ -10,16 +8,19 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { MouseEvent, ReactElement, ReactNode, Ref, RefObject } from 'react'
+import type { MouseEvent, ReactNode, RefObject } from 'react'
 import { createPortal } from 'react-dom'
 import { clsx } from 'clsx'
 import { computePosition, type Placement } from './helpers.ts'
 import styles from './Popover.module.css'
 
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
 type PopoverContextValue = {
   open: boolean
   setOpen: (open: boolean) => void
-  triggerRef: RefObject<HTMLElement | null>
+  triggerRef: RefObject<HTMLSpanElement | null>
   contentId: string
   placement: Placement
 }
@@ -31,6 +32,9 @@ const usePopoverContext = () => {
   if (!ctx) throw new Error('Popover subcomponents must be rendered inside <Popover>')
   return ctx
 }
+
+const focusableWithin = (root: HTMLElement | null) =>
+  root?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR) ?? null
 
 type PopoverProps = {
   children: ReactNode
@@ -59,7 +63,7 @@ export const Popover = ({
     [isControlled, onOpenChange],
   )
 
-  const triggerRef = useRef<HTMLElement>(null)
+  const triggerRef = useRef<HTMLSpanElement>(null)
   const contentId = useId()
 
   return (
@@ -69,34 +73,43 @@ export const Popover = ({
   )
 }
 
-type TriggerChildProps = {
-  ref?: Ref<HTMLElement>
-  onClick?: (e: MouseEvent) => void
-  'aria-expanded'?: boolean
-  'aria-controls'?: string
-  'aria-haspopup'?: 'dialog' | 'menu'
-}
-
 type PopoverTriggerProps = {
-  children: ReactElement<TriggerChildProps>
+  children: ReactNode
 }
 
 export const PopoverTrigger = ({ children }: PopoverTriggerProps) => {
   const { open, setOpen, triggerRef, contentId } = usePopoverContext()
-  if (!isValidElement<TriggerChildProps>(children)) {
-    throw new Error('<PopoverTrigger> requires a single React element child')
+
+  useEffect(() => {
+    const focusable = focusableWithin(triggerRef.current)
+    if (!focusable) return
+    focusable.setAttribute('aria-haspopup', 'dialog')
+    focusable.setAttribute('aria-controls', contentId)
+    return () => {
+      focusable.removeAttribute('aria-haspopup')
+      focusable.removeAttribute('aria-controls')
+    }
+  }, [contentId, triggerRef])
+
+  useEffect(() => {
+    const focusable = focusableWithin(triggerRef.current)
+    if (!focusable) return
+    focusable.setAttribute('aria-expanded', String(open))
+    return () => {
+      focusable.removeAttribute('aria-expanded')
+    }
+  }, [open, triggerRef])
+
+  const onClick = (e: MouseEvent) => {
+    if (e.defaultPrevented) return
+    setOpen(!open)
   }
-  const childOnClick = children.props.onClick
-  return cloneElement(children, {
-    ref: triggerRef,
-    onClick: (e: MouseEvent) => {
-      childOnClick?.(e)
-      if (!e.defaultPrevented) setOpen(!open)
-    },
-    'aria-expanded': open,
-    'aria-controls': contentId,
-    'aria-haspopup': 'dialog',
-  })
+
+  return (
+    <span ref={triggerRef} className={styles.trigger} onClick={onClick}>
+      {children}
+    </span>
+  )
 }
 
 type PopoverContentProps = {
@@ -145,7 +158,7 @@ export const PopoverContent = ({ children, className }: PopoverContentProps) => 
       if (e.key !== 'Escape') return
       e.stopPropagation()
       setOpen(false)
-      triggerRef.current?.focus()
+      focusableWithin(triggerRef.current)?.focus()
     }
     const onPointerDown = (e: PointerEvent) => {
       const target = e.target as Node
