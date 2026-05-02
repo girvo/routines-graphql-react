@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0f7f0b8cb779480c300948b5b981aa7d>>
+ * @generated SignedSource<<32569f103ef1f1d176c60b396a9a000e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -32,13 +32,6 @@ v1 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
-  "storageKey": null
-},
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "hasNextPage",
   "storageKey": null
 };
 return {
@@ -152,18 +145,6 @@ return {
                           }
                         ],
                         "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "PageInfo",
-                        "kind": "LinkedField",
-                        "name": "pageInfo",
-                        "plural": false,
-                        "selections": [
-                          (v2/*: any*/)
-                        ],
-                        "storageKey": null
                       }
                     ],
                     "storageKey": "slots(first:100)"
@@ -203,7 +184,13 @@ return {
                 "name": "endCursor",
                 "storageKey": null
               },
-              (v2/*: any*/)
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "hasNextPage",
+                "storageKey": null
+              }
             ],
             "storageKey": null
           },
@@ -234,12 +221,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1038cf1ea5108da4536aa5380ff663eb",
+    "cacheID": "027ada2eb847b24d2b4341c607b9dec9",
     "id": null,
     "metadata": {},
     "name": "TasksPageQuery",
     "operationKind": "query",
-    "text": "query TasksPageQuery {\n  ...TasksList_tasks\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        title\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksPageQuery {\n  ...TasksList_tasks\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        title\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

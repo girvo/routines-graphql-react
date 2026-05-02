@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9f05b59ecd066c8ae4c755415f5e694b>>
+ * @generated SignedSource<<6b5ed5f67fea7b7965a9025c522bf6b3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,9 +22,6 @@ export type TaskDisplay$data = {
         readonly section: DaySection;
       };
     }>;
-    readonly pageInfo: {
-      readonly hasNextPage: boolean;
-    };
   };
   readonly title: string;
   readonly " $fragmentType": "TaskDisplay";
@@ -113,24 +110,6 @@ return {
             }
           ],
           "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "PageInfo",
-          "kind": "LinkedField",
-          "name": "pageInfo",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "hasNextPage",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
         }
       ],
       "storageKey": "slots(first:100)"
@@ -141,6 +120,6 @@ return {
 };
 })();
 
-(node as any).hash = "bdb1ce3e52949ecc25eaec9e88570200";
+(node as any).hash = "5651ae333df3fbe6f3534113d375f450";
 
 export default node;

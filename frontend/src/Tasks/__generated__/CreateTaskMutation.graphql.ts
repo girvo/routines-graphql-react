@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a3faffcc9e3f74cbf4b64f80f24750cf>>
+ * @generated SignedSource<<d2601f982b2c8f30a0e7468a60932b92>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -225,24 +225,6 @@ return {
                           }
                         ],
                         "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "PageInfo",
-                        "kind": "LinkedField",
-                        "name": "pageInfo",
-                        "plural": false,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "hasNextPage",
-                            "storageKey": null
-                          }
-                        ],
-                        "storageKey": null
                       }
                     ],
                     "storageKey": "slots(first:100)"
@@ -276,12 +258,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "070e446194c388657697a384232fe14b",
+    "cacheID": "9f230d3860f2e6c8da287c83be20bd26",
     "id": null,
     "metadata": {},
     "name": "CreateTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...TaskDisplay\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...TaskDisplay\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
   }
 };
 })();

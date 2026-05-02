@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fbf18ddb3fb69b9288ab11dff00ec431>>
+ * @generated SignedSource<<dfa20aa4cecb6304100ac1bf632a5a50>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -177,24 +177,6 @@ return {
                       }
                     ],
                     "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "PageInfo",
-                    "kind": "LinkedField",
-                    "name": "pageInfo",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "hasNextPage",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
                   }
                 ],
                 "storageKey": "slots(first:100)"
@@ -208,12 +190,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c8a58a1caac91a595a5cfe2257976f3a",
+    "cacheID": "089fd05034d3728aff284737fb4ce069",
     "id": null,
     "metadata": {},
     "name": "EditTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...TaskDisplay\n      id\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...TaskDisplay\n      id\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
   }
 };
 })();

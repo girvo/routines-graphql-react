@@ -7,6 +7,9 @@ import styles from './RoutineSlotItem.module.css'
 import { Button } from '../primitives/Button.tsx'
 import { Tooltip } from '../primitives/overlay/Tooltip.tsx'
 import { Loader, X } from 'lucide-react'
+import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
+import { Body } from '../primitives/text/Body.tsx'
+import { useState } from 'react'
 
 interface RoutineSlotItemProps {
   routineSlot: RoutineSlotItem$key
@@ -17,6 +20,7 @@ export const RoutineSlotItem = ({
   routineSlot: routineSlotRef,
   connectionId,
 }: RoutineSlotItemProps) => {
+  const [isOpen, setIsOpen] = useState(false)
   const routineSlot = useFragment(
     graphql`
       fragment RoutineSlotItem on RoutineSlot {
@@ -29,7 +33,6 @@ export const RoutineSlotItem = ({
     `,
     routineSlotRef,
   )
-  const { task } = routineSlot
 
   const [deleteItem, isLoading] = useMutation<RoutineSlotItemMutation>(graphql`
     mutation RoutineSlotItemMutation(
@@ -45,9 +48,12 @@ export const RoutineSlotItem = ({
   return (
     <div className={styles.root}>
       <span className={styles.iconWrap} aria-hidden>
-        <DynamicIcon name={parseIconName(task.icon)} className={styles.icon} />
+        <DynamicIcon
+          name={parseIconName(routineSlot.task.icon)}
+          className={styles.icon}
+        />
       </span>
-      <span className={styles.label}>{task.title}</span>
+      <span className={styles.label}>{routineSlot.task.title}</span>
       <Tooltip label="Remove">
         <Button
           className={!isLoading ? styles.dangerHover : undefined}
@@ -56,18 +62,30 @@ export const RoutineSlotItem = ({
           iconOnly={!isLoading ? X : Loader}
           aria-label="Remove"
           disabled={isLoading}
-          onClick={() => {
-            if (isLoading) return
-
-            deleteItem({
-              variables: {
-                routineSlotId: routineSlot.id,
-                connections: [connectionId],
-              },
-            })
-          }}
+          onClick={() => setIsOpen(true)}
         />
       </Tooltip>
+      <ConfirmDialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={() => {
+          if (isLoading) return
+
+          deleteItem({
+            variables: {
+              routineSlotId: routineSlot.id,
+              connections: [connectionId],
+            },
+          })
+        }}
+        title="Are you sure?"
+        destructive
+      >
+        <Body>
+          Are you sure you want to remove "{routineSlot.task.title}" from this
+          routine slot?
+        </Body>
+      </ConfirmDialog>
     </div>
   )
 }

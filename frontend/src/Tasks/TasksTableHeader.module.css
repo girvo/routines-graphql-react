@@ -25,17 +25,12 @@
   min-width: 0;
 }
 
-.slotsLabel {
+.actionsLabel {
   composes: typo-body typo-xs typo-semibold typo-ls-wide-md from global;
   color: var(--text-muted);
   text-transform: uppercase;
-  width: 80px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.actionsSpacer {
   width: calc(var(--avatar-sm) * 2 + 2px);
+  text-align: center;
   flex-shrink: 0;
 }
 

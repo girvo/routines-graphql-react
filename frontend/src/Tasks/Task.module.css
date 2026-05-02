@@ -39,14 +39,6 @@
   color: var(--text-muted-soft);
 }
 
-.slotsCount {
-  composes: typo-body typo-md from global;
-  color: var(--text-ink-2);
-  width: 80px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
 .actions {
   display: flex;
   align-items: center;
@@ -107,10 +99,6 @@
   .used {
     grid-column: 2;
     grid-row: 2;
-  }
-
-  .slotsCount {
-    display: none;
   }
 
   .actions {

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b70677ae9fabdae95fa2218a6234f0d5>>
+ * @generated SignedSource<<5675a45d3dc65741289ec8e42047d89c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -52,13 +52,6 @@ v2 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "hasNextPage",
   "storageKey": null
 };
 return {
@@ -183,18 +176,6 @@ return {
                           }
                         ],
                         "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "PageInfo",
-                        "kind": "LinkedField",
-                        "name": "pageInfo",
-                        "plural": false,
-                        "selections": [
-                          (v3/*: any*/)
-                        ],
-                        "storageKey": null
                       }
                     ],
                     "storageKey": "slots(first:100)"
@@ -234,7 +215,13 @@ return {
                 "name": "endCursor",
                 "storageKey": null
               },
-              (v3/*: any*/)
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "hasNextPage",
+                "storageKey": null
+              }
             ],
             "storageKey": null
           },
@@ -265,12 +252,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6d6782e1b55c33680a04259ce7016218",
+    "cacheID": "abadd226296a7e0523f23fb416e0c608",
     "id": null,
     "metadata": {},
     "name": "TasksListPaginationQuery",
     "operationKind": "query",
-    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<35dbe5ea37c318066cd502ed7e91ae0a>>
+ * @generated SignedSource<<c999bb6d35d1492cc6bf6c5a2d6902d7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -184,24 +184,6 @@ return {
                       }
                     ],
                     "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "PageInfo",
-                    "kind": "LinkedField",
-                    "name": "pageInfo",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "hasNextPage",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
                   }
                 ],
                 "storageKey": "slots(first:100)"
@@ -216,7 +198,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "167add6848a1f22f36f2f648e88db2bf",
+    "cacheID": "1ee9d8bbc78fe31dd3fec240dc8dd54a",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -269,24 +251,12 @@ return {
           "plural": false,
           "type": "DaySection"
         },
-        "node.slots.pageInfo": {
-          "enumValues": null,
-          "nullable": false,
-          "plural": false,
-          "type": "PageInfo"
-        },
-        "node.slots.pageInfo.hasNextPage": {
-          "enumValues": null,
-          "nullable": false,
-          "plural": false,
-          "type": "Boolean"
-        },
         "node.title": (v3/*: any*/)
       }
     },
     "name": "TaskQuery",
     "operationKind": "query",
-    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n    pageInfo {\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
   }
 };
 })();

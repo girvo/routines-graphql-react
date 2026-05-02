@@ -44,9 +44,6 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
               section
             }
           }
-          pageInfo {
-            hasNextPage
-          }
         }
       }
     `,
@@ -68,9 +65,6 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
     deleteTask({ variables: { taskId: task.id, connections: [connectionId] } })
     setShowDeleteConfirm(false)
   }
-
-  const slotCount = task.slots.edges.length
-  const hasMore = task.slots.pageInfo.hasNextPage
 
   const sections = useMemo(
     () => sectionCounts(task.slots.edges.map(({ node }) => node.section)),
@@ -109,10 +103,6 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
             ))
           )}
         </div>
-        <span className={styles.slotsCount}>
-          {slotCount}
-          {hasMore ? '+' : ''}
-        </span>
         <div className={styles.actions}>
           <div className={styles.actionsDesktop}>
             <Button
