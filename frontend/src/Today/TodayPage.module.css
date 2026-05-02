@@ -1,0 +1,22 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .body {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 18px;
+    padding: var(--page-padding-x);
+  }
+}

@@ -3,7 +3,7 @@ import type { Context } from './context.ts'
 import type { NodeResolver, NodeType } from './types.ts'
 import { DateTimeResolver, NonNegativeIntResolver } from 'graphql-scalars'
 import { GraphQLError } from 'graphql'
-import { decodeGlobalId } from '../globalId.ts'
+import { decodeGlobalId, fromGlobalId } from '../globalId.ts'
 import { getUser } from '../auth/auth-context.ts'
 import { userToGraphQL, deriveInitials } from '../user/user-domain.ts'
 import * as UserResolvers from '../user/user-resolvers.ts'
@@ -33,16 +33,17 @@ export const resolvers: Resolvers<Context> = {
     },
     node: async (_, { id }, context) => {
       let type: string
-      let internalId: number
 
       try {
-        const decoded = decodeGlobalId(id)
-        type = decoded.type
-        internalId = decoded.id
+        type = decodeGlobalId(id).type
       } catch (error) {
         throw new GraphQLError('Invalid node ID', {
           extensions: { code: 'BAD_USER_INPUT' },
         })
+      }
+
+      if (type === 'DailyTaskInstance') {
+        return ScheduleResolvers.resolveDailyTaskInstanceAsNode(id, context)
       }
 
       const adapter = nodeResolvers[type as keyof typeof nodeResolvers]
@@ -53,7 +54,14 @@ export const resolvers: Resolvers<Context> = {
         })
       }
 
-      return adapter(internalId, context)
+      try {
+        const internalId = fromGlobalId(id, type)
+        return adapter(internalId, context)
+      } catch (error) {
+        throw new GraphQLError('Invalid node ID', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        })
+      }
     },
     tasks: TaskResolvers.tasksResolver,
     taskCompletions: TaskCompletionResolvers.taskCompletions,

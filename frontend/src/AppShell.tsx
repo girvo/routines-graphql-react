@@ -56,6 +56,7 @@ type Props = SimpleEntryPointProps<{ userQuery: DesktopSidebarQuery }>
 
 const AppShell = ({ queries }: Props) => {
   const [slots, setSlotsState] = useState<PageHeaderSlots>({
+    title: null,
     subtitle: null,
     actions: null,
     belowHeader: null,

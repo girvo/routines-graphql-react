@@ -103,7 +103,8 @@ type DailyRoutinePayload {
   evening(first: NonNegativeInt, after: String): DailyTaskInstanceConnection!
 }
 
-type DailyTaskInstance {
+type DailyTaskInstance implements Node {
+  id: ID!
   routineSlot: RoutineSlot!
   completion: TaskCompletion
 }
@@ -205,9 +206,11 @@ type DeleteRoutineSlotPayload {
 }
 
 type CompleteRoutineSlotPayload {
+  dailyTaskInstance: DailyTaskInstance!
   taskCompletionEdge: TaskCompletionEdge!
 }
 
 type UncompleteRoutineSlotPayload {
+  dailyTaskInstance: DailyTaskInstance!
   deletedId: ID!
 }

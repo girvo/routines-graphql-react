@@ -7,10 +7,16 @@ import type {
 } from '../graphql/resolver-types.ts'
 import type { DayOfWeek, DaySection } from '../database/types.ts'
 import { getDay } from 'date-fns'
-import type { DailyRoutineData, DayScheduleData } from './schedule-domain.ts'
+import type {
+  DailyRoutineData,
+  DayScheduleData,
+  DailyTaskInstanceNode,
+} from './schedule-domain.ts'
+import type { GlobalId } from '../globalId.ts'
 import {
   buildDailyTaskInstanceConnection,
   dailyTaskInstanceToGraphQL,
+  decodeDailyTaskInstanceId,
   type DailyTaskInstanceData,
 } from './schedule-domain.ts'
 import {
@@ -113,6 +119,7 @@ const createSectionResolver = <Section extends DaySection>(
     )
 
     const instances: DailyTaskInstanceData[] = routineSlots.map(slot => ({
+      date: parent.date,
       routineSlot: slot,
       completion: completionsBySlotId.get(slot.id) ?? null,
     }))
@@ -198,3 +205,42 @@ const createDaySectionResolver = <Section extends DaySection>(
 export const dayMorning = createDaySectionResolver('MORNING')
 export const dayMidday = createDaySectionResolver('MIDDAY')
 export const dayEvening = createDaySectionResolver('EVENING')
+
+export const resolveDailyTaskInstanceAsNode = async (
+  globalId: GlobalId,
+  context: Context,
+): Promise<DailyTaskInstanceNode | null> => {
+  assertAuthenticated(context)
+
+  let decoded: { date: Date; routineSlotId: number }
+  try {
+    decoded = decodeDailyTaskInstanceId(globalId)
+  } catch {
+    return null
+  }
+
+  const slotRow = await context.routineRepo.findByIdAndUserId(
+    decoded.routineSlotId,
+    context.currentUser.id,
+  )
+  if (!slotRow) {
+    return null
+  }
+
+  const completionRows =
+    await context.taskCompletionRepo.findByRoutineSlotIdsAndDate(
+      [decoded.routineSlotId],
+      context.currentUser.id,
+      decoded.date,
+    )
+
+  const instance: DailyTaskInstanceData = {
+    date: decoded.date,
+    routineSlot: routineSlotTableToDomain(slotRow),
+    completion: completionRows[0]
+      ? taskCompletionTableToDomain(completionRows[0])
+      : null,
+  }
+
+  return dailyTaskInstanceToGraphQL(instance)
+}

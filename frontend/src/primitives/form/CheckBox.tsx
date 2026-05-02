@@ -49,6 +49,12 @@ export const CheckBox = ({
     <span className={styles.box} aria-hidden>
       <Check className={styles.check} strokeWidth={3} />
     </span>
-    {children && <span className={styles.labelText}>{children}</span>}
+    {children !== undefined &&
+      children !== null &&
+      (typeof children === 'string' ? (
+        <span className={styles.labelText}>{children}</span>
+      ) : (
+        children
+      ))}
   </label>
 )

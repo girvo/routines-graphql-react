@@ -58,6 +58,23 @@ const NodeQuery = graphql(`
           section
         }
       }
+
+      ... on DailyTaskInstance {
+        id
+        routineSlot {
+          id
+          dayOfWeek
+          section
+          task {
+            id
+            title
+          }
+        }
+        completion {
+          id
+          completedAt
+        }
+      }
     }
   }
 `)
@@ -187,5 +204,164 @@ describe('Node resolver', () => {
     expect(completionNode.data?.node.id).toBe(
       completion.data.completeRoutineSlot.taskCompletionEdge.node.id,
     )
+  })
+
+  it('correctly resolves the DailyTaskInstance node and round-trips its id from dailyRoutine', async () => {
+    const { userToken } = await createTestUser()
+
+    const todayQuery = await executeGraphQL(
+      graphql(`
+        query TodayDayOfWeek {
+          dailyRoutine {
+            dayOfWeek
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+    const todayDayOfWeek = todayQuery.data?.dailyRoutine.dayOfWeek
+    assert(todayDayOfWeek !== undefined, 'day of week resolved')
+
+    const task = await createTask({ title: 'Stretch', yoga, userToken })
+    assert(task.data?.createTask?.taskEdge.node.id !== undefined, 'task created')
+
+    const slot = await createRoutineSlot({
+      input: {
+        taskId: task.data.createTask.taskEdge.node.id,
+        dayOfWeek: todayDayOfWeek,
+        section: 'MORNING',
+      },
+      yoga,
+      userToken,
+    })
+    const slotId = slot.data?.createRoutineSlot?.routineSlotEdge.node.id
+    assert(slotId !== undefined, 'routine slot created')
+
+    const dailyRoutine = await executeGraphQL(
+      graphql(`
+        query DailyRoutineForInstanceId {
+          dailyRoutine {
+            morning(first: 5) {
+              edges {
+                node {
+                  id
+                  routineSlot {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+
+    const instanceFromDailyRoutine =
+      dailyRoutine.data?.dailyRoutine.morning.edges[0]?.node
+    assert(
+      instanceFromDailyRoutine !== undefined,
+      'instance returned from dailyRoutine',
+    )
+    expect(instanceFromDailyRoutine.routineSlot.id).toBe(slotId)
+
+    const instanceNode = await executeGraphQL(
+      NodeQuery,
+      { id: instanceFromDailyRoutine.id },
+      { yoga, userToken },
+    )
+
+    assert(
+      instanceNode.data?.node?.__typename === 'DailyTaskInstance',
+      'got a DailyTaskInstance back',
+    )
+    expect(instanceNode.data?.node.id).toBe(instanceFromDailyRoutine.id)
+    expect(instanceNode.data?.node.routineSlot.id).toBe(slotId)
+    expect(instanceNode.data?.node.routineSlot.task.title).toBe('Stretch')
+    expect(instanceNode.data?.node.completion).toBeNull()
+  })
+
+  it('returns the same DailyTaskInstance id from completeRoutineSlot as dailyRoutine for the same day and slot', async () => {
+    const { userToken } = await createTestUser()
+
+    const todayQuery = await executeGraphQL(
+      graphql(`
+        query TodayDayOfWeekForCompletion {
+          dailyRoutine {
+            dayOfWeek
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+    const todayDayOfWeek = todayQuery.data?.dailyRoutine.dayOfWeek
+    assert(todayDayOfWeek !== undefined, 'day of week resolved')
+
+    const task = await createTask({ title: 'Hydrate', yoga, userToken })
+    assert(task.data?.createTask?.taskEdge.node.id !== undefined, 'task created')
+
+    const slot = await createRoutineSlot({
+      input: {
+        taskId: task.data.createTask.taskEdge.node.id,
+        dayOfWeek: todayDayOfWeek,
+        section: 'MIDDAY',
+      },
+      yoga,
+      userToken,
+    })
+    const slotId = slot.data?.createRoutineSlot?.routineSlotEdge.node.id
+    assert(slotId !== undefined, 'routine slot created')
+
+    const beforeCompletion = await executeGraphQL(
+      graphql(`
+        query DailyRoutineBeforeCompletion {
+          dailyRoutine {
+            midday(first: 5) {
+              edges {
+                node {
+                  id
+                  completion {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      `),
+      {},
+      { yoga, userToken },
+    )
+    const queriedInstance =
+      beforeCompletion.data?.dailyRoutine.midday.edges[0]?.node
+    assert(queriedInstance !== undefined, 'instance returned before completion')
+    expect(queriedInstance.completion).toBeNull()
+
+    const completed = await executeGraphQL(
+      graphql(`
+        mutation CompleteForDailyTaskInstanceRoundTrip($routineSlotId: ID!) {
+          completeRoutineSlot(routineSlotId: $routineSlotId) {
+            dailyTaskInstance {
+              id
+              completion {
+                id
+              }
+            }
+          }
+        }
+      `),
+      { routineSlotId: slotId },
+      { yoga, userToken },
+    )
+
+    const mutationInstance =
+      completed.data?.completeRoutineSlot?.dailyTaskInstance
+    assert(mutationInstance !== undefined, 'mutation returned an instance')
+
+    expect(mutationInstance.id).toBe(queriedInstance.id)
+    expect(mutationInstance.completion).not.toBeNull()
   })
 })

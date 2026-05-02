@@ -1,0 +1,54 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2-5) var(--page-padding-x);
+  min-height: var(--row-h-md);
+}
+
+.iconWrap {
+  width: var(--avatar-sm);
+  height: var(--avatar-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-ink-2);
+}
+
+.icon {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.label {
+  composes: typo-body typo-lg from global;
+  color: var(--text-ink);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.labelComplete {
+  color: var(--text-muted-soft);
+  text-decoration: line-through;
+}
+
+@media (min-width: 1024px) {
+  .row {
+    gap: var(--space-2-5);
+    padding: var(--space-2) var(--card-padding-x);
+    min-height: var(--control-h-lg);
+  }
+
+  .iconWrap {
+    width: var(--icon-md);
+    height: var(--icon-md);
+  }
+
+  .label {
+    composes: typo-md from global;
+  }
+}
