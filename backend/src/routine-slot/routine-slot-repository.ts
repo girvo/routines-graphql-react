@@ -56,6 +56,31 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
         .executeTakeFirstOrThrow()
     },
 
+    async findByUniqueKey(
+      userId: number,
+      taskId: number,
+      dayOfWeek: DayOfWeek,
+      section: DaySection,
+    ): Promise<RoutineSlotRow | undefined> {
+      return db
+        .selectFrom('routine_slots')
+        .selectAll()
+        .where('user_id', '=', userId)
+        .where('task_id', '=', taskId)
+        .where('day_of_week', '=', dayOfWeek)
+        .where('section', '=', section)
+        .executeTakeFirst()
+    },
+
+    async reviveRoutineSlot(id: number): Promise<RoutineSlotRow> {
+      return db
+        .updateTable('routine_slots')
+        .set({ deleted_at: null, created_at: getCurrentTimestamp() })
+        .where('id', '=', id)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
+
     async deleteRoutineSlot(id: number, userId: number): Promise<void> {
       await db
         .updateTable('routine_slots')

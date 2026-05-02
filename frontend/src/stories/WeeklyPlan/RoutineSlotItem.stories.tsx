@@ -15,7 +15,7 @@ const RoutineSlotItemStoryInner = () => {
     graphql`
       query RoutineSlotItemStoryInnerQuery @relay_test_operation {
         node(id: "test_id") {
-          ... on Task {
+          ... on RoutineSlot {
             ...RoutineSlotItem
           }
         }
@@ -26,7 +26,7 @@ const RoutineSlotItemStoryInner = () => {
 
   if (!data.node) return null
 
-  return <RoutineSlotItem task={data.node} />
+  return <RoutineSlotItem routineSlot={data.node} connectionId="test_connection" />
 }
 
 const RoutineSlotItemStory = () => {
@@ -34,7 +34,7 @@ const RoutineSlotItemStory = () => {
 
   environment.mock.queueOperationResolver(op => {
     return MockPayloadGenerator.generate(op, {
-      Task() {
+      RoutineSlot() {
         return {}
       },
     })

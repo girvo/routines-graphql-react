@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ffda3302ff7a3118ef69cc77fa07fc48>>
+ * @generated SignedSource<<99d3b1484eee7f9a064b16f71ab63dec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,10 +30,23 @@ var v0 = [
   }
 ],
 v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v2 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "String"
+},
+v3 = {
+  "enumValues": null,
+  "nullable": false,
+  "plural": false,
+  "type": "ID"
 };
 return {
   "fragment": {
@@ -59,7 +72,7 @@ return {
                 "name": "RoutineSlotItem"
               }
             ],
-            "type": "Task",
+            "type": "RoutineSlot",
             "abstractKey": null
           }
         ],
@@ -90,32 +103,38 @@ return {
             "name": "__typename",
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
+          (v1/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "title",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "icon",
+                "concreteType": "Task",
+                "kind": "LinkedField",
+                "name": "task",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "title",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "icon",
+                    "storageKey": null
+                  },
+                  (v1/*: any*/)
+                ],
                 "storageKey": null
               }
             ],
-            "type": "Task",
+            "type": "RoutineSlot",
             "abstractKey": null
           }
         ],
@@ -124,7 +143,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "32f18831bfc03e94a0fa43a07216306c",
+    "cacheID": "8e582475e61f13c69b6857c272095da0",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -134,29 +153,31 @@ return {
           "plural": false,
           "type": "Node"
         },
-        "node.__typename": (v1/*: any*/),
-        "node.icon": {
+        "node.__typename": (v2/*: any*/),
+        "node.id": (v3/*: any*/),
+        "node.task": {
+          "enumValues": null,
+          "nullable": false,
+          "plural": false,
+          "type": "Task"
+        },
+        "node.task.icon": {
           "enumValues": null,
           "nullable": true,
           "plural": false,
           "type": "String"
         },
-        "node.id": {
-          "enumValues": null,
-          "nullable": false,
-          "plural": false,
-          "type": "ID"
-        },
-        "node.title": (v1/*: any*/)
+        "node.task.id": (v3/*: any*/),
+        "node.task.title": (v2/*: any*/)
       }
     },
     "name": "RoutineSlotItemStoryInnerQuery",
     "operationKind": "query",
-    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on Task {\n      ...RoutineSlotItem\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem on Task {\n  id\n  title\n  icon\n}\n"
+    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on RoutineSlot {\n      ...RoutineSlotItem\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem on RoutineSlot {\n  id\n  task {\n    title\n    icon\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "3961d46bcd37ab649e2735e341e35d28";
+(node as any).hash = "a3f2179e87ac03d5c0e2220b81d82dc4";
 
 export default node;

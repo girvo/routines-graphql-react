@@ -18,7 +18,11 @@ import type { AddTaskDropdownTasksFragment$key } from './__generated__/AddTaskDr
 import type { DaySelection } from './days.ts'
 import type { AddTaskDropdownRoutineSlotMutation } from './__generated__/AddTaskDropdownRoutineSlotMutation.graphql.ts'
 import { useToast } from '../toast/ToastContext.ts'
-import { Popover, PopoverTrigger, PopoverContent } from '../primitives/popover/Popover.tsx'
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '../primitives/popover/Popover.tsx'
 import { TextInput } from '../primitives/TextInput.tsx'
 import styles from './AddTaskDropdown.module.css'
 
@@ -75,7 +79,9 @@ const TaskList = ({
   }
 
   return (
-    <ul className={clsx(styles.list, (isPending || isLoading) && styles.pending)}>
+    <ul
+      className={clsx(styles.list, (isPending || isLoading) && styles.pending)}
+    >
       {data.tasks.edges.map(({ node }) => (
         <li key={node.id}>
           <button
@@ -84,7 +90,10 @@ const TaskList = ({
             onClick={() => !isLoading && onTaskClick(node.id)}
             disabled={isLoading}
           >
-            <DynamicIcon name={parseIconName(node.icon)} className={styles.optionIcon} />
+            <DynamicIcon
+              name={parseIconName(node.icon)}
+              className={styles.optionIcon}
+            />
             <span>{node.title}</span>
           </button>
         </li>

@@ -15,25 +15,40 @@ export const createRoutineSlot: MutationResolvers<Context>['createRoutineSlot'] 
     assertAuthenticated(context)
 
     const taskId = fromGlobalId(input.taskId, 'Task')
+    const dayOfWeek = input.dayOfWeek as DayOfWeek
+    const section = input.section as DaySection
 
     const task = await context.taskRepo.findByIdAndUserId(taskId, context.currentUser.id)
     if (!task) {
       throw new GraphQLError('Task not found')
     }
 
+    const existing = await context.routineRepo.findByUniqueKey(
+      context.currentUser.id,
+      taskId,
+      dayOfWeek,
+      section,
+    )
+
     let routineSlotRow
-    try {
-      routineSlotRow = await context.routineRepo.createRoutineSlot(
-        context.currentUser.id,
-        taskId,
-        input.dayOfWeek as DayOfWeek,
-        input.section as DaySection,
-      )
-    } catch (error) {
-      if (error instanceof SqliteError && error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
-        throw new GraphQLError('This task is already scheduled for this time slot')
+    if (existing && existing.deleted_at === null) {
+      throw new GraphQLError('This task is already scheduled for this time slot')
+    } else if (existing) {
+      routineSlotRow = await context.routineRepo.reviveRoutineSlot(existing.id)
+    } else {
+      try {
+        routineSlotRow = await context.routineRepo.createRoutineSlot(
+          context.currentUser.id,
+          taskId,
+          dayOfWeek,
+          section,
+        )
+      } catch (error) {
+        if (error instanceof SqliteError && error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+          throw new GraphQLError('This task is already scheduled for this time slot')
+        }
+        throw error
       }
-      throw error
     }
 
     const routineSlot = tableToDomain(routineSlotRow)

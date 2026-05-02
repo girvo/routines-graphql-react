@@ -258,8 +258,8 @@ importers:
         specifier: ^20.1.1
         version: 20.1.1
       rolldown-plugin-relay:
-        specifier: ^0.1.2
-        version: 0.1.2(graphql@16.12.0)(rolldown@1.0.0-rc.9)
+        specifier: ^0.2.0
+        version: 0.2.0(graphql@16.12.0)(rolldown@1.0.0-rc.9)
       storybook:
         specifier: ^10.1.7
         version: 10.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -384,8 +384,8 @@ packages:
     resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/runtime@7.28.6':
-    resolution: {integrity: sha512-05WQkdpL9COIMz4LjTxGpPNCdlpyimKppYNoJ5Di5EUObifl8t4tuLuUBBZEpoLYOmfvIWrsp9fCl0HoPRVTdA==}
+  '@babel/runtime@7.29.2':
+    resolution: {integrity: sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g==}
     engines: {node: '>=6.9.0'}
 
   '@babel/template@7.27.2':
@@ -1280,9 +1280,6 @@ packages:
     peerDependencies:
       '@types/react': '>=16'
       react: '>=16'
-
-  '@napi-rs/wasm-runtime@1.1.0':
-    resolution: {integrity: sha512-Fq6DJW+Bb5jaWE69/qOE0D1TUN9+6uWhCeZpdnSBk14pjLcCWR7Q8n49PTSPHazM37JqrsdpEthXy2xn6jWWiA==}
 
   '@napi-rs/wasm-runtime@1.1.1':
     resolution: {integrity: sha512-p64ah1M1ld8xjWv3qbvFwHiFVWrq1yFvV4f7w+mzaqiR4IlSgkqhcRdHwsGgomwzBH51sRY4NEowLxnaBjcW/A==}
@@ -4418,8 +4415,8 @@ packages:
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
 
-  rolldown-plugin-relay@0.1.2:
-    resolution: {integrity: sha512-7bO/PKWnmqnXvOV057R00qfgceDKODseO14cXGeKA+x2mg9GAycrPvXMr9++zxuecRiTkeNPBT9e3Gqc/oR5WQ==}
+  rolldown-plugin-relay@0.2.0:
+    resolution: {integrity: sha512-ji6pAMFJ0ZJZHoc8A+1KZZDDODu6NvngNSMWPxgO/Jh3rZh3QNh/tI2f+IxM412L/rLUu6FXYBpwIdP0jUhBrA==}
     peerDependencies:
       graphql: '>=15'
       rolldown: '>=1.0.0-beta.0'
@@ -5361,7 +5358,7 @@ snapshots:
 
   '@babel/runtime@7.28.4': {}
 
-  '@babel/runtime@7.28.6': {}
+  '@babel/runtime@7.29.2': {}
 
   '@babel/template@7.27.2':
     dependencies:
@@ -6451,13 +6448,6 @@ snapshots:
       '@types/react': 19.2.7
       react: 19.2.1
 
-  '@napi-rs/wasm-runtime@1.1.0':
-    dependencies:
-      '@emnapi/core': 1.7.1
-      '@emnapi/runtime': 1.7.1
-      '@tybys/wasm-util': 0.10.1
-    optional: true
-
   '@napi-rs/wasm-runtime@1.1.1':
     dependencies:
       '@emnapi/core': 1.7.1
@@ -6517,7 +6507,7 @@ snapshots:
 
   '@oxc-parser/binding-wasm32-wasi@0.101.0':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.1.0
+      '@napi-rs/wasm-runtime': 1.1.1
     optional: true
 
   '@oxc-parser/binding-win32-arm64-msvc@0.101.0':
@@ -6846,7 +6836,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.29.0
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.2
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
@@ -9783,7 +9773,7 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rolldown-plugin-relay@0.1.2(graphql@16.12.0)(rolldown@1.0.0-rc.9):
+  rolldown-plugin-relay@0.2.0(graphql@16.12.0)(rolldown@1.0.0-rc.9):
     dependencies:
       graphql: 16.12.0
       magic-string: 0.30.21

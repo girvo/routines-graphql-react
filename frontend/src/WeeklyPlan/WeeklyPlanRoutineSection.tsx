@@ -12,12 +12,11 @@ export const WeeklyPlanRoutineSection = ({
   const routine = useFragment<WeeklyPlanRoutineSectionFragment$key>(
     graphql`
       fragment WeeklyPlanRoutineSectionFragment on RoutineSlotConnection {
+        __id
         edges {
           node {
             id
-            task {
-              ...RoutineSlotItem
-            }
+            ...RoutineSlotItem
           }
         }
       }
@@ -27,8 +26,12 @@ export const WeeklyPlanRoutineSection = ({
 
   return (
     <>
-      {routine.edges.map((edge) => (
-        <RoutineSlotItem key={edge.node.id} task={edge.node.task} />
+      {routine.edges.map(edge => (
+        <RoutineSlotItem
+          key={edge.node.id}
+          routineSlot={edge.node}
+          connectionId={routine.__id}
+        />
       ))}
     </>
   )

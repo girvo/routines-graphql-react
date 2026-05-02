@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bf56d02a8f314989b6db60f375ef86d1>>
+ * @generated SignedSource<<dd98b1b4c19dd61893a65b939b68a031>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,9 +11,11 @@
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type RoutineSlotItem$data = {
-  readonly icon: string | null | undefined;
   readonly id: string;
-  readonly title: string;
+  readonly task: {
+    readonly icon: string | null | undefined;
+    readonly title: string;
+  };
   readonly " $fragmentType": "RoutineSlotItem";
 };
 export type RoutineSlotItem$key = {
@@ -37,22 +39,33 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
-      "name": "title",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "icon",
+      "concreteType": "Task",
+      "kind": "LinkedField",
+      "name": "task",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "title",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "icon",
+          "storageKey": null
+        }
+      ],
       "storageKey": null
     }
   ],
-  "type": "Task",
+  "type": "RoutineSlot",
   "abstractKey": null
 };
 
-(node as any).hash = "ff0729e98aa58a5190cf3f68d6104ce8";
+(node as any).hash = "841c462f317f5ffe17fdccfcb3b51677";
 
 export default node;

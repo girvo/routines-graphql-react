@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9e555e17dbf56d8851e85ca24669a4c9>>
+ * @generated SignedSource<<8a56c7a4ae215a65fdbf8f51f7fd05a2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,12 +11,11 @@
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type WeeklyPlanRoutineSectionFragment$data = {
+  readonly __id: string;
   readonly edges: ReadonlyArray<{
     readonly node: {
       readonly id: string;
-      readonly task: {
-        readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem">;
-      };
+      readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem">;
     };
   }>;
   readonly " $fragmentType": "WeeklyPlanRoutineSectionFragment";
@@ -56,32 +55,33 @@ const node: ReaderFragment = {
               "storageKey": null
             },
             {
-              "alias": null,
               "args": null,
-              "concreteType": "Task",
-              "kind": "LinkedField",
-              "name": "task",
-              "plural": false,
-              "selections": [
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "RoutineSlotItem"
-                }
-              ],
-              "storageKey": null
+              "kind": "FragmentSpread",
+              "name": "RoutineSlotItem"
             }
           ],
           "storageKey": null
         }
       ],
       "storageKey": null
+    },
+    {
+      "kind": "ClientExtension",
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__id",
+          "storageKey": null
+        }
+      ]
     }
   ],
   "type": "RoutineSlotConnection",
   "abstractKey": null
 };
 
-(node as any).hash = "7a7cc9a0115084afd534de4fcd063e4e";
+(node as any).hash = "43c8d7dcefc47e1b14d00624dbbaf60f";
 
 export default node;
