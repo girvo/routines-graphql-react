@@ -1,8 +1,11 @@
+import { useCallback, useMemo } from 'react'
 import { graphql, usePreloadedQuery } from 'react-relay'
 import { format, isToday } from 'date-fns'
+import { useNavigate } from 'react-router-dom'
 import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
 import type { TodayPageQuery } from './__generated__/TodayPageQuery.graphql'
 import { usePageHeader } from '../utils/page-header'
+import { DatePicker } from '../primitives/form/DatePicker.tsx'
 import { TodaySection } from './TodaySection.tsx'
 import styles from './TodayPage.module.css'
 
@@ -33,13 +36,26 @@ const TodayPage = ({ queries, extraProps: { date } }: TodayPageProps) => {
     queries.todayPageQuery,
   )
 
-  const displayDate = date ?? new Date()
-  const isCurrentDay = date === null || isToday(date)
+  const navigate = useNavigate()
+  const displayDate = useMemo(() => date ?? new Date(), [date])
+
+  const handleDateChange = useCallback(
+    (next: Date) => {
+      const search = isToday(next) ? '' : `?date=${format(next, 'yyyy-MM-dd')}`
+      navigate({ search })
+    },
+    [navigate],
+  )
+
+  const actions = useMemo(
+    () => <DatePicker value={displayDate} onChange={handleDateChange} />,
+    [displayDate, handleDateChange],
+  )
+
   usePageHeader({
-    title: isCurrentDay ? 'Today' : format(displayDate, 'EEEE'),
-    subtitle: isCurrentDay
-      ? format(displayDate, 'EEEE, MMMM d')
-      : format(displayDate, 'MMMM d'),
+    title: format(displayDate, 'EEEE'),
+    subtitle: null,
+    actions,
   })
 
   return (
