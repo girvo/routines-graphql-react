@@ -6,7 +6,7 @@ import {
   usePreloadedQuery,
   type PreloadedQuery,
 } from 'react-relay'
-import { Calendar1, CalendarDays, LayoutList, Settings, LogOut } from 'lucide-react'
+import { Calendar1, CalendarDays, LayoutList, LogOut } from 'lucide-react'
 import { Avatar } from '../primitives/Avatar.tsx'
 import { clsx } from 'clsx'
 import type { DesktopSidebarQuery } from './__generated__/DesktopSidebarQuery.graphql.ts'
@@ -27,8 +27,6 @@ const primaryRoutes: NavRoute[] = [
   { to: '/weekly', label: 'Weekly Plan', icon: CalendarDays },
   { to: '/tasks', label: 'All Tasks', icon: LayoutList },
 ]
-
-const secondaryRoutes: NavRoute[] = [{ to: '/settings', label: 'Settings', icon: Settings }]
 
 const UserCardSkeleton = () => (
   <div className={styles.userCard} aria-hidden="true">
@@ -114,9 +112,6 @@ export const DesktopSidebar = ({ user, onLogout }: DesktopSidebarProps) => (
     <hr className={styles.divider} />
 
     <div className={styles.nav}>
-      {secondaryRoutes.map((route) => (
-        <NavItemLink key={route.to} route={route} />
-      ))}
       <button type="button" className={styles.item} onClick={onLogout}>
         <LogOut className={styles.itemIcon} />
         <span>Logout</span>

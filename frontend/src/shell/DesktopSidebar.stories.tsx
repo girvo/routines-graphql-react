@@ -60,7 +60,3 @@ export const Weekly: Story = {
 export const Tasks: Story = {
   parameters: { currentPath: '/tasks' },
 }
-
-export const SettingsActive: Story = {
-  parameters: { currentPath: '/settings' },
-}

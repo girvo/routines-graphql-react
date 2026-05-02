@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
-import { MoreVertical, Settings, LogOut } from 'lucide-react'
+import { MoreVertical, LogOut } from 'lucide-react'
 import { Button } from '../primitives/Button.tsx'
 import { Popover, PopoverContent, PopoverTrigger } from '../primitives/overlay/popover/Popover.tsx'
 import styles from './TopBar.module.css'
@@ -26,10 +25,6 @@ export const TopBar = ({ title, subtitle, actions, onLogout }: TopBarProps) => (
             <Button variant="ghost" iconOnly={MoreVertical} aria-label="More actions" />
           </PopoverTrigger>
           <PopoverContent className={styles.menu}>
-            <NavLink to="/settings" className={styles.menuItem}>
-              <Settings className={styles.menuIcon} />
-              <span>Settings</span>
-            </NavLink>
             <button type="button" className={styles.menuItem} onClick={onLogout}>
               <LogOut className={styles.menuIcon} />
               <span>Logout</span>
