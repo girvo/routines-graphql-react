@@ -9,6 +9,7 @@ import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { GraphQLError } from 'graphql'
 import { routineSlotToGraphQL } from '../routine-slot/routine-slot-domain.ts'
 import { fromGlobalId } from '../globalId.ts'
+import { encodeDailyTaskInstanceId } from '../schedule/schedule-domain.ts'
 
 export const taskCompletions: QueryResolvers<Context>['taskCompletions'] =
   async (_parent, { first, after, startDate, endDate }, context) => {
@@ -58,3 +59,20 @@ export const routineSlot: TaskCompletionResolvers<Context>['routineSlot'] =
 
     return routineSlotToGraphQL(routineSlot)
   }
+
+export const dailyTaskInstance: TaskCompletionResolvers<
+  Context
+>['dailyTaskInstance'] = async (parent, _args, context) => {
+  const slotId = fromGlobalId(parent.routineSlot.id, 'RoutineSlot')
+  const slot = await context.routineSlots.load(slotId)
+  if (!slot) {
+    throw new GraphQLError('Routine slot not found')
+  }
+
+  return {
+    __typename: 'DailyTaskInstance' as const,
+    id: encodeDailyTaskInstanceId(slotId, parent.completedAt),
+    routineSlot: routineSlotToGraphQL(slot),
+    completion: parent,
+  }
+}

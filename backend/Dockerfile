@@ -39,6 +39,8 @@ COPY --from=builder /app/pnpm-workspace.yaml ./
 
 ENV NODE_ENV=production
 
+RUN mkdir -p /app/db
+
 EXPOSE 4000
 
 WORKDIR /app/backend

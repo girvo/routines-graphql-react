@@ -10,8 +10,8 @@
     "migration:make": "node --env-file=.env tools/make-migration.ts",
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
     "resolvers:generate": "graphql-codegen",
-    "start": "node --env-file=.env --watch-preserve-output src/main.ts",
-    "start:watch": "pnpm start --watch-path=./src --watch-path=./migrations",
+    "start": "node --env-file=.env src/main.ts",
+    "start:watch": "node --env-file=.env --watch --watch-preserve-output --watch-path=./src --watch-path=./migrations src/main.ts",
     "test": "node --env-file=.env.test ./node_modules/vitest/vitest.mjs",
     "typecheck": "tsc --noEmit"
   },

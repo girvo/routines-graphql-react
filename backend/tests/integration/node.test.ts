@@ -344,10 +344,15 @@ describe('Node resolver', () => {
       graphql(`
         mutation CompleteForDailyTaskInstanceRoundTrip($routineSlotId: ID!) {
           completeRoutineSlot(routineSlotId: $routineSlotId) {
-            dailyTaskInstance {
-              id
-              completion {
+            taskCompletionEdge {
+              node {
                 id
+                dailyTaskInstance {
+                  id
+                  completion {
+                    id
+                  }
+                }
               }
             }
           }
@@ -357,11 +362,16 @@ describe('Node resolver', () => {
       { yoga, userToken },
     )
 
-    const mutationInstance =
-      completed.data?.completeRoutineSlot?.dailyTaskInstance
-    assert(mutationInstance !== undefined, 'mutation returned an instance')
+    const mutationCompletion =
+      completed.data?.completeRoutineSlot?.taskCompletionEdge.node
+    assert(
+      mutationCompletion !== undefined,
+      'mutation returned a completion node',
+    )
 
-    expect(mutationInstance.id).toBe(queriedInstance.id)
-    expect(mutationInstance.completion).not.toBeNull()
+    expect(mutationCompletion.dailyTaskInstance.id).toBe(queriedInstance.id)
+    expect(mutationCompletion.dailyTaskInstance.completion?.id).toBe(
+      mutationCompletion.id,
+    )
   })
 })

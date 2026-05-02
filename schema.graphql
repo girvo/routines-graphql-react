@@ -93,6 +93,7 @@ type TaskCompletion implements Node {
   id: ID!
   routineSlot: RoutineSlot!
   completedAt: DateTime!
+  dailyTaskInstance: DailyTaskInstance!
 }
 
 type DailyRoutinePayload {
@@ -206,7 +207,6 @@ type DeleteRoutineSlotPayload {
 }
 
 type CompleteRoutineSlotPayload {
-  dailyTaskInstance: DailyTaskInstance!
   taskCompletionEdge: TaskCompletionEdge!
 }
 

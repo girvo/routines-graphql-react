@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<635171cfecc6d19318a4b6733b1d7357>>
+ * @generated SignedSource<<8939999079fc66a0a7c76803894e793d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,9 @@ export type TodayTaskRowUncompleteMutation$variables = {
 };
 export type TodayTaskRowUncompleteMutation$data = {
   readonly uncompleteRoutineSlot: {
+    readonly dailyTaskInstance: {
+      readonly id: string;
+    };
     readonly deletedId: string;
   } | null | undefined;
 };
@@ -32,37 +35,57 @@ var v0 = [
 ],
 v1 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "taskCompletionId",
-        "variableName": "taskCompletionId"
-      }
-    ],
-    "concreteType": "UncompleteRoutineSlotPayload",
-    "kind": "LinkedField",
-    "name": "uncompleteRoutineSlot",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "deletedId",
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
+    "kind": "Variable",
+    "name": "taskCompletionId",
+    "variableName": "taskCompletionId"
   }
-];
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "deletedId",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "DailyTaskInstance",
+  "kind": "LinkedField",
+  "name": "dailyTaskInstance",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "TodayTaskRowUncompleteMutation",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "UncompleteRoutineSlotPayload",
+        "kind": "LinkedField",
+        "name": "uncompleteRoutineSlot",
+        "plural": false,
+        "selections": [
+          (v2/*: any*/),
+          (v3/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "Mutation",
     "abstractKey": null
   },
@@ -71,19 +94,42 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TodayTaskRowUncompleteMutation",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "UncompleteRoutineSlotPayload",
+        "kind": "LinkedField",
+        "name": "uncompleteRoutineSlot",
+        "plural": false,
+        "selections": [
+          (v2/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "deleteRecord",
+            "key": "",
+            "kind": "ScalarHandle",
+            "name": "deletedId"
+          },
+          (v3/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "7acc9a63c40e983d44cb978a66aa63cc",
+    "cacheID": "72ff93b174cbbffe928a25b89062dd44",
     "id": null,
     "metadata": {},
     "name": "TodayTaskRowUncompleteMutation",
     "operationKind": "mutation",
-    "text": "mutation TodayTaskRowUncompleteMutation(\n  $taskCompletionId: ID!\n) {\n  uncompleteRoutineSlot(taskCompletionId: $taskCompletionId) {\n    deletedId\n  }\n}\n"
+    "text": "mutation TodayTaskRowUncompleteMutation(\n  $taskCompletionId: ID!\n) {\n  uncompleteRoutineSlot(taskCompletionId: $taskCompletionId) {\n    deletedId\n    dailyTaskInstance {\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "8a0813bde737a0ece113fba21f127064";
+(node as any).hash = "41762142502ec4b759a0f28a79ff0f33";
 
 export default node;

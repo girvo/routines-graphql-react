@@ -16,11 +16,11 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
 
     const decodedRoutineSlotId = fromGlobalId(routineSlotId, 'RoutineSlot')
 
-    const routineSlotRow = await context.routineRepo.findByIdAndUserId(
+    const routineSlot = await context.routineRepo.findByIdAndUserId(
       decodedRoutineSlotId,
       context.currentUser.id,
     )
-    if (!routineSlotRow) {
+    if (!routineSlot) {
       throw new GraphQLError('Routine slot not found')
     }
 
@@ -31,14 +31,8 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
 
     const completion = tableToDomain(completionRow)
     const completionEdge = buildTaskCompletionEdge(completion)
-    const routineSlot = routineSlotTableToDomain(routineSlotRow)
 
     return {
-      dailyTaskInstance: dailyTaskInstanceToGraphQL({
-        date: completion.completedAt,
-        routineSlot,
-        completion,
-      }),
       taskCompletionEdge: {
         node: taskCompletionToGraphQL(completionEdge.node),
         cursor: completionEdge.cursor,

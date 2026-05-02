@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<58efc3c03e9ec601b192e4c99e06fa2e>>
+ * @generated SignedSource<<464c362f4ffa552cd95e1b522439ec37>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,7 @@ export type TodayTaskRow$data = {
   readonly completion: {
     readonly id: string;
   } | null | undefined;
+  readonly id: string;
   readonly routineSlot: {
     readonly id: string;
     readonly task: {
@@ -42,6 +43,7 @@ return {
   "metadata": null,
   "name": "TodayTaskRow",
   "selections": [
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -97,6 +99,6 @@ return {
 };
 })();
 
-(node as any).hash = "9ede9f5f73e5577e87a8d29d5951abe0";
+(node as any).hash = "b53681f28e9116428b5dd897a3123afc";
 
 export default node;

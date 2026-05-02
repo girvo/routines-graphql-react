@@ -89,6 +89,7 @@ export const resolvers: Resolvers<Context> = {
   },
   TaskCompletion: {
     routineSlot: TaskCompletionResolvers.routineSlot,
+    dailyTaskInstance: TaskCompletionResolvers.dailyTaskInstance,
   },
   DailyRoutinePayload: {
     morning: ScheduleResolvers.morning,

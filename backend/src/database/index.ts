@@ -22,9 +22,14 @@ if (process.env.DB_LOG === 'error') {
   log = ['query', 'error']
 }
 
+const sqlite = new SQLite(path)
+if (path !== ':memory:') {
+  sqlite.pragma('journal_mode = WAL')
+}
+
 export const db = new Kysely<Database>({
   log: log,
   dialect: new SqliteDialect({
-    database: new SQLite(path),
+    database: sqlite,
   }),
 })

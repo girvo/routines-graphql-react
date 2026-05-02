@@ -28,7 +28,6 @@ export type Scalars = {
 
 export type CompleteRoutineSlotPayload = {
   __typename?: 'CompleteRoutineSlotPayload';
-  dailyTaskInstance: DailyTaskInstance;
   taskCompletionEdge: TaskCompletionEdge;
 };
 
@@ -289,6 +288,7 @@ export type TaskSlotsArgs = {
 export type TaskCompletion = Node & {
   __typename?: 'TaskCompletion';
   completedAt: Scalars['DateTime']['output'];
+  dailyTaskInstance: DailyTaskInstance;
   id: Scalars['ID']['output'];
   routineSlot: RoutineSlot;
 };
@@ -439,7 +439,7 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  CompleteRoutineSlotPayload: ResolverTypeWrapper<Omit<CompleteRoutineSlotPayload, 'dailyTaskInstance' | 'taskCompletionEdge'> & { dailyTaskInstance: ResolversTypes['DailyTaskInstance'], taskCompletionEdge: ResolversTypes['TaskCompletionEdge'] }>;
+  CompleteRoutineSlotPayload: ResolverTypeWrapper<Omit<CompleteRoutineSlotPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversTypes['TaskCompletionEdge'] }>;
   CreateRoutineSlotInput: CreateRoutineSlotInput;
   CreateRoutineSlotPayload: ResolverTypeWrapper<Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversTypes['RoutineSlotEdge'] }>;
   CreateTaskPayload: ResolverTypeWrapper<Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversTypes['TaskEdge'] }>;
@@ -480,7 +480,7 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
-  CompleteRoutineSlotPayload: Omit<CompleteRoutineSlotPayload, 'dailyTaskInstance' | 'taskCompletionEdge'> & { dailyTaskInstance: ResolversParentTypes['DailyTaskInstance'], taskCompletionEdge: ResolversParentTypes['TaskCompletionEdge'] };
+  CompleteRoutineSlotPayload: Omit<CompleteRoutineSlotPayload, 'taskCompletionEdge'> & { taskCompletionEdge: ResolversParentTypes['TaskCompletionEdge'] };
   CreateRoutineSlotInput: CreateRoutineSlotInput;
   CreateRoutineSlotPayload: Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversParentTypes['RoutineSlotEdge'] };
   CreateTaskPayload: Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversParentTypes['TaskEdge'] };
@@ -525,7 +525,6 @@ export type SkipAuthDirectiveArgs = { };
 export type SkipAuthDirectiveResolver<Result, Parent, ContextType = any, Args = SkipAuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type CompleteRoutineSlotPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompleteRoutineSlotPayload'] = ResolversParentTypes['CompleteRoutineSlotPayload']> = ResolversObject<{
-  dailyTaskInstance?: Resolver<ResolversTypes['DailyTaskInstance'], ParentType, ContextType>;
   taskCompletionEdge?: Resolver<ResolversTypes['TaskCompletionEdge'], ParentType, ContextType>;
 }>;
 
@@ -651,6 +650,7 @@ export type TaskResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type TaskCompletionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TaskCompletion'] = ResolversParentTypes['TaskCompletion']> = ResolversObject<{
   completedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  dailyTaskInstance?: Resolver<ResolversTypes['DailyTaskInstance'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   routineSlot?: Resolver<ResolversTypes['RoutineSlot'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

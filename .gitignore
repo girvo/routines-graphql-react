@@ -17,6 +17,6 @@ node_modules
 .pnp.*
 .env
 
-backend/db/*
+db/*
 
 !.gitkeep

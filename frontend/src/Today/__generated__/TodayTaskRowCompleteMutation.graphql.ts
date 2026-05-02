@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9a906c2d212c9b22cedeca32e64b95a7>>
+ * @generated SignedSource<<0a385b2431087cf641d4d0b051ff01ad>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,12 @@ export type TodayTaskRowCompleteMutation$data = {
     readonly taskCompletionEdge: {
       readonly node: {
         readonly completedAt: any;
+        readonly dailyTaskInstance: {
+          readonly completion: {
+            readonly id: string;
+          } | null | undefined;
+          readonly id: string;
+        };
         readonly id: string;
       };
     };
@@ -35,7 +41,14 @@ var v0 = [
     "name": "routineSlotId"
   }
 ],
-v1 = [
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v2 = [
   {
     "alias": null,
     "args": [
@@ -66,18 +79,36 @@ v1 = [
             "name": "node",
             "plural": false,
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              },
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
                 "name": "completedAt",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "DailyTaskInstance",
+                "kind": "LinkedField",
+                "name": "dailyTaskInstance",
+                "plural": false,
+                "selections": [
+                  (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "TaskCompletion",
+                    "kind": "LinkedField",
+                    "name": "completion",
+                    "plural": false,
+                    "selections": [
+                      (v1/*: any*/)
+                    ],
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               }
             ],
@@ -96,7 +127,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "TodayTaskRowCompleteMutation",
-    "selections": (v1/*: any*/),
+    "selections": (v2/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -105,19 +136,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TodayTaskRowCompleteMutation",
-    "selections": (v1/*: any*/)
+    "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "38bb48af0d8b48ece17e2f4e7269c8c0",
+    "cacheID": "c0ff968e131f23c99cfa3eec0be3e7b0",
     "id": null,
     "metadata": {},
     "name": "TodayTaskRowCompleteMutation",
     "operationKind": "mutation",
-    "text": "mutation TodayTaskRowCompleteMutation(\n  $routineSlotId: ID!\n) {\n  completeRoutineSlot(routineSlotId: $routineSlotId) {\n    taskCompletionEdge {\n      node {\n        id\n        completedAt\n      }\n    }\n  }\n}\n"
+    "text": "mutation TodayTaskRowCompleteMutation(\n  $routineSlotId: ID!\n) {\n  completeRoutineSlot(routineSlotId: $routineSlotId) {\n    taskCompletionEdge {\n      node {\n        id\n        completedAt\n        dailyTaskInstance {\n          id\n          completion {\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "88454ef4eac142ffe9dcad90bf4f3227";
+(node as any).hash = "657f18ec933e9ecef99d6a52bbc3c777";
 
 export default node;
