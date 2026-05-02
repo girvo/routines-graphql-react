@@ -119,7 +119,9 @@ export const Tooltip = ({ label, side = 'top', children }: TooltipProps) => {
         className={styles.trigger}
         onMouseEnter={scheduleShow}
         onMouseLeave={hideNow}
-        onFocus={() => setOpen(true)}
+        onFocus={(e) => {
+          if (e.target.matches(':focus-visible')) setOpen(true)
+        }}
         onBlur={hideNow}
       >
         {children}

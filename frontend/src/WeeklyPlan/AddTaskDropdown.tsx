@@ -214,7 +214,12 @@ const renderTrigger = (
   onButtonHover: () => void,
 ) => {
   if (variant === 'row') {
-    return <AddTaskRow onMouseEnter={onButtonHover} />
+    return (
+      <AddTaskRow
+        onMouseEnter={onButtonHover}
+        onTouchStart={onButtonHover}
+      />
+    )
   }
   return (
     <Button
@@ -222,6 +227,7 @@ const renderTrigger = (
       size="sm"
       leadingIcon={Plus}
       onMouseEnter={onButtonHover}
+      onTouchStart={onButtonHover}
     >
       Add task
     </Button>
@@ -238,8 +244,13 @@ export const AddTaskDropdown = ({
 }: AddTaskDropdownProps) => {
   const [open, setOpen] = useState(false)
 
+  const handleOpenChange = (next: boolean) => {
+    if (next) onButtonHover()
+    setOpen(next)
+  }
+
   return (
-    <Popover open={open} onOpenChange={setOpen} placement="bottom-end">
+    <Popover open={open} onOpenChange={handleOpenChange} placement="bottom-end">
       <PopoverTrigger>{renderTrigger(variant, onButtonHover)}</PopoverTrigger>
       <PopoverContent className={styles.content}>
         <Suspense fallback={<TaskListFallback />}>

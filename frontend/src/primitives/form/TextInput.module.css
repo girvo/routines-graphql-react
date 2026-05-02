@@ -38,16 +38,20 @@
 }
 
 .sm {
-  height: var(--control-h-lg);
+  height: var(--control-h-mobile);
 }
 
 .md {
-  height: var(--control-h-lg);
+  height: var(--control-h-mobile);
 }
 
 @media (min-width: 1024px) {
   .sm {
     height: var(--control-h-sm);
+  }
+
+  .md {
+    height: var(--control-h-md);
   }
 }
 

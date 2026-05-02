@@ -4,20 +4,26 @@
   gap: var(--space-1);
 }
 
-.pill {
+.prev,
+.next,
+.today {
   display: none;
 }
 
-@media (max-width: 1023px) {
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+@media (min-width: 1024px) {
   .prev,
   .next,
   .today {
-    display: none;
+    display: inline-flex;
   }
 
   .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
+    display: none;
   }
 }

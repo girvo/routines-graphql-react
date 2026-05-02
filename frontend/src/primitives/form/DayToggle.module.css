@@ -3,6 +3,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: var(--control-h-mobile);
   padding: var(--control-gap) var(--space-3);
   border-radius: var(--radius-pill);
   border: none;
@@ -12,6 +13,12 @@
   transition:
     background-color var(--transition-default),
     color var(--transition-default);
+}
+
+@media (min-width: 1024px) {
+  .root {
+    min-height: 0;
+  }
 }
 
 .root:hover:not(:disabled):not(.selected) {

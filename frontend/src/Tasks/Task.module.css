@@ -1,25 +1,32 @@
 .root {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-1) var(--card-padding-x);
-  min-height: var(--control-h-lg);
+  gap: 3px var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  min-height: 61px;
   background: transparent;
+  border: 0;
+  border-radius: 0;
 }
 
 .root + .root {
   border-top: var(--border-width) solid var(--stroke-hairline);
+  margin-top: 0;
 }
 
 .iconChip {
   flex-shrink: 0;
+  grid-row: 1 / 3;
 }
 
 .title {
-  composes: typo-body typo-md from global;
+  composes: typo-body typo-lg typo-medium from global;
   color: var(--text-ink);
-  width: 220px;
-  flex-shrink: 0;
+  width: auto;
+  grid-column: 2;
+  grid-row: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -32,6 +39,8 @@
   flex: 1;
   min-width: 0;
   flex-wrap: wrap;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .unassigned {
@@ -43,16 +52,18 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  grid-column: 3;
+  grid-row: 1 / 3;
 }
 
 .actionsDesktop {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 2px;
 }
 
 .actionsMobile {
-  display: none;
+  display: inline-flex;
 }
 
 .dangerHover:hover:not(:disabled) {
@@ -65,53 +76,28 @@
   min-width: 140px;
 }
 
-@media (max-width: 1023px) {
+@media (min-width: 1024px) {
   .root {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto auto;
+    display: flex;
     align-items: center;
-    column-gap: var(--space-3);
-    row-gap: 3px;
-    padding: var(--space-3) var(--space-4);
-    min-height: 61px;
+    gap: var(--space-3);
+    padding: var(--space-1) var(--card-padding-x);
+    min-height: var(--control-h-lg);
     background: transparent;
-    border: 0;
-    border-radius: 0;
-  }
-
-  .root + .root {
-    border-top: var(--border-width) solid var(--stroke-hairline);
-    margin-top: 0;
-  }
-
-  .iconChip {
-    grid-row: 1 / 3;
   }
 
   .title {
-    grid-column: 2;
-    grid-row: 1;
-    composes: typo-lg typo-medium from global;
-    width: auto;
-  }
-
-  .used {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .actions {
-    grid-column: 3;
-    grid-row: 1 / 3;
+    composes: typo-md from global;
+    width: 220px;
+    flex-shrink: 0;
   }
 
   .actionsDesktop {
-    display: none;
+    display: inline-flex;
   }
 
   .actionsMobile {
-    display: inline-flex;
+    display: none;
   }
 }
 

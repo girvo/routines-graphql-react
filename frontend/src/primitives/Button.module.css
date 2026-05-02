@@ -19,24 +19,42 @@
 
 .sm {
   composes: typo-medium from global;
-  height: var(--control-h-sm);
+  height: var(--control-h-mobile);
   padding: 0 var(--control-padding-x-sm);
 }
 
 .md {
   composes: typo-semibold from global;
-  height: var(--control-h-md);
+  height: var(--control-h-mobile);
   padding: 0 var(--control-padding-x-md);
 }
 
 .sm.iconOnly {
-  width: var(--control-h-sm);
+  width: var(--control-h-mobile);
   padding: 0;
 }
 
 .md.iconOnly {
-  width: var(--control-h-md);
+  width: var(--control-h-mobile);
   padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .sm {
+    height: var(--control-h-sm);
+  }
+
+  .md {
+    height: var(--control-h-md);
+  }
+
+  .sm.iconOnly {
+    width: var(--control-h-sm);
+  }
+
+  .md.iconOnly {
+    width: var(--control-h-md);
+  }
 }
 
 .button:focus-visible {

@@ -37,11 +37,19 @@
   width: 100%;
 }
 
+.mobileAddRow {
+  border-bottom: var(--border-width) solid var(--stroke-hairline);
+}
+
+.section:last-child .mobileAddRow {
+  border-bottom: 0;
+}
+
 .body {
   background: var(--surface);
 }
 
-.body > * + * {
+.body > :not(.empty) + :not(.empty) {
   border-top: var(--border-width) solid var(--stroke-hairline);
 }
 

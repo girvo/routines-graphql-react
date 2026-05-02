@@ -1,14 +1,14 @@
 .root {
   display: flex;
   align-items: center;
-  gap: var(--space-2-5);
-  padding: var(--space-2) var(--card-padding-x);
-  min-height: var(--control-h-lg);
+  gap: var(--space-3);
+  padding: var(--space-2-5) var(--page-padding-x);
+  min-height: var(--row-h-md);
 }
 
 .iconWrap {
-  width: var(--icon-md);
-  height: var(--icon-md);
+  width: var(--avatar-sm);
+  height: var(--avatar-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +22,7 @@
 }
 
 .label {
-  composes: typo-body typo-md from global;
+  composes: typo-body typo-lg from global;
   color: var(--text-ink);
   flex: 1;
   min-width: 0;
@@ -35,19 +35,19 @@
   color: var(--accent-danger);
 }
 
-@media (max-width: 1023px) {
+@media (min-width: 1024px) {
   .root {
-    gap: var(--space-3);
-    padding: var(--space-2-5) var(--page-padding-x);
-    min-height: var(--row-h-md);
+    gap: var(--space-2-5);
+    padding: var(--space-2) var(--card-padding-x);
+    min-height: var(--control-h-lg);
   }
 
   .iconWrap {
-    width: var(--avatar-sm);
-    height: var(--avatar-sm);
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
 
   .label {
-    composes: typo-lg from global;
+    composes: typo-md from global;
   }
 }
