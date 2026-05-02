@@ -30,16 +30,16 @@ interface RouteHandle {
 }
 
 type TopBarSlotProps = {
-  title: string
+  routeTitle: string
   routeSubtitle?: ReactNode
   onLogout: () => void
 }
 
-const TopBarSlot = ({ title, routeSubtitle, onLogout }: TopBarSlotProps) => {
-  const { subtitle, actions } = use(PageHeaderContext)
+const TopBarSlot = ({ routeTitle, routeSubtitle, onLogout }: TopBarSlotProps) => {
+  const { title, subtitle, actions } = use(PageHeaderContext)
   return (
     <TopBar
-      title={title}
+      title={title ?? routeTitle}
       subtitle={subtitle ?? routeSubtitle}
       actions={actions}
       onLogout={onLogout}
@@ -74,7 +74,7 @@ const AppShell = ({ queries }: Props) => {
     navigate('/', { replace: true })
   }, [clearAccessToken, navigate])
 
-  const title = matches.findLast((m) => m.handle?.title)?.handle?.title ?? 'Routines'
+  const routeTitle = matches.findLast((m) => m.handle?.title)?.handle?.title ?? 'Routines'
   const routeSubtitle = matches.findLast((m) => m.handle?.subtitle)?.handle?.subtitle
   const Loading = matches.findLast((m) => m.handle?.loading)?.handle?.loading
 
@@ -94,7 +94,7 @@ const AppShell = ({ queries }: Props) => {
     <PageHeaderContext value={{ ...slots, setSlots, clearSlots }}>
       <AppShellFrame
         sidebar={<DesktopSidebar user={queries.userQuery} onLogout={handleLogout} />}
-        topBar={<TopBarSlot title={title} routeSubtitle={routeSubtitle} onLogout={handleLogout} />}
+        topBar={<TopBarSlot routeTitle={routeTitle} routeSubtitle={routeSubtitle} onLogout={handleLogout} />}
         belowHeader={<BelowHeaderSlot />}
         dock={<MobileDock />}
       >

@@ -1,6 +1,7 @@
 import { createContext, useEffect, use, type ReactNode } from 'react'
 
 export interface PageHeaderSlots {
+  title: string | null
   subtitle: ReactNode
   actions: ReactNode
   belowHeader: ReactNode
@@ -12,6 +13,7 @@ export interface PageHeaderContextValue extends PageHeaderSlots {
 }
 
 const emptyContext: PageHeaderContextValue = {
+  title: null,
   subtitle: null,
   actions: null,
   belowHeader: null,
@@ -22,17 +24,22 @@ const emptyContext: PageHeaderContextValue = {
 export const PageHeaderContext = createContext<PageHeaderContextValue>(emptyContext)
 
 interface UsePageHeaderInput {
+  title?: string
   subtitle?: ReactNode
   actions?: ReactNode
   belowHeader?: ReactNode
 }
 
-export const usePageHeader = ({ subtitle, actions, belowHeader }: UsePageHeaderInput) => {
+export const usePageHeader = ({ title, subtitle, actions, belowHeader }: UsePageHeaderInput) => {
   const { setSlots, clearSlots } = use(PageHeaderContext)
 
   useEffect(() => {
     const slots: Partial<PageHeaderSlots> = {}
     const keys: Array<keyof PageHeaderSlots> = []
+    if (title !== undefined) {
+      slots.title = title
+      keys.push('title')
+    }
     if (subtitle !== undefined) {
       slots.subtitle = subtitle
       keys.push('subtitle')
@@ -47,5 +54,5 @@ export const usePageHeader = ({ subtitle, actions, belowHeader }: UsePageHeaderI
     }
     setSlots(slots)
     return () => clearSlots(keys)
-  }, [subtitle, actions, belowHeader, setSlots, clearSlots])
+  }, [title, subtitle, actions, belowHeader, setSlots, clearSlots])
 }

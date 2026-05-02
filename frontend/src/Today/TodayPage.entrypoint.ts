@@ -11,15 +11,15 @@ export const TodayPageEntryPoint: SimpleEntryPoint<typeof TodayPage> = {
   getPreloadProps({ request }) {
     const dateParam = new URL(request.url).searchParams.get('date')
     const parsed = dateParam ? parseISO(dateParam) : null
+    const date = parsed && isValid(parsed) ? parsed : null
     return {
       queries: {
         todayPageQuery: {
           parameters: TodayPageQueryDocument,
-          variables: {
-            date: parsed && isValid(parsed) ? parsed.toISOString() : null,
-          },
+          variables: { date: date?.toISOString() ?? null },
         },
       },
+      extraProps: { date },
     }
   },
 }
