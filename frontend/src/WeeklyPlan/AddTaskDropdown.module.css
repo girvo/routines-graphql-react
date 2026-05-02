@@ -1,16 +1,16 @@
 .content {
-  width: 256px;
-  padding: var(--space-2);
+  width: min(320px, calc(100vw - 2 * var(--page-padding-x)));
+  padding: var(--space-2-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-2-5);
 }
 
 .list {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 240px;
+  max-height: 320px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -39,12 +39,14 @@
 }
 
 .option {
-  composes: typo-body typo-md from global;
+  composes: typo-body from global;
+  font-size: var(--fs-lg);
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   width: 100%;
-  padding: var(--space-2) var(--space-2-5);
+  padding: var(--space-3);
+  min-height: var(--row-h-md);
   border-radius: var(--radius-md);
   background: transparent;
   border: none;
@@ -66,8 +68,8 @@
 }
 
 .optionIcon {
-  width: var(--icon-sm);
-  height: var(--icon-sm);
+  width: var(--icon-md);
+  height: var(--icon-md);
   color: var(--text-muted);
   flex-shrink: 0;
 }
@@ -79,4 +81,28 @@
 @keyframes add-task-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    width: 256px;
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .list {
+    max-height: 240px;
+  }
+
+  .option {
+    font-size: var(--fs-md);
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-2-5);
+    min-height: 0;
+  }
+
+  .optionIcon {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+  }
 }

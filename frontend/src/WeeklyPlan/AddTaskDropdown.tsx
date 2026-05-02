@@ -13,6 +13,7 @@ import { parseIconName } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { clsx } from 'clsx'
 import { Button } from '../primitives/Button.tsx'
+import { AddTaskRow } from './AddTaskRow.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { AddTaskDropdownTasksFragment$key } from './__generated__/AddTaskDropdownTasksFragment.graphql.ts'
 import type { DaySelection } from './days.ts'
@@ -205,6 +206,26 @@ interface AddTaskDropdownProps extends DaySelection {
   queryRef: PreloadedQuery<AddTaskDropdownQuery> | null | undefined
   connectionId: string
   onButtonHover: () => void
+  variant?: 'button' | 'row'
+}
+
+const renderTrigger = (
+  variant: 'button' | 'row',
+  onButtonHover: () => void,
+) => {
+  if (variant === 'row') {
+    return <AddTaskRow onMouseEnter={onButtonHover} />
+  }
+  return (
+    <Button
+      variant="secondary"
+      size="sm"
+      leadingIcon={Plus}
+      onMouseEnter={onButtonHover}
+    >
+      Add task
+    </Button>
+  )
 }
 
 export const AddTaskDropdown = ({
@@ -213,21 +234,13 @@ export const AddTaskDropdown = ({
   daySection,
   onButtonHover,
   connectionId,
+  variant = 'button',
 }: AddTaskDropdownProps) => {
   const [open, setOpen] = useState(false)
 
   return (
     <Popover open={open} onOpenChange={setOpen} placement="bottom-end">
-      <PopoverTrigger>
-        <Button
-          variant="secondary"
-          size="sm"
-          leadingIcon={Plus}
-          onMouseEnter={onButtonHover}
-        >
-          Add task
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger>{renderTrigger(variant, onButtonHover)}</PopoverTrigger>
       <PopoverContent className={styles.content}>
         <Suspense fallback={<TaskListFallback />}>
           {queryRef && (
