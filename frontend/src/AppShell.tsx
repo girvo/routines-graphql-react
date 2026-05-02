@@ -7,7 +7,6 @@ import {
 } from 'react'
 import {
   Outlet,
-  useLocation,
   useMatches,
   useNavigate,
   type UIMatch,
@@ -62,7 +61,6 @@ const AppShell = ({ queries }: Props) => {
     belowHeader: null,
   })
   const matches = useMatches() as UIMatch<unknown, RouteHandle>[]
-  const location = useLocation()
   const navigate = useNavigate()
   const { clearAccessToken } = use(AuthContext)
 
@@ -100,10 +98,7 @@ const AppShell = ({ queries }: Props) => {
         belowHeader={<BelowHeaderSlot />}
         dock={<MobileDock />}
       >
-        <Suspense
-          key={location.pathname}
-          fallback={Loading ? <Loading /> : 'Loading...'}
-        >
+        <Suspense fallback={Loading ? <Loading /> : 'Loading...'}>
           <Outlet />
         </Suspense>
       </AppShellFrame>
