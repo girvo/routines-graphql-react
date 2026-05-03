@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { graphql } from 'relay-runtime'
 import { useFragment, useMutation } from 'react-relay'
-import { DynamicIcon } from 'lucide-react/dynamic'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import type { TaskDisplay$key } from './__generated__/TaskDisplay.graphql'
 import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.graphql.ts'
@@ -12,7 +11,7 @@ import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
 import { IconBadge } from '../primitives/badge/IconBadge.tsx'
 import { Button } from '../primitives/Button.tsx'
 import { Popover, PopoverContent, PopoverTrigger } from '../primitives/overlay/popover/Popover.tsx'
-import { parseIconName } from '../utils/icons.ts'
+import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import styles from './Task.module.css'
 
@@ -20,14 +19,6 @@ interface TaskProps {
   task: TaskDisplay$key
   updatable: EditTaskUpdatable$key
   connectionId: string
-}
-
-const iconFromName = (icon: string | null | undefined) => {
-  const name = parseIconName(icon)
-  const Component = ({ className }: { className?: string }) => (
-    <DynamicIcon name={name} className={className} />
-  )
-  return Component
 }
 
 export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => {
@@ -95,7 +86,7 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
     )
   }
 
-  const IconGlyph = iconFromName(task.icon)
+  const IconGlyph = iconComponent(task.icon)
   const onEdit = () => setIsEditing(true)
   const onDelete = () => setShowDeleteConfirm(true)
 

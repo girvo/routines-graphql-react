@@ -7,9 +7,8 @@ import {
 } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
 import { Plus, Search, Loader2 } from 'lucide-react'
-import { DynamicIcon } from 'lucide-react/dynamic'
 import { useDebounceValue } from 'usehooks-ts'
-import { parseIconName } from '../utils/icons.ts'
+import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { clsx } from 'clsx'
 import { Button } from '../primitives/Button.tsx'
@@ -88,22 +87,22 @@ const TaskList = ({
     <ul
       className={clsx(styles.list, (isPending || isLoading) && styles.pending)}
     >
-      {data.tasks.edges.map(({ node }) => (
-        <li key={node.id}>
-          <button
-            type="button"
-            className={styles.option}
-            onClick={() => !isLoading && onTaskClick(node)}
-            disabled={isLoading}
-          >
-            <DynamicIcon
-              name={parseIconName(node.icon)}
-              className={styles.optionIcon}
-            />
-            <span>{node.title}</span>
-          </button>
-        </li>
-      ))}
+      {data.tasks.edges.map(({ node }) => {
+        const Icon = iconComponent(node.icon)
+        return (
+          <li key={node.id}>
+            <button
+              type="button"
+              className={styles.option}
+              onClick={() => !isLoading && onTaskClick(node)}
+              disabled={isLoading}
+            >
+              <Icon className={styles.optionIcon} />
+              <span>{node.title}</span>
+            </button>
+          </li>
+        )
+      })}
     </ul>
   )
 }

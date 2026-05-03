@@ -1,17 +1,15 @@
 import { useCallback, type Dispatch, type SetStateAction } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { X, Check } from 'lucide-react'
 import { useMutation, graphql } from 'react-relay'
-import { DynamicIcon } from 'lucide-react/dynamic'
 import { capitalise } from '../utils/text'
 import { handleEnterKeySubmit } from '../utils/form'
 import { taskFormSchema, type TaskFormData } from './task-validation'
 import { TextInput } from '../primitives/form/TextInput'
 import { Field } from '../primitives/form/Field'
-import { IconBadge } from '../primitives/badge/IconBadge'
+import { IconPicker } from '../primitives/form/IconPicker'
 import { Button } from '../primitives/Button'
-import { parseIconName } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
 import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql'
@@ -34,6 +32,7 @@ export const EditTask = ({
 }: EditTaskProps) => {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<TaskFormData>({
@@ -87,15 +86,21 @@ export const EditTask = ({
   }
 
   const submit = handleSubmit(onSubmit)
-  const iconName = parseIconName(icon)
-  const IconGlyph = ({ className }: { className?: string }) => (
-    <DynamicIcon name={iconName} className={className} />
-  )
 
   return (
     <div className={styles.row}>
       <div className={styles.iconSlot}>
-        <IconBadge icon={IconGlyph} size="md" />
+        <Controller
+          control={control}
+          name="icon"
+          render={({ field }) => (
+            <IconPicker
+              value={field.value ?? null}
+              onChange={field.onChange}
+              aria-label="Pick task icon"
+            />
+          )}
+        />
       </div>
       <div className={styles.titleField}>
         <Field
@@ -107,20 +112,6 @@ export const EditTask = ({
             placeholder="Task name"
             error={Boolean(errors.title)}
             {...register('title')}
-            onKeyDown={handleEnterKeySubmit(submit)}
-          />
-        </Field>
-      </div>
-      <div className={styles.iconField}>
-        <Field
-          label="Icon"
-          hideLabel
-          error={errors.icon?.message && capitalise(errors.icon.message)}
-        >
-          <TextInput
-            placeholder="Lucide icon name"
-            error={Boolean(errors.icon)}
-            {...register('icon')}
             onKeyDown={handleEnterKeySubmit(submit)}
           />
         </Field>

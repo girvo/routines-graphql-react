@@ -1,0 +1,100 @@
+.trigger {
+  display: inline-flex;
+  border: none;
+  background: transparent;
+  padding: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition: box-shadow var(--transition-default);
+}
+
+.trigger:hover:not(:disabled) {
+  box-shadow: 0 0 0 2px var(--surface-soft);
+}
+
+.trigger:focus-visible {
+  outline: var(--outline-width) solid var(--accent);
+  outline-offset: var(--outline-offset);
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.placeholder {
+  opacity: 0.6;
+}
+
+.popover {
+  padding: var(--space-2);
+  width: min(360px, calc(100vw - var(--space-4)));
+}
+
+.scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.heading {
+  composes: typo-label typo-xs from global;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0;
+  padding: 0 var(--space-1);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: var(--space-1);
+}
+
+.tile {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-ink-2);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color var(--transition-default),
+    color var(--transition-default);
+}
+
+.tile:hover:not(.selected) {
+  background: var(--surface-soft);
+}
+
+.tile:focus-visible {
+  outline: var(--outline-width) solid var(--accent);
+  outline-offset: var(--outline-offset);
+}
+
+.selected {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.selected:hover {
+  background: var(--accent-hover);
+}
+
+.glyph {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}

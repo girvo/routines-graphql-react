@@ -1,5 +1,5 @@
 import { useCallback, type Dispatch, type KeyboardEvent, type SetStateAction } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { useMutation, graphql } from 'react-relay'
 import { X, Check } from 'lucide-react'
@@ -9,7 +9,7 @@ import { taskFormSchema, type TaskFormData } from './task-validation'
 import type { CreateTaskMutation } from './__generated__/CreateTaskMutation.graphql'
 import { TextInput } from '../primitives/form/TextInput'
 import { Field } from '../primitives/form/Field'
-import { IconBadge } from '../primitives/badge/IconBadge'
+import { IconPicker } from '../primitives/form/IconPicker'
 import { Button } from '../primitives/Button'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler'
 import styles from './CreateTask.module.css'
@@ -19,11 +19,10 @@ interface CreateTaskProps {
   setIsCreating: Dispatch<SetStateAction<boolean>>
 }
 
-const EmptyIcon = () => null
-
 export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     getValues,
@@ -104,7 +103,17 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
   return (
     <div className={styles.row}>
       <div className={styles.iconSlot}>
-        <IconBadge icon={EmptyIcon} size="md" />
+        <Controller
+          control={control}
+          name="icon"
+          render={({ field }) => (
+            <IconPicker
+              value={field.value ?? null}
+              onChange={field.onChange}
+              aria-label="Pick task icon"
+            />
+          )}
+        />
       </div>
       <div className={styles.titleField}>
         <Field
@@ -117,20 +126,6 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
             error={Boolean(errors.title)}
             autoFocus
             {...register('title')}
-            onKeyDown={onKeyDown}
-          />
-        </Field>
-      </div>
-      <div className={styles.iconField}>
-        <Field
-          label="Icon"
-          hideLabel
-          error={errors.icon?.message && capitalise(errors.icon.message)}
-        >
-          <TextInput
-            placeholder="Lucide icon name"
-            error={Boolean(errors.icon)}
-            {...register('icon')}
             onKeyDown={onKeyDown}
           />
         </Field>

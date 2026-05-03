@@ -1,8 +1,7 @@
 import { graphql, useFragment, useMutation } from 'react-relay'
-import { DynamicIcon } from 'lucide-react/dynamic'
 import { clsx } from 'clsx'
 import { CheckBox } from '../primitives/form/CheckBox.tsx'
-import { parseIconName } from '../utils/icons.ts'
+import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { TodayTaskRow$key } from './__generated__/TodayTaskRow.graphql.ts'
 import type { TodayTaskRowCompleteMutation } from './__generated__/TodayTaskRowCompleteMutation.graphql.ts'
@@ -69,6 +68,7 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
     `)
 
   const isLoading = completing || uncompleting
+  const Icon = iconComponent(data.routineSlot.task.icon)
 
   const handleToggle = (next: boolean) => {
     if (next) {
@@ -123,10 +123,7 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
       aria-label={data.routineSlot.task.title}
     >
       <span className={styles.iconWrap} aria-hidden>
-        <DynamicIcon
-          name={parseIconName(data.routineSlot.task.icon)}
-          className={styles.icon}
-        />
+        <Icon className={styles.icon} />
       </span>
       <span className={clsx(styles.label, isComplete && styles.labelComplete)}>
         {data.routineSlot.task.title}

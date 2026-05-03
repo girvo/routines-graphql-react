@@ -1,6 +1,5 @@
-import { DynamicIcon } from 'lucide-react/dynamic'
 import { graphql, useFragment, useMutation } from 'react-relay'
-import { parseIconName } from '../utils/icons.ts'
+import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { RoutineSlotItem$key } from './__generated__/RoutineSlotItem.graphql.ts'
 import type { RoutineSlotItemMutation } from './__generated__/RoutineSlotItemMutation.graphql.ts'
@@ -48,13 +47,12 @@ export const RoutineSlotItem = ({
     }
   `)
 
+  const Icon = iconComponent(routineSlot.task.icon)
+
   return (
     <div className={styles.root}>
       <span className={styles.iconWrap} aria-hidden>
-        <DynamicIcon
-          name={parseIconName(routineSlot.task.icon)}
-          className={styles.icon}
-        />
+        <Icon className={styles.icon} />
       </span>
       <span className={styles.label}>{routineSlot.task.title}</span>
       <Tooltip label="Remove">
