@@ -133,6 +133,7 @@ export const EditTask = ({
           leadingIcon={X}
           onClick={close}
           disabled={loading}
+          className={styles.cancelButton}
         >
           Cancel
         </Button>
