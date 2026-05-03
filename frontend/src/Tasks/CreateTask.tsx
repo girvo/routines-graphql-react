@@ -39,7 +39,7 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
       $title: String!
       $icon: String
       $connections: [ID!]!
-    ) {
+    ) @raw_response_type {
       createTask(icon: $icon, title: $title) {
         taskEdge @prependEdge(connections: $connections) {
           node {
@@ -66,18 +66,33 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
   )
 
   const onSubmit = (data: TaskFormData) => {
+    const optimisticTaskId = `client:Task:${crypto.randomUUID()}`
     createTask({
       variables: {
         title: data.title,
         icon: data.icon,
         connections: [connectionId],
       },
+      optimisticResponse: {
+        createTask: {
+          taskEdge: {
+            cursor: '',
+            node: {
+              id: optimisticTaskId,
+              title: data.title,
+              icon: data.icon || null,
+              createdAt: new Date().toISOString(),
+              slots: { edges: [] },
+            },
+          },
+        },
+      },
       onCompleted: (_response, errors) => {
-        if (showPayloadErrors(errors)) return
-        close()
+        showPayloadErrors(errors)
       },
       onError: showError,
     })
+    close()
   }
 
   const submit = handleSubmit(onSubmit)

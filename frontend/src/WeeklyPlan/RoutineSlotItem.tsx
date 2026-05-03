@@ -72,18 +72,20 @@ export const RoutineSlotItem = ({
         open={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={() => {
-          if (isLoading) return
-
           deleteItem({
             variables: {
               routineSlotId: routineSlot.id,
               connections: [connectionId],
+            },
+            optimisticResponse: {
+              deleteRoutineSlot: { deletedId: routineSlot.id },
             },
             onCompleted: (_response, errors) => {
               showPayloadErrors(errors)
             },
             onError: showError,
           })
+          setIsOpen(false)
         }}
         title="Are you sure?"
         destructive

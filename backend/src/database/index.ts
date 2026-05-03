@@ -25,6 +25,8 @@ if (process.env.DB_LOG === 'error') {
 const sqlite = new SQLite(path)
 if (path !== ':memory:') {
   sqlite.pragma('journal_mode = WAL')
+} else {
+  sqlite.unsafeMode(true)
 }
 
 export const db = new Kysely<Database>({

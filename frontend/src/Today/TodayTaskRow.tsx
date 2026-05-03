@@ -38,8 +38,8 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
 
   const [completeRoutineSlot, completing] =
     useMutation<TodayTaskRowCompleteMutation>(graphql`
-      mutation TodayTaskRowCompleteMutation($routineSlotId: ID!) {
-        completeRoutineSlot(routineSlotId: $routineSlotId) {
+      mutation TodayTaskRowCompleteMutation($dailyTaskInstanceId: ID!) {
+        completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
           taskCompletionEdge {
             node {
               id
@@ -58,8 +58,8 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
 
   const [uncompleteRoutineSlot, uncompleting] =
     useMutation<TodayTaskRowUncompleteMutation>(graphql`
-      mutation TodayTaskRowUncompleteMutation($taskCompletionId: ID!) {
-        uncompleteRoutineSlot(taskCompletionId: $taskCompletionId) {
+      mutation TodayTaskRowUncompleteMutation($dailyTaskInstanceId: ID!) {
+        uncompleteRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
           deletedId @deleteRecord
           dailyTaskInstance {
             id
@@ -72,9 +72,9 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
 
   const handleToggle = (next: boolean) => {
     if (next) {
-      const optimisticCompletionId = `client:optimistic-completion:${data.routineSlot.id}`
+      const optimisticCompletionId = `client:optimistic-completion:${data.id}`
       completeRoutineSlot({
-        variables: { routineSlotId: data.routineSlot.id },
+        variables: { dailyTaskInstanceId: data.id },
         optimisticResponse: {
           completeRoutineSlot: {
             taskCompletionEdge: {
@@ -98,7 +98,7 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
     }
     if (!data.completion) return
     uncompleteRoutineSlot({
-      variables: { taskCompletionId: data.completion.id },
+      variables: { dailyTaskInstanceId: data.id },
       optimisticResponse: {
         uncompleteRoutineSlot: {
           deletedId: data.completion.id,

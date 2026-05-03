@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0a385b2431087cf641d4d0b051ff01ad>>
+ * @generated SignedSource<<a17d3e3b7f833f4aa337965a62bb3224>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type TodayTaskRowCompleteMutation$variables = {
-  routineSlotId: string;
+  dailyTaskInstanceId: string;
 };
 export type TodayTaskRowCompleteMutation$data = {
   readonly completeRoutineSlot: {
@@ -38,7 +38,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "routineSlotId"
+    "name": "dailyTaskInstanceId"
   }
 ],
 v1 = {
@@ -54,8 +54,8 @@ v2 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "routineSlotId",
-        "variableName": "routineSlotId"
+        "name": "dailyTaskInstanceId",
+        "variableName": "dailyTaskInstanceId"
       }
     ],
     "concreteType": "CompleteRoutineSlotPayload",
@@ -139,16 +139,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "c0ff968e131f23c99cfa3eec0be3e7b0",
+    "cacheID": "da1ee98b5ef9ffd68bdabe304d8ce222",
     "id": null,
     "metadata": {},
     "name": "TodayTaskRowCompleteMutation",
     "operationKind": "mutation",
-    "text": "mutation TodayTaskRowCompleteMutation(\n  $routineSlotId: ID!\n) {\n  completeRoutineSlot(routineSlotId: $routineSlotId) {\n    taskCompletionEdge {\n      node {\n        id\n        completedAt\n        dailyTaskInstance {\n          id\n          completion {\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation TodayTaskRowCompleteMutation(\n  $dailyTaskInstanceId: ID!\n) {\n  completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {\n    taskCompletionEdge {\n      node {\n        id\n        completedAt\n        dailyTaskInstance {\n          id\n          completion {\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "657f18ec933e9ecef99d6a52bbc3c777";
+(node as any).hash = "32384ea2d01665df4538ce5899cb4c63";
 
 export default node;

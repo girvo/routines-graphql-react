@@ -53,8 +53,8 @@ type Mutation {
   createRoutineSlot(input: CreateRoutineSlotInput!): CreateRoutineSlotPayload
   deleteRoutineSlot(routineSlotId: ID!): DeleteRoutineSlotPayload
 
-  completeRoutineSlot(routineSlotId: ID!): CompleteRoutineSlotPayload
-  uncompleteRoutineSlot(taskCompletionId: ID!): UncompleteRoutineSlotPayload
+  completeRoutineSlot(dailyTaskInstanceId: ID!): CompleteRoutineSlotPayload
+  uncompleteRoutineSlot(dailyTaskInstanceId: ID!): UncompleteRoutineSlotPayload
 }
 
 type User implements Node {

@@ -56,7 +56,7 @@ export interface RoutineSlotsTable {
   task_id: number
   day_of_week: DayOfWeek
   section: DaySection
-  created_at: ColumnType<string, string | undefined, never>
+  created_at: ColumnType<string, string | undefined, string>
   deleted_at: string | null
 }
 

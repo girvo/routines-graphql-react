@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d2601f982b2c8f30a0e7468a60932b92>>
+ * @generated SignedSource<<160639f72849b0acf493b9f5d64b4e49>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,6 +10,7 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
+export type DaySection = "EVENING" | "MIDDAY" | "MORNING" | "%future added value";
 export type CreateTaskMutation$variables = {
   connections: ReadonlyArray<string>;
   icon?: string | null | undefined;
@@ -25,7 +26,29 @@ export type CreateTaskMutation$data = {
     };
   } | null | undefined;
 };
+export type CreateTaskMutation$rawResponse = {
+  readonly createTask: {
+    readonly taskEdge: {
+      readonly cursor: string;
+      readonly node: {
+        readonly createdAt: any;
+        readonly icon: string | null | undefined;
+        readonly id: string;
+        readonly slots: {
+          readonly edges: ReadonlyArray<{
+            readonly node: {
+              readonly id: string;
+              readonly section: DaySection;
+            };
+          }>;
+        };
+        readonly title: string;
+      };
+    };
+  } | null | undefined;
+};
 export type CreateTaskMutation = {
+  rawResponse: CreateTaskMutation$rawResponse;
   response: CreateTaskMutation$data;
   variables: CreateTaskMutation$variables;
 };
@@ -268,6 +291,6 @@ return {
 };
 })();
 
-(node as any).hash = "e4bd50000593f57bb8095ceac7741382";
+(node as any).hash = "baf9aba667c7fe7c00963edf048c9db9";
 
 export default node;

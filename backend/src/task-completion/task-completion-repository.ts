@@ -2,7 +2,7 @@ import type { Kysely, ExpressionBuilder, DeleteResult } from 'kysely'
 import type { Database } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
-import { format, startOfDay, endOfDay } from 'date-fns'
+import { startOfDay, endOfDay } from 'date-fns'
 import { getCurrentTimestamp } from '../database/time.ts'
 
 export interface TaskCompletionRow {
@@ -90,13 +90,9 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
 
       if (pagination.after) {
         const cursor = taskCompletionCursor.decode(pagination.after)
-        const sqliteFormattedDate = format(
-          new Date(cursor.completedAt),
-          'yyyy-MM-dd HH:mm:ss.SSS',
-        )
         query = query.where(eb =>
           buildCursorCondition(eb, {
-            completed_at: sqliteFormattedDate,
+            completed_at: cursor.completedAt,
             id: cursor.id,
           }),
         )
@@ -138,13 +134,9 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
 
       if (pagination.after) {
         const cursor = taskCompletionCursor.decode(pagination.after)
-        const sqliteFormattedDate = format(
-          new Date(cursor.completedAt),
-          'yyyy-MM-dd HH:mm:ss.SSS',
-        )
         query = query.where(eb =>
           buildCursorCondition(eb, {
-            completed_at: sqliteFormattedDate,
+            completed_at: cursor.completedAt,
             id: cursor.id,
           }),
         )
@@ -156,17 +148,35 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
     async createCompletion(
       userId: number,
       routineSlotId: number,
+      completedAt: string,
     ): Promise<TaskCompletionRow> {
       return db
         .insertInto('task_completions')
         .values({
           user_id: userId,
           routine_slot_id: routineSlotId,
-          completed_at: getCurrentTimestamp(),
+          completed_at: completedAt,
           created_at: getCurrentTimestamp(),
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+    },
+
+    async findBySlotAndDate(
+      routineSlotId: number,
+      userId: number,
+      date: Date,
+    ): Promise<TaskCompletionRow | undefined> {
+      const dayStart = startOfDay(date)
+      const dayEnd = endOfDay(date)
+      return db
+        .selectFrom('task_completions')
+        .selectAll()
+        .where('routine_slot_id', '=', routineSlotId)
+        .where('user_id', '=', userId)
+        .where('completed_at', '>=', dayStart.toISOString())
+        .where('completed_at', '<=', dayEnd.toISOString())
+        .executeTakeFirst()
     },
 
     async deleteCompletionBySlotAndDate(
@@ -238,13 +248,9 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
 
       if (pagination.after) {
         const cursor = taskCompletionCursor.decode(pagination.after)
-        const sqliteFormattedDate = format(
-          new Date(cursor.completedAt),
-          'yyyy-MM-dd HH:mm:ss.SSS',
-        )
         query = query.where(eb =>
           buildCursorCondition(eb, {
-            completed_at: sqliteFormattedDate,
+            completed_at: cursor.completedAt,
             id: cursor.id,
           }),
         )

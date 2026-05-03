@@ -26,11 +26,17 @@ import {
 import { TextInput } from '../primitives/form/TextInput.tsx'
 import styles from './AddTaskDropdown.module.css'
 
+interface ClickedTask {
+  id: string
+  title: string
+  icon: string | null | undefined
+}
+
 interface TaskListProps {
   fragmentRef: AddTaskDropdownTasksFragment$key
   searchQuery: string
   isLoading: boolean
-  onTaskClick: (taskId: string) => void
+  onTaskClick: (task: ClickedTask) => void
 }
 
 const TaskList = ({
@@ -87,7 +93,7 @@ const TaskList = ({
           <button
             type="button"
             className={styles.option}
-            onClick={() => !isLoading && onTaskClick(node.id)}
+            onClick={() => !isLoading && onTaskClick(node)}
             disabled={isLoading}
           >
             <DynamicIcon
@@ -168,10 +174,26 @@ const AddTaskDropdownContent = ({
       }
     `)
 
-  const handleTaskClick = (taskId: string) => {
+  const handleTaskClick = (task: ClickedTask) => {
     if (isLoading) return
+    const optimisticSlotId = `client:RoutineSlot:${crypto.randomUUID()}`
     createRoutineSlot({
-      variables: { taskId, dayOfWeek, daySection, connectionId },
+      variables: { taskId: task.id, dayOfWeek, daySection, connectionId },
+      optimisticResponse: {
+        createRoutineSlot: {
+          routineSlotEdge: {
+            cursor: '',
+            node: {
+              id: optimisticSlotId,
+              task: {
+                id: task.id,
+                title: task.title,
+                icon: task.icon ?? null,
+              },
+            },
+          },
+        },
+      },
       onCompleted: (_response, errors) => {
         showPayloadErrors(errors)
       },

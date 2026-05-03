@@ -342,8 +342,8 @@ describe('Node resolver', () => {
 
     const completed = await executeGraphQL(
       graphql(`
-        mutation CompleteForDailyTaskInstanceRoundTrip($routineSlotId: ID!) {
-          completeRoutineSlot(routineSlotId: $routineSlotId) {
+        mutation CompleteForDailyTaskInstanceRoundTrip($dailyTaskInstanceId: ID!) {
+          completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {
                 id
@@ -358,7 +358,7 @@ describe('Node resolver', () => {
           }
         }
       `),
-      { routineSlotId: slotId },
+      { dailyTaskInstanceId: queriedInstance.id },
       { yoga, userToken },
     )
 

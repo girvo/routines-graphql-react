@@ -2,7 +2,6 @@ import type { Kysely, ExpressionBuilder } from 'kysely'
 import type { Database, DayOfWeek, DaySection } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
-import { format } from 'date-fns'
 import { getCurrentTimestamp } from '../database/time.ts'
 
 export interface RoutineSlotRow {
@@ -134,13 +133,9 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
 
       if (pagination.after) {
         const cursor = routineSlotCursor.decode(pagination.after)
-        const sqliteFormattedDate = format(
-          new Date(cursor.createdAt),
-          'yyyy-MM-dd HH:mm:ss.SSS',
-        )
         query = query.where(eb =>
           buildCursorCondition(eb, {
-            created_at: sqliteFormattedDate,
+            created_at: cursor.createdAt,
             id: cursor.id,
           }),
         )
@@ -168,13 +163,9 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
 
       if (pagination.after) {
         const cursor = routineSlotCursor.decode(pagination.after)
-        const sqliteFormattedDate = format(
-          new Date(cursor.createdAt),
-          'yyyy-MM-dd HH:mm:ss.SSS',
-        )
         query = query.where(eb =>
           buildCursorCondition(eb, {
-            created_at: sqliteFormattedDate,
+            created_at: cursor.createdAt,
             id: cursor.id,
           }),
         )

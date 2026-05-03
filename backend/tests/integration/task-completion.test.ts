@@ -9,6 +9,7 @@ import {
   type YogaApp,
 } from '../helpers/graphql.ts'
 import { graphql } from '../gql/gql.ts'
+import { dailyTaskInstanceIdFor } from '../helpers/task-completion.ts'
 
 let yoga: YogaApp
 
@@ -52,8 +53,8 @@ describe('Task completion mutations', () => {
 
     const completionResult = await executeGraphQL(
       graphql(`
-        mutation CompleteRoutineSlot($routineSlotId: ID!) {
-          completeRoutineSlot(routineSlotId: $routineSlotId) {
+        mutation CompleteRoutineSlot($dailyTaskInstanceId: ID!) {
+          completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {
                 id
@@ -72,8 +73,10 @@ describe('Task completion mutations', () => {
         }
       `),
       {
-        routineSlotId:
+        dailyTaskInstanceId: dailyTaskInstanceIdFor(
           slotResult.data.createRoutineSlot.routineSlotEdge.node.id,
+          new Date(),
+        ),
       },
       { yoga, userToken },
     )
@@ -113,10 +116,15 @@ describe('Task completion mutations', () => {
       'routine slot was created',
     )
 
+    const dailyTaskInstanceId = dailyTaskInstanceIdFor(
+      slotResult.data.createRoutineSlot.routineSlotEdge.node.id,
+      new Date(),
+    )
+
     const completionResult = await executeGraphQL(
       graphql(`
-        mutation CompleteRoutineSlotForUncompletion($routineSlotId: ID!) {
-          completeRoutineSlot(routineSlotId: $routineSlotId) {
+        mutation CompleteRoutineSlotForUncompletion($dailyTaskInstanceId: ID!) {
+          completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {
                 id
@@ -125,10 +133,7 @@ describe('Task completion mutations', () => {
           }
         }
       `),
-      {
-        routineSlotId:
-          slotResult.data.createRoutineSlot.routineSlotEdge.node.id,
-      },
+      { dailyTaskInstanceId },
       { yoga, userToken },
     )
 
@@ -144,13 +149,13 @@ describe('Task completion mutations', () => {
 
     const uncompletionResult = await executeGraphQL(
       graphql(`
-        mutation UncompleteRoutineSlot($taskCompletionId: ID!) {
-          uncompleteRoutineSlot(taskCompletionId: $taskCompletionId) {
+        mutation UncompleteRoutineSlot($dailyTaskInstanceId: ID!) {
+          uncompleteRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             deletedId
           }
         }
       `),
-      { taskCompletionId },
+      { dailyTaskInstanceId },
       { yoga, userToken },
     )
 
@@ -188,13 +193,15 @@ describe('Task completion mutations', () => {
       'routine slot was created',
     )
 
-    const routineSlotId =
-      slotResult.data.createRoutineSlot.routineSlotEdge.node.id
+    const dailyTaskInstanceId = dailyTaskInstanceIdFor(
+      slotResult.data.createRoutineSlot.routineSlotEdge.node.id,
+      new Date(),
+    )
 
     const firstCompletion = await executeGraphQL(
       graphql(`
-        mutation FirstCompletion($routineSlotId: ID!) {
-          completeRoutineSlot(routineSlotId: $routineSlotId) {
+        mutation FirstCompletion($dailyTaskInstanceId: ID!) {
+          completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {
                 id
@@ -203,7 +210,7 @@ describe('Task completion mutations', () => {
           }
         }
       `),
-      { routineSlotId },
+      { dailyTaskInstanceId },
       { yoga, userToken },
     )
 
@@ -216,8 +223,8 @@ describe('Task completion mutations', () => {
 
     const secondCompletion = await executeGraphQL(
       graphql(`
-        mutation SecondCompletion($routineSlotId: ID!) {
-          completeRoutineSlot(routineSlotId: $routineSlotId) {
+        mutation SecondCompletion($dailyTaskInstanceId: ID!) {
+          completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {
                 id
@@ -226,7 +233,7 @@ describe('Task completion mutations', () => {
           }
         }
       `),
-      { routineSlotId },
+      { dailyTaskInstanceId },
       { yoga, userToken },
     )
 
@@ -252,8 +259,8 @@ describe('Task completion mutations', () => {
 
     const result = await executeGraphQL(
       graphql(`
-        mutation CannotCompleteOtherUsersRoutineSlot($routineSlotId: ID!) {
-          completeRoutineSlot(routineSlotId: $routineSlotId) {
+        mutation CannotCompleteOtherUsersRoutineSlot($dailyTaskInstanceId: ID!) {
+          completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {
                 id
@@ -262,7 +269,9 @@ describe('Task completion mutations', () => {
           }
         }
       `),
-      { routineSlotId },
+      {
+        dailyTaskInstanceId: dailyTaskInstanceIdFor(routineSlotId, new Date()),
+      },
       { yoga, userToken: otherToken },
     )
 
@@ -316,8 +325,8 @@ describe('Task.completions query resolver', () => {
 
     const completionResult = await executeGraphQL(
       graphql(`
-        mutation CompleteForTaskCompletionsTest($routineSlotId: ID!) {
-          completeRoutineSlot(routineSlotId: $routineSlotId) {
+        mutation CompleteForTaskCompletionsTest($dailyTaskInstanceId: ID!) {
+          completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {
                 id
@@ -327,7 +336,10 @@ describe('Task.completions query resolver', () => {
         }
       `),
       {
-        routineSlotId: slot.data.createRoutineSlot.routineSlotEdge.node.id,
+        dailyTaskInstanceId: dailyTaskInstanceIdFor(
+          slot.data.createRoutineSlot.routineSlotEdge.node.id,
+          new Date(),
+        ),
       },
       { yoga, userToken },
     )

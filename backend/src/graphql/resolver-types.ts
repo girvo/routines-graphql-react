@@ -158,7 +158,7 @@ export type Mutation = {
 
 
 export type MutationCompleteRoutineSlotArgs = {
-  routineSlotId: Scalars['ID']['input'];
+  dailyTaskInstanceId: Scalars['ID']['input'];
 };
 
 
@@ -184,7 +184,7 @@ export type MutationDeleteTaskArgs = {
 
 
 export type MutationUncompleteRoutineSlotArgs = {
-  taskCompletionId: Scalars['ID']['input'];
+  dailyTaskInstanceId: Scalars['ID']['input'];
 };
 
 
@@ -585,12 +585,12 @@ export interface FileScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  completeRoutineSlot?: Resolver<Maybe<ResolversTypes['CompleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationCompleteRoutineSlotArgs, 'routineSlotId'>>;
+  completeRoutineSlot?: Resolver<Maybe<ResolversTypes['CompleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationCompleteRoutineSlotArgs, 'dailyTaskInstanceId'>>;
   createRoutineSlot?: Resolver<Maybe<ResolversTypes['CreateRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationCreateRoutineSlotArgs, 'input'>>;
   createTask?: Resolver<Maybe<ResolversTypes['CreateTaskPayload']>, ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'title'>>;
   deleteRoutineSlot?: Resolver<Maybe<ResolversTypes['DeleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoutineSlotArgs, 'routineSlotId'>>;
   deleteTask?: Resolver<Maybe<ResolversTypes['DeleteTaskPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'taskId'>>;
-  uncompleteRoutineSlot?: Resolver<Maybe<ResolversTypes['UncompleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationUncompleteRoutineSlotArgs, 'taskCompletionId'>>;
+  uncompleteRoutineSlot?: Resolver<Maybe<ResolversTypes['UncompleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationUncompleteRoutineSlotArgs, 'dailyTaskInstanceId'>>;
   updateTask?: Resolver<Maybe<ResolversTypes['UpdateTaskPayload']>, ParentType, ContextType, RequireFields<MutationUpdateTaskArgs, 'input'>>;
 }>;
 

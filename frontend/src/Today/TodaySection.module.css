@@ -45,7 +45,6 @@
   composes: typo-body typo-md from global;
   color: var(--text-muted);
   padding: var(--space-3) var(--page-padding-x);
-  display: none;
 }
 
 @media (min-width: 1024px) {
@@ -69,9 +68,5 @@
     display: block;
     height: var(--border-width);
     background: var(--stroke-hairline);
-  }
-
-  .empty {
-    display: block;
   }
 }

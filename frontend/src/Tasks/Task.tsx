@@ -67,6 +67,9 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
   const handleConfirmDelete = () => {
     deleteTask({
       variables: { taskId: task.id, connections: [connectionId] },
+      optimisticResponse: {
+        deleteTask: { deletedId: task.id },
+      },
       onCompleted: (_response, errors) => {
         showPayloadErrors(errors)
       },

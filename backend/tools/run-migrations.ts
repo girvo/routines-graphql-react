@@ -12,9 +12,12 @@ if (!process.env.SQLITE_DB) {
   throw new Error('No SQLITE_DB defined in environment')
 }
 
+const sqliteDb = new Database(process.env.SQLITE_DB)
+sqliteDb.unsafeMode(true)
+
 const db = new Kysely({
   dialect: new SqliteDialect({
-    database: new Database(process.env.SQLITE_DB),
+    database: sqliteDb,
   }),
 })
 

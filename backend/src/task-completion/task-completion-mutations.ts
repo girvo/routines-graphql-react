@@ -5,19 +5,24 @@ import {
 } from './task-completion-domain.ts'
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
-import { fromGlobalId } from '../globalId.ts'
 import { GraphQLError } from 'graphql'
 import { tableToDomain as routineSlotTableToDomain } from '../routine-slot/routine-slot-domain.ts'
-import { dailyTaskInstanceToGraphQL } from '../schedule/schedule-domain.ts'
+import {
+  decodeDailyTaskInstanceId,
+  dailyTaskInstanceToGraphQL,
+} from '../schedule/schedule-domain.ts'
+import { toGlobalId } from '../globalId.ts'
 
 export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlot'] =
-  async (_parent, { routineSlotId }, context) => {
+  async (_parent, { dailyTaskInstanceId }, context) => {
     assertAuthenticated(context)
 
-    const decodedRoutineSlotId = fromGlobalId(routineSlotId, 'RoutineSlot')
+    const { date, routineSlotId } = decodeDailyTaskInstanceId(
+      dailyTaskInstanceId,
+    )
 
     const routineSlot = await context.routineRepo.findByIdAndUserId(
-      decodedRoutineSlotId,
+      routineSlotId,
       context.currentUser.id,
     )
     if (!routineSlot) {
@@ -26,7 +31,8 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
 
     const completionRow = await context.taskCompletionRepo.createCompletion(
       context.currentUser.id,
-      decodedRoutineSlotId,
+      routineSlotId,
+      date.toISOString(),
     )
 
     const completion = tableToDomain(completionRow)
@@ -41,30 +47,32 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
   }
 
 export const uncompleteRoutineSlot: MutationResolvers<Context>['uncompleteRoutineSlot'] =
-  async (_parent, { taskCompletionId }, context) => {
+  async (_parent, { dailyTaskInstanceId }, context) => {
     assertAuthenticated(context)
 
-    const id = fromGlobalId(taskCompletionId, 'TaskCompletion')
-
-    const existingRow = await context.taskCompletionRepo.findByIdAndUserId(
-      id,
-      context.currentUser.id,
+    const { date, routineSlotId } = decodeDailyTaskInstanceId(
+      dailyTaskInstanceId,
     )
-    if (!existingRow) {
-      throw new GraphQLError("Task completion didn't exist")
-    }
-    const existing = tableToDomain(existingRow)
 
     const routineSlotRow = await context.routineRepo.findByIdAndUserId(
-      existing.routineSlotId,
+      routineSlotId,
       context.currentUser.id,
     )
     if (!routineSlotRow) {
       throw new GraphQLError('Routine slot not found')
     }
 
+    const existingRow = await context.taskCompletionRepo.findBySlotAndDate(
+      routineSlotId,
+      context.currentUser.id,
+      date,
+    )
+    if (!existingRow) {
+      throw new GraphQLError("Task completion didn't exist")
+    }
+
     const res = await context.taskCompletionRepo.deleteCompletion(
-      id,
+      existingRow.id,
       context.currentUser.id,
     )
 
@@ -74,10 +82,10 @@ export const uncompleteRoutineSlot: MutationResolvers<Context>['uncompleteRoutin
 
     return {
       dailyTaskInstance: dailyTaskInstanceToGraphQL({
-        date: existing.completedAt,
+        date,
         routineSlot: routineSlotTableToDomain(routineSlotRow),
         completion: null,
       }),
-      deletedId: taskCompletionId,
+      deletedId: toGlobalId('TaskCompletion', existingRow.id),
     }
   }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8939999079fc66a0a7c76803894e793d>>
+ * @generated SignedSource<<146f4203e0b3d9da3313c7786b603551>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type TodayTaskRowUncompleteMutation$variables = {
-  taskCompletionId: string;
+  dailyTaskInstanceId: string;
 };
 export type TodayTaskRowUncompleteMutation$data = {
   readonly uncompleteRoutineSlot: {
@@ -30,14 +30,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "taskCompletionId"
+    "name": "dailyTaskInstanceId"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "taskCompletionId",
-    "variableName": "taskCompletionId"
+    "name": "dailyTaskInstanceId",
+    "variableName": "dailyTaskInstanceId"
   }
 ],
 v2 = {
@@ -120,16 +120,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "72ff93b174cbbffe928a25b89062dd44",
+    "cacheID": "b7f6d4ab2c0f585543026f820b04e7c7",
     "id": null,
     "metadata": {},
     "name": "TodayTaskRowUncompleteMutation",
     "operationKind": "mutation",
-    "text": "mutation TodayTaskRowUncompleteMutation(\n  $taskCompletionId: ID!\n) {\n  uncompleteRoutineSlot(taskCompletionId: $taskCompletionId) {\n    deletedId\n    dailyTaskInstance {\n      id\n    }\n  }\n}\n"
+    "text": "mutation TodayTaskRowUncompleteMutation(\n  $dailyTaskInstanceId: ID!\n) {\n  uncompleteRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {\n    deletedId\n    dailyTaskInstance {\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "41762142502ec4b759a0f28a79ff0f33";
+(node as any).hash = "74207d4346b2a145392494cad5b16390";
 
 export default node;

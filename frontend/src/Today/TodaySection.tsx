@@ -44,7 +44,11 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
       </div>
       <div className={styles.headerDivider} />
       <div className={styles.body}>
-        {total === 0 && <div className={styles.empty}>No tasks</div>}
+        {total === 0 && (
+          <div className={styles.empty}>
+            No {label.toLowerCase()} tasks scheduled
+          </div>
+        )}
         {data.edges.map((edge) => (
           <TodayTaskRow key={edge.node.routineSlot.id} instance={edge.node} />
         ))}
