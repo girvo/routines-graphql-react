@@ -4,7 +4,8 @@ import type { TaskCompletionDomain } from '../task-completion/task-completion-do
 import { routineSlotToGraphQL } from '../routine-slot/routine-slot-domain.ts'
 import { taskCompletionToGraphQL } from '../task-completion/task-completion-domain.ts'
 import { routineSlotCursor } from '../routine-slot/routine-slot-repository.ts'
-import { format, parseISO } from 'date-fns'
+import { parseISO } from 'date-fns'
+import { getUserDayKey } from '../user-timezone.ts'
 import {
   encodeGlobalId,
   decodeGlobalId,
@@ -34,7 +35,7 @@ export const encodeDailyTaskInstanceId = (
   routineSlotId: number,
   date: Date,
 ): GlobalId => {
-  const dayKey = format(date, 'yyyy-MM-dd')
+  const dayKey = getUserDayKey(date)
   return encodeGlobalId(
     DAILY_TASK_INSTANCE_TYPENAME,
     `${dayKey}:${routineSlotId}`,

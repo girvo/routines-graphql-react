@@ -6,7 +6,6 @@ import type {
   DayScheduleResolvers,
 } from '../graphql/resolver-types.ts'
 import type { DayOfWeek, DaySection } from '../database/types.ts'
-import { getDay } from 'date-fns'
 import type {
   DailyRoutineData,
   DayScheduleData,
@@ -25,6 +24,7 @@ import {
   routineSlotToGraphQL,
 } from '../routine-slot/routine-slot-domain.ts'
 import { tableToDomain as taskCompletionTableToDomain } from '../task-completion/task-completion-domain.ts'
+import { getUserDayOfWeek } from '../user-timezone.ts'
 import { GraphQLError } from 'graphql'
 
 const isDayOfWeek = (day: string): day is DayOfWeek => {
@@ -45,20 +45,6 @@ const isDaySection = (section: string): section is DaySection => {
   )
 }
 
-const getDayOfWeek = (date: Date): DayOfWeek => {
-  const dayIndex = getDay(date)
-  const dayMap: DayOfWeek[] = [
-    'SUNDAY',
-    'MONDAY',
-    'TUESDAY',
-    'WEDNESDAY',
-    'THURSDAY',
-    'FRIDAY',
-    'SATURDAY',
-  ]
-  return dayMap[dayIndex]
-}
-
 export const dailyRoutine: QueryResolvers<Context>['dailyRoutine'] = async (
   _parent,
   { date },
@@ -67,7 +53,7 @@ export const dailyRoutine: QueryResolvers<Context>['dailyRoutine'] = async (
   assertAuthenticated(context)
 
   const targetDate = date ?? new Date()
-  const dayOfWeek = getDayOfWeek(targetDate)
+  const dayOfWeek = getUserDayOfWeek(targetDate)
 
   return {
     date: targetDate,

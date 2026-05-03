@@ -2,8 +2,8 @@ import type { Kysely, ExpressionBuilder, DeleteResult } from 'kysely'
 import type { Database } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
-import { startOfDay, endOfDay } from 'date-fns'
 import { getCurrentTimestamp } from '../database/time.ts'
+import { getUserDayBoundsUtc } from '../user-timezone.ts'
 
 export interface TaskCompletionRow {
   id: number
@@ -167,15 +167,14 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
       userId: number,
       date: Date,
     ): Promise<TaskCompletionRow | undefined> {
-      const dayStart = startOfDay(date)
-      const dayEnd = endOfDay(date)
+      const { start, end } = getUserDayBoundsUtc(date)
       return db
         .selectFrom('task_completions')
         .selectAll()
         .where('routine_slot_id', '=', routineSlotId)
         .where('user_id', '=', userId)
-        .where('completed_at', '>=', dayStart.toISOString())
-        .where('completed_at', '<=', dayEnd.toISOString())
+        .where('completed_at', '>=', start.toISOString())
+        .where('completed_at', '<=', end.toISOString())
         .executeTakeFirst()
     },
 
@@ -184,17 +183,13 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
       userId: number,
       completionDate: Date,
     ): Promise<DeleteResult> {
-      const startOfDay = new Date(completionDate)
-      startOfDay.setHours(0, 0, 0, 0)
-      const endOfDay = new Date(completionDate)
-      endOfDay.setHours(23, 59, 59, 999)
-
+      const { start, end } = getUserDayBoundsUtc(completionDate)
       return db
         .deleteFrom('task_completions')
         .where('routine_slot_id', '=', routineSlotId)
         .where('user_id', '=', userId)
-        .where('completed_at', '>=', startOfDay.toISOString())
-        .where('completed_at', '<=', endOfDay.toISOString())
+        .where('completed_at', '>=', start.toISOString())
+        .where('completed_at', '<=', end.toISOString())
         .executeTakeFirstOrThrow()
     },
 
@@ -268,16 +263,15 @@ export const createTaskCompletionRepository = (db: Kysely<Database>) => {
         return []
       }
 
-      const dayStart = startOfDay(date)
-      const dayEnd = endOfDay(date)
+      const { start, end } = getUserDayBoundsUtc(date)
 
       return db
         .selectFrom('task_completions')
         .selectAll()
         .where('routine_slot_id', 'in', routineSlotIds)
         .where('user_id', '=', userId)
-        .where('completed_at', '>=', dayStart.toISOString())
-        .where('completed_at', '<=', dayEnd.toISOString())
+        .where('completed_at', '>=', start.toISOString())
+        .where('completed_at', '<=', end.toISOString())
         .execute()
     },
   }
