@@ -22,7 +22,7 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
             completion {
               id
             }
-            ...TodayTaskRow
+            ...TodayTaskRow_instance
           }
         }
       }

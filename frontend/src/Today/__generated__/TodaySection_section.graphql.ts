@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2b8ff90f7590a654cc12ab1ba8112114>>
+ * @generated SignedSource<<40f3625f1d2eb50cfc3d0d30bd616ddb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,7 @@ export type TodaySection_section$data = {
       readonly routineSlot: {
         readonly id: string;
       };
-      readonly " $fragmentSpreads": FragmentRefs<"TodayTaskRow">;
+      readonly " $fragmentSpreads": FragmentRefs<"TodayTaskRow_instance">;
     };
   }>;
   readonly " $fragmentType": "TodaySection_section";
@@ -84,7 +84,7 @@ return {
             {
               "args": null,
               "kind": "FragmentSpread",
-              "name": "TodayTaskRow"
+              "name": "TodayTaskRow_instance"
             }
           ],
           "storageKey": null
@@ -98,6 +98,6 @@ return {
 };
 })();
 
-(node as any).hash = "adf68a72b9d57f9779b0bf1cc8ea61fe";
+(node as any).hash = "b195aa1240323d860b5ec205622d232e";
 
 export default node;

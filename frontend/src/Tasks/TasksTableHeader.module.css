@@ -2,7 +2,7 @@
   display: none;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-2) var(--card-padding-x);
+  padding: var(--space-2) var(--space-4-5);
   min-height: 36px;
   background: var(--surface-bg);
   border-bottom: var(--border-width) solid var(--stroke-line);

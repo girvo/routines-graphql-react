@@ -32,7 +32,7 @@ export const DaySection = ({
         edges {
           __typename
         }
-        ...WeeklyPlanRoutineSectionFragment
+        ...WeeklyPlanRoutineSection_section
       }
     `,
     section,

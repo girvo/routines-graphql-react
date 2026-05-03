@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5675a45d3dc65741289ec8e42047d89c>>
+ * @generated SignedSource<<332f86a0dc6359721150cd511fbe2fe1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -252,16 +252,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "abadd226296a7e0523f23fb416e0c608",
+    "cacheID": "768b3206174cedefd5f5716db5ae34d4",
     "id": null,
     "metadata": {},
     "name": "TasksListPaginationQuery",
     "operationKind": "query",
-    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0fe1eb9ebd415dcc713cbf2a70664e62";
+(node as any).hash = "e9b6274b837e0d52ad7885ae81af4322";
 
 export default node;

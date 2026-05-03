@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9e75b0a4438dc72c146f9d61ade9f6a9>>
+ * @generated SignedSource<<cc5f3406403bcad2470ee0221af157dd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type AddTaskDropdownTasksFragment$data = {
+export type AddTaskDropdown_query$data = {
   readonly tasks: {
     readonly edges: ReadonlyArray<{
       readonly node: {
@@ -20,11 +20,11 @@ export type AddTaskDropdownTasksFragment$data = {
       };
     }>;
   };
-  readonly " $fragmentType": "AddTaskDropdownTasksFragment";
+  readonly " $fragmentType": "AddTaskDropdown_query";
 };
-export type AddTaskDropdownTasksFragment$key = {
-  readonly " $data"?: AddTaskDropdownTasksFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdownTasksFragment">;
+export type AddTaskDropdown_query$key = {
+  readonly " $data"?: AddTaskDropdown_query$data;
+  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdown_query">;
 };
 
 import AddTaskDropdownTasksRefetchQuery_graphql from './AddTaskDropdownTasksRefetchQuery.graphql';
@@ -45,7 +45,7 @@ const node: ReaderFragment = {
       "operation": AddTaskDropdownTasksRefetchQuery_graphql
     }
   },
-  "name": "AddTaskDropdownTasksFragment",
+  "name": "AddTaskDropdown_query",
   "selections": [
     {
       "alias": null,
@@ -117,6 +117,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "69ab2859893e1d78eb59b3a1c8a7435e";
+(node as any).hash = "757065c9220c17b2c312c927367fb8f2";
 
 export default node;

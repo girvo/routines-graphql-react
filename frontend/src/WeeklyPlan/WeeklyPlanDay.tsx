@@ -1,20 +1,20 @@
 import { graphql, useFragment, useQueryLoader } from 'react-relay'
 import { DaySection } from './DaySection.tsx'
-import type { WeeklyPlanDay$key } from './__generated__/WeeklyPlanDay.graphql'
+import type { WeeklyPlanDay_day$key } from './__generated__/WeeklyPlanDay_day.graphql'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import AddTaskDropdownQueryNode from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { DayOfWeek } from './days.ts'
 import styles from './WeeklyPlanDay.module.css'
 
 interface WeeklyPlanDayProps {
-  day: WeeklyPlanDay$key
+  day: WeeklyPlanDay_day$key
   dayOfWeek: DayOfWeek
 }
 
 export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
-  const daySchedule = useFragment<WeeklyPlanDay$key>(
+  const daySchedule = useFragment<WeeklyPlanDay_day$key>(
     graphql`
-      fragment WeeklyPlanDay on DaySchedule {
+      fragment WeeklyPlanDay_day on DaySchedule {
         dayOfWeek
         morning(first: 100) @connection(key: "WeeklyPlanDaySlots_morning") {
           __id

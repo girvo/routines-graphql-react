@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<32569f103ef1f1d176c60b396a9a000e>>
+ * @generated SignedSource<<bce32d2b9c0433394c02020544957811>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -221,12 +221,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "027ada2eb847b24d2b4341c607b9dec9",
+    "cacheID": "9ec0bdf91eb927f832394b914ed6ca2a",
     "id": null,
     "metadata": {},
     "name": "TasksPageQuery",
     "operationKind": "query",
-    "text": "query TasksPageQuery {\n  ...TasksList_tasks\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        title\n        ...TaskDisplay\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksPageQuery {\n  ...TasksList_tasks\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

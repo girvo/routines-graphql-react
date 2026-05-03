@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dcb8fea83a30708d05b4ea1431654244>>
+ * @generated SignedSource<<e655f5a98525910d1626f085901359a9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ReaderFragment } from 'relay-runtime';
 export type DayOfWeek = "FRIDAY" | "MONDAY" | "SATURDAY" | "SUNDAY" | "THURSDAY" | "TUESDAY" | "WEDNESDAY" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
-export type WeeklyPlanDay$data = {
+export type WeeklyPlanDay_day$data = {
   readonly dayOfWeek: DayOfWeek;
   readonly evening: {
     readonly __id: string;
@@ -34,11 +34,11 @@ export type WeeklyPlanDay$data = {
     }>;
     readonly " $fragmentSpreads": FragmentRefs<"DaySection_section">;
   };
-  readonly " $fragmentType": "WeeklyPlanDay";
+  readonly " $fragmentType": "WeeklyPlanDay_day";
 };
-export type WeeklyPlanDay$key = {
-  readonly " $data"?: WeeklyPlanDay$data;
-  readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+export type WeeklyPlanDay_day$key = {
+  readonly " $data"?: WeeklyPlanDay_day$data;
+  readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
 };
 
 const node: ReaderFragment = (function(){
@@ -153,7 +153,7 @@ return {
       }
     ]
   },
-  "name": "WeeklyPlanDay",
+  "name": "WeeklyPlanDay_day",
   "selections": [
     {
       "alias": null,
@@ -198,6 +198,6 @@ return {
 };
 })();
 
-(node as any).hash = "659ca6128965284c8ebfef7a836ad666";
+(node as any).hash = "fdc442cec79dc7660c7cbb714d4a7b73";
 
 export default node;

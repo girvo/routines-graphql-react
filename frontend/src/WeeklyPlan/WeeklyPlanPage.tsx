@@ -20,25 +20,25 @@ const WeeklyPlanPage = ({ queries }: Props) => {
       query WeeklyPlanPageQuery {
         weeklySchedule {
           monday {
-            ...WeeklyPlanDay
+            ...WeeklyPlanDay_day
           }
           tuesday {
-            ...WeeklyPlanDay
+            ...WeeklyPlanDay_day
           }
           wednesday {
-            ...WeeklyPlanDay
+            ...WeeklyPlanDay_day
           }
           thursday {
-            ...WeeklyPlanDay
+            ...WeeklyPlanDay_day
           }
           friday {
-            ...WeeklyPlanDay
+            ...WeeklyPlanDay_day
           }
           saturday {
-            ...WeeklyPlanDay
+            ...WeeklyPlanDay_day
           }
           sunday {
-            ...WeeklyPlanDay
+            ...WeeklyPlanDay_day
           }
         }
       }

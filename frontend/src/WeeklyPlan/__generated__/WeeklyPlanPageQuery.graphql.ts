@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5ee62284f41e7c0e5e8f5c4cf1cfa2b9>>
+ * @generated SignedSource<<8886139985903a9b82107843fff9fdd9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,25 +14,25 @@ export type WeeklyPlanPageQuery$variables = Record<PropertyKey, never>;
 export type WeeklyPlanPageQuery$data = {
   readonly weeklySchedule: {
     readonly friday: {
-      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
     };
     readonly monday: {
-      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
     };
     readonly saturday: {
-      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
     };
     readonly sunday: {
-      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
     };
     readonly thursday: {
-      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
     };
     readonly tuesday: {
-      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
     };
     readonly wednesday: {
-      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay">;
+      readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanDay_day">;
     };
   };
 };
@@ -46,7 +46,7 @@ var v0 = [
   {
     "args": null,
     "kind": "FragmentSpread",
-    "name": "WeeklyPlanDay"
+    "name": "WeeklyPlanDay_day"
   }
 ],
 v1 = [
@@ -415,16 +415,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7b9df7ab3c063a25ae150049044a9a05",
+    "cacheID": "fe0bc0ce7466cf014b69d74741385a42",
     "id": null,
     "metadata": {},
     "name": "WeeklyPlanPageQuery",
     "operationKind": "query",
-    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay\n    }\n    tuesday {\n      ...WeeklyPlanDay\n    }\n    wednesday {\n      ...WeeklyPlanDay\n    }\n    thursday {\n      ...WeeklyPlanDay\n    }\n    friday {\n      ...WeeklyPlanDay\n    }\n    saturday {\n      ...WeeklyPlanDay\n    }\n    sunday {\n      ...WeeklyPlanDay\n    }\n  }\n}\n\nfragment DaySection_section on RoutineSlotConnection {\n  edges {\n    __typename\n  }\n  ...WeeklyPlanRoutineSectionFragment\n}\n\nfragment RoutineSlotItem on RoutineSlot {\n  id\n  task {\n    title\n    icon\n    id\n  }\n}\n\nfragment WeeklyPlanDay on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSectionFragment on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem\n    }\n  }\n}\n"
+    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay_day\n    }\n    tuesday {\n      ...WeeklyPlanDay_day\n    }\n    wednesday {\n      ...WeeklyPlanDay_day\n    }\n    thursday {\n      ...WeeklyPlanDay_day\n    }\n    friday {\n      ...WeeklyPlanDay_day\n    }\n    saturday {\n      ...WeeklyPlanDay_day\n    }\n    sunday {\n      ...WeeklyPlanDay_day\n    }\n  }\n}\n\nfragment DaySection_section on RoutineSlotConnection {\n  edges {\n    __typename\n  }\n  ...WeeklyPlanRoutineSection_section\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    title\n    icon\n    id\n  }\n}\n\nfragment WeeklyPlanDay_day on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ef4d53159422a8c69a42fa82fc2508c6";
+(node as any).hash = "b6bfc6db4585c7bd33d34966025a2c18";
 
 export default node;

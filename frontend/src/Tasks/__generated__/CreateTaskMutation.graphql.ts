@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<160639f72849b0acf493b9f5d64b4e49>>
+ * @generated SignedSource<<dabcf4d313097bee58a1abc32a0d7191>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,7 @@ export type CreateTaskMutation$data = {
     readonly taskEdge: {
       readonly cursor: string;
       readonly node: {
-        readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
+        readonly " $fragmentSpreads": FragmentRefs<"Task_task">;
       };
     };
   } | null | undefined;
@@ -133,7 +133,7 @@ return {
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "TaskDisplay"
+                    "name": "Task_task"
                   }
                 ],
                 "storageKey": null
@@ -281,16 +281,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9f230d3860f2e6c8da287c83be20bd26",
+    "cacheID": "de0019b849b8d007e5aeb3f287e776d1",
     "id": null,
     "metadata": {},
     "name": "CreateTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...TaskDisplay\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
+    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...Task_task\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "baf9aba667c7fe7c00963edf048c9db9";
+(node as any).hash = "30df2589dad68c2c3a6aabc092420994";
 
 export default node;

@@ -1,7 +1,7 @@
 import { graphql, useFragment, useMutation } from 'react-relay'
 import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
-import type { RoutineSlotItem$key } from './__generated__/RoutineSlotItem.graphql.ts'
+import type { RoutineSlotItem_routineSlot$key } from './__generated__/RoutineSlotItem_routineSlot.graphql.ts'
 import type { RoutineSlotItemMutation } from './__generated__/RoutineSlotItemMutation.graphql.ts'
 import styles from './RoutineSlotItem.module.css'
 import { Button } from '../primitives/Button.tsx'
@@ -12,7 +12,7 @@ import { Body } from '../primitives/text/Body.tsx'
 import { useState } from 'react'
 
 interface RoutineSlotItemProps {
-  routineSlot: RoutineSlotItem$key
+  routineSlot: RoutineSlotItem_routineSlot$key
   connectionId: string
 }
 
@@ -23,7 +23,7 @@ export const RoutineSlotItem = ({
   const [isOpen, setIsOpen] = useState(false)
   const routineSlot = useFragment(
     graphql`
-      fragment RoutineSlotItem on RoutineSlot {
+      fragment RoutineSlotItem_routineSlot on RoutineSlot {
         id
         task {
           title

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8a56c7a4ae215a65fdbf8f51f7fd05a2>>
+ * @generated SignedSource<<d07e6e88a850a5f43c803d692810efe4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,26 +10,26 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type WeeklyPlanRoutineSectionFragment$data = {
+export type WeeklyPlanRoutineSection_section$data = {
   readonly __id: string;
   readonly edges: ReadonlyArray<{
     readonly node: {
       readonly id: string;
-      readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem">;
+      readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem_routineSlot">;
     };
   }>;
-  readonly " $fragmentType": "WeeklyPlanRoutineSectionFragment";
+  readonly " $fragmentType": "WeeklyPlanRoutineSection_section";
 };
-export type WeeklyPlanRoutineSectionFragment$key = {
-  readonly " $data"?: WeeklyPlanRoutineSectionFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanRoutineSectionFragment">;
+export type WeeklyPlanRoutineSection_section$key = {
+  readonly " $data"?: WeeklyPlanRoutineSection_section$data;
+  readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanRoutineSection_section">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "WeeklyPlanRoutineSectionFragment",
+  "name": "WeeklyPlanRoutineSection_section",
   "selections": [
     {
       "alias": null,
@@ -57,7 +57,7 @@ const node: ReaderFragment = {
             {
               "args": null,
               "kind": "FragmentSpread",
-              "name": "RoutineSlotItem"
+              "name": "RoutineSlotItem_routineSlot"
             }
           ],
           "storageKey": null
@@ -82,6 +82,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "43c8d7dcefc47e1b14d00624dbbaf60f";
+(node as any).hash = "295be559866377dad7af5524c1cc5905";
 
 export default node;

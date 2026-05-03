@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1ad043a1343c97f46df91c13cecb6320>>
+ * @generated SignedSource<<555894844a67713a010348668e076941>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,7 @@ export type AddTaskDropdownTasksRefetchQuery$variables = {
   titleSearch?: string | null | undefined;
 };
 export type AddTaskDropdownTasksRefetchQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdownTasksFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdown_query">;
 };
 export type AddTaskDropdownTasksRefetchQuery = {
   response: AddTaskDropdownTasksRefetchQuery$data;
@@ -46,7 +46,7 @@ return {
           (v1/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "AddTaskDropdownTasksFragment"
+        "name": "AddTaskDropdown_query"
       }
     ],
     "type": "Query",
@@ -122,16 +122,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4d49ec2a29f074cfaf4256aba917ce1b",
+    "cacheID": "18ab81d56effd295f881d3644462d670",
     "id": null,
     "metadata": {},
     "name": "AddTaskDropdownTasksRefetchQuery",
     "operationKind": "query",
-    "text": "query AddTaskDropdownTasksRefetchQuery(\n  $titleSearch: String = null\n) {\n  ...AddTaskDropdownTasksFragment_3WkQrj\n}\n\nfragment AddTaskDropdownTasksFragment_3WkQrj on Query {\n  tasks(first: 5, titleSearch: $titleSearch) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
+    "text": "query AddTaskDropdownTasksRefetchQuery(\n  $titleSearch: String = null\n) {\n  ...AddTaskDropdown_query_3WkQrj\n}\n\nfragment AddTaskDropdown_query_3WkQrj on Query {\n  tasks(first: 5, titleSearch: $titleSearch) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "69ab2859893e1d78eb59b3a1c8a7435e";
+(node as any).hash = "757065c9220c17b2c312c927367fb8f2";
 
 export default node;

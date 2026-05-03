@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dd98b1b4c19dd61893a65b939b68a031>>
+ * @generated SignedSource<<75f766ce30e40792fd41a592cefe0921>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,24 +10,24 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type RoutineSlotItem$data = {
+export type RoutineSlotItem_routineSlot$data = {
   readonly id: string;
   readonly task: {
     readonly icon: string | null | undefined;
     readonly title: string;
   };
-  readonly " $fragmentType": "RoutineSlotItem";
+  readonly " $fragmentType": "RoutineSlotItem_routineSlot";
 };
-export type RoutineSlotItem$key = {
-  readonly " $data"?: RoutineSlotItem$data;
-  readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem">;
+export type RoutineSlotItem_routineSlot$key = {
+  readonly " $data"?: RoutineSlotItem_routineSlot$data;
+  readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem_routineSlot">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "RoutineSlotItem",
+  "name": "RoutineSlotItem_routineSlot",
   "selections": [
     {
       "alias": null,
@@ -66,6 +66,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "841c462f317f5ffe17fdccfcb3b51677";
+(node as any).hash = "c4f82c114fd6ae53084d486ad999ec6d";
 
 export default node;

@@ -17,8 +17,8 @@ const TaskQuery = () => {
         node(id: "") {
           ... on Task {
             __typename
-            ...TaskDisplay
-            ...EditTaskUpdatable
+            ...Task_task
+            ...EditTask_task
           }
         }
       }

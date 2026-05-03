@@ -21,5 +21,5 @@
 .empty {
   composes: typo-body typo-md from global;
   color: var(--text-muted);
-  padding: var(--space-3) var(--card-padding-x);
+  padding: var(--space-3) var(--space-4-5);
 }

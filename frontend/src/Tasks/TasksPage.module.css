@@ -21,7 +21,7 @@
 
 @media (min-width: 1024px) {
   .page {
-    padding: var(--space-4) var(--page-padding-x);
+    padding: var(--space-4) var(--space-5);
     gap: var(--space-3);
   }
 

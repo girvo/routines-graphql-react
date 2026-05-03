@@ -37,8 +37,8 @@ export const TasksList = ({
             node {
               id
               title
-              ...TaskDisplay
-              ...EditTaskUpdatable
+              ...Task_task
+              ...EditTask_task
             }
           }
         }

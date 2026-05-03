@@ -12,14 +12,14 @@ import { IconPicker } from '../primitives/form/IconPicker'
 import { Button } from '../primitives/Button'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
-import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql'
+import type { EditTask_task$key } from './__generated__/EditTask_task.graphql'
 import styles from './CreateTask.module.css'
 
 interface EditTaskProps {
   taskId: string
   title: string
   icon: string | null
-  task: EditTaskUpdatable$key
+  task: EditTask_task$key
   setIsEditing: Dispatch<SetStateAction<boolean>>
 }
 
@@ -46,7 +46,7 @@ export const EditTask = ({
     mutation EditTaskMutation($input: UpdateTaskInput!) {
       updateTask(input: $input) {
         task {
-          ...TaskDisplay
+          ...Task_task
         }
       }
     }
@@ -63,9 +63,9 @@ export const EditTask = ({
       },
       optimisticUpdater: store => {
         const { updatableData } =
-          store.readUpdatableFragment<EditTaskUpdatable$key>(
+          store.readUpdatableFragment<EditTask_task$key>(
             graphql`
-              fragment EditTaskUpdatable on Task @updatable {
+              fragment EditTask_task on Task @updatable {
                 id
                 title
                 icon

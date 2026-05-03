@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<99d3b1484eee7f9a064b16f71ab63dec>>
+ * @generated SignedSource<<3794e6c49d1e65ee8f33ba04fdb51423>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type RoutineSlotItemStoryInnerQuery$variables = Record<PropertyKey, never>;
 export type RoutineSlotItemStoryInnerQuery$data = {
   readonly node: {
-    readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem">;
+    readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem_routineSlot">;
   } | null | undefined;
 };
 export type RoutineSlotItemStoryInnerQuery = {
@@ -69,7 +69,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "RoutineSlotItem"
+                "name": "RoutineSlotItem_routineSlot"
               }
             ],
             "type": "RoutineSlot",
@@ -143,7 +143,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8e582475e61f13c69b6857c272095da0",
+    "cacheID": "154def1b0cf2229f08cd1bb15951468a",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -173,11 +173,11 @@ return {
     },
     "name": "RoutineSlotItemStoryInnerQuery",
     "operationKind": "query",
-    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on RoutineSlot {\n      ...RoutineSlotItem\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem on RoutineSlot {\n  id\n  task {\n    title\n    icon\n    id\n  }\n}\n"
+    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on RoutineSlot {\n      ...RoutineSlotItem_routineSlot\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    title\n    icon\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "a3f2179e87ac03d5c0e2220b81d82dc4";
+(node as any).hash = "1108368414d15eaf42f3e030d512e8f7";
 
 export default node;

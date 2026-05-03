@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bc4f1d121994d1b51f875c6610aa44b3>>
+ * @generated SignedSource<<b24eba973c2c61c8ab6a06cb2048d7a1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,22 +10,22 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type EditTaskUpdatable$data = {
+export type EditTask_task$data = {
   icon: string | null | undefined;
   readonly id: string;
   title: string;
-  readonly " $fragmentType": "EditTaskUpdatable";
+  readonly " $fragmentType": "EditTask_task";
 };
-export type EditTaskUpdatable$key = {
-  readonly " $data"?: EditTaskUpdatable$data;
-  readonly $updatableFragmentSpreads: FragmentRefs<"EditTaskUpdatable">;
+export type EditTask_task$key = {
+  readonly " $data"?: EditTask_task$data;
+  readonly $updatableFragmentSpreads: FragmentRefs<"EditTask_task">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "EditTaskUpdatable",
+  "name": "EditTask_task",
   "selections": [
     {
       "alias": null,
@@ -53,6 +53,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "9864c4a7fc8bcec534f0126de9093c60";
+(node as any).hash = "eb7c345213042c3003c1349ab286ab59";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<611141535453cb5003a30b3cf864aa7b>>
+ * @generated SignedSource<<8ee2491465673eaeb9732a4969b8ec96>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,7 @@ export type DaySection_section$data = {
   readonly edges: ReadonlyArray<{
     readonly __typename: "RoutineSlotEdge";
   }>;
-  readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanRoutineSectionFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"WeeklyPlanRoutineSection_section">;
   readonly " $fragmentType": "DaySection_section";
 };
 export type DaySection_section$key = {
@@ -49,13 +49,13 @@ const node: ReaderFragment = {
     {
       "args": null,
       "kind": "FragmentSpread",
-      "name": "WeeklyPlanRoutineSectionFragment"
+      "name": "WeeklyPlanRoutineSection_section"
     }
   ],
   "type": "RoutineSlotConnection",
   "abstractKey": null
 };
 
-(node as any).hash = "16e5f2e5356eb1188a7f69088a9deef8";
+(node as any).hash = "1ff8bb7ceef46bd669b07cf8bd1614bf";
 
 export default node;

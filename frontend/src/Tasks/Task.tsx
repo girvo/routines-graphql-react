@@ -2,10 +2,10 @@ import { useState, useMemo } from 'react'
 import { graphql } from 'relay-runtime'
 import { useFragment, useMutation } from 'react-relay'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
-import type { TaskDisplay$key } from './__generated__/TaskDisplay.graphql'
+import type { Task_task$key } from './__generated__/Task_task.graphql'
 import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.graphql.ts'
 import { EditTask } from './EditTask.tsx'
-import type { EditTaskUpdatable$key } from './__generated__/EditTaskUpdatable.graphql.ts'
+import type { EditTask_task$key } from './__generated__/EditTask_task.graphql.ts'
 import { sectionCounts, sectionLabel } from './section-counts.ts'
 import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
 import { IconBadge } from '../primitives/badge/IconBadge.tsx'
@@ -16,15 +16,15 @@ import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import styles from './Task.module.css'
 
 interface TaskProps {
-  task: TaskDisplay$key
-  updatable: EditTaskUpdatable$key
+  task: Task_task$key
+  updatable: EditTask_task$key
   connectionId: string
 }
 
 export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => {
   const task = useFragment(
     graphql`
-      fragment TaskDisplay on Task {
+      fragment Task_task on Task {
         id
         title
         icon

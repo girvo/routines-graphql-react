@@ -82,8 +82,6 @@
   --radius-lg: 12px;
   --radius-pill: 999px;
 
-  --card-padding-x: 18px;
-  --page-padding-x: 20px;
   --row-h-md: 46px;
 
   --space-1: 4px;
@@ -91,6 +89,7 @@
   --space-2-5: 10px;
   --space-3: 12px;
   --space-4: 16px;
+  --space-4-5: 18px;
   --space-5: 20px;
   --space-6: 24px;
 

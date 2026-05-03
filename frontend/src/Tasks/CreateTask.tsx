@@ -42,7 +42,7 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
       createTask(icon: $icon, title: $title) {
         taskEdge @prependEdge(connections: $connections) {
           node {
-            ...TaskDisplay
+            ...Task_task
           }
           cursor
         }

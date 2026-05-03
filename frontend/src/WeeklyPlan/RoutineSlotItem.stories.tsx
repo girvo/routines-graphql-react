@@ -16,7 +16,7 @@ const RoutineSlotItemStoryInner = () => {
       query RoutineSlotItemStoryInnerQuery @relay_test_operation {
         node(id: "test_id") {
           ... on RoutineSlot {
-            ...RoutineSlotItem
+            ...RoutineSlotItem_routineSlot
           }
         }
       }

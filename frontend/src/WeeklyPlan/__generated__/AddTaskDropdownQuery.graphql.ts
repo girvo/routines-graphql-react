@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fd9afbe0a0cea4160390fbe6036a33c2>>
+ * @generated SignedSource<<2c37bf30fffcaa0a5c530a241c6d8201>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,7 @@ import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type AddTaskDropdownQuery$variables = Record<PropertyKey, never>;
 export type AddTaskDropdownQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdownTasksFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdown_query">;
 };
 export type AddTaskDropdownQuery = {
   response: AddTaskDropdownQuery$data;
@@ -29,7 +29,7 @@ const node: ConcreteRequest = {
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "AddTaskDropdownTasksFragment"
+        "name": "AddTaskDropdown_query"
       }
     ],
     "type": "Query",
@@ -104,15 +104,15 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "a2c2b305c88da2761d5edcb629119d06",
+    "cacheID": "9f23472acbab63246461c91e265e53a3",
     "id": null,
     "metadata": {},
     "name": "AddTaskDropdownQuery",
     "operationKind": "query",
-    "text": "query AddTaskDropdownQuery {\n  ...AddTaskDropdownTasksFragment\n}\n\nfragment AddTaskDropdownTasksFragment on Query {\n  tasks(first: 5) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
+    "text": "query AddTaskDropdownQuery {\n  ...AddTaskDropdown_query\n}\n\nfragment AddTaskDropdown_query on Query {\n  tasks(first: 5) {\n    edges {\n      node {\n        id\n        title\n        icon\n      }\n    }\n  }\n}\n"
   }
 };
 
-(node as any).hash = "78cb5cff033a8c0193ebf25c29c56b46";
+(node as any).hash = "4ae62a89b358eee5ed24428d0b724029";
 
 export default node;

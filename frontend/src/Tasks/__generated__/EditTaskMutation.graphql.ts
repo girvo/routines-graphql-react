@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dfa20aa4cecb6304100ac1bf632a5a50>>
+ * @generated SignedSource<<bd4077fbcc804f99c1376ca93f0b5900>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,7 @@ export type EditTaskMutation$variables = {
 export type EditTaskMutation$data = {
   readonly updateTask: {
     readonly task: {
-      readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
+      readonly " $fragmentSpreads": FragmentRefs<"Task_task">;
     };
   } | null | undefined;
 };
@@ -78,7 +78,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "TaskDisplay"
+                "name": "Task_task"
               }
             ],
             "storageKey": null
@@ -190,16 +190,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "089fd05034d3728aff284737fb4ce069",
+    "cacheID": "19c0baeec2cc2c722a9b83e037473b57",
     "id": null,
     "metadata": {},
     "name": "EditTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...TaskDisplay\n      id\n    }\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
+    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...Task_task\n      id\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "92b5021c56b4ecdb99bfea0bc44dfc03";
+(node as any).hash = "8db64cfef0101a6c2d21c9c3bca2ecb8";
 
 export default node;

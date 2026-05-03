@@ -9,8 +9,8 @@
   .day {
     flex-direction: row;
     align-items: stretch;
-    gap: 18px;
-    padding: var(--page-padding-x);
+    gap: var(--space-4-5);
+    padding: var(--space-5);
     min-height: 0;
   }
 }

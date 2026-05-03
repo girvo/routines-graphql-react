@@ -3,19 +3,19 @@ import { clsx } from 'clsx'
 import { CheckBox } from '../primitives/form/CheckBox.tsx'
 import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
-import type { TodayTaskRow$key } from './__generated__/TodayTaskRow.graphql.ts'
+import type { TodayTaskRow_instance$key } from './__generated__/TodayTaskRow_instance.graphql.ts'
 import type { TodayTaskRowCompleteMutation } from './__generated__/TodayTaskRowCompleteMutation.graphql.ts'
 import type { TodayTaskRowUncompleteMutation } from './__generated__/TodayTaskRowUncompleteMutation.graphql.ts'
 import styles from './TodayTaskRow.module.css'
 
 interface TodayTaskRowProps {
-  instance: TodayTaskRow$key
+  instance: TodayTaskRow_instance$key
 }
 
 export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
   const data = useFragment(
     graphql`
-      fragment TodayTaskRow on DailyTaskInstance {
+      fragment TodayTaskRow_instance on DailyTaskInstance {
         id
         routineSlot {
           id

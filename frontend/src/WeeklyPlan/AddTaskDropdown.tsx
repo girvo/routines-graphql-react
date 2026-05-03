@@ -14,7 +14,7 @@ import { clsx } from 'clsx'
 import { Button } from '../primitives/Button.tsx'
 import { AddTaskRow } from './AddTaskRow.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
-import type { AddTaskDropdownTasksFragment$key } from './__generated__/AddTaskDropdownTasksFragment.graphql.ts'
+import type { AddTaskDropdown_query$key } from './__generated__/AddTaskDropdown_query.graphql.ts'
 import type { DaySelection } from './days.ts'
 import type { AddTaskDropdownRoutineSlotMutation } from './__generated__/AddTaskDropdownRoutineSlotMutation.graphql.ts'
 import {
@@ -32,7 +32,7 @@ interface ClickedTask {
 }
 
 interface TaskListProps {
-  fragmentRef: AddTaskDropdownTasksFragment$key
+  fragmentRef: AddTaskDropdown_query$key
   searchQuery: string
   isLoading: boolean
   onTaskClick: (task: ClickedTask) => void
@@ -46,7 +46,7 @@ const TaskList = ({
 }: TaskListProps) => {
   const [data, refetch] = useRefetchableFragment(
     graphql`
-      fragment AddTaskDropdownTasksFragment on Query
+      fragment AddTaskDropdown_query on Query
       @refetchable(queryName: "AddTaskDropdownTasksRefetchQuery")
       @argumentDefinitions(
         titleSearch: { type: "String", defaultValue: null }
@@ -137,7 +137,7 @@ const AddTaskDropdownContent = ({
   const data = usePreloadedQuery(
     graphql`
       query AddTaskDropdownQuery {
-        ...AddTaskDropdownTasksFragment
+        ...AddTaskDropdown_query
       }
     `,
     queryRef,

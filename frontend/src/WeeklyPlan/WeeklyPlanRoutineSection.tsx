@@ -1,22 +1,22 @@
 import { graphql, useFragment } from 'react-relay'
 import { RoutineSlotItem } from './RoutineSlotItem.tsx'
-import type { WeeklyPlanRoutineSectionFragment$key } from './__generated__/WeeklyPlanRoutineSectionFragment.graphql'
+import type { WeeklyPlanRoutineSection_section$key } from './__generated__/WeeklyPlanRoutineSection_section.graphql'
 
 interface WeeklyPlanRoutineSectionProps {
-  weeklyPlanSection: WeeklyPlanRoutineSectionFragment$key
+  weeklyPlanSection: WeeklyPlanRoutineSection_section$key
 }
 
 export const WeeklyPlanRoutineSection = ({
   weeklyPlanSection: weeklyPlan,
 }: WeeklyPlanRoutineSectionProps) => {
-  const routine = useFragment<WeeklyPlanRoutineSectionFragment$key>(
+  const routine = useFragment<WeeklyPlanRoutineSection_section$key>(
     graphql`
-      fragment WeeklyPlanRoutineSectionFragment on RoutineSlotConnection {
+      fragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {
         __id
         edges {
           node {
             id
-            ...RoutineSlotItem
+            ...RoutineSlotItem_routineSlot
           }
         }
       }

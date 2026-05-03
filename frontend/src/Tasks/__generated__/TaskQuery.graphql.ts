@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c999bb6d35d1492cc6bf6c5a2d6902d7>>
+ * @generated SignedSource<<6f628806d59aa8e204c5879ad77e9133>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,8 +14,8 @@ export type TaskQuery$variables = Record<PropertyKey, never>;
 export type TaskQuery$data = {
   readonly node: {
     readonly __typename: "Task";
-    readonly $updatableFragmentSpreads: FragmentRefs<"EditTaskUpdatable">;
-    readonly " $fragmentSpreads": FragmentRefs<"TaskDisplay">;
+    readonly $updatableFragmentSpreads: FragmentRefs<"EditTask_task">;
+    readonly " $fragmentSpreads": FragmentRefs<"Task_task">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -83,12 +83,12 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "TaskDisplay"
+                "name": "Task_task"
               },
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "EditTaskUpdatable"
+                "name": "EditTask_task"
               }
             ],
             "type": "Task",
@@ -198,7 +198,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1ee9d8bbc78fe31dd3fec240dc8dd54a",
+    "cacheID": "1ec7dd519e19fc6bba589181b4c9c3ab",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -256,11 +256,11 @@ return {
     },
     "name": "TaskQuery",
     "operationKind": "query",
-    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...TaskDisplay\n    }\n    id\n  }\n}\n\nfragment TaskDisplay on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
+    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...Task_task\n    }\n    id\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d6cfeed3e00daae7635140b749516eb8";
+(node as any).hash = "cd2bf52ab0b6fb3eb49c808815d825c0";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<464c362f4ffa552cd95e1b522439ec37>>
+ * @generated SignedSource<<8b3219b3e02a5c68f79208e6f019d71b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type TodayTaskRow$data = {
+export type TodayTaskRow_instance$data = {
   readonly completion: {
     readonly id: string;
   } | null | undefined;
@@ -22,11 +22,11 @@ export type TodayTaskRow$data = {
       readonly title: string;
     };
   };
-  readonly " $fragmentType": "TodayTaskRow";
+  readonly " $fragmentType": "TodayTaskRow_instance";
 };
-export type TodayTaskRow$key = {
-  readonly " $data"?: TodayTaskRow$data;
-  readonly " $fragmentSpreads": FragmentRefs<"TodayTaskRow">;
+export type TodayTaskRow_instance$key = {
+  readonly " $data"?: TodayTaskRow_instance$data;
+  readonly " $fragmentSpreads": FragmentRefs<"TodayTaskRow_instance">;
 };
 
 const node: ReaderFragment = (function(){
@@ -41,7 +41,7 @@ return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "TodayTaskRow",
+  "name": "TodayTaskRow_instance",
   "selections": [
     (v0/*: any*/),
     {
@@ -99,6 +99,6 @@ return {
 };
 })();
 
-(node as any).hash = "b53681f28e9116428b5dd897a3123afc";
+(node as any).hash = "cb2d0c93fc8a24f4baf5a17d9a5105f4";
 
 export default node;

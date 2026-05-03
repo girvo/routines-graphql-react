@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<543ced7c2e281dede235b8a3cb956753>>
+ * @generated SignedSource<<c884ad2516639f3396434e4d9af097f8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -265,12 +265,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "156115caa218098fd84ababbbc98fe99",
+    "cacheID": "3b5746593e1778cf8a5523416a84a11c",
     "id": null,
     "metadata": {},
     "name": "TodayPageQuery",
     "operationKind": "query",
-    "text": "query TodayPageQuery(\n  $date: DateTime\n) {\n  dailyRoutine(date: $date) {\n    date\n    dayOfWeek\n    morning(first: 100) {\n      ...TodaySection_section\n    }\n    midday(first: 100) {\n      ...TodaySection_section\n    }\n    evening(first: 100) {\n      ...TodaySection_section\n    }\n  }\n}\n\nfragment TodaySection_section on DailyTaskInstanceConnection {\n  edges {\n    node {\n      routineSlot {\n        id\n      }\n      completion {\n        id\n      }\n      ...TodayTaskRow\n      id\n    }\n  }\n}\n\nfragment TodayTaskRow on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      title\n      icon\n      id\n    }\n  }\n  completion {\n    id\n  }\n}\n"
+    "text": "query TodayPageQuery(\n  $date: DateTime\n) {\n  dailyRoutine(date: $date) {\n    date\n    dayOfWeek\n    morning(first: 100) {\n      ...TodaySection_section\n    }\n    midday(first: 100) {\n      ...TodaySection_section\n    }\n    evening(first: 100) {\n      ...TodaySection_section\n    }\n  }\n}\n\nfragment TodaySection_section on DailyTaskInstanceConnection {\n  edges {\n    node {\n      routineSlot {\n        id\n      }\n      completion {\n        id\n      }\n      ...TodayTaskRow_instance\n      id\n    }\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      title\n      icon\n      id\n    }\n  }\n  completion {\n    id\n  }\n}\n"
   }
 };
 })();
