@@ -3,6 +3,7 @@ import { useMemo, type Dispatch, type SetStateAction } from 'react'
 import { Task } from './Task.tsx'
 import { CreateTask } from './CreateTask.tsx'
 import { Button } from '../primitives/Button.tsx'
+import { Card } from '../primitives/layout/Card.tsx'
 import { TasksTableHeader } from './TasksTableHeader.tsx'
 import { usePageHeader } from '../utils/page-header.ts'
 import type { TasksList_tasks$key } from './__generated__/TasksList_tasks.graphql'
@@ -61,7 +62,7 @@ export const TasksList = ({
   const showEmpty = visibleEdges.length === 0 && !isCreating
 
   return (
-    <div className={styles.card}>
+    <Card responsive>
       <TasksTableHeader />
       {isCreating && (
         <CreateTask setIsCreating={setIsCreating} connectionId={data.tasks.__id} />
@@ -93,6 +94,6 @@ export const TasksList = ({
           </Button>
         </div>
       )}
-    </div>
+    </Card>
   )
 }

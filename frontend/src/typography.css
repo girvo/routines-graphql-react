@@ -1,3 +1,14 @@
+/*
+ * Typography layering convention:
+ *  - Free-standing text in JSX → use the primitives in primitives/text/
+ *    (Body, Title, Heading, Label, Mono, Meta).
+ *  - Typography baked into a styled element (button, input, header row,
+ *    badge, sidebar item, etc.) → use `composes: typo-* from global` in
+ *    that element's CSS module. The primitives do not own structural
+ *    styles, so wrapping a <Body> inside every styled element would just
+ *    add DOM without changing the result.
+ */
+
 :root {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;

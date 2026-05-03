@@ -1,6 +1,7 @@
 import { useRouteError } from 'react-router-dom'
 import { AlertTriangle } from 'lucide-react'
 import { clsx } from 'clsx'
+import { Card } from './primitives/layout/Card.tsx'
 import { Title } from './primitives/text/Title.tsx'
 import { Body } from './primitives/text/Body.tsx'
 import styles from './AppError.module.css'
@@ -9,7 +10,7 @@ export const AppError = ({ error }: { error?: Error }) => {
   const showDetail = Boolean(error) && import.meta.env.DEV
   return (
     <div className={styles.page}>
-      <div className={clsx(styles.card, showDetail && styles.cardWide)}>
+      <Card className={clsx(styles.card, showDetail && styles.cardWide)}>
         <AlertTriangle className={styles.icon} aria-hidden />
         <Title size="md" className={styles.title}>
           Something Went Wrong
@@ -25,7 +26,7 @@ export const AppError = ({ error }: { error?: Error }) => {
             {error.stack && <pre className={styles.stack}>{error.stack}</pre>}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   )
 }

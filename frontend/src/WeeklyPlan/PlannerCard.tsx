@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Card } from '../primitives/layout/Card.tsx'
 import styles from './PlannerCard.module.css'
 
 interface PlannerCardProps {
@@ -8,13 +9,13 @@ interface PlannerCardProps {
 }
 
 export const PlannerCard = ({ header, children, empty }: PlannerCardProps) => (
-  <div className={styles.card}>
+  <Card className={styles.layout}>
     {header}
     <div className={styles.divider} />
     <div className={styles.body}>
       {empty ?? children}
     </div>
-  </div>
+  </Card>
 )
 
 export const PlannerCardEmpty = ({ children }: { children: ReactNode }) => (

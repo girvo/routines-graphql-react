@@ -5,6 +5,18 @@
   overflow: hidden;
 }
 
+.cardResponsive {
+  background: var(--surface);
+}
+
+@media (min-width: 1024px) {
+  .cardResponsive {
+    border: var(--border-width) solid var(--stroke-line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+}
+
 .body {
   display: flex;
   flex-direction: column;

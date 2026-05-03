@@ -1,12 +1,3 @@
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: var(--surface);
-  border: 0;
-  border-radius: 0;
-}
-
 .empty {
   composes: typo-body typo-md from global;
   color: var(--text-muted);
@@ -18,14 +9,4 @@
   display: flex;
   justify-content: center;
   padding: var(--space-4) 0;
-}
-
-@media (min-width: 1024px) {
-  .card {
-    background: var(--surface);
-    border: var(--border-width) solid var(--stroke-line);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    gap: 0;
-  }
 }

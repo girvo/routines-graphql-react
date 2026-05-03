@@ -29,6 +29,10 @@ class AuthStore {
     return this.accessToken !== null
   }
 
+  get token(): string | null {
+    return this.accessToken
+  }
+
   setAccessToken = (token: string | null) => {
     const hadToken = this.accessToken !== null
     const hasToken = token !== null
@@ -63,5 +67,5 @@ export const clearAccessToken = () => {
 }
 
 export const getAccessToken = (): string | null => {
-  return authStore['accessToken']
+  return authStore.token
 }

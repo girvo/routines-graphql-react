@@ -10,9 +10,6 @@
 .card {
   width: 100%;
   max-width: 480px;
-  background: var(--surface);
-  border: var(--border-width) solid var(--stroke-line);
-  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
   padding: var(--space-6);
   display: flex;

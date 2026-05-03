@@ -1,5 +1,5 @@
 .row {
-  display: flex;
+  display: none;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) var(--card-padding-x);
@@ -34,8 +34,8 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 1023px) {
+@media (min-width: 1024px) {
   .row {
-    display: none;
+    display: flex;
   }
 }

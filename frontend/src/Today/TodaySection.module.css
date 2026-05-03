@@ -9,7 +9,6 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-2) var(--page-padding-x);
-  background: var(--surface);
   border-top: var(--border-width) solid var(--stroke-hairline);
   border-bottom: var(--border-width) solid var(--stroke-hairline);
 }
@@ -33,10 +32,6 @@
   display: none;
 }
 
-.body {
-  background: var(--surface);
-}
-
 .body > :not(.empty) + :not(.empty) {
   border-top: var(--border-width) solid var(--stroke-hairline);
 }
@@ -50,10 +45,6 @@
 @media (min-width: 1024px) {
   .section {
     flex: 1;
-    background: var(--surface);
-    border: var(--border-width) solid var(--stroke-line);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
   }
 
   .desktopHeader {

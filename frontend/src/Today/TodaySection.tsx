@@ -1,4 +1,5 @@
 import { graphql, useFragment } from 'react-relay'
+import { Card } from '../primitives/layout/Card.tsx'
 import { SectionHeader } from '../primitives/layout/SectionHeader.tsx'
 import { TodayTaskRow } from './TodayTaskRow.tsx'
 import type { TodaySection_section$key } from './__generated__/TodaySection_section.graphql.ts'
@@ -34,7 +35,7 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
   const progress = `${completed}/${total}`
 
   return (
-    <section className={styles.section}>
+    <Card as="section" responsive className={styles.section}>
       <div className={styles.desktopHeader}>
         <SectionHeader title={label} count={progress} dense />
       </div>
@@ -53,6 +54,6 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
           <TodayTaskRow key={edge.node.routineSlot.id} instance={edge.node} />
         ))}
       </div>
-    </section>
+    </Card>
   )
 }

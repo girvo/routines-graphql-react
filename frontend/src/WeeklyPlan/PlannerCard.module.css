@@ -1,8 +1,4 @@
-.card {
-  background: var(--surface);
-  border: var(--border-width) solid var(--stroke-line);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+.layout {
   display: flex;
   flex-direction: column;
 }
