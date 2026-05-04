@@ -16,14 +16,15 @@ Read the component file and identify:
   - For each: the **fragment name** (e.g., `RoutineSlotItem`) and the **GraphQL type** it's on (e.g., `on Task`)
 - The **props interface**: which props are fragment key types (import type ending in `$key`) vs plain props (strings, callbacks, etc.)
 - Whether the component renders inside a `<table>` (check if it renders `<tr>` or `<td>` at the top level)
+- Any **mutation hooks** (`useMutation`) the component calls — count them, since each needs its own queued resolver
 
 ## Step 2: Determine paths
 
-Map the component path to story path:
+Story files go side by side with their source files:
 
 - Component: `frontend/src/[Dir]/[ComponentName].tsx`
-- Story: `frontend/src/stories/[Dir]/[ComponentName].stories.tsx`
-- Generated: `frontend/src/stories/[Dir]/__generated__/[ComponentName]StoryInnerQuery.graphql.ts`
+- Story: `frontend/src/[Dir]/[ComponentName].stories.tsx`
+- Generated: `frontend/src/[Dir]/__generated__/[ComponentName]StoryInnerQuery.graphql.ts`
 
 ## Step 3: Choose the right template
 
@@ -47,7 +48,7 @@ Replace all placeholders:
 - `string` props like `connectionId` → pass `""`
 - Callback props → pass `() => {}` (or `() => { console.log('...') }` for visibility)
 
-**For the MockPayloadGenerator resolvers:** include a mock entry for each GraphQL type referenced by the fragments. Use `return {}` as the default. If the component uses a connection field that renders a list, also mock the connection type with `return { edges: [] }`.
+**For the MockPayloadGenerator:** use `MockPayloadGenerator.generate(op)` with no custom resolvers — it auto-generates all scalar fields. `queueOperationResolver` is **consumed after each operation**, so queue one resolver for the initial query plus one for each mutation the component can trigger (in the order they'd be called).
 
 **If the component renders inside a table** (top-level `<tr>` or `<td>`), wrap the story output with:
 ```tsx
@@ -60,11 +61,11 @@ Replace all placeholders:
 
 **The `title` in `meta`** should be `'[Dir]/[ComponentName]'` (e.g., `'WeeklyPlan/RoutineSlotItem'`).
 
-**Import path depth:** The story is in `frontend/src/stories/[Dir]/`, so the relative import to the component is `../../[Dir]/[ComponentName]`.
+**Import path:** The story is in the same directory as the component, so the relative import is `./[ComponentName]`.
 
 ## Step 5: Write the story file
 
-Write the completed story to `frontend/src/stories/[Dir]/[ComponentName].stories.tsx`.
+Write the completed story to `frontend/src/[Dir]/[ComponentName].stories.tsx`.
 
 ## Step 6: Run the Relay compiler
 

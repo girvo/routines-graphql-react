@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { COMPONENT_NAME } from '../../DIR/COMPONENT_NAME'
+import { COMPONENT_NAME } from './COMPONENT_NAME'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
 import { Suspense } from 'react'
 import {
@@ -32,13 +32,14 @@ const COMPONENT_NAMEStoryInner = () => {
 const COMPONENT_NAMEStory = () => {
   const environment = createMockEnvironment()
 
-  environment.mock.queueOperationResolver(op => {
-    return MockPayloadGenerator.generate(op, {
-      GRAPHQL_TYPE() {
-        return {}
-      },
-    })
-  })
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op),
+  )
+
+  // If the component has mutations, queue additional resolvers (one per mutation):
+  // environment.mock.queueOperationResolver(op =>
+  //   MockPayloadGenerator.generate(op),
+  // )
 
   return (
     <Suspense fallback="Loading...">
