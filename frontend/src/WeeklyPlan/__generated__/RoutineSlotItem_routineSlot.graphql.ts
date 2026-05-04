@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<75f766ce30e40792fd41a592cefe0921>>
+ * @generated SignedSource<<5be3272db3a43ed3247377d73c374009>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,8 +9,10 @@
 // @ts-nocheck
 
 import { ReaderFragment } from 'relay-runtime';
+export type DayOfWeek = "FRIDAY" | "MONDAY" | "SATURDAY" | "SUNDAY" | "THURSDAY" | "TUESDAY" | "WEDNESDAY" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type RoutineSlotItem_routineSlot$data = {
+  readonly dayOfWeek: DayOfWeek;
   readonly id: string;
   readonly task: {
     readonly icon: string | null | undefined;
@@ -34,6 +36,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "dayOfWeek",
       "storageKey": null
     },
     {
@@ -66,6 +75,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "c4f82c114fd6ae53084d486ad999ec6d";
+(node as any).hash = "c2805c04fa423444b76d4fca763ddc28";
 
 export default node;

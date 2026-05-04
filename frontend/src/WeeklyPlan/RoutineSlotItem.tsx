@@ -1,6 +1,13 @@
-import { graphql, useFragment, useMutation } from 'react-relay'
+import { createElement } from 'react'
+import {
+  graphql,
+  useFragment,
+  useMutation,
+  useRelayEnvironment,
+} from 'react-relay'
 import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
+import { invalidateDailyRoutinesForDayOfWeek } from './invalidate-daily-routines.ts'
 import type { RoutineSlotItem_routineSlot$key } from './__generated__/RoutineSlotItem_routineSlot.graphql.ts'
 import type { RoutineSlotItemMutation } from './__generated__/RoutineSlotItemMutation.graphql.ts'
 import styles from './RoutineSlotItem.module.css'
@@ -25,6 +32,7 @@ export const RoutineSlotItem = ({
     graphql`
       fragment RoutineSlotItem_routineSlot on RoutineSlot {
         id
+        dayOfWeek
         task {
           title
           icon
@@ -35,6 +43,7 @@ export const RoutineSlotItem = ({
   )
 
   const { showPayloadErrors, showError } = useMutationErrorHandler()
+  const environment = useRelayEnvironment()
 
   const [deleteItem, isLoading] = useMutation<RoutineSlotItemMutation>(graphql`
     mutation RoutineSlotItemMutation(
@@ -47,12 +56,12 @@ export const RoutineSlotItem = ({
     }
   `)
 
-  const Icon = iconComponent(routineSlot.task.icon)
-
   return (
     <div className={styles.root}>
       <span className={styles.iconWrap} aria-hidden>
-        <Icon className={styles.icon} />
+        {createElement(iconComponent(routineSlot.task.icon), {
+          className: styles.icon,
+        })}
       </span>
       <span className={styles.label}>{routineSlot.task.title}</span>
       <Tooltip label="Remove">
@@ -78,6 +87,10 @@ export const RoutineSlotItem = ({
             optimisticResponse: {
               deleteRoutineSlot: { deletedId: routineSlot.id },
             },
+            updater: invalidateDailyRoutinesForDayOfWeek(
+              environment,
+              routineSlot.dayOfWeek,
+            ),
             onCompleted: (_response, errors) => {
               showPayloadErrors(errors)
             },

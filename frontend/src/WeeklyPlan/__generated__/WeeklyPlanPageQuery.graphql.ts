@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8886139985903a9b82107843fff9fdd9>>
+ * @generated SignedSource<<a36074355e7c57dbafd90925407f063f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -49,28 +49,35 @@ var v0 = [
     "name": "WeeklyPlanDay_day"
   }
 ],
-v1 = [
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "dayOfWeek",
+  "storageKey": null
+},
+v2 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 100
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = [
+v5 = [
   {
     "alias": null,
     "args": null,
@@ -94,8 +101,9 @@ v4 = [
         "name": "node",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
           (v3/*: any*/),
+          (v4/*: any*/),
+          (v1/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -118,14 +126,14 @@ v4 = [
                 "name": "icon",
                 "storageKey": null
               },
-              (v3/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
         ],
         "storageKey": null
       },
-      (v2/*: any*/)
+      (v3/*: any*/)
     ],
     "storageKey": null
   },
@@ -167,27 +175,21 @@ v4 = [
     "storageKey": null
   }
 ],
-v5 = [
+v6 = [
+  (v1/*: any*/),
   {
     "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "dayOfWeek",
-    "storageKey": null
-  },
-  {
-    "alias": null,
-    "args": (v1/*: any*/),
+    "args": (v2/*: any*/),
     "concreteType": "RoutineSlotConnection",
     "kind": "LinkedField",
     "name": "morning",
     "plural": false,
-    "selections": (v4/*: any*/),
+    "selections": (v5/*: any*/),
     "storageKey": "morning(first:100)"
   },
   {
     "alias": null,
-    "args": (v1/*: any*/),
+    "args": (v2/*: any*/),
     "filters": null,
     "handle": "connection",
     "key": "WeeklyPlanDaySlots_morning",
@@ -196,17 +198,17 @@ v5 = [
   },
   {
     "alias": null,
-    "args": (v1/*: any*/),
+    "args": (v2/*: any*/),
     "concreteType": "RoutineSlotConnection",
     "kind": "LinkedField",
     "name": "midday",
     "plural": false,
-    "selections": (v4/*: any*/),
+    "selections": (v5/*: any*/),
     "storageKey": "midday(first:100)"
   },
   {
     "alias": null,
-    "args": (v1/*: any*/),
+    "args": (v2/*: any*/),
     "filters": null,
     "handle": "connection",
     "key": "WeeklyPlanDaySlots_midday",
@@ -215,17 +217,17 @@ v5 = [
   },
   {
     "alias": null,
-    "args": (v1/*: any*/),
+    "args": (v2/*: any*/),
     "concreteType": "RoutineSlotConnection",
     "kind": "LinkedField",
     "name": "evening",
     "plural": false,
-    "selections": (v4/*: any*/),
+    "selections": (v5/*: any*/),
     "storageKey": "evening(first:100)"
   },
   {
     "alias": null,
-    "args": (v1/*: any*/),
+    "args": (v2/*: any*/),
     "filters": null,
     "handle": "connection",
     "key": "WeeklyPlanDaySlots_evening",
@@ -346,7 +348,7 @@ return {
             "kind": "LinkedField",
             "name": "monday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v6/*: any*/),
             "storageKey": null
           },
           {
@@ -356,7 +358,7 @@ return {
             "kind": "LinkedField",
             "name": "tuesday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v6/*: any*/),
             "storageKey": null
           },
           {
@@ -366,7 +368,7 @@ return {
             "kind": "LinkedField",
             "name": "wednesday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v6/*: any*/),
             "storageKey": null
           },
           {
@@ -376,7 +378,7 @@ return {
             "kind": "LinkedField",
             "name": "thursday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v6/*: any*/),
             "storageKey": null
           },
           {
@@ -386,7 +388,7 @@ return {
             "kind": "LinkedField",
             "name": "friday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v6/*: any*/),
             "storageKey": null
           },
           {
@@ -396,7 +398,7 @@ return {
             "kind": "LinkedField",
             "name": "saturday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v6/*: any*/),
             "storageKey": null
           },
           {
@@ -406,7 +408,7 @@ return {
             "kind": "LinkedField",
             "name": "sunday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v6/*: any*/),
             "storageKey": null
           }
         ],
@@ -415,12 +417,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "fe0bc0ce7466cf014b69d74741385a42",
+    "cacheID": "b1075d42840fcd592d972fe504eb7d26",
     "id": null,
     "metadata": {},
     "name": "WeeklyPlanPageQuery",
     "operationKind": "query",
-    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay_day\n    }\n    tuesday {\n      ...WeeklyPlanDay_day\n    }\n    wednesday {\n      ...WeeklyPlanDay_day\n    }\n    thursday {\n      ...WeeklyPlanDay_day\n    }\n    friday {\n      ...WeeklyPlanDay_day\n    }\n    saturday {\n      ...WeeklyPlanDay_day\n    }\n    sunday {\n      ...WeeklyPlanDay_day\n    }\n  }\n}\n\nfragment DaySection_section on RoutineSlotConnection {\n  edges {\n    __typename\n  }\n  ...WeeklyPlanRoutineSection_section\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    title\n    icon\n    id\n  }\n}\n\nfragment WeeklyPlanDay_day on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
+    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay_day\n    }\n    tuesday {\n      ...WeeklyPlanDay_day\n    }\n    wednesday {\n      ...WeeklyPlanDay_day\n    }\n    thursday {\n      ...WeeklyPlanDay_day\n    }\n    friday {\n      ...WeeklyPlanDay_day\n    }\n    saturday {\n      ...WeeklyPlanDay_day\n    }\n    sunday {\n      ...WeeklyPlanDay_day\n    }\n  }\n}\n\nfragment DaySection_section on RoutineSlotConnection {\n  edges {\n    __typename\n  }\n  ...WeeklyPlanRoutineSection_section\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    title\n    icon\n    id\n  }\n}\n\nfragment WeeklyPlanDay_day on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
   }
 };
 })();

@@ -1,3 +1,4 @@
+import { createElement } from 'react'
 import { graphql, useFragment, useMutation } from 'react-relay'
 import { clsx } from 'clsx'
 import { CheckBox } from '../primitives/form/CheckBox.tsx'
@@ -68,7 +69,6 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
     `)
 
   const isLoading = completing || uncompleting
-  const Icon = iconComponent(data.routineSlot.task.icon)
 
   const handleToggle = (next: boolean) => {
     if (next) {
@@ -123,7 +123,9 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
       aria-label={data.routineSlot.task.title}
     >
       <span className={styles.iconWrap} aria-hidden>
-        <Icon className={styles.icon} />
+        {createElement(iconComponent(data.routineSlot.task.icon), {
+          className: styles.icon,
+        })}
       </span>
       <span className={clsx(styles.label, isComplete && styles.labelComplete)}>
         {data.routineSlot.task.title}

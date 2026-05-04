@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3794e6c49d1e65ee8f33ba04fdb51423>>
+ * @generated SignedSource<<8a0cd0a8480ac2a823ecab066c433d01>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -110,6 +110,13 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "dayOfWeek",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "Task",
                 "kind": "LinkedField",
                 "name": "task",
@@ -143,7 +150,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "154def1b0cf2229f08cd1bb15951468a",
+    "cacheID": "acb780f81d3b76740d08ad4857d68af8",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -154,6 +161,20 @@ return {
           "type": "Node"
         },
         "node.__typename": (v2/*: any*/),
+        "node.dayOfWeek": {
+          "enumValues": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+            "SUNDAY"
+          ],
+          "nullable": false,
+          "plural": false,
+          "type": "DayOfWeek"
+        },
         "node.id": (v3/*: any*/),
         "node.task": {
           "enumValues": null,
@@ -173,7 +194,7 @@ return {
     },
     "name": "RoutineSlotItemStoryInnerQuery",
     "operationKind": "query",
-    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on RoutineSlot {\n      ...RoutineSlotItem_routineSlot\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    title\n    icon\n    id\n  }\n}\n"
+    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on RoutineSlot {\n      ...RoutineSlotItem_routineSlot\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    title\n    icon\n    id\n  }\n}\n"
   }
 };
 })();

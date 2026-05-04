@@ -8,9 +8,7 @@ import { DesktopSidebar } from './DesktopSidebar'
 import DesktopSidebarQueryNode from './__generated__/DesktopSidebarQuery.graphql'
 import type { DesktopSidebarQuery } from './__generated__/DesktopSidebarQuery.graphql'
 
-type RendererProps = { currentPath?: string }
-
-const renderer = (_props: RendererProps) => {
+const renderer = () => {
   const environment = createMockEnvironment()
   environment.mock.queueOperationResolver((op) =>
     MockPayloadGenerator.generate(op, {

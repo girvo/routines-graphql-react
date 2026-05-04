@@ -4,12 +4,14 @@ import {
   useMutation,
   usePreloadedQuery,
   useRefetchableFragment,
+  useRelayEnvironment,
 } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
 import { Plus, Search, Loader2 } from 'lucide-react'
 import { useDebounceValue } from 'usehooks-ts'
 import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
+import { invalidateDailyRoutinesForDayOfWeek } from './invalidate-daily-routines.ts'
 import { clsx } from 'clsx'
 import { Button } from '../primitives/Button.tsx'
 import { AddTaskRow } from './AddTaskRow.tsx'
@@ -127,6 +129,7 @@ const AddTaskDropdownContent = ({
   onDone,
 }: AddTaskDropdownContentProps) => {
   const { showPayloadErrors, showError } = useMutationErrorHandler()
+  const environment = useRelayEnvironment()
   const [searchQuery, setSearchQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
 
@@ -193,6 +196,7 @@ const AddTaskDropdownContent = ({
           },
         },
       },
+      updater: invalidateDailyRoutinesForDayOfWeek(environment, dayOfWeek),
       onCompleted: (_response, errors) => {
         showPayloadErrors(errors)
       },
