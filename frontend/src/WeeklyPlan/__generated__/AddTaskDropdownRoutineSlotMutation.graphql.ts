@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0883822a947e1452dfa1e45dd4bfc627>>
+ * @generated SignedSource<<be3797613df968ef18ad4fdb3185cebe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,7 @@ import { ConcreteRequest } from 'relay-runtime';
 export type DayOfWeek = "FRIDAY" | "MONDAY" | "SATURDAY" | "SUNDAY" | "THURSDAY" | "TUESDAY" | "WEDNESDAY" | "%future added value";
 export type DaySection = "EVENING" | "MIDDAY" | "MORNING" | "%future added value";
 export type AddTaskDropdownRoutineSlotMutation$variables = {
-  connectionId: string;
+  connections: ReadonlyArray<string>;
   dayOfWeek: DayOfWeek;
   daySection: DaySection;
   taskId: string;
@@ -23,6 +23,7 @@ export type AddTaskDropdownRoutineSlotMutation$data = {
       readonly cursor: string;
       readonly node: {
         readonly id: string;
+        readonly section: DaySection;
         readonly task: {
           readonly icon: string | null | undefined;
           readonly id: string;
@@ -41,7 +42,7 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "connectionId"
+  "name": "connections"
 },
 v1 = {
   "defaultValue": null,
@@ -112,6 +113,13 @@ v6 = {
       "plural": false,
       "selections": [
         (v5/*: any*/),
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "section",
+          "storageKey": null
+        },
         {
           "alias": null,
           "args": null,
@@ -202,15 +210,9 @@ return {
             "name": "routineSlotEdge",
             "handleArgs": [
               {
-                "items": [
-                  {
-                    "kind": "Variable",
-                    "name": "connections.0",
-                    "variableName": "connectionId"
-                  }
-                ],
-                "kind": "ListValue",
-                "name": "connections"
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
               }
             ]
           }
@@ -220,16 +222,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f8819d6e91226f4f7f686b529a035f34",
+    "cacheID": "ecc7a6521f7adad2f4b4f7477bd6291a",
     "id": null,
     "metadata": {},
     "name": "AddTaskDropdownRoutineSlotMutation",
     "operationKind": "mutation",
-    "text": "mutation AddTaskDropdownRoutineSlotMutation(\n  $taskId: ID!\n  $dayOfWeek: DayOfWeek!\n  $daySection: DaySection!\n) {\n  createRoutineSlot(input: {taskId: $taskId, dayOfWeek: $dayOfWeek, section: $daySection}) {\n    routineSlotEdge {\n      cursor\n      node {\n        id\n        task {\n          title\n          id\n          icon\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation AddTaskDropdownRoutineSlotMutation(\n  $taskId: ID!\n  $dayOfWeek: DayOfWeek!\n  $daySection: DaySection!\n) {\n  createRoutineSlot(input: {taskId: $taskId, dayOfWeek: $dayOfWeek, section: $daySection}) {\n    routineSlotEdge {\n      cursor\n      node {\n        id\n        section\n        task {\n          title\n          id\n          icon\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2c76075b7f78c6e13d25c1ede01068f8";
+(node as any).hash = "a998d8b85e0f02ce9ec158c42c0ad21f";
 
 export default node;

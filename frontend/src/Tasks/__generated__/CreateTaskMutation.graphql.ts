@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dabcf4d313097bee58a1abc32a0d7191>>
+ * @generated SignedSource<<acec0f59eefb5d43c2f8db928d06bacf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -36,11 +36,17 @@ export type CreateTaskMutation$rawResponse = {
         readonly id: string;
         readonly slots: {
           readonly edges: ReadonlyArray<{
+            readonly cursor: string;
             readonly node: {
+              readonly __typename: "RoutineSlot";
               readonly id: string;
               readonly section: DaySection;
             };
           }>;
+          readonly pageInfo: {
+            readonly endCursor: string | null | undefined;
+            readonly hasNextPage: boolean;
+          };
         };
         readonly title: string;
       };
@@ -94,7 +100,14 @@ v5 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v6 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 100
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": [
@@ -207,13 +220,7 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": [
-                      {
-                        "kind": "Literal",
-                        "name": "first",
-                        "value": 100
-                      }
-                    ],
+                    "args": (v6/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
                     "name": "slots",
@@ -242,8 +249,41 @@ return {
                                 "kind": "ScalarField",
                                 "name": "section",
                                 "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "__typename",
+                                "storageKey": null
                               }
                             ],
+                            "storageKey": null
+                          },
+                          (v4/*: any*/)
+                        ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "PageInfo",
+                        "kind": "LinkedField",
+                        "name": "pageInfo",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "endCursor",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "hasNextPage",
                             "storageKey": null
                           }
                         ],
@@ -251,6 +291,15 @@ return {
                       }
                     ],
                     "storageKey": "slots(first:100)"
+                  },
+                  {
+                    "alias": null,
+                    "args": (v6/*: any*/),
+                    "filters": null,
+                    "handle": "connection",
+                    "key": "Task_slots",
+                    "kind": "LinkedHandle",
+                    "name": "slots"
                   }
                 ],
                 "storageKey": null
@@ -281,12 +330,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "de0019b849b8d007e5aeb3f287e776d1",
+    "cacheID": "20bfc81216d01e0df19d8fcfeaadc23c",
     "id": null,
     "metadata": {},
     "name": "CreateTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...Task_task\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
+    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...Task_task\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

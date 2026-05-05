@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5be3272db3a43ed3247377d73c374009>>
+ * @generated SignedSource<<d6e1d14d2e75f43e3a09fbbd83d48612>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type RoutineSlotItem_routineSlot$data = {
   readonly id: string;
   readonly task: {
     readonly icon: string | null | undefined;
+    readonly id: string;
     readonly title: string;
   };
   readonly " $fragmentType": "RoutineSlotItem_routineSlot";
@@ -25,19 +26,21 @@ export type RoutineSlotItem_routineSlot$key = {
   readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem_routineSlot">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "RoutineSlotItem_routineSlot",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -53,6 +56,7 @@ const node: ReaderFragment = {
       "name": "task",
       "plural": false,
       "selections": [
+        (v0/*: any*/),
         {
           "alias": null,
           "args": null,
@@ -74,7 +78,8 @@ const node: ReaderFragment = {
   "type": "RoutineSlot",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "c2805c04fa423444b76d4fca763ddc28";
+(node as any).hash = "fc9bff870e184b57bf5f3f7340a5ca0b";
 
 export default node;

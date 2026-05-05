@@ -7,6 +7,7 @@ import {
   useRelayEnvironment,
 } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
+import { ConnectionHandler } from 'relay-runtime'
 import { Plus, Search, Loader2 } from 'lucide-react'
 import { useDebounceValue } from 'usehooks-ts'
 import { iconComponent } from '../utils/icons.ts'
@@ -152,7 +153,7 @@ const AddTaskDropdownContent = ({
         $taskId: ID!
         $dayOfWeek: DayOfWeek!
         $daySection: DaySection!
-        $connectionId: ID!
+        $connections: [ID!]!
       ) {
         createRoutineSlot(
           input: {
@@ -161,10 +162,11 @@ const AddTaskDropdownContent = ({
             section: $daySection
           }
         ) {
-          routineSlotEdge @appendEdge(connections: [$connectionId]) {
+          routineSlotEdge @appendEdge(connections: $connections) {
             cursor
             node {
               id
+              section
               task {
                 title
                 id
@@ -179,14 +181,24 @@ const AddTaskDropdownContent = ({
   const handleTaskClick = (task: ClickedTask) => {
     if (isLoading) return
     const optimisticSlotId = `client:RoutineSlot:${crypto.randomUUID()}`
+    const taskSlotsConnectionId = ConnectionHandler.getConnectionID(
+      task.id,
+      'Task_slots',
+    )
     createRoutineSlot({
-      variables: { taskId: task.id, dayOfWeek, daySection, connectionId },
+      variables: {
+        taskId: task.id,
+        dayOfWeek,
+        daySection,
+        connections: [connectionId, taskSlotsConnectionId],
+      },
       optimisticResponse: {
         createRoutineSlot: {
           routineSlotEdge: {
             cursor: '',
             node: {
               id: optimisticSlotId,
+              section: daySection,
               task: {
                 id: task.id,
                 title: task.title,

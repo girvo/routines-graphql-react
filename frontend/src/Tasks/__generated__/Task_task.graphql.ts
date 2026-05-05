@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9c1c6e3519bd28718e15832786705daa>>
+ * @generated SignedSource<<3493fd28ac5385130fdce2a4fa4b003d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -42,7 +42,18 @@ var v0 = {
 return {
   "argumentDefinitions": [],
   "kind": "Fragment",
-  "metadata": null,
+  "metadata": {
+    "connection": [
+      {
+        "count": null,
+        "cursor": null,
+        "direction": "forward",
+        "path": [
+          "slots"
+        ]
+      }
+    ]
+  },
   "name": "Task_task",
   "selections": [
     (v0/*: any*/),
@@ -68,17 +79,11 @@ return {
       "storageKey": null
     },
     {
-      "alias": null,
-      "args": [
-        {
-          "kind": "Literal",
-          "name": "first",
-          "value": 100
-        }
-      ],
+      "alias": "slots",
+      "args": null,
       "concreteType": "RoutineSlotConnection",
       "kind": "LinkedField",
-      "name": "slots",
+      "name": "__Task_slots_connection",
       "plural": false,
       "selections": [
         {
@@ -104,15 +109,54 @@ return {
                   "kind": "ScalarField",
                   "name": "section",
                   "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
                 }
               ],
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
               "storageKey": null
             }
           ],
           "storageKey": null
         }
       ],
-      "storageKey": "slots(first:100)"
+      "storageKey": null
     }
   ],
   "type": "Task",
@@ -120,6 +164,6 @@ return {
 };
 })();
 
-(node as any).hash = "fd1f491895c3a0b4ad3307deb7e4da09";
+(node as any).hash = "4e37dcca08947f6e02e369f0d8464438";
 
 export default node;

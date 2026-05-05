@@ -5,6 +5,7 @@ import {
   useMutation,
   useRelayEnvironment,
 } from 'react-relay'
+import { ConnectionHandler } from 'relay-runtime'
 import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { invalidateDailyRoutinesForDayOfWeek } from './invalidate-daily-routines.ts'
@@ -34,6 +35,7 @@ export const RoutineSlotItem = ({
         id
         dayOfWeek
         task {
+          id
           title
           icon
         }
@@ -82,7 +84,13 @@ export const RoutineSlotItem = ({
           deleteItem({
             variables: {
               routineSlotId: routineSlot.id,
-              connections: [connectionId],
+              connections: [
+                connectionId,
+                ConnectionHandler.getConnectionID(
+                  routineSlot.task.id,
+                  'Task_slots',
+                ),
+              ],
             },
             optimisticResponse: {
               deleteRoutineSlot: { deletedId: routineSlot.id },

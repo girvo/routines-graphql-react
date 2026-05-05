@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a36074355e7c57dbafd90925407f063f>>
+ * @generated SignedSource<<9fb0f567e08087d08c42b615e0dfef26>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -112,6 +112,7 @@ v5 = [
             "name": "task",
             "plural": false,
             "selections": [
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -125,8 +126,7 @@ v5 = [
                 "kind": "ScalarField",
                 "name": "icon",
                 "storageKey": null
-              },
-              (v4/*: any*/)
+              }
             ],
             "storageKey": null
           }
@@ -417,12 +417,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b1075d42840fcd592d972fe504eb7d26",
+    "cacheID": "26f8928f0ffa254c34f52985b7347dcd",
     "id": null,
     "metadata": {},
     "name": "WeeklyPlanPageQuery",
     "operationKind": "query",
-    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay_day\n    }\n    tuesday {\n      ...WeeklyPlanDay_day\n    }\n    wednesday {\n      ...WeeklyPlanDay_day\n    }\n    thursday {\n      ...WeeklyPlanDay_day\n    }\n    friday {\n      ...WeeklyPlanDay_day\n    }\n    saturday {\n      ...WeeklyPlanDay_day\n    }\n    sunday {\n      ...WeeklyPlanDay_day\n    }\n  }\n}\n\nfragment DaySection_section on RoutineSlotConnection {\n  edges {\n    __typename\n  }\n  ...WeeklyPlanRoutineSection_section\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    title\n    icon\n    id\n  }\n}\n\nfragment WeeklyPlanDay_day on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
+    "text": "query WeeklyPlanPageQuery {\n  weeklySchedule {\n    monday {\n      ...WeeklyPlanDay_day\n    }\n    tuesday {\n      ...WeeklyPlanDay_day\n    }\n    wednesday {\n      ...WeeklyPlanDay_day\n    }\n    thursday {\n      ...WeeklyPlanDay_day\n    }\n    friday {\n      ...WeeklyPlanDay_day\n    }\n    saturday {\n      ...WeeklyPlanDay_day\n    }\n    sunday {\n      ...WeeklyPlanDay_day\n    }\n  }\n}\n\nfragment DaySection_section on RoutineSlotConnection {\n  edges {\n    __typename\n  }\n  ...WeeklyPlanRoutineSection_section\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanDay_day on DaySchedule {\n  dayOfWeek\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  midday(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  evening(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...DaySection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
   }
 };
 })();

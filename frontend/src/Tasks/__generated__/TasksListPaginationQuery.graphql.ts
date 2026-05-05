@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<332f86a0dc6359721150cd511fbe2fe1>>
+ * @generated SignedSource<<7c66f173e4f166d0d4b454486613b143>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -52,6 +52,52 @@ v2 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v3 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 100
+  }
+],
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    }
+  ],
   "storageKey": null
 };
 return {
@@ -135,13 +181,7 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": [
-                      {
-                        "kind": "Literal",
-                        "name": "first",
-                        "value": 100
-                      }
-                    ],
+                    "args": (v3/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
                     "name": "slots",
@@ -170,61 +210,37 @@ return {
                                 "kind": "ScalarField",
                                 "name": "section",
                                 "storageKey": null
-                              }
+                              },
+                              (v4/*: any*/)
                             ],
                             "storageKey": null
-                          }
+                          },
+                          (v5/*: any*/)
                         ],
                         "storageKey": null
-                      }
+                      },
+                      (v6/*: any*/)
                     ],
                     "storageKey": "slots(first:100)"
                   },
                   {
                     "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "__typename",
-                    "storageKey": null
-                  }
+                    "args": (v3/*: any*/),
+                    "filters": null,
+                    "handle": "connection",
+                    "key": "Task_slots",
+                    "kind": "LinkedHandle",
+                    "name": "slots"
+                  },
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
-                "storageKey": null
-              }
+              (v5/*: any*/)
             ],
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "PageInfo",
-            "kind": "LinkedField",
-            "name": "pageInfo",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "endCursor",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "hasNextPage",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
+          (v6/*: any*/),
           {
             "kind": "ClientExtension",
             "selections": [
@@ -252,12 +268,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "768b3206174cedefd5f5716db5ae34d4",
+    "cacheID": "2d7c97e876c5cb96226ca1e6521b6995",
     "id": null,
     "metadata": {},
     "name": "TasksListPaginationQuery",
     "operationKind": "query",
-    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

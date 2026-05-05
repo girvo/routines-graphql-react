@@ -29,7 +29,7 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
         title
         icon
         createdAt
-        slots(first: 100) {
+        slots(first: 100) @connection(key: "Task_slots") {
           edges {
             node {
               id

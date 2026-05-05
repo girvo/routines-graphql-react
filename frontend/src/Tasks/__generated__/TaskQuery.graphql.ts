@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6f628806d59aa8e204c5879ad77e9133>>
+ * @generated SignedSource<<42dbe12d6d2379d1b82c3e8dadf57328>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -49,13 +49,26 @@ v2 = {
   "name": "id",
   "storageKey": null
 },
-v3 = {
+v3 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 100
+  }
+],
+v4 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "String"
 },
-v4 = {
+v5 = {
+  "enumValues": null,
+  "nullable": true,
+  "plural": false,
+  "type": "String"
+},
+v6 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
@@ -143,13 +156,7 @@ return {
               },
               {
                 "alias": null,
-                "args": [
-                  {
-                    "kind": "Literal",
-                    "name": "first",
-                    "value": 100
-                  }
-                ],
+                "args": (v3/*: any*/),
                 "concreteType": "RoutineSlotConnection",
                 "kind": "LinkedField",
                 "name": "slots",
@@ -178,8 +185,41 @@ return {
                             "kind": "ScalarField",
                             "name": "section",
                             "storageKey": null
-                          }
+                          },
+                          (v1/*: any*/)
                         ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "cursor",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "PageInfo",
+                    "kind": "LinkedField",
+                    "name": "pageInfo",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "endCursor",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "hasNextPage",
                         "storageKey": null
                       }
                     ],
@@ -187,6 +227,15 @@ return {
                   }
                 ],
                 "storageKey": "slots(first:100)"
+              },
+              {
+                "alias": null,
+                "args": (v3/*: any*/),
+                "filters": null,
+                "handle": "connection",
+                "key": "Task_slots",
+                "kind": "LinkedHandle",
+                "name": "slots"
               }
             ],
             "type": "Task",
@@ -198,7 +247,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1ec7dd519e19fc6bba589181b4c9c3ab",
+    "cacheID": "826d25ed21d1d06cf86a6cf7b6fc398d",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -208,20 +257,15 @@ return {
           "plural": false,
           "type": "Node"
         },
-        "node.__typename": (v3/*: any*/),
+        "node.__typename": (v4/*: any*/),
         "node.createdAt": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
           "type": "DateTime"
         },
-        "node.icon": {
-          "enumValues": null,
-          "nullable": true,
-          "plural": false,
-          "type": "String"
-        },
-        "node.id": (v4/*: any*/),
+        "node.icon": (v5/*: any*/),
+        "node.id": (v6/*: any*/),
         "node.slots": {
           "enumValues": null,
           "nullable": false,
@@ -234,13 +278,15 @@ return {
           "plural": true,
           "type": "RoutineSlotEdge"
         },
+        "node.slots.edges.cursor": (v4/*: any*/),
         "node.slots.edges.node": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
           "type": "RoutineSlot"
         },
-        "node.slots.edges.node.id": (v4/*: any*/),
+        "node.slots.edges.node.__typename": (v4/*: any*/),
+        "node.slots.edges.node.id": (v6/*: any*/),
         "node.slots.edges.node.section": {
           "enumValues": [
             "MORNING",
@@ -251,12 +297,25 @@ return {
           "plural": false,
           "type": "DaySection"
         },
-        "node.title": (v3/*: any*/)
+        "node.slots.pageInfo": {
+          "enumValues": null,
+          "nullable": false,
+          "plural": false,
+          "type": "PageInfo"
+        },
+        "node.slots.pageInfo.endCursor": (v5/*: any*/),
+        "node.slots.pageInfo.hasNextPage": {
+          "enumValues": null,
+          "nullable": false,
+          "plural": false,
+          "type": "Boolean"
+        },
+        "node.title": (v4/*: any*/)
       }
     },
     "name": "TaskQuery",
     "operationKind": "query",
-    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...Task_task\n    }\n    id\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
+    "text": "query TaskQuery {\n  node(id: \"\") {\n    __typename\n    ... on Task {\n      __typename\n      ...Task_task\n    }\n    id\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

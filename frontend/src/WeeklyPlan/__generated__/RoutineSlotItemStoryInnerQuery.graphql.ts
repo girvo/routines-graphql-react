@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8a0cd0a8480ac2a823ecab066c433d01>>
+ * @generated SignedSource<<893e0595a8164690405ea9be4362476b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -122,6 +122,7 @@ return {
                 "name": "task",
                 "plural": false,
                 "selections": [
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -135,8 +136,7 @@ return {
                     "kind": "ScalarField",
                     "name": "icon",
                     "storageKey": null
-                  },
-                  (v1/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -150,7 +150,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "acb780f81d3b76740d08ad4857d68af8",
+    "cacheID": "a20197d51ad03e1e2e4d56392686d130",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -194,7 +194,7 @@ return {
     },
     "name": "RoutineSlotItemStoryInnerQuery",
     "operationKind": "query",
-    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on RoutineSlot {\n      ...RoutineSlotItem_routineSlot\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    title\n    icon\n    id\n  }\n}\n"
+    "text": "query RoutineSlotItemStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on RoutineSlot {\n      ...RoutineSlotItem_routineSlot\n    }\n    id\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n"
   }
 };
 })();

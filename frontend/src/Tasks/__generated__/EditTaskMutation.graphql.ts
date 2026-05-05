@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bd4077fbcc804f99c1376ca93f0b5900>>
+ * @generated SignedSource<<b9d2125d9c884052de277f3904275672>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -51,7 +51,14 @@ v2 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v3 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 100
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -136,13 +143,7 @@ return {
               },
               {
                 "alias": null,
-                "args": [
-                  {
-                    "kind": "Literal",
-                    "name": "first",
-                    "value": 100
-                  }
-                ],
+                "args": (v3/*: any*/),
                 "concreteType": "RoutineSlotConnection",
                 "kind": "LinkedField",
                 "name": "slots",
@@ -171,8 +172,47 @@ return {
                             "kind": "ScalarField",
                             "name": "section",
                             "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "__typename",
+                            "storageKey": null
                           }
                         ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "cursor",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "PageInfo",
+                    "kind": "LinkedField",
+                    "name": "pageInfo",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "endCursor",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "hasNextPage",
                         "storageKey": null
                       }
                     ],
@@ -180,6 +220,15 @@ return {
                   }
                 ],
                 "storageKey": "slots(first:100)"
+              },
+              {
+                "alias": null,
+                "args": (v3/*: any*/),
+                "filters": null,
+                "handle": "connection",
+                "key": "Task_slots",
+                "kind": "LinkedHandle",
+                "name": "slots"
               }
             ],
             "storageKey": null
@@ -190,12 +239,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "19c0baeec2cc2c722a9b83e037473b57",
+    "cacheID": "1de1defb6d672b414977a8e08a0273de",
     "id": null,
     "metadata": {},
     "name": "EditTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...Task_task\n      id\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n      }\n    }\n  }\n}\n"
+    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...Task_task\n      id\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
