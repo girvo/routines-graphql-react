@@ -14,7 +14,7 @@ const TaskQuery = () => {
   const data = useLazyLoadQuery<TaskQuery>(
     graphql`
       query TaskQuery @relay_test_operation {
-        node(id: "") {
+        node(id: "test_id") {
           ... on Task {
             __typename
             ...Task_task
@@ -53,11 +53,7 @@ const renderer = () => {
     <div className="max-w-200">
       <RelayEnvironmentProvider environment={environment}>
         <Suspense fallback="Loading...">
-          <table className="table">
-            <tbody>
-              <TaskQuery />
-            </tbody>
-          </table>
+          <TaskQuery />
         </Suspense>
       </RelayEnvironmentProvider>
     </div>

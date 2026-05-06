@@ -1,4 +1,12 @@
-import { useState, Suspense, useEffect, useRef, useTransition } from 'react'
+import {
+  useState,
+  Suspense,
+  useEffect,
+  useRef,
+  useTransition,
+  useCallback,
+  type Ref,
+} from 'react'
 import {
   graphql,
   useMutation,
@@ -35,17 +43,23 @@ interface ClickedTask {
 }
 
 interface TaskListProps {
-  fragmentRef: AddTaskDropdown_query$key
+  tasks: AddTaskDropdown_query$key
   searchQuery: string
   isLoading: boolean
   onTaskClick: (task: ClickedTask) => void
+  selectedIndex: number
+  onEdgesChange: (count: number) => void
+  listRef: Ref<HTMLDivElement>
 }
 
 const TaskList = ({
-  fragmentRef,
+  tasks,
   searchQuery,
   isLoading,
   onTaskClick,
+  selectedIndex,
+  onEdgesChange,
+  listRef,
 }: TaskListProps) => {
   const [data, refetch] = useRefetchableFragment(
     graphql`
@@ -65,7 +79,7 @@ const TaskList = ({
         }
       }
     `,
-    fragmentRef,
+    tasks,
   )
 
   const [debouncedSearch] = useDebounceValue(searchQuery, 300)
@@ -82,31 +96,46 @@ const TaskList = ({
     })
   }, [debouncedSearch, refetch])
 
-  if (data.tasks.edges.length === 0) {
-    return <div className={styles.empty}>No tasks found</div>
-  }
+  const edges = data.tasks.edges
+
+  useEffect(() => {
+    onEdgesChange(edges.length)
+  }, [edges.length, onEdgesChange])
 
   return (
-    <ul
+    <div
+      ref={listRef}
+      id="addtask-listbox"
+      role="listbox"
+      aria-label="Tasks"
       className={clsx(styles.list, (isPending || isLoading) && styles.pending)}
     >
-      {data.tasks.edges.map(({ node }) => {
-        const Icon = iconComponent(node.icon)
-        return (
-          <li key={node.id}>
+      {edges.length === 0 && (
+        <div className={styles.empty}>No tasks found</div>
+      )}
+      {edges.length > 0 &&
+        edges.map(({ node }, i) => {
+          const Icon = iconComponent(node.icon)
+          return (
             <button
+              key={node.id}
               type="button"
-              className={styles.option}
+              id={`addtask-opt-${i}`}
+              role="option"
+              aria-selected={i === selectedIndex}
+              className={clsx(
+                styles.option,
+                i === selectedIndex && styles.active,
+              )}
               onClick={() => !isLoading && onTaskClick(node)}
               disabled={isLoading}
             >
               <Icon className={styles.optionIcon} />
               <span>{node.title}</span>
             </button>
-          </li>
-        )
-      })}
-    </ul>
+          )
+        })}
+    </div>
   )
 }
 
@@ -122,7 +151,8 @@ interface AddTaskDropdownContentProps extends DaySelection {
   onDone: () => void
 }
 
-const AddTaskDropdownContent = ({
+/** @internal exporting for interaction tests */
+export const AddTaskDropdownContent = ({
   queryRef,
   dayOfWeek,
   daySection,
@@ -133,6 +163,14 @@ const AddTaskDropdownContent = ({
   const environment = useRelayEnvironment()
   const [searchQuery, setSearchQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const listRef = useRef<HTMLDivElement>(null)
+  const edgesCountRef = useRef(0)
+
+  const handleEdgesChange = useCallback((count: number) => {
+    setSelectedIndex(-1)
+    edgesCountRef.current = count
+  }, [])
 
   useEffect(() => {
     searchRef.current?.focus()
@@ -146,6 +184,38 @@ const AddTaskDropdownContent = ({
     `,
     queryRef,
   )
+
+  useEffect(() => {
+    if (selectedIndex >= 0) {
+      const selected = listRef.current?.querySelector('[aria-selected="true"]')
+      selected?.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedIndex])
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const count = edgesCountRef.current
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setSelectedIndex(prev => {
+        if (count === 0) return -1
+        if (prev < 0) return 0
+        return (prev + 1) % count
+      })
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setSelectedIndex(prev => {
+        if (count === 0) return -1
+        if (prev < 0) return count - 1
+        return (prev - 1 + count) % count
+      })
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      e.preventDefault()
+      const selected = listRef.current?.querySelector<HTMLElement>(
+        `#addtask-opt-${selectedIndex}`,
+      )
+      selected?.click()
+    }
+  }
 
   const [createRoutineSlot, isLoading] =
     useMutation<AddTaskDropdownRoutineSlotMutation>(graphql`
@@ -228,12 +298,23 @@ const AddTaskDropdownContent = ({
         placeholder="Search tasks..."
         value={searchQuery}
         onChange={e => setSearchQuery(e.target.value)}
+        onKeyDown={handleKeyDown}
+        role="combobox"
+        aria-controls="addtask-listbox"
+        aria-expanded
+        aria-autocomplete="list"
+        aria-activedescendant={
+          selectedIndex >= 0 ? `addtask-opt-${selectedIndex}` : undefined
+        }
       />
       <TaskList
-        fragmentRef={data}
+        listRef={listRef}
+        tasks={data}
         searchQuery={searchQuery}
         isLoading={isLoading}
         onTaskClick={handleTaskClick}
+        selectedIndex={selectedIndex}
+        onEdgesChange={handleEdgesChange}
       />
     </>
   )
@@ -252,10 +333,7 @@ const renderTrigger = (
 ) => {
   if (variant === 'row') {
     return (
-      <AddTaskRow
-        onMouseEnter={onButtonHover}
-        onTouchStart={onButtonHover}
-      />
+      <AddTaskRow onMouseEnter={onButtonHover} onTouchStart={onButtonHover} />
     )
   }
   return (

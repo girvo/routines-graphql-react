@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react-vite'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { ToastProvider } from '../src/toast/ToastProvider'
 import '../src/styles.css'
 
 const preview: Preview = {
@@ -24,7 +25,11 @@ const preview: Preview = {
     },
   },
   decorators: [
-    // Ensures we have a router around the thing
+    Story => (
+      <ToastProvider>
+        <Story />
+      </ToastProvider>
+    ),
     (Story, { parameters }) => {
       const entry = parameters.currentPath ?? '/'
       const title = parameters.pageTitle ?? ''

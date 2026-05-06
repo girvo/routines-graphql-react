@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { TodayTaskRow } from './TodayTaskRow'
-import { ToastProvider } from '../toast/ToastProvider'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
 import { Suspense } from 'react'
 import {
@@ -48,9 +47,7 @@ const TodayTaskRowStory = () => {
   return (
     <Suspense fallback="Loading...">
       <RelayEnvironmentProvider environment={environment}>
-        <ToastProvider>
-          <TodayTaskRowStoryInner />
-        </ToastProvider>
+        <TodayTaskRowStoryInner />
       </RelayEnvironmentProvider>
     </Suspense>
   )

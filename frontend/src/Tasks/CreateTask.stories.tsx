@@ -12,16 +12,12 @@ const renderer = () => {
     <div className="max-w-200">
       <RelayEnvironmentProvider environment={environment}>
         <Suspense fallback="Loading...">
-          <table className="table">
-            <tbody>
-              <CreateTask
-                connectionId="mock-connection-id"
-                setIsCreating={() => {
-                  console.log('setIsCreating called')
-                }}
-              />
-            </tbody>
-          </table>
+          <CreateTask
+            connectionId="mock-connection-id"
+            setIsCreating={() => {
+              console.log('setIsCreating called')
+            }}
+          />
         </Suspense>
       </RelayEnvironmentProvider>
     </div>
