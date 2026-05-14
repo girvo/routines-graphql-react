@@ -10,6 +10,7 @@ body {
   font-family: Inter, system-ui, sans-serif;
   color: var(--text-ink);
   background: var(--surface-bg);
+  overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
