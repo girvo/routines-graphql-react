@@ -74,20 +74,20 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
     async reviveRoutineSlot(id: number): Promise<RoutineSlotRow> {
       return db
         .updateTable('routine_slots')
-        .set({ deleted_at: null, created_at: getCurrentTimestamp() })
+        .set({ deleted_at: null })
         .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
     },
 
-    async deleteRoutineSlot(id: number, userId: number): Promise<void> {
-      await db
+    async deleteRoutineSlot(id: number, userId: number) {
+      return db
         .updateTable('routine_slots')
         .set({ deleted_at: getCurrentTimestamp() })
         .where('id', '=', id)
         .where('user_id', '=', userId)
         .where('deleted_at', 'is', null)
-        .execute()
+        .executeTakeFirstOrThrow()
     },
 
     async findByIdAndUserId(

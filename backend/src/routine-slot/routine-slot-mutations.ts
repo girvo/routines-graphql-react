@@ -67,7 +67,11 @@ export const deleteRoutineSlot: MutationResolvers<Context>['deleteRoutineSlot'] 
     assertAuthenticated(context)
 
     const id = fromGlobalId(routineSlotId, 'RoutineSlot')
-    await context.routineRepo.deleteRoutineSlot(id, context.currentUser.id)
+    const result = await context.routineRepo.deleteRoutineSlot(id, context.currentUser.id)
+
+    if (result.numUpdatedRows < 1n) {
+      throw new GraphQLError('Routine slot not found')
+    }
 
     return {
       deletedId: routineSlotId,

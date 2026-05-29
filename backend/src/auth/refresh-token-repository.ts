@@ -20,7 +20,6 @@ export interface RefreshTokenRow {
 export const createRefreshTokenRepository = (db: Kysely<Database>) => {
   return {
     async findById(id: number): Promise<RefreshTokenRow> {
-      console.debug(`Looking for refresh token with id ${id}`)
       return db
         .selectFrom('refresh_tokens')
         .selectAll()

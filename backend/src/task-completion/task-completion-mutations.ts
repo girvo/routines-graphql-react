@@ -6,6 +6,7 @@ import {
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { GraphQLError } from 'graphql'
+import { SqliteError } from 'better-sqlite3'
 import { tableToDomain as routineSlotTableToDomain } from '../routine-slot/routine-slot-domain.ts'
 import {
   decodeDailyTaskInstanceId,
@@ -29,11 +30,22 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
       throw new GraphQLError('Routine slot not found')
     }
 
-    const completionRow = await context.taskCompletionRepo.createCompletion(
-      context.currentUser.id,
-      routineSlotId,
-      date.toISOString(),
-    )
+    let completionRow
+    try {
+      completionRow = await context.taskCompletionRepo.createCompletion(
+        context.currentUser.id,
+        routineSlotId,
+        date.toISOString(),
+      )
+    } catch (error) {
+      if (
+        error instanceof SqliteError &&
+        error.code === 'SQLITE_CONSTRAINT_UNIQUE'
+      ) {
+        throw new GraphQLError('Routine slot is already completed for this day')
+      }
+      throw error
+    }
 
     const completion = tableToDomain(completionRow)
     const completionEdge = buildTaskCompletionEdge(completion)

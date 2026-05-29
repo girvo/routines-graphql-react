@@ -1,5 +1,6 @@
 import type { Kysely } from 'kysely'
 import type { Database } from '../database/types.ts'
+import { getCurrentTimestamp } from '../database/time.ts'
 
 export interface UserRow {
   id: number
@@ -14,7 +15,6 @@ export interface UserRow {
 export const createUserRepository = (db: Kysely<Database>) => {
   return {
     async findById(id: number): Promise<UserRow> {
-      console.debug(`Looking for user with id ${id}`)
       return db
         .selectFrom('users')
         .selectAll()
@@ -53,6 +53,14 @@ export const createUserRepository = (db: Kysely<Database>) => {
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+    },
+
+    async updateLastLoggedIn(id: number): Promise<void> {
+      await db
+        .updateTable('users')
+        .set({ last_logged_in: getCurrentTimestamp() })
+        .where('id', '=', id)
+        .execute()
     },
   }
 }

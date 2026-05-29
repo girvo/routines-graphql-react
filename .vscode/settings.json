@@ -38,5 +38,8 @@
   "relay.rootDirectory": "frontend",
   "relay.pathToConfig": "relay.config.json",
   "relay.pathToRelay": "node_modules/.bin/relay-compiler",
-  "relay.autoStartCompiler": true
+  "relay.autoStartCompiler": true,
+  "[markdown]": {
+    "editor.formatOnSave": false
+  }
 }

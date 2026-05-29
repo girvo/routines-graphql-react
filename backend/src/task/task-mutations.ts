@@ -12,6 +12,10 @@ export const createTask: MutationResolvers<Context>['createTask'] = async (
 ) => {
   assertAuthenticated(context)
 
+  if (title.trim().length === 0) {
+    throw new GraphQLError('Task title must not be empty')
+  }
+
   const taskRow = await context.taskRepo.createTask(
     title,
     context.currentUser.id,
@@ -59,6 +63,10 @@ export const updateTask: MutationResolvers<Context>['updateTask'] = async (
   context,
 ) => {
   assertAuthenticated(context)
+
+  if (typeof input.title === 'string' && input.title.trim().length === 0) {
+    throw new GraphQLError('Task title must not be empty')
+  }
 
   const updatedTaskRow = await context.taskRepo.updateTask(
     fromGlobalId(input.taskId, 'Task'),

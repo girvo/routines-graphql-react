@@ -32,7 +32,6 @@ export const resolveUser: ResolveUserFn<
 
 export const validateUser: ValidateUserFn<UserDomain> = params => {
   if (params.fieldDirectives?.skipAuth) {
-    console.debug('YO WE GOT A SKIPAUTH REQ')
     return
   }
 

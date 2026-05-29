@@ -238,8 +238,8 @@ describe('Task completion mutations', () => {
     )
 
     expect(secondCompletion.errors).toBeDefined()
-    expect(secondCompletion.errors?.[0].message).toMatch(
-      /UNIQUE constraint failed:/,
+    expect(secondCompletion.errors?.[0].message).toBe(
+      'Routine slot is already completed for this day',
     )
   })
 

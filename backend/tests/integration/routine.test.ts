@@ -107,6 +107,69 @@ describe('Routine mutations', () => {
     expect(result.data?.deleteRoutineSlot?.deletedId).toBe(routineSlot.id)
   })
 
+  it('reviving a deleted routine slot preserves the original created_at timestamp', async () => {
+    const { userToken } = await createTestUser()
+    const task = await createTask({ title: 'Test task', yoga, userToken })
+    const taskId = task.data!.createTask!.taskEdge.node.id
+
+    // Create a slot and record its created_at
+    const createResult = await executeGraphQL(
+      graphql(`
+        mutation CreateSlot($input: CreateRoutineSlotInput!) {
+          createRoutineSlot(input: $input) {
+            routineSlotEdge { node { id createdAt } }
+          }
+        }
+      `),
+      {
+        input: {
+          taskId,
+          dayOfWeek: 'MONDAY',
+          section: 'MORNING',
+        },
+      },
+      { yoga, userToken },
+    )
+    const originalSlot = createResult.data!.createRoutineSlot!.routineSlotEdge.node
+    const originalCreatedAt = originalSlot.createdAt
+
+    // Delete the slot
+    await executeGraphQL(
+      graphql(`
+        mutation DeleteSlot($routineSlotId: ID!) {
+          deleteRoutineSlot(routineSlotId: $routineSlotId) {
+            deletedId
+          }
+        }
+      `),
+      { routineSlotId: originalSlot.id },
+      { yoga, userToken },
+    )
+
+    // Revive it by calling createRoutineSlot with the same unique key
+    const reviveResult = await executeGraphQL(
+      graphql(`
+        mutation ReviveSlot($input: CreateRoutineSlotInput!) {
+          createRoutineSlot(input: $input) {
+            routineSlotEdge { node { id createdAt } }
+          }
+        }
+      `),
+      {
+        input: {
+          taskId,
+          dayOfWeek: 'MONDAY',
+          section: 'MORNING',
+        },
+      },
+      { yoga, userToken },
+    )
+    const revivedSlot = reviveResult.data!.createRoutineSlot!.routineSlotEdge.node
+
+    // The revived slot must retain the original created_at timestamp
+    expect(revivedSlot.createdAt).toBe(originalCreatedAt)
+  })
+
   it('cannot create a routine slot for a task owned by another user', async () => {
     const { userToken: ownerToken } = await createTestUser()
     const { userToken: otherToken } = await createTestUser()

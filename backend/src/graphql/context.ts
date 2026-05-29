@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql'
 import type { JWTExtendContextFields } from '@graphql-yoga/plugin-jwt'
 import { getEnv } from '../env.ts'
 import type { YogaInitialContext } from 'graphql-yoga'
@@ -53,6 +54,8 @@ export function assertAuthenticated(
   context: Context,
 ): asserts context is AuthenticatedContext {
   if (!context.currentUser) {
-    throw new Error('User must be authenticated')
+    throw new GraphQLError('User must be authenticated', {
+      extensions: { code: 'UNAUTHENTICATED' },
+    })
   }
 }

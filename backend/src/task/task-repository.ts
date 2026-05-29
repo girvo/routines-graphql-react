@@ -43,7 +43,6 @@ export const createTaskRepository = (db: Kysely<Database>) => {
       id: number,
       userId: number,
     ): Promise<TaskRow | undefined> {
-      console.debug(`Looking for task with id ${id} for user ${userId}`)
       return db
         .selectFrom('tasks')
         .selectAll()

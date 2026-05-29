@@ -144,6 +144,79 @@ describe('Task mutations', () => {
     )
   })
 
+  it('cannot create a task with an empty title', async () => {
+    const { userToken } = await createTestUser()
+
+    const result = await executeGraphQL(
+      graphql(`
+  mutation CreateTaskMutation($title: String!, $icon: String) {
+    createTask(title: $title, icon: $icon) {
+      taskEdge {
+        node {
+          id
+          title
+          icon
+        }
+      }
+    }
+  }
+`),
+      { title: '', icon: null },
+      { yoga, userToken },
+    )
+
+    expect(result.errors).toBeDefined()
+    expect(result.errors?.[0].message).toBe('Task title must not be empty')
+  })
+
+  it('cannot update a task with an empty title', async () => {
+    const { userToken } = await createTestUser()
+    const task = await createTask({ title: 'Valid task', yoga, userToken })
+    const taskId = task.data!.createTask!.taskEdge.node.id
+
+    const result = await executeGraphQL(
+      graphql(`
+        mutation UpdateTask($input: UpdateTaskInput!) {
+          updateTask(input: $input) {
+            task {
+              id
+              title
+            }
+          }
+        }
+      `),
+      { input: { taskId, title: '' } },
+      { yoga, userToken },
+    )
+
+    expect(result.errors).toBeDefined()
+    expect(result.errors?.[0].message).toBe('Task title must not be empty')
+  })
+
+  it('cannot update a task with whitespace-only title', async () => {
+    const { userToken } = await createTestUser()
+    const task = await createTask({ title: 'Valid task', yoga, userToken })
+    const taskId = task.data!.createTask!.taskEdge.node.id
+
+    const result = await executeGraphQL(
+      graphql(`
+        mutation UpdateTask($input: UpdateTaskInput!) {
+          updateTask(input: $input) {
+            task {
+              id
+              title
+            }
+          }
+        }
+      `),
+      { input: { taskId, title: '   ' } },
+      { yoga, userToken },
+    )
+
+    expect(result.errors).toBeDefined()
+    expect(result.errors?.[0].message).toBe('Task title must not be empty')
+  })
+
   it('cannot delete a task owned by another user', async () => {
     const { userToken: ownerToken } = await createTestUser()
     const { userToken: otherToken } = await createTestUser()

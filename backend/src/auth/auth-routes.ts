@@ -61,6 +61,8 @@ export const authRoutes = async (fastify: FastifyInstance) => {
 
       if (!valid) return loginError
 
+      await userRepo.updateLastLoggedIn(user.id)
+
       const token = createAccessToken(user.id, env.JWT_SECRET)
 
       const refreshToken = generateRefreshToken()
@@ -77,7 +79,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
 
       reply.setCookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: env.ENVIRONMENT === 'production',
         sameSite: 'strict',
         maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
       })
@@ -119,7 +121,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
 
       reply.setCookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: env.ENVIRONMENT === 'production',
         sameSite: 'strict',
         path: '/',
         maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
@@ -188,6 +190,25 @@ export const authRoutes = async (fastify: FastifyInstance) => {
         env.JWT_SECRET,
       )
 
+      await refreshTokenRepo.revokeToken(storedToken.id)
+
+      const newRefreshToken = generateRefreshToken()
+      const newTokenHash = hashRefreshToken(newRefreshToken, env.JWT_SECRET)
+      const newExpiresAt = getRefreshTokenExpiry()
+
+      await refreshTokenRepo.createRefreshToken(
+        tokenDomain.userId,
+        newTokenHash,
+        newExpiresAt,
+      )
+
+      reply.setCookie('refreshToken', newRefreshToken, {
+        httpOnly: true,
+        secure: env.ENVIRONMENT === 'production',
+        sameSite: 'strict',
+        maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+      })
+
       return {
         success: true,
         accessToken: newAccessToken,
@@ -206,7 +227,6 @@ export const authRoutes = async (fastify: FastifyInstance) => {
       const refreshToken = request.cookies.refreshToken
 
       if (!refreshToken) {
-        console.warn('Logout called without a refresh token in the request')
         return reply.code(200).send({
           success: true,
         })
