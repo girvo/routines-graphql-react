@@ -81,7 +81,7 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
               title: data.title,
               icon: data.icon || null,
               createdAt: new Date().toISOString(),
-              slots: { edges: [] },
+              slots: { edges: [], pageInfo: { endCursor: null, hasNextPage: false } },
             },
           },
         },

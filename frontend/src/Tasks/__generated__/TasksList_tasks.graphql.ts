@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<52b53eaf5ec8408899e8ff35dc1cad4f>>
+ * @generated SignedSource<<f7f1b49616183f25c67d612adc4eefb3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -46,6 +46,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "titleSearch"
     }
   ],
   "kind": "Fragment",
@@ -75,7 +80,13 @@ return {
   "selections": [
     {
       "alias": "tasks",
-      "args": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "titleSearch",
+          "variableName": "titleSearch"
+        }
+      ],
       "concreteType": "TaskConnection",
       "kind": "LinkedField",
       "name": "__TasksList_tasks_connection",
@@ -187,6 +198,6 @@ return {
 };
 })();
 
-(node as any).hash = "e9b6274b837e0d52ad7885ae81af4322";
+(node as any).hash = "311bb4f4a799533e019a231aedb917b0";
 
 export default node;

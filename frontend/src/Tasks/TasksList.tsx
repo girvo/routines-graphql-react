@@ -1,5 +1,6 @@
 import { graphql, usePaginationFragment } from 'react-relay'
-import { useMemo, type Dispatch, type SetStateAction } from 'react'
+import { startTransition, useEffect, type Dispatch, type SetStateAction } from 'react'
+import { useDebounceCallback } from 'usehooks-ts'
 import { Task } from './Task.tsx'
 import { CreateTask } from './CreateTask.tsx'
 import { Button } from '../primitives/Button.tsx'
@@ -22,15 +23,16 @@ export const TasksList = ({
   setIsCreating,
   searchQuery,
 }: TasksListProps) => {
-  const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
+  const { data, loadNext, hasNext, isLoadingNext, refetch } = usePaginationFragment(
     graphql`
       fragment TasksList_tasks on Query
       @refetchable(queryName: "TasksListPaginationQuery")
       @argumentDefinitions(
         count: { type: "NonNegativeInt", defaultValue: 20 }
         cursor: { type: "String" }
+        titleSearch: { type: "String", defaultValue: null }
       ) {
-        tasks(first: $count, after: $cursor)
+        tasks(first: $count, after: $cursor, titleSearch: $titleSearch)
           @connection(key: "TasksList_tasks") {
           __id
           edges {
@@ -47,19 +49,27 @@ export const TasksList = ({
     tasksRef,
   )
 
-  const normalizedQuery = searchQuery.trim().toLowerCase()
-  const visibleEdges = useMemo(() => {
-    if (!normalizedQuery) return data.tasks.edges
-    return data.tasks.edges.filter(({ node }) =>
-      node.title.toLowerCase().includes(normalizedQuery),
-    )
-  }, [data.tasks.edges, normalizedQuery])
-
   const loadedCount = data.tasks.edges.length
   const subtitle = hasNext ? `${loadedCount}+ total` : `${loadedCount} total`
   usePageHeader({ subtitle })
 
-  const showEmpty = visibleEdges.length === 0 && !isCreating
+  const debouncedRefetch = useDebounceCallback(
+    (titleSearch: string | null) => {
+      startTransition(() => {
+        refetch({ titleSearch })
+      })
+    },
+    300,
+  )
+
+  useEffect(() => {
+    debouncedRefetch(searchQuery.trim() ? searchQuery : null)
+    return () => {
+      debouncedRefetch.cancel()
+    }
+  }, [searchQuery, debouncedRefetch])
+
+  const showEmpty = data.tasks.edges.length === 0 && !isCreating
 
   return (
     <Card responsive>
@@ -69,12 +79,12 @@ export const TasksList = ({
       )}
       {showEmpty && (
         <div className={styles.empty}>
-          {normalizedQuery
+          {searchQuery.trim()
             ? `No tasks match "${searchQuery}"`
             : 'No tasks, create some!'}
         </div>
       )}
-      {visibleEdges.map(({ node }) => (
+      {data.tasks.edges.map(({ node }) => (
         <Task
           key={node.id}
           task={node}
@@ -82,7 +92,7 @@ export const TasksList = ({
           connectionId={data.tasks.__id}
         />
       ))}
-      {hasNext && !normalizedQuery && (
+      {hasNext && !searchQuery.trim() && (
         <div className={styles.loadMore}>
           <Button
             variant="secondary"

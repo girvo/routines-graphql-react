@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7c66f173e4f166d0d4b454486613b143>>
+ * @generated SignedSource<<22e0bb49f97ccc57f01c0fd0067328d6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type TasksListPaginationQuery$variables = {
   count?: any | null | undefined;
   cursor?: string | null | undefined;
+  titleSearch?: string | null | undefined;
 };
 export type TasksListPaginationQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"TasksList_tasks">;
@@ -33,9 +34,19 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "cursor"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "titleSearch"
   }
 ],
-v1 = [
+v1 = {
+  "kind": "Variable",
+  "name": "titleSearch",
+  "variableName": "titleSearch"
+},
+v2 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -45,37 +56,38 @@ v1 = [
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
-  }
+  },
+  (v1/*: any*/)
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v3 = [
+v4 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 100
   }
 ],
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v5 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v6 = {
+v7 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -118,7 +130,8 @@ return {
             "kind": "Variable",
             "name": "cursor",
             "variableName": "cursor"
-          }
+          },
+          (v1/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "TasksList_tasks"
@@ -135,7 +148,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "TaskConnection",
         "kind": "LinkedField",
         "name": "tasks",
@@ -157,7 +170,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -181,7 +194,7 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": (v3/*: any*/),
+                    "args": (v4/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
                     "name": "slots",
@@ -203,7 +216,7 @@ return {
                             "name": "node",
                             "plural": false,
                             "selections": [
-                              (v2/*: any*/),
+                              (v3/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -211,36 +224,36 @@ return {
                                 "name": "section",
                                 "storageKey": null
                               },
-                              (v4/*: any*/)
+                              (v5/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v5/*: any*/)
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v6/*: any*/)
+                      (v7/*: any*/)
                     ],
                     "storageKey": "slots(first:100)"
                   },
                   {
                     "alias": null,
-                    "args": (v3/*: any*/),
+                    "args": (v4/*: any*/),
                     "filters": null,
                     "handle": "connection",
                     "key": "Task_slots",
                     "kind": "LinkedHandle",
                     "name": "slots"
                   },
-                  (v4/*: any*/)
+                  (v5/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v5/*: any*/)
+              (v6/*: any*/)
             ],
             "storageKey": null
           },
-          (v6/*: any*/),
+          (v7/*: any*/),
           {
             "kind": "ClientExtension",
             "selections": [
@@ -258,8 +271,10 @@ return {
       },
       {
         "alias": null,
-        "args": (v1/*: any*/),
-        "filters": null,
+        "args": (v2/*: any*/),
+        "filters": [
+          "titleSearch"
+        ],
         "handle": "connection",
         "key": "TasksList_tasks",
         "kind": "LinkedHandle",
@@ -268,16 +283,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2d7c97e876c5cb96226ca1e6521b6995",
+    "cacheID": "7609bd99baa4bc00602698e602c05e23",
     "id": null,
     "metadata": {},
     "name": "TasksListPaginationQuery",
     "operationKind": "query",
-    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n) {\n  ...TasksList_tasks_1G22uz\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_1G22uz on Query {\n  tasks(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n  $titleSearch: String = null\n) {\n  ...TasksList_tasks_21ZZTc\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_21ZZTc on Query {\n  tasks(first: $count, after: $cursor, titleSearch: $titleSearch) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e9b6274b837e0d52ad7885ae81af4322";
+(node as any).hash = "311bb4f4a799533e019a231aedb917b0";
 
 export default node;

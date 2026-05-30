@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a502035923c9af51a048529ef06ad5a0>>
+ * @generated SignedSource<<20453ff3f75e08b989d089a9b1b77057>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -228,7 +228,9 @@ return {
       {
         "alias": null,
         "args": (v0/*: any*/),
-        "filters": null,
+        "filters": [
+          "titleSearch"
+        ],
         "handle": "connection",
         "key": "TasksList_tasks",
         "kind": "LinkedHandle",

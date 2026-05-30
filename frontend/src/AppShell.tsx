@@ -8,7 +8,6 @@ import {
 import {
   Outlet,
   useMatches,
-  useNavigate,
   type UIMatch,
 } from 'react-router-dom'
 import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
@@ -62,7 +61,6 @@ const AppShell = ({ queries }: Props) => {
     belowHeader: null,
   })
   const matches = useMatches() as UIMatch<unknown, RouteHandle>[]
-  const navigate = useNavigate()
   const { clearAccessToken } = use(AuthContext)
 
   const handleLogout = useCallback(() => {
@@ -72,8 +70,8 @@ const AppShell = ({ queries }: Props) => {
       keepalive: true,
     })
     clearAccessToken()
-    navigate('/', { replace: true })
-  }, [clearAccessToken, navigate])
+    window.location.href = '/'
+  }, [clearAccessToken])
 
   const routeTitle = matches.findLast((m) => m.handle?.title)?.handle?.title ?? 'Routines'
   const routeSubtitle = matches.findLast((m) => m.handle?.subtitle)?.handle?.subtitle
