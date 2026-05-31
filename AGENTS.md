@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to coding agents when working with code in this repository.
 
 CRITICAL: Always check LSP VSCode diagnostics before running tsc, eslint, or other linters. Only run CLI tools if:
 - Diagnostics appear incomplete
@@ -20,6 +20,10 @@ NOTE: DO NOT EVER RUN `npm`, only ever `pnpm`. If you feel you have to use `npm`
 - **frontend/**: Frontend application (minimal setup currently)
 - **schema.graphql**: Shared GraphQL schema at the root
 
+## Pi Context File Loading
+
+Pi loads `AGENTS.md` from the startup/current working directory and its parent directories, plus the global `~/.pi/agent/AGENTS.md`; it does not automatically load nested package files based on edited paths. When Pi is started from the repo root, frontend/backend-specific guidance must live in this root `AGENTS.md` to be reliably available. Reference: `/Users/josh/.nvm/versions/node/v24.8.0/lib/node_modules/@mariozechner/pi-coding-agent/README.md`, "Context Files" section.
+
 ## Key Development Commands
 
 All commands should be run from the repository root:
@@ -37,6 +41,22 @@ pnpm eslint .
 # Format code
 pnpm prettier --write .
 ```
+
+### Frontend TypeScript Checks
+
+The frontend root `tsconfig.json` is a solution-style config with project references. Do **not** rely on plain `tsc --noEmit` from `frontend/`; it can typecheck no source files and miss errors in `src/**/*.stories.tsx`.
+
+Use one of these instead:
+
+```bash
+# Preferred full frontend typecheck, includes app, Storybook stories, and Vitest config
+pnpm --filter @my-routines/frontend typecheck
+
+# Target the app/story source project directly when investigating src or stories
+pnpm --filter @my-routines/frontend exec tsc --noEmit -p tsconfig.app.json
+```
+
+Story files under `frontend/src` are included by `tsconfig.app.json`, so unused variables and other strict TypeScript errors in stories should be caught by the commands above.
 
 ## Backend Architecture
 

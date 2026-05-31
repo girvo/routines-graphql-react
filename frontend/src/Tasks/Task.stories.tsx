@@ -5,6 +5,7 @@ import {
   graphql,
 } from 'react-relay'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
+import { within, expect } from 'storybook/test'
 
 import { Task } from './Task'
 import { Suspense } from 'react'
@@ -71,4 +72,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.findByText('my awesome title')).resolves.toBeDefined()
+  },
+}

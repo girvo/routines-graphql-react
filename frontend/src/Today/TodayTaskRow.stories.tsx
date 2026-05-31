@@ -1,14 +1,61 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-
-import { TodayTaskRow } from './TodayTaskRow'
-import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
-import { Suspense } from 'react'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { Suspense, useState } from 'react'
 import {
   graphql,
   RelayEnvironmentProvider,
   useLazyLoadQuery,
 } from 'react-relay'
+import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
+
+import { TodayTaskRow } from './TodayTaskRow'
 import type { TodayTaskRowStoryInnerQuery } from './__generated__/TodayTaskRowStoryInnerQuery.graphql'
+
+const createEnvironment = () => {
+  const environment = createMockEnvironment()
+
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      DailyTaskInstance() {
+        return {
+          id: 'daily-task-instance-1',
+          routineSlot: {
+            __typename: 'RoutineSlot',
+            id: 'routine-slot-1',
+            task: {
+              __typename: 'Task',
+              id: 'task-1',
+              title: 'Pushups',
+              icon: 'dumbbell',
+            },
+          },
+          completion: null,
+        }
+      },
+    }),
+  )
+
+  environment.mock.queueOperationResolver(() => ({
+    data: {
+      completeRoutineSlot: {
+        taskCompletionEdge: {
+          node: {
+            id: 'task-completion-1',
+            completedAt: '2026-01-01T00:00:00.000Z',
+            dailyTaskInstance: {
+              id: 'daily-task-instance-1',
+              completion: {
+                id: 'task-completion-1',
+              },
+            },
+          },
+        },
+      },
+    },
+  }))
+
+  return environment
+}
 
 const TodayTaskRowStoryInner = () => {
   const data = useLazyLoadQuery<TodayTaskRowStoryInnerQuery>(
@@ -30,26 +77,14 @@ const TodayTaskRowStoryInner = () => {
 }
 
 const TodayTaskRowStory = () => {
-  const environment = createMockEnvironment()
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op),
-  )
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op),
-  )
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op),
-  )
+  const [environment] = useState(createEnvironment)
 
   return (
-    <Suspense fallback="Loading...">
-      <RelayEnvironmentProvider environment={environment}>
+    <RelayEnvironmentProvider environment={environment}>
+      <Suspense fallback="Loading...">
         <TodayTaskRowStoryInner />
-      </RelayEnvironmentProvider>
-    </Suspense>
+      </Suspense>
+    </RelayEnvironmentProvider>
   )
 }
 
@@ -63,5 +98,15 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {},
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const checkbox = await canvas.findByRole('checkbox', { name: /pushups/i })
+
+    expect(checkbox).not.toBeChecked()
+    await userEvent.click(checkbox)
+
+    await waitFor(() => {
+      expect(checkbox).toBeChecked()
+    })
+  },
 }

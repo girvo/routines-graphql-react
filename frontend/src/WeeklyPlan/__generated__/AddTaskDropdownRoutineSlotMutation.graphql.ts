@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<be3797613df968ef18ad4fdb3185cebe>>
+ * @generated SignedSource<<9afb31535a4b512a56a119fede72c600>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,7 @@ export type AddTaskDropdownRoutineSlotMutation$data = {
     readonly routineSlotEdge: {
       readonly cursor: string;
       readonly node: {
+        readonly dayOfWeek: DayOfWeek;
         readonly id: string;
         readonly section: DaySection;
         readonly task: {
@@ -118,6 +119,13 @@ v6 = {
           "args": null,
           "kind": "ScalarField",
           "name": "section",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "dayOfWeek",
           "storageKey": null
         },
         {
@@ -222,16 +230,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ecc7a6521f7adad2f4b4f7477bd6291a",
+    "cacheID": "2f68607678c5047d440f936339c644e3",
     "id": null,
     "metadata": {},
     "name": "AddTaskDropdownRoutineSlotMutation",
     "operationKind": "mutation",
-    "text": "mutation AddTaskDropdownRoutineSlotMutation(\n  $taskId: ID!\n  $dayOfWeek: DayOfWeek!\n  $daySection: DaySection!\n) {\n  createRoutineSlot(input: {taskId: $taskId, dayOfWeek: $dayOfWeek, section: $daySection}) {\n    routineSlotEdge {\n      cursor\n      node {\n        id\n        section\n        task {\n          title\n          id\n          icon\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation AddTaskDropdownRoutineSlotMutation(\n  $taskId: ID!\n  $dayOfWeek: DayOfWeek!\n  $daySection: DaySection!\n) {\n  createRoutineSlot(input: {taskId: $taskId, dayOfWeek: $dayOfWeek, section: $daySection}) {\n    routineSlotEdge {\n      cursor\n      node {\n        id\n        section\n        dayOfWeek\n        task {\n          title\n          id\n          icon\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "a998d8b85e0f02ce9ec158c42c0ad21f";
+(node as any).hash = "d440036040447472c56be6cc56932cad";
 
 export default node;

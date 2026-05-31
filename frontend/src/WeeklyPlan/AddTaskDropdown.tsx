@@ -110,9 +110,7 @@ const TaskList = ({
       aria-label="Tasks"
       className={clsx(styles.list, (isPending || isLoading) && styles.pending)}
     >
-      {edges.length === 0 && (
-        <div className={styles.empty}>No tasks found</div>
-      )}
+      {edges.length === 0 && <div className={styles.empty}>No tasks found</div>}
       {edges.length > 0 &&
         edges.map(({ node }, i) => {
           const Icon = iconComponent(node.icon)
@@ -237,6 +235,7 @@ export const AddTaskDropdownContent = ({
             node {
               id
               section
+              dayOfWeek
               task {
                 title
                 id
@@ -269,6 +268,7 @@ export const AddTaskDropdownContent = ({
             node: {
               id: optimisticSlotId,
               section: daySection,
+              dayOfWeek,
               task: {
                 id: task.id,
                 title: task.title,
