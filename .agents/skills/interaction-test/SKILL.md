@@ -35,7 +35,6 @@ Follow this flow in order. Do not write or revise the `play` function until the 
    - assert the DOM outcome of each mutation or refetch.
 7. Regenerate Relay artifacts if GraphQL selections changed.
 8. Validate in this order:
-   - check LSP/editor diagnostics first if available,
    - run the targeted Storybook interaction command,
    - inspect output for Relay warnings, `__id` TypeErrors, unresolved operations, `act` warnings, and Testing Library query failures,
    - run the frontend typecheck when story or generated types changed.
@@ -292,7 +291,26 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
     }),
   )
   ```
-- **Optimistic updates land synchronously**, so you can assert on them with `findBy*` (which still works since `findBy*` polls). The mutation completion that follows consumes the next queued resolver.
+- **Optimistic updates land synchronously**, then Relay rolls them back when the operation settles and applies the real payload. For optimistic Relay mutations, prefer a post-settle DOM assertion over harness-coupled operation-variable assertions: assert the optimistic UI appears, wait for the mutation to settle, then assert the final user-visible state. A successful payload should preserve the committed UI; a rejected operation should roll it back. When using `queueOperationResolver` to test rollback, return an asynchronously rejected promise so the optimistic update is visible before the operation settles:
+  ```ts
+  environment.mock.queueOperationResolver(
+    () =>
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Update failed')), 0)
+      }) as never,
+  )
+  ```
+- `queueOperationResolver` may also return an asynchronously resolved promise. Use that when the test must observe both the optimistic state and a different server-confirmed state:
+  ```ts
+  environment.mock.queueOperationResolver(
+    operation =>
+      new Promise(resolve => {
+        setTimeout(() => {
+          resolve(MockPayloadGenerator.generate(operation, resolvers))
+        }, 50)
+      }) as never,
+  )
+  ```
 - **Declarative mutation handlers run against the connection IDs in variables.** If a component passes `[mainConnectionId, ConnectionHandler.getConnectionID(task.id, 'Task_slots')]`, both IDs must exist in the mock store or Relay warns. Seed optional/secondary connections with `commitLocalUpdate` only when that connection ID is actually passed in mutation variables or appears in a concrete Relay warning; do not seed a connection merely because a fragment contains `@connection`.
 - **Use the correct commit APIs.** `environment.commitPayload(operationDescriptor, payload)` requires an operation descriptor. To set up local records/connections with no operation, use `commitLocalUpdate(environment, updater)`. Do **not** call `environment.commitPayload({ data: { ... } })` or `environment.mock.getStore().commitPayload(...)`.
 - **Read the generated `.graphql.ts` files before writing resolvers.** Confirm the exact root fields, connection keys, and whether the query/fragment requests `__id` on connections. If the generated file shows `ClientExtension` with `__id` on a connection, your resolver must return `__id` on that connection record.
@@ -410,7 +428,7 @@ describe('auth-store', () => {
 
 ## Step 10: Verify
 
-- Check LSP diagnostics on the story file. Resolve type errors before declaring done — silent type errors in story files are easy to miss because Storybook itself runs through esbuild.
+- Use the repo CLI validation tools. In Pi, LSP/editor diagnostics are not available reliably, so do not spend turns trying to access them.
 - If GraphQL in a story changed, run Relay first:
   ```
   pnpm --filter @my-routines/frontend relay

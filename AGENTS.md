@@ -2,12 +2,9 @@
 
 This file provides guidance to coding agents when working with code in this repository.
 
-CRITICAL: Always check LSP VSCode diagnostics before running tsc, eslint, or other linters. Only run CLI tools if:
-- Diagnostics appear incomplete
-- Explicitly asked to verify the full project
-- After fixes, to confirm they worked
+CRITICAL: Use the repo's CLI validation tools instead of LSP/VSCode diagnostics. In Pi, editor diagnostics are not available reliably, so do not spend turns trying to access them. Prefer the narrowest relevant command first, then broaden only when needed.
 
-CRITICAL: Prefer hard validation over extended reasoning whenever a deterministic validation command exists. After the relevant LSP/editor diagnostic check, run the narrowest command that can prove or disprove the current assumption instead of spending turns inferring behavior from source code. Examples: run the targeted Storybook interaction test for a Storybook play change, run Relay after changing GraphQL selections, run the relevant package typecheck after changing typed code, and run the focused backend/frontend test for behavior changes.
+CRITICAL: Prefer hard validation over extended reasoning whenever a deterministic validation command exists. Run the narrowest CLI command that can prove or disprove the current assumption instead of spending turns inferring behavior from source code. Examples: run the targeted Storybook interaction test for a Storybook play change, run Relay after changing GraphQL selections, run the relevant package typecheck after changing typed code, and run the focused backend/frontend test for behavior changes.
 
 When a validation command fails, inspect the exact failing file/line, local imports/bindings, and the concrete error output first. Do not investigate package internals, generated bundles, framework docs, or unrelated components until local causes have been ruled out. After a fix, rerun the same failing command before broadening validation.
 
