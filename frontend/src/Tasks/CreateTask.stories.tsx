@@ -23,32 +23,53 @@ const createEnvironment = () => {
         return {
           __id: TASKS_CONNECTION_ID,
           edges: [],
-          pageInfo: { endCursor: null, hasNextPage: false },
+        }
+      },
+      PageInfo() {
+        return {
+          endCursor: null,
+          hasNextPage: false,
         }
       },
     }),
   )
 
-  environment.mock.queueOperationResolver(() => ({
-    data: {
-      createTask: {
-        taskEdge: {
-          cursor: 'cursor-new-task',
-          node: {
-            __typename: 'Task',
-            id: 'task-pushups',
-            title: 'Pushups',
-            icon: 'dumbbell',
-            createdAt: '2026-01-01T00:00:00.000Z',
-            slots: {
-              edges: [],
-              pageInfo: { endCursor: null, hasNextPage: false },
-            },
-          },
-        },
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      CreateTaskPayload() {
+        return {}
       },
-    },
-  }))
+      TaskEdge() {
+        return {
+          cursor: 'cursor-new-task',
+        }
+      },
+      Task() {
+        const title =
+          typeof op.request.variables.title === 'string'
+            ? op.request.variables.title
+            : 'Pushups'
+
+        return {
+          id: 'task-pushups',
+          title,
+          icon: 'dumbbell',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        }
+      },
+      RoutineSlotConnection() {
+        return {
+          edges: [],
+        }
+      },
+      PageInfo() {
+        return {
+          endCursor: null,
+          hasNextPage: false,
+        }
+      },
+    }),
+  )
 
   return environment
 }

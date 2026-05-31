@@ -19,40 +19,45 @@ const createEnvironment = () => {
       DailyTaskInstance() {
         return {
           id: 'daily-task-instance-1',
-          routineSlot: {
-            __typename: 'RoutineSlot',
-            id: 'routine-slot-1',
-            task: {
-              __typename: 'Task',
-              id: 'task-1',
-              title: 'Pushups',
-              icon: 'dumbbell',
-            },
-          },
           completion: null,
+        }
+      },
+      RoutineSlot() {
+        return {
+          id: 'routine-slot-1',
+        }
+      },
+      Task() {
+        return {
+          id: 'task-1',
+          title: 'Pushups',
+          icon: 'dumbbell',
         }
       },
     }),
   )
 
-  environment.mock.queueOperationResolver(() => ({
-    data: {
-      completeRoutineSlot: {
-        taskCompletionEdge: {
-          node: {
-            id: 'task-completion-1',
-            completedAt: '2026-01-01T00:00:00.000Z',
-            dailyTaskInstance: {
-              id: 'daily-task-instance-1',
-              completion: {
-                id: 'task-completion-1',
-              },
-            },
-          },
-        },
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      CompleteRoutineSlotPayload() {
+        return {}
       },
-    },
-  }))
+      TaskCompletionEdge() {
+        return {}
+      },
+      TaskCompletion() {
+        return {
+          id: 'task-completion-1',
+          completedAt: '2026-01-01T00:00:00.000Z',
+        }
+      },
+      DailyTaskInstance() {
+        return {
+          id: 'daily-task-instance-1',
+        }
+      },
+    }),
+  )
 
   return environment
 }

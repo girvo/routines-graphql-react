@@ -116,7 +116,6 @@ const createStoryEnvironment = () => {
       RoutineSlotConnection() {
         return {
           edges: [{}],
-          pageInfo: { endCursor: 'cursor-pushups', hasNextPage: false },
         }
       },
       RoutineSlotEdge() {
@@ -140,31 +139,41 @@ const createStoryEnvironment = () => {
           icon: 'dumbbell',
         }
       },
+      PageInfo() {
+        return {
+          endCursor: 'cursor-pushups',
+          hasNextPage: false,
+        }
+      },
     }),
   )
 
-  environment.mock.queueOperationResolver(() => ({
-    data: {
-      createRoutineSlot: {
-        routineSlotEdge: {
-          __typename: 'RoutineSlotEdge',
-          cursor: 'cursor-planks-slot',
-          node: {
-            __typename: 'RoutineSlot',
-            id: 'routine-slot-planks',
-            dayOfWeek: 'MONDAY',
-            section: 'MORNING',
-            task: {
-              __typename: 'Task',
-              id: 'task-planks',
-              title: 'Planks',
-              icon: 'dumbbell',
-            },
-          },
-        },
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      CreateRoutineSlotPayload() {
+        return {}
       },
-    },
-  }))
+      RoutineSlotEdge() {
+        return {
+          cursor: 'cursor-planks-slot',
+        }
+      },
+      RoutineSlot() {
+        return {
+          id: 'routine-slot-planks',
+          dayOfWeek: 'MONDAY',
+          section: 'MORNING',
+        }
+      },
+      Task() {
+        return {
+          id: 'task-planks',
+          title: 'Planks',
+          icon: 'dumbbell',
+        }
+      },
+    }),
+  )
 
   return { environment, dropdownQueryRef }
 }

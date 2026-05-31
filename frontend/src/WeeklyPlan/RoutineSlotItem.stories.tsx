@@ -70,7 +70,6 @@ const createEnvironment = () => {
       RoutineSlotConnection() {
         return {
           edges: [{}, {}],
-          pageInfo: { endCursor: 'cursor-squats', hasNextPage: false },
         }
       },
       RoutineSlotEdge() {
@@ -93,16 +92,24 @@ const createEnvironment = () => {
           icon: 'dumbbell',
         }
       },
+      PageInfo() {
+        return {
+          endCursor: 'cursor-squats',
+          hasNextPage: false,
+        }
+      },
     }),
   )
 
-  environment.mock.queueOperationResolver(() => ({
-    data: {
-      deleteRoutineSlot: {
-        deletedId: 'routine-slot-pushups',
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      DeleteRoutineSlotPayload() {
+        return {
+          deletedId: 'routine-slot-pushups',
+        }
       },
-    },
-  }))
+    }),
+  )
   seedTaskSlotsConnection(environment, 'task-pushups')
 
   return environment

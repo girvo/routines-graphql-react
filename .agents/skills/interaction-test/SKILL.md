@@ -14,6 +14,33 @@ If no path is provided, use the file currently open in the IDE.
 - `@storybook/addon-a11y` annotations are wired in, so accessibility violations also fail. Prefer accessible-name queries (`findByRole(name)`) — they double as a11y assertions.
 - Stories using `createMockEnvironment` + `MockPayloadGenerator` (the `relay-story` pattern) need extra care: Suspense must resolve before interacting, and any user action that triggers a mutation or refetch needs another resolver queued upfront in the story setup.
 
+## Required execution flow
+
+Follow this flow in order. Do not write or revise the `play` function until the Relay preflight and story setup are understood.
+
+1. Identify the target story file, component file, and exact user interaction to test.
+2. Inspect the existing story pattern and providers. Reuse current decorators, wrapper components, and Storybook idioms unless they are the direct cause of the failure.
+3. If the story uses Relay, read the generated query, fragment, and mutation files under `__generated__` before editing. Record the root fields, fragment fields, mutation payload types, connection keys, filters, and any generated `ClientExtension __id` fields.
+4. List the operations that will occur in order: initial story query, user-triggered mutation/refetch operations, and any local store setup required before interaction.
+5. Fix story setup before touching assertions:
+   - create a fresh Relay mock environment per story mount,
+   - queue one resolver per expected operation in operation order,
+   - use flat `MockPayloadGenerator` resolvers keyed by GraphQL type,
+   - seed secondary records or connections with `commitLocalUpdate` when the generated query does not expose the needed `__id`,
+   - use `environment.commitPayload(operationDescriptor, payload)` only when resolving a specific operation descriptor.
+6. Write the `play` function against real user behavior:
+   - wait for initial UI with `canvas.findBy...`,
+   - use `screen` for portaled dialogs, popovers, toasts, or menus,
+   - `await` every `userEvent` interaction,
+   - assert the DOM outcome of each mutation or refetch.
+7. Regenerate Relay artifacts if GraphQL selections changed.
+8. Validate in this order:
+   - check LSP/editor diagnostics first if available,
+   - run the targeted Storybook interaction command,
+   - inspect output for Relay warnings, `__id` TypeErrors, unresolved operations, `act` warnings, and Testing Library query failures,
+   - run the frontend typecheck when story or generated types changed.
+9. If validation fails, fix the first concrete failure and repeat the same validation command. Do not switch testing frameworks, add dependencies, or change production code only to hide malformed mocks.
+
 ## Relay story test contract (MANDATORY)
 
 Before editing any `*.stories.tsx` that uses Relay:
@@ -182,13 +209,15 @@ commitLocalUpdate(environment, store => {
 })
 
 // Mutation resolver: queued before the play triggers the mutation.
-environment.mock.queueOperationResolver(() => ({
-  data: {
-    deleteRoutineSlot: {
-      deletedId: 'routine-slot-pushups',
+environment.mock.queueOperationResolver(op =>
+  MockPayloadGenerator.generate(op, {
+    DeleteRoutineSlotPayload() {
+      return {
+        deletedId: 'routine-slot-pushups',
+      }
     },
-  },
-}))
+  }),
+)
 ```
 
 ---
