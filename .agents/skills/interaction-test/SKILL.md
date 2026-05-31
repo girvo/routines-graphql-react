@@ -39,7 +39,8 @@ Follow this flow in order. Do not write or revise the `play` function until the 
    - run the targeted Storybook interaction command,
    - inspect output for Relay warnings, `__id` TypeErrors, unresolved operations, `act` warnings, and Testing Library query failures,
    - run the frontend typecheck when story or generated types changed.
-9. If validation fails, fix the first concrete failure and repeat the same validation command. Do not switch testing frameworks, add dependencies, or change production code only to hide malformed mocks.
+9. If validation fails, fix the first concrete failure and repeat the same validation command. Start with the failing file and line, then local imports/bindings, then the mocked operation shape. Do not inspect packages, primitive components, docs, or generated bundles until those local checks are exhausted.
+10. Stop when the targeted Storybook test and required type/Relay checks pass. Do not keep reading generated files, primitive components, or unrelated stories after validation is green.
 
 ## Relay story test contract (MANDATORY)
 
@@ -80,6 +81,7 @@ Before editing any `*.stories.tsx` that uses Relay:
 - If a resolver returns `undefined`, the generator falls back to `"<mock-value-for-field-\"name\">"`
 - Resolvers are **flat, type-keyed by GraphQL type name** — the generator maps by type name, not by query path or field name
 - The `data: {}` return shape bypasses `MockPayloadGenerator` entirely; it is a different, non-normalizing mechanism. Always use `MockPayloadGenerator.generate(op, { TypeName() {...} })`
+- Keep linked fields flat too: connection resolvers may return `__id` and placeholder `edges`, but linked records such as `pageInfo`, `node`, `task`, and `routineSlot` should be supplied by their own type resolvers.
 
 ## Mock environment commit API (confirmed)
 
@@ -291,14 +293,23 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
   )
   ```
 - **Optimistic updates land synchronously**, so you can assert on them with `findBy*` (which still works since `findBy*` polls). The mutation completion that follows consumes the next queued resolver.
-- **Declarative mutation handlers run against the connection IDs in variables.** If a component passes `[mainConnectionId, ConnectionHandler.getConnectionID(task.id, 'Task_slots')]`, both IDs must exist in the mock store or Relay warns. Seed optional/secondary connections with `commitLocalUpdate` in the story setup; do not change production code to filter connection IDs based on store contents.
+- **Declarative mutation handlers run against the connection IDs in variables.** If a component passes `[mainConnectionId, ConnectionHandler.getConnectionID(task.id, 'Task_slots')]`, both IDs must exist in the mock store or Relay warns. Seed optional/secondary connections with `commitLocalUpdate` only when that connection ID is actually passed in mutation variables or appears in a concrete Relay warning; do not seed a connection merely because a fragment contains `@connection`.
 - **Use the correct commit APIs.** `environment.commitPayload(operationDescriptor, payload)` requires an operation descriptor. To set up local records/connections with no operation, use `commitLocalUpdate(environment, updater)`. Do **not** call `environment.commitPayload({ data: { ... } })` or `environment.mock.getStore().commitPayload(...)`.
 - **Read the generated `.graphql.ts` files before writing resolvers.** Confirm the exact root fields, connection keys, and whether the query/fragment requests `__id` on connections. If the generated file shows `ClientExtension` with `__id` on a connection, your resolver must return `__id` on that connection record.
 - **Refetchable fragments cannot be unmasked with `@relay(mask: false)`.** If a story only needs a connection ID for a child mutation, write a small story query that selects the connection directly (`tasks(first: 20) @connection(key: "...") { __id edges { cursor node { id } } pageInfo { ... } }`) instead of spreading a refetchable fragment and casting.
 
+## Step 6: Failure triage
+
+When a validation command fails, do not speculate broadly. Fix the first concrete error with this order:
+
+1. If the failure is `x is not defined` or `x.y is not a function`, inspect the failing source line and imports in that file first.
+2. If a Testing Library query fails, inspect the rendered story/component only enough to confirm the role/name, then rerun the same targeted test.
+3. If Relay warns or throws, inspect the generated operation and resolver type names before changing assertions or production code.
+4. If the targeted test passes, stop investigating that failure. Do not read primitive components just to reconfirm accessible-name behavior.
+
 ---
 
-## Step 6: Portal pitfalls
+## Step 7: Portal pitfalls
 
 If the component renders into a portal, the **trigger** is inside the canvas but the **portaled content** is on `document.body`. Use the right scope for each:
 
@@ -318,7 +329,7 @@ Common portaled components in this repo: `Popover`, `ConfirmDialog`, `Tooltip`, 
 
 ---
 
-## Step 7: Pick the right observation point — never invent test-only props
+## Step 8: Pick the right observation point — never invent test-only props
 
 Before reaching for any spy, ask: **what is the observable behavior I want to verify?** Most interaction tests should assert against the DOM, because that is what users actually experience. Spies are a fallback for behavior that has no DOM consequence.
 
@@ -362,7 +373,7 @@ The hierarchy, in order of preference:
 
 ---
 
-## Step 8: Non-story tests and escape hatches
+## Step 9: Non-story tests and escape hatches
 
 This skill is for Storybook interaction tests. In this repo, **component interactions belong in Storybook `play` functions by default**: form submission, popovers, dialogs, Relay-backed component states, keyboard navigation, and visible optimistic UI should all be covered in `.stories.tsx` files.
 
@@ -397,7 +408,7 @@ describe('auth-store', () => {
 
 ---
 
-## Step 9: Verify
+## Step 10: Verify
 
 - Check LSP diagnostics on the story file. Resolve type errors before declaring done — silent type errors in story files are easy to miss because Storybook itself runs through esbuild.
 - If GraphQL in a story changed, run Relay first:
@@ -424,7 +435,7 @@ describe('auth-store', () => {
 
 ---
 
-## Step 10: Forbidden patterns (will cause silent failures)
+## Step 11: Forbidden patterns (will cause silent failures)
 
 - ❌ `useLazyLoadQuery(graphql\`query ... { ... @connection(...) }\`, {})` with no mock resolver that returns `__id` on the connection
 - ❌ Casting `data as { tasks: { __id: string } }` without first reading the generated fragment to confirm `__id` is requested

@@ -7,6 +7,10 @@ CRITICAL: Always check LSP VSCode diagnostics before running tsc, eslint, or oth
 - Explicitly asked to verify the full project
 - After fixes, to confirm they worked
 
+CRITICAL: Prefer hard validation over extended reasoning whenever a deterministic validation command exists. After the relevant LSP/editor diagnostic check, run the narrowest command that can prove or disprove the current assumption instead of spending turns inferring behavior from source code. Examples: run the targeted Storybook interaction test for a Storybook play change, run Relay after changing GraphQL selections, run the relevant package typecheck after changing typed code, and run the focused backend/frontend test for behavior changes.
+
+When a validation command fails, inspect the exact failing file/line, local imports/bindings, and the concrete error output first. Do not investigate package internals, generated bundles, framework docs, or unrelated components until local causes have been ruled out. After a fix, rerun the same failing command before broadening validation.
+
 ## Project Overview
 
 This is a monorepo for a routines application with a GraphQL backend and frontend. It uses PNPM, NOT NPM DIRECTLY
