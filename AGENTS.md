@@ -8,6 +8,22 @@ CRITICAL: Prefer hard validation over extended reasoning whenever a deterministi
 
 When a validation command fails, inspect the exact failing file/line, local imports/bindings, and the concrete error output first. Do not investigate package internals, generated bundles, framework docs, or unrelated components until local causes have been ruled out. After a fix, rerun the same failing command before broadening validation.
 
+## Stuck-Loop Control
+
+When a narrow validation command fails, do not continue abstract reasoning for more than one short pass. Convert the failure into the smallest concrete experiment that can prove or disprove the current hypothesis.
+
+Required loop:
+1. State the current hypothesis in one sentence.
+2. Make the smallest code or test-harness change that isolates that hypothesis.
+3. Rerun the same narrow failing command.
+4. If the result does not match the hypothesis, discard or revise the hypothesis. Do not keep re-explaining it.
+
+If the same assertion fails twice after two different fixes, stop changing production/component code. Inspect the test harness timing, mock operation order, and whether the assertion actually observes the intended state.
+
+For async UI tests, do not use a fixed timeout as the final proof of state. Use `waitFor` for eventual UI outcomes. When a test must observe an intermediate async state, control the async boundary explicitly with a deferred promise or deliberately delayed resolver instead of hoping to catch a `setTimeout(..., 0)` window.
+
+If your written diagnosis says the code needs change X, first verify whether change X is already present in the current file. If it is already present, the diagnosis is stale; form a new hypothesis from the latest failure output.
+
 ## Project Overview
 
 This is a monorepo for a routines application with a GraphQL backend and frontend. It uses PNPM, NOT NPM DIRECTLY

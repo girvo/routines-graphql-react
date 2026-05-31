@@ -9,6 +9,7 @@ import {
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
 
 import { TodayTaskRow } from './TodayTaskRow'
+import { ToastProvider } from '../toast/ToastProvider'
 import type { TodayTaskRowStoryInnerQuery } from './__generated__/TodayTaskRowStoryInnerQuery.graphql'
 
 const createEnvironment = () => {
@@ -113,5 +114,81 @@ export const Default: Story = {
     await waitFor(() => {
       expect(checkbox).toBeChecked()
     })
+  },
+}
+
+let completeReject: ((reason?: Error) => void) | undefined
+
+const CompleteWithServerErrorStory = () => {
+  const [environment] = useState(() => {
+    completeReject = undefined
+
+    const env = createMockEnvironment()
+
+    env.mock.queueOperationResolver(op =>
+      MockPayloadGenerator.generate(op, {
+        DailyTaskInstance() {
+          return {
+            id: 'daily-task-instance-1',
+            completion: null,
+          }
+        },
+        RoutineSlot() {
+          return {
+            id: 'routine-slot-1',
+          }
+        },
+        Task() {
+          return {
+            id: 'task-1',
+            title: 'Pushups',
+            icon: 'dumbbell',
+          }
+        },
+      }),
+    )
+
+    env.mock.queueOperationResolver(
+      () =>
+        new Promise((_, reject) => {
+          completeReject = reject
+        }) as never,
+    )
+
+    return env
+  })
+
+  return (
+    <RelayEnvironmentProvider environment={environment}>
+      <ToastProvider>
+        <Suspense fallback="Loading...">
+          <TodayTaskRowStoryInner />
+        </Suspense>
+      </ToastProvider>
+    </RelayEnvironmentProvider>
+  )
+}
+
+export const CompleteWithServerError: Story = {
+  render: () => <CompleteWithServerErrorStory />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const checkbox = await canvas.findByRole('checkbox', { name: /pushups/i })
+
+    expect(checkbox).not.toBeChecked()
+    await userEvent.click(checkbox)
+
+    await waitFor(() =>
+      expect(canvas.getByRole('checkbox', { name: /pushups/i })).toBeChecked(),
+    )
+
+    const rejectComplete = completeReject
+    expect(rejectComplete).toBeDefined()
+    rejectComplete?.(new Error('Complete failed'))
+    completeReject = undefined
+
+    await waitFor(() =>
+      expect(canvas.getByRole('checkbox', { name: /pushups/i })).not.toBeChecked(),
+    )
   },
 }
