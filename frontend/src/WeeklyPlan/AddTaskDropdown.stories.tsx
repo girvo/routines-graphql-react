@@ -260,6 +260,138 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+let createReject: ((reason?: Error) => void) | undefined
+
+const createErrorEnvironment = () => {
+  const environment = createMockEnvironment()
+
+  const dropdownTasks = [
+    {
+      id: 'task-planks',
+      title: 'Planks',
+      icon: 'dumbbell',
+      cursor: 'cursor-planks',
+    },
+    {
+      id: 'task-running',
+      title: 'Running',
+      icon: 'run',
+      cursor: 'cursor-running',
+    },
+  ]
+  let dropdownEdgeIndex = 0
+  let dropdownTaskIndex = 0
+
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      TaskConnection() {
+        return {
+          edges: [{}, {}],
+          pageInfo: { endCursor: 'cursor-running', hasNextPage: false },
+        }
+      },
+      TaskEdge() {
+        return {
+          cursor: dropdownTasks[dropdownEdgeIndex++].cursor,
+        }
+      },
+      Task() {
+        const task = dropdownTasks[dropdownTaskIndex++]
+        return {
+          id: task.id,
+          title: task.title,
+          icon: task.icon,
+        }
+      },
+    }),
+  )
+  environment.mock.queuePendingOperation(AddTaskDropdownQueryNode, {})
+  const dropdownQueryRef = loadQuery(
+    environment,
+    AddTaskDropdownQueryNode,
+    {},
+  ) as PreloadedQuery<AddTaskDropdownQuery>
+  seedTaskSlotsConnection(environment, 'task-planks')
+
+  const routineSlots = [
+    {
+      id: 'routine-slot-pushups',
+      title: 'Pushups',
+      taskId: 'task-pushups',
+      cursor: 'cursor-pushups',
+    },
+  ]
+  let routineSlotEdgeIndex = 0
+  let routineSlotIndex = 0
+  let routineTaskIndex = 0
+
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      WeeklySchedulePayload() {
+        return {}
+      },
+      DaySchedule() {
+        return {
+          dayOfWeek: 'MONDAY',
+        }
+      },
+      RoutineSlotConnection() {
+        return {
+          edges: [{}],
+        }
+      },
+      RoutineSlotEdge() {
+        return {
+          cursor: routineSlots[routineSlotEdgeIndex++].cursor,
+        }
+      },
+      RoutineSlot() {
+        const slot = routineSlots[routineSlotIndex++]
+        return {
+          id: slot.id,
+          dayOfWeek: 'MONDAY',
+          section: 'MORNING',
+        }
+      },
+      Task() {
+        const slot = routineSlots[routineTaskIndex++]
+        return {
+          id: slot.taskId,
+          title: slot.title,
+          icon: 'dumbbell',
+        }
+      },
+      PageInfo() {
+        return {
+          endCursor: 'cursor-pushups',
+          hasNextPage: false,
+        }
+      },
+    }),
+  )
+
+  environment.mock.queueOperationResolver(
+    () =>
+      new Promise((_, reject) => {
+        createReject = reject
+      }) as never,
+  )
+
+  return { environment, dropdownQueryRef }
+}
+
+const AddTaskWithServerErrorStory = () => {
+  const [{ environment, dropdownQueryRef }] = useState(createErrorEnvironment)
+
+  return (
+    <RelayEnvironmentProvider environment={environment}>
+      <Suspense fallback="Loading...">
+        <AddTaskDropdownStoryInner queryRef={dropdownQueryRef} />
+      </Suspense>
+    </RelayEnvironmentProvider>
+  )
+}
+
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -282,3 +414,43 @@ export const Default: Story = {
     })
   },
 }
+
+export const AddTaskWithServerError: Story = {
+  render: () => <AddTaskWithServerErrorStory />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    expect(await canvas.findByText('Pushups')).toBeInTheDocument()
+    expect(canvas.queryByText('Planks')).not.toBeInTheDocument()
+
+    await userEvent.click(
+      await canvas.findByRole('button', { name: /add task/i }),
+    )
+
+    const popover = await screen.findByRole('dialog')
+    const planksOption = await within(popover).findByRole('option', {
+      name: /planks/i,
+    })
+    await userEvent.click(planksOption)
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(canvas.getAllByText('Planks').length).toBeGreaterThan(0)
+    })
+
+    expect(await canvas.findByText('Pushups')).toBeInTheDocument()
+
+    const rejectCreate = createReject
+    expect(rejectCreate).toBeDefined()
+    rejectCreate?.(new Error('Server error'))
+    createReject = undefined
+
+    await waitFor(() => {
+      expect(canvas.queryByText('Planks')).not.toBeInTheDocument()
+    })
+    expect(await canvas.findByText('Pushups')).toBeInTheDocument()
+  },
+}
+
