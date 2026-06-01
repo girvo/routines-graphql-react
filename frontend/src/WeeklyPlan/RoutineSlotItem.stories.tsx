@@ -36,6 +36,8 @@ const seedTaskSlotsConnection = (
   })
 }
 
+let deleteReject: ((reason?: Error) => void) | undefined
+
 const createEnvironment = () => {
   const environment = createMockEnvironment()
 
@@ -178,6 +180,97 @@ const RoutineSlotListStory = () => {
   )
 }
 
+const createDeleteErrorEnvironment = () => {
+  const environment = createMockEnvironment()
+
+  const routineSlots = [
+    {
+      id: 'routine-slot-pushups',
+      title: 'Pushups',
+      taskId: 'task-pushups',
+      cursor: 'cursor-pushups',
+    },
+    {
+      id: 'routine-slot-squats',
+      title: 'Squats',
+      taskId: 'task-squats',
+      cursor: 'cursor-squats',
+    },
+  ]
+  let routineSlotEdgeIndex = 0
+  let routineSlotIndex = 0
+  let taskIndex = 0
+
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      WeeklySchedulePayload() {
+        return {}
+      },
+      DaySchedule() {
+        return {
+          dayOfWeek: 'MONDAY',
+        }
+      },
+      RoutineSlotConnection() {
+        return {
+          edges: [{}, {}],
+        }
+      },
+      RoutineSlotEdge() {
+        return {
+          cursor: routineSlots[routineSlotEdgeIndex++].cursor,
+        }
+      },
+      RoutineSlot() {
+        const slot = routineSlots[routineSlotIndex++]
+        return {
+          id: slot.id,
+          dayOfWeek: 'MONDAY',
+        }
+      },
+      Task() {
+        const slot = routineSlots[taskIndex++]
+        return {
+          id: slot.taskId,
+          title: slot.title,
+          icon: 'dumbbell',
+        }
+      },
+      PageInfo() {
+        return {
+          endCursor: 'cursor-squats',
+          hasNextPage: false,
+        }
+      },
+    }),
+  )
+
+  seedTaskSlotsConnection(environment, 'task-pushups')
+
+  environment.mock.queueOperationResolver(
+    () =>
+      new Promise((_, reject) => {
+        deleteReject = reject
+      }) as never,
+  )
+
+  return environment
+}
+
+const DeleteWithServerErrorStory = () => {
+  const [environment] = useState(createDeleteErrorEnvironment)
+
+  return (
+    <RelayEnvironmentProvider environment={environment}>
+      <Suspense fallback="Loading...">
+        <ToastProvider>
+          <RoutineSlotListStoryInner />
+        </ToastProvider>
+      </Suspense>
+    </RelayEnvironmentProvider>
+  )
+}
+
 const meta = {
   title: 'Components/RoutineSlotItem',
   component: RoutineSlotListStory,
@@ -212,6 +305,48 @@ export const Default: Story = {
 
     await waitFor(() => {
       expect(canvas.queryByText('Pushups')).not.toBeInTheDocument()
+    })
+    expect(canvas.getByText('Squats')).toBeInTheDocument()
+  },
+}
+
+export const DeleteWithServerError: Story = {
+  render: () => <DeleteWithServerErrorStory />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    expect(await canvas.findByText('Pushups')).toBeInTheDocument()
+    expect(canvas.getByText('Squats')).toBeInTheDocument()
+
+    const removeButtons = await canvas.findAllByRole('button', {
+      name: /remove/i,
+    })
+    await userEvent.click(removeButtons[0])
+
+    const dialog = await screen.findByRole('dialog')
+    const dialogWithin = within(dialog)
+    expect(
+      await dialogWithin.findByRole('heading', { name: /are you sure/i }),
+    ).toBeInTheDocument()
+    expect(
+      await dialogWithin.findByText(/remove "pushups"/i),
+    ).toBeInTheDocument()
+    await userEvent.click(
+      dialogWithin.getByRole('button', { name: /confirm/i }),
+    )
+
+    await waitFor(() => {
+      expect(canvas.queryByText('Pushups')).not.toBeInTheDocument()
+    })
+    expect(canvas.getByText('Squats')).toBeInTheDocument()
+
+    const rejectDelete = deleteReject
+    expect(rejectDelete).toBeDefined()
+    rejectDelete?.(new Error('Server error'))
+    deleteReject = undefined
+
+    await waitFor(() => {
+      expect(canvas.getByText('Pushups')).toBeInTheDocument()
     })
     expect(canvas.getByText('Squats')).toBeInTheDocument()
   },
