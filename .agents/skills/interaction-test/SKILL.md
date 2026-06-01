@@ -283,6 +283,30 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
 - **Resolvers are flat, type-keyed hooks.** `MockPayloadGenerator.generate(op, { Task() {...}, TaskEdge() {...}, TaskConnection() {...} })` maps by GraphQL type name, not by query path. The `TaskConnection()` return value's `edges` array is what populates the connection in the store; the edge/node resolvers fill the nested records. Do **not** nest resolver returns under the query root — the generator never reaches them that way.
 - **Queue extra resolvers in the story setup, not the play.** Every operation the `play` will trigger needs its own queued resolver. The story already queues the initial query; add one resolver per mutation, refetch, or follow-up query the play will fire. If the resolvers run out, Relay throws.
 - **Use a fresh mock environment per story mount.** Create the environment inside a story wrapper with `useState(createEnvironment)` or inside the render function. Do not share a module-scope environment across Storybook stories; queued resolvers and pending operations are consumed state.
+- **Wire custom environments with story-level `render`.** If a story variant needs a different Relay environment than `meta.component`, define a custom story wrapper and wire it directly:
+  ```tsx
+  const DeleteWithServerErrorStory = () => {
+    const [environment] = useState(createDeleteErrorEnvironment)
+
+    return (
+      <RelayEnvironmentProvider environment={environment}>
+        <Suspense fallback="Loading...">
+          <ToastProvider>
+            <RoutineSlotListStoryInner />
+          </ToastProvider>
+        </Suspense>
+      </RelayEnvironmentProvider>
+    )
+  }
+
+  export const DeleteWithServerError: Story = {
+    render: () => <DeleteWithServerErrorStory />,
+    play: async ({ canvasElement }) => {
+      // ...
+    },
+  }
+  ```
+  If a module-scope deferred resolver handle such as `deleteReject` is `undefined`, verify this `render` wiring and queued resolver order before reasoning about Relay internals.
 - **Mock data is deterministic but ugly.** Default fields look like `"<mock-value-for-field-\"title\">"`. Either match against those literal strings (fine for assertions you don't read) or pass a custom resolver in the story setup that returns realistic values for the fields the play asserts on:
   ```ts
   environment.mock.queueOperationResolver(op =>
@@ -322,8 +346,9 @@ When a validation command fails, do not speculate broadly. Fix the first concret
 
 1. If the failure is `x is not defined` or `x.y is not a function`, inspect the failing source line and imports in that file first.
 2. If a Testing Library query fails, inspect the rendered story/component only enough to confirm the role/name, then rerun the same targeted test.
-3. If Relay warns or throws, inspect the generated operation and resolver type names before changing assertions or production code.
-4. If the targeted test passes, stop investigating that failure. Do not read primitive components just to reconfirm accessible-name behavior.
+3. If a module-scope deferred resolver handle is `undefined`, first verify the story export renders the custom wrapper with `render: () => <CustomStoryWrapper />`, then verify the resolver queue order.
+4. If Relay warns or throws, inspect the generated operation and resolver type names before changing assertions or production code.
+5. If the targeted test passes, stop investigating that failure. Do not read primitive components just to reconfirm accessible-name behavior.
 
 ---
 
