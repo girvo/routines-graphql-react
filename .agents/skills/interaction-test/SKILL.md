@@ -315,25 +315,43 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
     }),
   )
   ```
-- **Optimistic updates land synchronously**, then Relay rolls them back when the operation settles and applies the real payload. For optimistic Relay mutations, prefer a post-settle DOM assertion over harness-coupled operation-variable assertions: assert the optimistic UI appears, wait for the mutation to settle, then assert the final user-visible state. A successful payload should preserve the committed UI; a rejected operation should roll it back. When using `queueOperationResolver` to test rollback, return an asynchronously rejected promise so the optimistic update is visible before the operation settles:
+- **Optimistic updates land synchronously**, then Relay rolls them back when the operation settles and applies the real payload. For optimistic Relay mutations, prefer DOM assertions over harness-coupled operation-variable assertions: assert the optimistic UI appears, trigger the mocked operation settlement, then assert the final user-visible state. A successful payload should preserve the committed UI; a rejected operation should roll it back.
+
+  If the test must observe an intermediate optimistic state before rollback, use a controlled deferred rejection. Do **not** use `setTimeout(..., 0)` for these tests; it can reject before the `play` function observes the optimistic state.
   ```ts
+  let rejectMutation: ((reason?: Error) => void) | undefined
+
   environment.mock.queueOperationResolver(
     () =>
       new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Update failed')), 0)
+        rejectMutation = reject
       }) as never,
   )
+
+  // In play, after asserting the optimistic state:
+  const reject = rejectMutation
+  expect(reject).toBeDefined()
+  reject?.(new Error('Update failed'))
+  rejectMutation = undefined
   ```
-- `queueOperationResolver` may also return an asynchronously resolved promise. Use that when the test must observe both the optimistic state and a different server-confirmed state:
+  A timed rejection is acceptable only when the test does not need to observe the intermediate optimistic state and only needs to assert the final rollback/error state.
+- `queueOperationResolver` may also return an asynchronously resolved promise. If the test must observe both the optimistic state and a different server-confirmed state, prefer a controlled deferred resolve over a fixed timeout:
   ```ts
+  let resolveMutation: (() => void) | undefined
+
   environment.mock.queueOperationResolver(
     operation =>
       new Promise(resolve => {
-        setTimeout(() => {
+        resolveMutation = () =>
           resolve(MockPayloadGenerator.generate(operation, resolvers))
-        }, 50)
       }) as never,
   )
+
+  // In play, after asserting the optimistic state:
+  const resolve = resolveMutation
+  expect(resolve).toBeDefined()
+  resolve?.()
+  resolveMutation = undefined
   ```
 - **Declarative mutation handlers run against the connection IDs in variables.** If a component passes `[mainConnectionId, ConnectionHandler.getConnectionID(task.id, 'Task_slots')]`, both IDs must exist in the mock store or Relay warns. Seed optional/secondary connections with `commitLocalUpdate` only when that connection ID is actually passed in mutation variables or appears in a concrete Relay warning; do not seed a connection merely because a fragment contains `@connection`.
 - **Use the correct commit APIs.** `environment.commitPayload(operationDescriptor, payload)` requires an operation descriptor. To set up local records/connections with no operation, use `commitLocalUpdate(environment, updater)`. Do **not** call `environment.commitPayload({ data: { ... } })` or `environment.mock.getStore().commitPayload(...)`.

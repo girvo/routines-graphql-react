@@ -168,3 +168,92 @@ export const WithCreateForm: Story = {
     expect((await canvas.findAllByText('New Task')).length).toBeGreaterThan(0)
   },
 }
+
+const createRollbackEnvironment = () => {
+  const environment = createMockEnvironment()
+
+  environment.mock.queueOperationResolver(op =>
+    MockPayloadGenerator.generate(op, {
+      TaskConnection() {
+        return {
+          __id: TASKS_CONNECTION_ID,
+          edges: [{}],
+        }
+      },
+      TaskEdge() {
+        return {
+          cursor: 'cursor-pushups',
+        }
+      },
+      Task() {
+        return {
+          id: 'task-pushups',
+          title: 'Pushups',
+          icon: 'dumbbell',
+          createdAt: '2026-01-01T00:00:00.000Z',
+        }
+      },
+      RoutineSlotConnection() {
+        return {
+          edges: [],
+        }
+      },
+      PageInfo() {
+        return {
+          endCursor: null,
+          hasNextPage: false,
+        }
+      },
+    }),
+  )
+
+  environment.mock.queueOperationResolver(
+    () =>
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Network error')), 50)
+      }) as never,
+  )
+
+  return environment
+}
+
+const CreateTaskRollbackStory = () => {
+  const [environment] = useState(createRollbackEnvironment)
+
+  return (
+    <RelayEnvironmentProvider environment={environment}>
+      <ToastProvider>
+        <Suspense fallback="Loading...">
+          <TasksListStoryInner initialIsCreating={true} />
+        </Suspense>
+      </ToastProvider>
+    </RelayEnvironmentProvider>
+  )
+}
+
+export const CreateTaskRollback: Story = {
+  render: () => <CreateTaskRollbackStory />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    const textbox = await canvas.findByRole('textbox', { name: /task name/i })
+    expect(textbox).toBeInTheDocument()
+
+    await userEvent.type(textbox, 'New Task')
+    await userEvent.click(canvas.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(
+        canvas.queryByRole('textbox', { name: /task name/i }),
+      ).not.toBeInTheDocument()
+    })
+
+    expect(await canvas.findByText('New Task')).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(canvas.queryByText('New Task')).not.toBeInTheDocument()
+    })
+
+    expect(await canvas.findByText('Pushups')).toBeInTheDocument()
+  },
+}
