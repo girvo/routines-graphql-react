@@ -28,6 +28,14 @@ import { taskCompletionDataLoader } from './task-completion/task-completion-load
 import fastifyStatic from '@fastify/static'
 import cors from '@fastify/cors'
 import { db } from './database/index.ts'
+import { pushRoutes } from './push/push-routes.ts'
+import { createPushSenderFromEnv, type PushSender } from './push/push-sender.ts'
+import type { HostAddressResolver } from './push/endpoint-policy.ts'
+import {
+  startMorningReminderScheduler,
+  type ReminderSchedulerLog,
+} from './push/reminder-scheduler.ts'
+import { evaluateMorningReminderForAllUsers } from './push/morning-reminder.ts'
 
 const envToLogger = {
   development: {
@@ -47,8 +55,12 @@ export const createApp = async (
   options: YogaServerOptions<
     { req: FastifyRequest; reply: FastifyReply },
     {}
-  > = {},
+  > & {
+    pushSender?: PushSender | null
+    hostResolver?: HostAddressResolver
+  } = {},
 ) => {
+  const { pushSender, hostResolver, ...yogaOptions } = options
   const schemaFile = resolve(
     dirname(fileURLToPath(import.meta.url)),
     '..',
@@ -75,7 +87,8 @@ export const createApp = async (
     reply: FastifyReply
   }>({
     cors: false,
-    context: initialContext => createContext(initialContext, db),
+    context: initialContext =>
+      createContext(initialContext, db, { pushSender, hostResolver }),
     plugins: [
       useExecutionCancellation(),
       useJWT({
@@ -115,7 +128,7 @@ export const createApp = async (
       error: (...args) => args.forEach(arg => app.log.error(arg)),
     },
     graphiql: false,
-    ...options,
+    ...yogaOptions,
   })
 
   /**
@@ -142,6 +155,8 @@ export const createApp = async (
   // Set up/wire up authentication handling routes
   authRoutes(app)
 
+  pushRoutes(app)
+
   await app.register(fastifyStatic, {
     root: resolve(dirname(fileURLToPath(import.meta.url)), 'templates'),
     // prefix: '/public/', // optional: serve files under /public/ URL
@@ -157,10 +172,46 @@ export const createApp = async (
 if (import.meta.main) {
   const { app } = await createApp()
 
+  const schedulerLog: ReminderSchedulerLog = {
+    info: message => app.log.info(message),
+    error: (error, message) => app.log.error(error, message),
+  }
+
+  const pushSender = createPushSenderFromEnv()
+  let reminderScheduler: { stop: () => void } | undefined
+
+  if (!pushSender) {
+    app.log.warn(
+      'VAPID keys are not configured: morning reminder push is disabled',
+    )
+  } else {
+    reminderScheduler = startMorningReminderScheduler({
+      log: schedulerLog,
+      onFire: async fireTime => {
+        // Evaluate for the instant the timer targeted, not the (possibly much
+        // later) callback time, so the day key is always the day whose 09:00
+        // this run belongs to.
+        const results = await evaluateMorningReminderForAllUsers(db, {
+          now: fireTime,
+          pushSender,
+        })
+
+        for (const result of results) {
+          schedulerLog.info(
+            `Morning reminder ${result.status} for user ${result.userId} on ${result.dayKey} (${result.subscriptionsSent} sent)`,
+          )
+        }
+      },
+    })
+  }
+
   const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM']
   for (const signal of signals) {
     process.on(signal, async () => {
       app.log.info(`Received ${signal}, closing server gracefully...`)
+      // `stop()` waits for a reminder run that is already dialing the push
+      // service, so a deploy at 09:00:01 does not abandon a half-finished day.
+      await reminderScheduler?.stop()
       await app.close()
       process.exit(0)
     })

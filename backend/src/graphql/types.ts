@@ -3,12 +3,14 @@ import type { UserNode } from '../user/user-domain.ts'
 import type { TaskNode } from '../task/task-domain.ts'
 import type { RoutineSlotNode } from '../routine-slot/routine-slot-domain.ts'
 import type { TaskCompletionNode } from '../task-completion/task-completion-domain.ts'
+import type { PushSubscriptionNode } from '../push/push-domain.ts'
 
 export type NodeDomains =
   | UserNode
   | TaskNode
   | RoutineSlotNode
   | TaskCompletionNode
+  | PushSubscriptionNode
 
 // Extract the typename literals
 export type NodeType = NodeDomains['__typename']

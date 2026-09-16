@@ -146,6 +146,9 @@ export type Mutation = {
   createTask?: Maybe<CreateTaskPayload>;
   deleteRoutineSlot?: Maybe<DeleteRoutineSlotPayload>;
   deleteTask?: Maybe<DeleteTaskPayload>;
+  registerPushSubscription?: Maybe<RegisterPushSubscriptionPayload>;
+  removePushSubscription?: Maybe<RemovePushSubscriptionPayload>;
+  sendTestPush?: Maybe<SendTestPushPayload>;
   uncompleteRoutineSlot?: Maybe<UncompleteRoutineSlotPayload>;
   updateTask?: Maybe<UpdateTaskPayload>;
 };
@@ -177,6 +180,21 @@ export type MutationDeleteTaskArgs = {
 };
 
 
+export type MutationRegisterPushSubscriptionArgs = {
+  input: RegisterPushSubscriptionInput;
+};
+
+
+export type MutationRemovePushSubscriptionArgs = {
+  endpoint: Scalars['String']['input'];
+};
+
+
+export type MutationSendTestPushArgs = {
+  endpoint: Scalars['String']['input'];
+};
+
+
 export type MutationUncompleteRoutineSlotArgs = {
   dailyTaskInstanceId: Scalars['ID']['input'];
 };
@@ -196,6 +214,20 @@ export type PageInfo = {
   hasNextPage: Scalars['Boolean']['output'];
   hasPreviousPage: Scalars['Boolean']['output'];
   startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export type PushSubscription = Node & {
+  __typename?: 'PushSubscription';
+  createdAt: Scalars['DateTime']['output'];
+  endpoint: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  lastSeenAt?: Maybe<Scalars['DateTime']['output']>;
+  platform?: Maybe<Scalars['String']['output']>;
+};
+
+export type PushSubscriptionKeysInput = {
+  auth: Scalars['String']['input'];
+  p256dh: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -234,6 +266,24 @@ export type QueryTasksArgs = {
   titleSearch?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type RegisterPushSubscriptionInput = {
+  endpoint: Scalars['String']['input'];
+  keys: PushSubscriptionKeysInput;
+  platform?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type RegisterPushSubscriptionPayload = {
+  __typename?: 'RegisterPushSubscriptionPayload';
+  me: User;
+  pushSubscription: PushSubscription;
+};
+
+export type RemovePushSubscriptionPayload = {
+  __typename?: 'RemovePushSubscriptionPayload';
+  deletedId: Scalars['ID']['output'];
+  me: User;
+};
+
 export type RoutineSlot = Node & {
   __typename?: 'RoutineSlot';
   createdAt: Scalars['DateTime']['output'];
@@ -253,6 +303,14 @@ export type RoutineSlotEdge = {
   __typename?: 'RoutineSlotEdge';
   cursor: Scalars['String']['output'];
   node: RoutineSlot;
+};
+
+export type SendTestPushPayload = {
+  __typename?: 'SendTestPushPayload';
+  deletedId?: Maybe<Scalars['ID']['output']>;
+  delivered: Scalars['Boolean']['output'];
+  me: User;
+  message: Scalars['String']['output'];
 };
 
 export type Task = Node & {
@@ -334,7 +392,9 @@ export type User = Node & {
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   initials: Scalars['String']['output'];
+  morningReminderEnabled: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
+  pushSubscriptions: Array<PushSubscription>;
 };
 
 export type WeeklySchedulePayload = {
@@ -347,6 +407,28 @@ export type WeeklySchedulePayload = {
   tuesday: DaySchedule;
   wednesday: DaySchedule;
 };
+
+export type RegisterPushSubscriptionHelperMutationVariables = Exact<{
+  endpoint: Scalars['String']['input'];
+  platform?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type RegisterPushSubscriptionHelperMutation = { __typename?: 'Mutation', registerPushSubscription?: { __typename?: 'RegisterPushSubscriptionPayload', pushSubscription: { __typename?: 'PushSubscription', id: GlobalId, endpoint: string, platform?: string | null, createdAt: Date, lastSeenAt?: Date | null }, me: { __typename?: 'User', morningReminderEnabled: boolean, pushSubscriptions: Array<{ __typename?: 'PushSubscription', id: GlobalId, endpoint: string }> } } | null };
+
+export type RemovePushSubscriptionHelperMutationVariables = Exact<{
+  endpoint: Scalars['String']['input'];
+}>;
+
+
+export type RemovePushSubscriptionHelperMutation = { __typename?: 'Mutation', removePushSubscription?: { __typename?: 'RemovePushSubscriptionPayload', deletedId: GlobalId, me: { __typename?: 'User', morningReminderEnabled: boolean, pushSubscriptions: Array<{ __typename?: 'PushSubscription', id: GlobalId, endpoint: string }> } } | null };
+
+export type SendTestPushHelperMutationVariables = Exact<{
+  endpoint: Scalars['String']['input'];
+}>;
+
+
+export type SendTestPushHelperMutation = { __typename?: 'Mutation', sendTestPush?: { __typename?: 'SendTestPushPayload', delivered: boolean, message: string, deletedId?: GlobalId | null, me: { __typename?: 'User', morningReminderEnabled: boolean, pushSubscriptions: Array<{ __typename?: 'PushSubscription', id: GlobalId, endpoint: string }> } } | null };
 
 export type CreateRoutineSlotMutationVariables = Exact<{
   input: CreateRoutineSlotInput;
@@ -361,6 +443,13 @@ export type CompleteRoutineSlotHelperMutationVariables = Exact<{
 
 
 export type CompleteRoutineSlotHelperMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', cursor: string, node: { __typename?: 'TaskCompletion', id: GlobalId, completedAt: Date, routineSlot: { __typename?: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection } } } } | null };
+
+export type UncompleteRoutineSlotHelperMutationVariables = Exact<{
+  dailyTaskInstanceId: Scalars['ID']['input'];
+}>;
+
+
+export type UncompleteRoutineSlotHelperMutation = { __typename?: 'Mutation', uncompleteRoutineSlot?: { __typename?: 'UncompleteRoutineSlotPayload', deletedId: GlobalId, dailyTaskInstance: { __typename?: 'DailyTaskInstance', id: GlobalId, completion?: { __typename?: 'TaskCompletion', id: GlobalId } | null } } | null };
 
 export type CreateTaskMutationMutationVariables = Exact<{
   title: Scalars['String']['input'];
@@ -377,6 +466,7 @@ export type NodeQueryQueryVariables = Exact<{
 
 export type NodeQueryQuery = { __typename?: 'Query', node?:
     | { __typename: 'DailyTaskInstance', id: GlobalId, routineSlot: { __typename?: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection, task: { __typename?: 'Task', id: GlobalId, title: string } }, completion?: { __typename?: 'TaskCompletion', id: GlobalId, completedAt: Date } | null }
+    | { __typename: 'PushSubscription' }
     | { __typename: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection, task: { __typename?: 'Task', id: GlobalId, title: string } }
     | { __typename: 'Task', id: GlobalId, title: string }
     | { __typename: 'TaskCompletion', id: GlobalId, completedAt: Date, routineSlot: { __typename?: 'RoutineSlot', id: GlobalId, dayOfWeek: DayOfWeek, section: DaySection } }
@@ -409,6 +499,11 @@ export type CompleteForDailyTaskInstanceRoundTripMutationVariables = Exact<{
 
 
 export type CompleteForDailyTaskInstanceRoundTripMutation = { __typename?: 'Mutation', completeRoutineSlot?: { __typename?: 'CompleteRoutineSlotPayload', taskCompletionEdge: { __typename?: 'TaskCompletionEdge', node: { __typename?: 'TaskCompletion', id: GlobalId, dailyTaskInstance: { __typename?: 'DailyTaskInstance', id: GlobalId, completion?: { __typename?: 'TaskCompletion', id: GlobalId } | null } } } } | null };
+
+export type MePushStateQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MePushStateQuery = { __typename?: 'Query', me: { __typename?: 'User', morningReminderEnabled: boolean, pushSubscriptions: Array<{ __typename?: 'PushSubscription', id: GlobalId, endpoint: string, platform?: string | null }> } };
 
 export type DeleteRoutineSlotMutationVariables = Exact<{
   routineSlotId: Scalars['ID']['input'];
@@ -605,8 +700,12 @@ export type TasksNoTitleSearchQueryVariables = Exact<{ [key: string]: never; }>;
 export type TasksNoTitleSearchQuery = { __typename?: 'Query', tasks: { __typename?: 'TaskConnection', edges: Array<{ __typename?: 'TaskEdge', node: { __typename?: 'Task', title: string } }> } };
 
 
+export const RegisterPushSubscriptionHelperDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterPushSubscriptionHelper"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endpoint"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"platform"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"registerPushSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"endpoint"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endpoint"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"keys"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"p256dh"},"value":{"kind":"StringValue","value":"BMockP256dhKeyForTests","block":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"auth"},"value":{"kind":"StringValue","value":"MockAuthSecret","block":false}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"platform"},"value":{"kind":"Variable","name":{"kind":"Name","value":"platform"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pushSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"endpoint"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"morningReminderEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"endpoint"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RegisterPushSubscriptionHelperMutation, RegisterPushSubscriptionHelperMutationVariables>;
+export const RemovePushSubscriptionHelperDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemovePushSubscriptionHelper"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endpoint"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removePushSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"endpoint"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endpoint"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedId"}},{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"morningReminderEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"endpoint"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RemovePushSubscriptionHelperMutation, RemovePushSubscriptionHelperMutationVariables>;
+export const SendTestPushHelperDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SendTestPushHelper"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endpoint"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sendTestPush"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"endpoint"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endpoint"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delivered"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"deletedId"}},{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"morningReminderEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"endpoint"}}]}}]}}]}}]}}]} as unknown as DocumentNode<SendTestPushHelperMutation, SendTestPushHelperMutationVariables>;
 export const CreateRoutineSlotDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateRoutineSlot"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateRoutineSlotInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createRoutineSlot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routineSlotEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"task"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"dayOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"section"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}}]}}]}}]} as unknown as DocumentNode<CreateRoutineSlotMutation, CreateRoutineSlotMutationVariables>;
 export const CompleteRoutineSlotHelperDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CompleteRoutineSlotHelper"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"dailyTaskInstanceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completeRoutineSlot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"dailyTaskInstanceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"dailyTaskInstanceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"taskCompletionEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"routineSlot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"dayOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"section"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}}]}}]}}]} as unknown as DocumentNode<CompleteRoutineSlotHelperMutation, CompleteRoutineSlotHelperMutationVariables>;
+export const UncompleteRoutineSlotHelperDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UncompleteRoutineSlotHelper"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"dailyTaskInstanceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uncompleteRoutineSlot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"dailyTaskInstanceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"dailyTaskInstanceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedId"}},{"kind":"Field","name":{"kind":"Name","value":"dailyTaskInstance"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"completion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<UncompleteRoutineSlotHelperMutation, UncompleteRoutineSlotHelperMutationVariables>;
 export const CreateTaskMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateTaskMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"icon"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}},{"kind":"Argument","name":{"kind":"Name","value":"icon"},"value":{"kind":"Variable","name":{"kind":"Name","value":"icon"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"taskEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"icon"}}]}}]}}]}}]}}]} as unknown as DocumentNode<CreateTaskMutationMutation, CreateTaskMutationMutationVariables>;
 export const NodeQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"NodeQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Task"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"RoutineSlot"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"dayOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"section"}},{"kind":"Field","name":{"kind":"Name","value":"task"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TaskCompletion"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"routineSlot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"dayOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"section"}}]}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"DailyTaskInstance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"routineSlot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"dayOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"section"}},{"kind":"Field","name":{"kind":"Name","value":"task"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"completion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"completedAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<NodeQueryQuery, NodeQueryQueryVariables>;
 export const TodayDayOfWeekDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TodayDayOfWeek"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dailyRoutine"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dayOfWeek"}}]}}]}}]} as unknown as DocumentNode<TodayDayOfWeekQuery, TodayDayOfWeekQueryVariables>;
@@ -614,6 +713,7 @@ export const DailyRoutineForInstanceIdDocument = {"kind":"Document","definitions
 export const TodayDayOfWeekForCompletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TodayDayOfWeekForCompletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dailyRoutine"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dayOfWeek"}}]}}]}}]} as unknown as DocumentNode<TodayDayOfWeekForCompletionQuery, TodayDayOfWeekForCompletionQueryVariables>;
 export const DailyRoutineBeforeCompletionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"DailyRoutineBeforeCompletion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dailyRoutine"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"midday"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"completion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<DailyRoutineBeforeCompletionQuery, DailyRoutineBeforeCompletionQueryVariables>;
 export const CompleteForDailyTaskInstanceRoundTripDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CompleteForDailyTaskInstanceRoundTrip"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"dailyTaskInstanceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"completeRoutineSlot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"dailyTaskInstanceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"dailyTaskInstanceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"taskCompletionEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"dailyTaskInstance"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"completion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<CompleteForDailyTaskInstanceRoundTripMutation, CompleteForDailyTaskInstanceRoundTripMutationVariables>;
+export const MePushStateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MePushState"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"morningReminderEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"endpoint"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}}]}}]}}]}}]} as unknown as DocumentNode<MePushStateQuery, MePushStateQueryVariables>;
 export const DeleteRoutineSlotDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRoutineSlot"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"routineSlotId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteRoutineSlot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"routineSlotId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"routineSlotId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedId"}}]}}]}}]} as unknown as DocumentNode<DeleteRoutineSlotMutation, DeleteRoutineSlotMutationVariables>;
 export const CreateSlotDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSlot"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateRoutineSlotInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createRoutineSlot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routineSlotEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<CreateSlotMutation, CreateSlotMutationVariables>;
 export const DeleteSlotDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSlot"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"routineSlotId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteRoutineSlot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"routineSlotId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"routineSlotId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedId"}}]}}]}}]} as unknown as DocumentNode<DeleteSlotMutation, DeleteSlotMutationVariables>;

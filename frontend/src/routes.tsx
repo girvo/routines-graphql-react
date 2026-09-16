@@ -7,6 +7,7 @@ import { AppShellEntryPoint } from './AppShell.entrypoint.ts'
 import { TasksPageEntryPoint } from './Tasks/TasksPage.entrypoint.ts'
 import { TodayPageEntryPoint } from './Today/TodayPage.entrypoint.ts'
 import { WeeklyPlanPageEntryPoint } from './WeeklyPlan/WeeklyPlanPage.entrypoint.ts'
+import { SettingsPageEntryPoint } from './Settings/SettingsPage.entrypoint.ts'
 
 export const unAuthedRouteConfig: RouteObject[] = [
   {
@@ -58,6 +59,14 @@ export const authedRouteConfig: EntryPointRouteObject[] = [
         handle: {
           title: 'Weekly planner',
           loading: () => 'Loading weekly plan...',
+        },
+      },
+      {
+        path: '/settings',
+        entryPoint: SettingsPageEntryPoint,
+        handle: {
+          title: 'Settings',
+          loading: () => 'Loading settings...',
         },
       },
     ],

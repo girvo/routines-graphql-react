@@ -51,3 +51,33 @@ export const completeRoutineSlot = async ({
     },
   )
 }
+
+const UncompleteRoutineSlotMutation = graphql(`
+  mutation UncompleteRoutineSlotHelper($dailyTaskInstanceId: ID!) {
+    uncompleteRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
+      deletedId
+      dailyTaskInstance {
+        id
+        completion {
+          id
+        }
+      }
+    }
+  }
+`)
+
+export const uncompleteRoutineSlot = async ({
+  routineSlotId,
+  date = new Date(),
+  yoga,
+  userToken,
+}: CompleteRoutineSlotArgs) => {
+  return await executeGraphQL(
+    UncompleteRoutineSlotMutation,
+    { dailyTaskInstanceId: dailyTaskInstanceIdFor(routineSlotId, date) },
+    {
+      yoga,
+      userToken,
+    },
+  )
+}

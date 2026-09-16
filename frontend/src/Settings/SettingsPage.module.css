@@ -1,0 +1,22 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-4);
+}
+
+.card {
+  max-width: 720px;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .page {
+    padding: var(--space-5);
+  }
+}

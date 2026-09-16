@@ -33,7 +33,11 @@ type Query {
   dailyRoutine(date: DateTime): DailyRoutinePayload!
 
   weeklySchedule: WeeklySchedulePayload!
-  tasks(first: NonNegativeInt, after: String, titleSearch: String): TaskConnection!
+  tasks(
+    first: NonNegativeInt
+    after: String
+    titleSearch: String
+  ): TaskConnection!
 
   taskCompletions(
     first: NonNegativeInt
@@ -55,6 +59,12 @@ type Mutation {
 
   completeRoutineSlot(dailyTaskInstanceId: ID!): CompleteRoutineSlotPayload
   uncompleteRoutineSlot(dailyTaskInstanceId: ID!): UncompleteRoutineSlotPayload
+
+  registerPushSubscription(
+    input: RegisterPushSubscriptionInput!
+  ): RegisterPushSubscriptionPayload
+  removePushSubscription(endpoint: String!): RemovePushSubscriptionPayload
+  sendTestPush(endpoint: String!): SendTestPushPayload
 }
 
 type User implements Node {
@@ -63,6 +73,8 @@ type User implements Node {
   name: String!
   initials: String!
   createdAt: DateTime!
+  pushSubscriptions: [PushSubscription!]!
+  morningReminderEnabled: Boolean!
 }
 
 type Task implements Node {
@@ -94,6 +106,14 @@ type TaskCompletion implements Node {
   routineSlot: RoutineSlot!
   completedAt: DateTime!
   dailyTaskInstance: DailyTaskInstance!
+}
+
+type PushSubscription implements Node {
+  id: ID!
+  endpoint: String!
+  platform: String
+  createdAt: DateTime!
+  lastSeenAt: DateTime
 }
 
 type DailyRoutinePayload {
@@ -186,6 +206,17 @@ input CreateRoutineSlotInput {
   section: DaySection!
 }
 
+input PushSubscriptionKeysInput {
+  p256dh: String!
+  auth: String!
+}
+
+input RegisterPushSubscriptionInput {
+  endpoint: String!
+  keys: PushSubscriptionKeysInput!
+  platform: String
+}
+
 type CreateTaskPayload {
   taskEdge: TaskEdge!
 }
@@ -213,4 +244,27 @@ type CompleteRoutineSlotPayload {
 type UncompleteRoutineSlotPayload {
   dailyTaskInstance: DailyTaskInstance!
   deletedId: ID!
+}
+
+type RegisterPushSubscriptionPayload {
+  pushSubscription: PushSubscription!
+
+  # The authenticated user's server-derived push state after this mutation. The
+  # client renders reminders state from here instead of asserting it locally.
+  me: User!
+}
+
+type RemovePushSubscriptionPayload {
+  deletedId: ID!
+  me: User!
+}
+
+type SendTestPushPayload {
+  delivered: Boolean!
+  message: String!
+
+  # Set when the push service reported the subscription gone (HTTP 404/410) and
+  # this server dropped the row, so the client can delete it from its store.
+  deletedId: ID
+  me: User!
 }

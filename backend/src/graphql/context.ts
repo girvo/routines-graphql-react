@@ -11,17 +11,33 @@ import type { RoutineSlotDataLoader } from '../routine-slot/routine-slot-loaders
 import { createRoutineSlotRepository } from '../routine-slot/routine-slot-repository.ts'
 import type { TaskCompletionDataLoader } from '../task-completion/task-completion-loaders.ts'
 import { createTaskCompletionRepository } from '../task-completion/task-completion-repository.ts'
+import { createPushSubscriptionRepository } from '../push/push-repository.ts'
+import {
+  createPushSenderFromEnv,
+  type PushSender,
+} from '../push/push-sender.ts'
+import {
+  dnsHostAddressResolver,
+  type HostAddressResolver,
+} from '../push/endpoint-policy.ts'
 import type { Kysely } from 'kysely'
 import type { Database } from '../database/types.ts'
+
+export interface ContextOverrides {
+  pushSender?: PushSender | null
+  hostResolver?: HostAddressResolver
+}
 
 export function createContext(
   initialContext: YogaInitialContext,
   db: Kysely<Database>,
+  overrides: ContextOverrides = {},
 ) {
   const userRepo = createUserRepository(db)
   const taskRepo = createTaskRepository(db)
   const routineRepo = createRoutineSlotRepository(db)
   const taskCompletionRepo = createTaskCompletionRepository(db)
+  const pushRepo = createPushSubscriptionRepository(db)
 
   return {
     ...initialContext,
@@ -31,6 +47,12 @@ export function createContext(
     taskRepo,
     routineRepo,
     taskCompletionRepo,
+    pushRepo,
+    pushSender:
+      overrides.pushSender === undefined
+        ? createPushSenderFromEnv()
+        : overrides.pushSender,
+    resolvePushHost: overrides.hostResolver ?? dnsHostAddressResolver,
   }
 }
 

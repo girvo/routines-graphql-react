@@ -6,6 +6,8 @@ export interface Database {
   tasks: TasksTable
   routine_slots: RoutineSlotsTable
   task_completions: TaskCompletionsTable
+  push_subscriptions: PushSubscriptionsTable
+  morning_reminder_deliveries: MorningReminderDeliveriesTable
 }
 
 export interface UsersTable {
@@ -39,6 +41,8 @@ export interface TasksTable {
   deleted_at: string | null
 }
 
+// Single source of truth for these values: the database columns store them, and
+// backend/codegen.ts maps the schema enums here via `enumValues`.
 export type DayOfWeek =
   | 'MONDAY'
   | 'TUESDAY'
@@ -65,5 +69,37 @@ export interface TaskCompletionsTable {
   routine_slot_id: number
   user_id: number
   completed_at: ColumnType<string, string | undefined, never>
+  created_at: ColumnType<string, string | undefined, never>
+}
+
+export interface PushSubscriptionsTable {
+  id: Generated<number>
+  user_id: number
+  endpoint: string
+  p256dh_key: string
+  auth_key: string
+  platform: string | null
+  user_agent: string | null
+  created_at: ColumnType<string, string | undefined, never>
+  last_seen_at: string | null
+}
+
+export type MorningReminderStatus =
+  /** Written before the sends start; see `claimDelivery` in morning-reminder.ts. */
+  | 'PENDING'
+  | 'SENT'
+  | 'SKIPPED_NO_SLOTS'
+  | 'SKIPPED_ALREADY_COMPLETE'
+  | 'SKIPPED_NO_SUBSCRIPTION'
+  | 'FAILED'
+
+export interface MorningReminderDeliveriesTable {
+  id: Generated<number>
+  user_id: number
+  day_key: string
+  status: MorningReminderStatus
+  subscriptions_sent: number
+  error: string | null
+  attempts: Generated<number>
   created_at: ColumnType<string, string | undefined, never>
 }

@@ -14,12 +14,15 @@ import * as RoutineSlotMutations from '../routine-slot/routine-slot-mutations.ts
 import * as TaskCompletionResolvers from '../task-completion/task-completion-resolvers.ts'
 import * as TaskCompletionMutations from '../task-completion/task-completion-mutations.ts'
 import * as ScheduleResolvers from '../schedule/schedule-resolvers.ts'
+import * as PushResolvers from '../push/push-resolvers.ts'
+import * as PushMutations from '../push/push-mutations.ts'
 
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
   User: UserResolvers.resolveUserAsNode,
   Task: TaskResolvers.resolveTaskAsNode,
   RoutineSlot: RoutineSlotResolvers.resolveRoutineTaskAsNode,
   TaskCompletion: TaskCompletionResolvers.resolveTaskCompletionAsNode,
+  PushSubscription: PushResolvers.resolvePushSubscriptionAsNode,
 }
 
 export const resolvers: Resolvers<Context> = {
@@ -76,9 +79,14 @@ export const resolvers: Resolvers<Context> = {
     deleteRoutineSlot: RoutineSlotMutations.deleteRoutineSlot,
     completeRoutineSlot: TaskCompletionMutations.completeRoutineSlot,
     uncompleteRoutineSlot: TaskCompletionMutations.uncompleteRoutineSlot,
+    registerPushSubscription: PushMutations.registerPushSubscription,
+    removePushSubscription: PushMutations.removePushSubscription,
+    sendTestPush: PushMutations.sendTestPush,
   },
   User: {
     initials: ({ name }) => deriveInitials(name),
+    pushSubscriptions: PushResolvers.pushSubscriptions,
+    morningReminderEnabled: PushResolvers.morningReminderEnabled,
   },
   Task: {
     completions: TaskResolvers.completions,

@@ -9,7 +9,9 @@
     "migration:latest": "node --env-file=.env tools/run-migrations.ts latest",
     "migration:make": "node --env-file=.env tools/make-migration.ts",
     "migration:up": "node --env-file=.env tools/run-migrations.ts up",
-    "resolvers:generate": "graphql-codegen",
+    "resolvers:generate": "graphql-codegen && node tools/fix-type-reexports.ts src/graphql/resolver-types.ts",
+    "reminder:run": "node --env-file=.env tools/run-morning-reminder.ts",
+    "vapid:keys": "node tools/generate-vapid-keys.ts",
     "start": "node --env-file=.env src/main.ts",
     "start:watch": "node --env-file=.env --watch --watch-preserve-output --watch-path=./src --watch-path=./migrations src/main.ts",
     "test": "node --env-file=.env.test ./node_modules/vitest/vitest.mjs",
@@ -34,7 +36,8 @@
     "graphql-yoga": "^5.15.2",
     "jsonwebtoken": "9.0.2",
     "kysely": "^0.28.8",
-    "pino-pretty": "^13.1.2"
+    "pino-pretty": "^13.1.2",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^6.0.0",
@@ -45,6 +48,7 @@
     "@parcel/watcher": "^2.5.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "9.0.10",
+    "@types/web-push": "^3.6.4",
     "glob": "^13.0.0",
     "typescript": "^5.9.2",
     "vitest": "^4.0.14"

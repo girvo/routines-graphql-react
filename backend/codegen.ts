@@ -17,12 +17,20 @@ const config: CodegenConfig = {
           DateTime: 'Date',
           NonNegativeInt: 'number',
         },
+        // The hand-written unions in database/types.ts are the single source of
+        // truth for these enums: the database columns store exactly these values.
+        enumValues: {
+          DayOfWeek: '../database/types.ts#DayOfWeek',
+          DaySection: '../database/types.ts#DaySection',
+        },
         mappers: {
           User: '../user/user-domain.ts#UserNode',
           Task: '../task/task-domain.ts#TaskNode',
           RoutineSlot: '../routine-slot/routine-slot-domain.ts#RoutineSlotNode',
           TaskCompletion:
             '../task-completion/task-completion-domain.ts#TaskCompletionNode',
+          PushSubscription:
+            '../push/push-domain.ts#PushSubscriptionNode',
           DailyRoutinePayload: '../schedule/schedule-domain.ts#DailyRoutineData',
           WeeklySchedulePayload: '../schedule/schedule-domain.ts#WeeklyScheduleData',
           DaySchedule: '../schedule/schedule-domain.ts#DayScheduleData',
