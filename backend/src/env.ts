@@ -30,6 +30,6 @@ export const getEnv = () => {
     ENVIRONMENT,
     VAPID_PUBLIC_KEY,
     VAPID_PRIVATE_KEY,
-    VAPID_SUBJECT: VAPID_SUBJECT || 'mailto:push@routines.local',
+    VAPID_SUBJECT: VAPID_SUBJECT || 'mailto:push@routines.jgirvin.com',
   }
 }

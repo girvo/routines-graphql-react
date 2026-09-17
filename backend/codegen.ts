@@ -4,6 +4,12 @@ const config: CodegenConfig = {
   schema: '../schema.graphql',
   documents: './tests/**/*.ts',
   emitLegacyCommonJSImports: false,
+  // NOTE: output-level lifecycle hooks are broken upstream (open bug since 2022:
+  // github.com/dotansimha/graphql-code-generator/issues/8574 — the config is
+  // dropped before it reaches the write site), and root-level hooks only fire on
+  // files codegen actually writes (hash-identical outputs are skipped) while
+  // swallowing all hook output unless config.debug is set. Post-processing steps
+  // therefore run as explicit parts of the resolvers:generate script instead.
   generates: {
     './src/graphql/resolver-types.ts': {
       config: {
@@ -51,9 +57,6 @@ const config: CodegenConfig = {
           DateTime: 'Date',
           NonNegativeInt: 'number',
         },
-      },
-      hooks: {
-        afterAllFileWrite: ['node tools/fix-import-extensions.ts'],
       },
     },
   },
