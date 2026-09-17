@@ -10,6 +10,7 @@ export interface RoutineSlotRow {
   task_id: number
   day_of_week: DayOfWeek
   section: DaySection
+  position: number
   created_at: string
   deleted_at: string | null
 }

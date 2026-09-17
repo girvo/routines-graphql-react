@@ -60,6 +60,8 @@ export interface RoutineSlotsTable {
   task_id: number
   day_of_week: DayOfWeek
   section: DaySection
+  /** Dense 0..n-1 within live (user_id, day_of_week, section); see the migration. */
+  position: Generated<number>
   created_at: ColumnType<string, string | undefined, string>
   deleted_at: string | null
 }
