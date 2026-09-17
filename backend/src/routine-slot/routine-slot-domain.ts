@@ -3,6 +3,7 @@ import { parseISO } from 'date-fns'
 import { toGlobalId, type GlobalId } from '../globalId.ts'
 import {
   routineSlotCursor,
+  routineSlotPositionCursor,
   type RoutineSlotRow,
 } from './routine-slot-repository.ts'
 import type { PageInfo } from '../graphql/resolver-types.ts'
@@ -14,6 +15,7 @@ const RoutineSlotDomain = type({
   dayOfWeek:
     "'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'",
   section: "'MORNING' | 'MIDDAY' | 'EVENING'",
+  position: 'number',
   createdAt: 'Date',
   deletedAt: 'Date | null',
 })
@@ -27,6 +29,7 @@ export const tableToDomain = (input: RoutineSlotRow): RoutineSlotDomain => {
     taskId: input.task_id,
     dayOfWeek: input.day_of_week,
     section: input.section,
+    position: input.position,
     createdAt: parseISO(input.created_at),
     deletedAt: input.deleted_at ? parseISO(input.deleted_at) : null,
   })
@@ -38,6 +41,7 @@ export const routineSlotToGraphQL = (slot: RoutineSlotDomain) => ({
   task: { id: toGlobalId('Task', slot.taskId) },
   dayOfWeek: slot.dayOfWeek,
   section: slot.section,
+  position: slot.position,
   createdAt: slot.createdAt,
 })
 
@@ -53,20 +57,26 @@ export const buildRoutineSlotEdge = (slot: RoutineSlotDomain) => {
   }
 }
 
-export interface RoutineSlotConnection {
-  edges: ReturnType<typeof buildRoutineSlotEdge>[]
-  pageInfo: PageInfo
+export const buildPositionedRoutineSlotEdge = (slot: RoutineSlotDomain) => {
+  return {
+    node: slot,
+    cursor: routineSlotPositionCursor.encode({
+      position: slot.position,
+      id: slot.id,
+    }),
+  }
 }
 
-export const buildRoutineSlotConnection = (
+const buildConnection = <Edge extends { cursor: string }>(
   edgeRows: RoutineSlotRow[],
   requestedCount: number,
-): RoutineSlotConnection => {
+  buildEdge: (slot: RoutineSlotDomain) => Edge,
+) => {
   const hasNextPage = edgeRows.length > requestedCount
   const edges = edgeRows
     .slice(0, requestedCount)
     .map(tableToDomain)
-    .map(buildRoutineSlotEdge)
+    .map(slot => buildEdge(slot))
 
   return {
     edges,
@@ -78,3 +88,25 @@ export const buildRoutineSlotConnection = (
     },
   }
 }
+
+export interface RoutineSlotConnection {
+  edges: ReturnType<typeof buildRoutineSlotEdge>[]
+  pageInfo: PageInfo
+}
+
+export const buildRoutineSlotConnection = (
+  edgeRows: RoutineSlotRow[],
+  requestedCount: number,
+): RoutineSlotConnection =>
+  buildConnection(edgeRows, requestedCount, buildRoutineSlotEdge)
+
+export interface PositionedRoutineSlotConnection {
+  edges: ReturnType<typeof buildPositionedRoutineSlotEdge>[]
+  pageInfo: PageInfo
+}
+
+export const buildPositionedRoutineSlotConnection = (
+  edgeRows: RoutineSlotRow[],
+  requestedCount: number,
+): PositionedRoutineSlotConnection =>
+  buildConnection(edgeRows, requestedCount, buildPositionedRoutineSlotEdge)

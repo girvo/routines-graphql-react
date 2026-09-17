@@ -287,6 +287,7 @@ export type RoutineSlot = Node & {
   createdAt: Scalars['DateTime']['output'];
   dayOfWeek: DayOfWeek;
   id: Scalars['ID']['output'];
+  position: Scalars['NonNegativeInt']['output'];
   section: DaySection;
   task: Task;
 };
@@ -714,6 +715,7 @@ export type RoutineSlotResolvers<ContextType = any, ParentType extends Resolvers
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   dayOfWeek?: Resolver<ResolversTypes['DayOfWeek'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  position?: Resolver<ResolversTypes['NonNegativeInt'], ParentType, ContextType>;
   section?: Resolver<ResolversTypes['DaySection'], ParentType, ContextType>;
   task?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

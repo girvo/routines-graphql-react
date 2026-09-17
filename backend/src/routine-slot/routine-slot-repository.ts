@@ -22,6 +22,14 @@ export interface RoutineSlotCursor {
 
 export const routineSlotCursor = createCursorCodec<RoutineSlotCursor>()
 
+export interface RoutineSlotPositionCursor {
+  position: number
+  id: number
+}
+
+export const routineSlotPositionCursor =
+  createCursorCodec<RoutineSlotPositionCursor>()
+
 const buildCursorCondition = (
   eb: ExpressionBuilder<Database, 'routine_slots'>,
   cursor: { created_at: string; id: number },

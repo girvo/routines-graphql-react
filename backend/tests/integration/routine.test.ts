@@ -34,7 +34,7 @@ describe('Routine mutations', () => {
     // This doesn't use the helper so we can test more stuff
     const result = await executeGraphQL(
       graphql(`
-        mutation CreateRoutineSlot($input: CreateRoutineSlotInput!) {
+        mutation CreateSlotWithPosition($input: CreateRoutineSlotInput!) {
           createRoutineSlot(input: $input) {
             routineSlotEdge {
               node {
@@ -45,6 +45,7 @@ describe('Routine mutations', () => {
                 }
                 dayOfWeek
                 section
+                position
                 createdAt
               }
               cursor
@@ -66,6 +67,7 @@ describe('Routine mutations', () => {
     assert(routineSlot !== undefined, 'slot was created')
     expect(routineSlot.dayOfWeek).toBe('MONDAY')
     expect(routineSlot.section).toBe('MORNING')
+    expect(routineSlot.position).toBe(0)
     expect(routineSlot.task.id).toBe(task.data.createTask.taskEdge.node.id)
     expect(routineSlot.task.title).toBe('A task')
   })
