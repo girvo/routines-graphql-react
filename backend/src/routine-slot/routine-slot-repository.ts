@@ -36,6 +36,63 @@ export interface RoutineSlotPositionEntry {
   position: number
 }
 
+export type RoutineSlotMoveTarget =
+  | { kind: 'top' }
+  | { kind: 'bottom' }
+  | { kind: 'before'; anchorId: number }
+  | { kind: 'after'; anchorId: number }
+
+export class RoutineSlotNotInOrderError extends Error {
+  readonly slotId: number
+
+  constructor(slotId: number) {
+    super(`Routine slot ${slotId} is not in the current order`)
+    this.name = 'RoutineSlotNotInOrderError'
+    this.slotId = slotId
+  }
+}
+
+export const computeMove = (
+  currentOrder: readonly number[],
+  movedId: number,
+  target: RoutineSlotMoveTarget,
+): number[] => {
+  if (currentOrder.indexOf(movedId) === -1) {
+    throw new RoutineSlotNotInOrderError(movedId)
+  }
+
+  if (
+    (target.kind === 'before' || target.kind === 'after') &&
+    target.anchorId === movedId
+  ) {
+    return [...currentOrder]
+  }
+
+  const orderWithoutMoved = currentOrder.filter(id => id !== movedId)
+
+  if (target.kind === 'top') {
+    orderWithoutMoved.unshift(movedId)
+    return orderWithoutMoved
+  }
+
+  if (target.kind === 'bottom') {
+    orderWithoutMoved.push(movedId)
+    return orderWithoutMoved
+  }
+
+  const anchorIndex = orderWithoutMoved.indexOf(target.anchorId)
+  if (anchorIndex === -1) {
+    throw new RoutineSlotNotInOrderError(target.anchorId)
+  }
+
+  orderWithoutMoved.splice(
+    target.kind === 'after' ? anchorIndex + 1 : anchorIndex,
+    0,
+    movedId,
+  )
+  return orderWithoutMoved
+}
+
 const buildCursorCondition = (
   eb: ExpressionBuilder<Database, 'routine_slots'>,
   cursor: { created_at: string; id: number },

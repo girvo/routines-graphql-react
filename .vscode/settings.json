@@ -41,5 +41,8 @@
   "relay.autoStartCompiler": true,
   "[markdown]": {
     "editor.formatOnSave": false
-  }
+  },
+  "pendant.toolDisplayModeOverrides": [
+    "subagent=collapseWhenDone"
+  ]
 }
