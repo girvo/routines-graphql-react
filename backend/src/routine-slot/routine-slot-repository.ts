@@ -1,4 +1,5 @@
 import type { Kysely, ExpressionBuilder } from 'kysely'
+import { sql } from 'kysely'
 import type { Database, DayOfWeek, DaySection } from '../database/types.ts'
 import type { PaginationArgs } from '../graphql/types.ts'
 import { createCursorCodec } from '../graphql/cursor.ts'
@@ -30,6 +31,11 @@ export interface RoutineSlotPositionCursor {
 export const routineSlotPositionCursor =
   createCursorCodec<RoutineSlotPositionCursor>()
 
+export interface RoutineSlotPositionEntry {
+  id: number
+  position: number
+}
+
 const buildCursorCondition = (
   eb: ExpressionBuilder<Database, 'routine_slots'>,
   cursor: { created_at: string; id: number },
@@ -43,13 +49,14 @@ const buildCursorCondition = (
   ])
 }
 
-export const createRoutineSlotRepository = (db: Kysely<Database>) => {
+const routineSlotFunctions = (db: Kysely<Database>) => {
   return {
-    async createRoutineSlot(
+    async insertWithPosition(
       userId: number,
       taskId: number,
       dayOfWeek: DayOfWeek,
       section: DaySection,
+      position: number,
     ): Promise<RoutineSlotRow> {
       return db
         .insertInto('routine_slots')
@@ -58,6 +65,7 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
           task_id: taskId,
           day_of_week: dayOfWeek,
           section: section,
+          position: position,
           created_at: getCurrentTimestamp(),
         })
         .returningAll()
@@ -80,13 +88,62 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
         .executeTakeFirst()
     },
 
-    async reviveRoutineSlot(id: number): Promise<RoutineSlotRow> {
+    // A deleted row keeps the position it had, which another live row may
+    // already use by the time it is revived, so the caller passes a new one.
+    async reviveRoutineSlotWithPosition(
+      id: number,
+      position: number,
+    ): Promise<RoutineSlotRow> {
       return db
         .updateTable('routine_slots')
-        .set({ deleted_at: null })
+        .set({ deleted_at: null, position: position })
         .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
+    },
+
+    async listByDayAndSection(
+      userId: number,
+      dayOfWeek: DayOfWeek,
+      section: DaySection,
+    ): Promise<RoutineSlotRow[]> {
+      return db
+        .selectFrom('routine_slots')
+        .selectAll()
+        .where('user_id', '=', userId)
+        .where('day_of_week', '=', dayOfWeek)
+        .where('section', '=', section)
+        .where('deleted_at', 'is', null)
+        .orderBy('position', 'asc')
+        .orderBy('id', 'asc')
+        .execute()
+    },
+
+    async nextPositionForDayAndSection(
+      userId: number,
+      dayOfWeek: DayOfWeek,
+      section: DaySection,
+    ): Promise<number> {
+      const row = await db
+        .selectFrom('routine_slots')
+        .select(sql<number | null>`max(position)`.as('max_position'))
+        .where('user_id', '=', userId)
+        .where('day_of_week', '=', dayOfWeek)
+        .where('section', '=', section)
+        .where('deleted_at', 'is', null)
+        .executeTakeFirst()
+
+      return (row?.max_position ?? -1) + 1
+    },
+
+    async setPositions(entries: readonly RoutineSlotPositionEntry[]) {
+      for (const entry of entries) {
+        await db
+          .updateTable('routine_slots')
+          .set({ position: entry.position })
+          .where('id', '=', entry.id)
+          .execute()
+      }
     },
 
     async deleteRoutineSlot(id: number, userId: number) {
@@ -166,21 +223,43 @@ export const createRoutineSlotRepository = (db: Kysely<Database>) => {
         .where('day_of_week', '=', dayOfWeek)
         .where('section', '=', section)
         .where('deleted_at', 'is', null)
-        .orderBy('created_at', 'asc')
+        .orderBy('position', 'asc')
         .orderBy('id', 'asc')
         .limit(pagination.first + 1)
 
       if (pagination.after) {
-        const cursor = routineSlotCursor.decode(pagination.after)
+        const cursor = routineSlotPositionCursor.decode(pagination.after)
         query = query.where(eb =>
-          buildCursorCondition(eb, {
-            created_at: cursor.createdAt,
-            id: cursor.id,
-          }),
+          eb.or([
+            eb('position', '>', cursor.position),
+            eb.and([
+              eb('position', '=', cursor.position),
+              eb('id', '>', cursor.id),
+            ]),
+          ]),
         )
       }
 
       return query.execute()
+    },
+  }
+}
+
+// No transaction() on this handle: Kysely does not allow nested transactions.
+export type RoutineSlotTransaction = ReturnType<typeof routineSlotFunctions>
+
+// Reordering one slot can move others, so multi-row position writes share a transaction.
+export type RoutineSlotRepository = RoutineSlotTransaction & {
+  transaction<T>(fn: (tx: RoutineSlotTransaction) => Promise<T>): Promise<T>
+}
+
+export const createRoutineSlotRepository = (
+  db: Kysely<Database>,
+): RoutineSlotRepository => {
+  return {
+    ...routineSlotFunctions(db),
+    transaction<T>(fn: (tx: RoutineSlotTransaction) => Promise<T>): Promise<T> {
+      return db.transaction().execute(tx => fn(createRoutineSlotRepository(tx)))
     },
   }
 }

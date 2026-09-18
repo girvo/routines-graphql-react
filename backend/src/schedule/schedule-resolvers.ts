@@ -20,7 +20,7 @@ import {
 } from './schedule-domain.ts'
 import {
   tableToDomain as routineSlotTableToDomain,
-  buildRoutineSlotConnection,
+  buildPositionedRoutineSlotConnection,
   routineSlotToGraphQL,
 } from '../routine-slot/routine-slot-domain.ts'
 import { tableToDomain as taskCompletionTableToDomain } from '../task-completion/task-completion-domain.ts'
@@ -176,7 +176,10 @@ const createDaySectionResolver = <Section extends DaySection>(
         { first: take, after },
       )
 
-    const connection = buildRoutineSlotConnection(routineSlotRows, take)
+    const connection = buildPositionedRoutineSlotConnection(
+      routineSlotRows,
+      take,
+    )
 
     return {
       edges: connection.edges.map(edge => ({
