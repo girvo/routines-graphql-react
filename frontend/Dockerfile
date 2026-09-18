@@ -11,12 +11,14 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 
 # Copy frontend package.json
 COPY frontend/package.json ./frontend/
+COPY shared/package.json ./shared/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
 # Copy source files
 COPY frontend/ ./frontend/
+COPY shared/ ./shared/
 COPY schema.graphql ./
 
 # Build the frontend

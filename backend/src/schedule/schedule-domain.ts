@@ -1,4 +1,5 @@
-import type { DayOfWeek, PageInfo } from '../graphql/resolver-types.ts'
+import type { DayOfWeek, DaySection } from '../database/types.ts'
+import { isDayOfWeek, isDaySection } from '@my-routines/shared'
 import type { RoutineSlotDomain } from '../routine-slot/routine-slot-domain.ts'
 import type { TaskCompletionDomain } from '../task-completion/task-completion-domain.ts'
 import { routineSlotToGraphQL } from '../routine-slot/routine-slot-domain.ts'
@@ -75,6 +76,64 @@ export const decodeDailyTaskInstanceId = (
   return { date, routineSlotId }
 }
 
+const DAY_SECTION_SLOTS_TYPENAME = 'DaySectionSlots'
+
+export const encodeDaySectionSlotsId = (
+  dayOfWeek: DayOfWeek,
+  section: DaySection,
+): GlobalId =>
+  encodeGlobalId(DAY_SECTION_SLOTS_TYPENAME, `${dayOfWeek}:${section}`)
+
+export const decodeDaySectionSlotsId = (
+  globalId: GlobalId,
+): { dayOfWeek: DayOfWeek; section: DaySection } => {
+  const { type, payload } = decodeGlobalId(globalId)
+  if (type !== DAY_SECTION_SLOTS_TYPENAME) {
+    throw new Error(
+      `Expected ${DAY_SECTION_SLOTS_TYPENAME} global ID, got ${type}`,
+    )
+  }
+
+  const colonIndex = payload.indexOf(':')
+  if (colonIndex < 1) {
+    throw new Error(`Invalid ${DAY_SECTION_SLOTS_TYPENAME} payload: ${payload}`)
+  }
+
+  const dayOfWeek = payload.slice(0, colonIndex)
+  const section = payload.slice(colonIndex + 1)
+
+  if (!isDayOfWeek(dayOfWeek)) {
+    throw new Error(
+      `Invalid day of week in ${DAY_SECTION_SLOTS_TYPENAME} global ID: ${dayOfWeek}`,
+    )
+  }
+
+  if (!isDaySection(section)) {
+    throw new Error(
+      `Invalid section in ${DAY_SECTION_SLOTS_TYPENAME} global ID: ${section}`,
+    )
+  }
+
+  return { dayOfWeek, section }
+}
+
+export interface DaySectionSlotsData {
+  __typename: 'DaySectionSlots'
+  id: GlobalId
+  dayOfWeek: DayOfWeek
+  section: DaySection
+}
+
+export const daySectionSlotsToGraphQL = (
+  dayOfWeek: DayOfWeek,
+  section: DaySection,
+): DaySectionSlotsData => ({
+  __typename: DAY_SECTION_SLOTS_TYPENAME,
+  id: encodeDaySectionSlotsId(dayOfWeek, section),
+  dayOfWeek,
+  section,
+})
+
 export const dailyTaskInstanceToGraphQL = (
   instance: DailyTaskInstanceData,
 ) => ({
@@ -95,30 +154,5 @@ export const buildDailyTaskInstanceEdge = (instance: DailyTaskInstanceData) => {
       position: instance.routineSlot.position,
       id: instance.routineSlot.id,
     }),
-  }
-}
-
-export interface DailyTaskInstanceConnection {
-  edges: ReturnType<typeof buildDailyTaskInstanceEdge>[]
-  pageInfo: PageInfo
-}
-
-export const buildDailyTaskInstanceConnection = (
-  instances: DailyTaskInstanceData[],
-  requestedCount: number,
-): DailyTaskInstanceConnection => {
-  const hasNextPage = instances.length > requestedCount
-  const edges = instances
-    .slice(0, requestedCount)
-    .map(buildDailyTaskInstanceEdge)
-
-  return {
-    edges,
-    pageInfo: {
-      hasNextPage,
-      hasPreviousPage: false,
-      startCursor: edges[0]?.cursor ?? null,
-      endCursor: edges[edges.length - 1]?.cursor ?? null,
-    },
   }
 }

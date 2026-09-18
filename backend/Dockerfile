@@ -14,12 +14,14 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 
 # Copy backend package.json
 COPY backend/package.json ./backend/
+COPY shared/package.json ./shared/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
 # Copy source files
 COPY backend/ ./backend/
+COPY shared/ ./shared/
 COPY schema.graphql ./
 
 # Production stage
@@ -33,6 +35,9 @@ WORKDIR /app
 # Copy workspace files
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/backend ./backend
+# backend/node_modules/@my-routines/shared is a workspace symlink into here,
+# and `node src/main.ts` resolves the package's .ts source through it.
+COPY --from=builder /app/shared ./shared
 COPY --from=builder /app/schema.graphql ./
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/pnpm-workspace.yaml ./

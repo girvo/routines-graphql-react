@@ -7,7 +7,7 @@ import type { TaskNode } from '../task/task-domain.ts';
 import type { RoutineSlotNode } from '../routine-slot/routine-slot-domain.ts';
 import type { TaskCompletionNode } from '../task-completion/task-completion-domain.ts';
 import type { PushSubscriptionNode } from '../push/push-domain.ts';
-import type { DailyRoutineData, WeeklyScheduleData, DayScheduleData } from '../schedule/schedule-domain.ts';
+import type { DailyRoutineData, WeeklyScheduleData, DayScheduleData, DaySectionSlotsData } from '../schedule/schedule-domain.ts';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -127,6 +127,20 @@ export type DayScheduleMorningArgs = {
 
 export type { DaySection };
 
+export type DaySectionSlots = Node & {
+  __typename?: 'DaySectionSlots';
+  dayOfWeek: DayOfWeek;
+  id: Scalars['ID']['output'];
+  section: DaySection;
+  slots: RoutineSlotConnection;
+};
+
+
+export type DaySectionSlotsSlotsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
+};
+
 export type DeleteRoutineSlotPayload = {
   __typename?: 'DeleteRoutineSlotPayload';
   deletedId: Scalars['ID']['output'];
@@ -231,6 +245,7 @@ export type PushSubscriptionKeysInput = {
 export type Query = {
   __typename?: 'Query';
   dailyRoutine: DailyRoutinePayload;
+  daySectionSlots: DaySectionSlots;
   hello: Scalars['String']['output'];
   me: User;
   node?: Maybe<Node>;
@@ -242,6 +257,12 @@ export type Query = {
 
 export type QueryDailyRoutineArgs = {
   date?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+
+export type QueryDaySectionSlotsArgs = {
+  dayOfWeek: DayOfWeek;
+  section: DaySection;
 };
 
 
@@ -482,6 +503,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   Node:
     | ( Omit<DailyTaskInstance, 'completion' | 'routineSlot'> & { completion?: Maybe<_RefType['TaskCompletion']>, routineSlot: _RefType['RoutineSlot'] } )
+    | ( DaySectionSlotsData )
     | ( PushSubscriptionNode )
     | ( RoutineSlotNode )
     | ( TaskNode )
@@ -505,6 +527,7 @@ export type ResolversTypes = ResolversObject<{
   DayOfWeek: DayOfWeek;
   DaySchedule: ResolverTypeWrapper<DayScheduleData>;
   DaySection: DaySection;
+  DaySectionSlots: ResolverTypeWrapper<DaySectionSlotsData>;
   DeleteRoutineSlotPayload: ResolverTypeWrapper<DeleteRoutineSlotPayload>;
   DeleteTaskPayload: ResolverTypeWrapper<DeleteTaskPayload>;
   File: ResolverTypeWrapper<Scalars['File']['output']>;
@@ -550,6 +573,7 @@ export type ResolversParentTypes = ResolversObject<{
   DailyTaskInstanceEdge: Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversParentTypes['DailyTaskInstance'] };
   DateTime: Scalars['DateTime']['output'];
   DaySchedule: DayScheduleData;
+  DaySectionSlots: DaySectionSlotsData;
   DeleteRoutineSlotPayload: DeleteRoutineSlotPayload;
   DeleteTaskPayload: DeleteTaskPayload;
   File: Scalars['File']['output'];
@@ -642,6 +666,14 @@ export type DayScheduleResolvers<ContextType = any, ParentType extends Resolvers
 
 export type DaySectionResolvers = EnumResolverSignature<{ EVENING?: any, MIDDAY?: any, MORNING?: any }, ResolversTypes['DaySection']>;
 
+export type DaySectionSlotsResolvers<ContextType = any, ParentType extends ResolversParentTypes['DaySectionSlots'] = ResolversParentTypes['DaySectionSlots']> = ResolversObject<{
+  dayOfWeek?: Resolver<ResolversTypes['DayOfWeek'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  section?: Resolver<ResolversTypes['DaySection'], ParentType, ContextType>;
+  slots?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<DaySectionSlotsSlotsArgs>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type DeleteRoutineSlotPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRoutineSlotPayload'] = ResolversParentTypes['DeleteRoutineSlotPayload']> = ResolversObject<{
   deletedId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
@@ -668,7 +700,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'DailyTaskInstance' | 'PushSubscription' | 'RoutineSlot' | 'Task' | 'TaskCompletion' | 'User', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'DailyTaskInstance' | 'DaySectionSlots' | 'PushSubscription' | 'RoutineSlot' | 'Task' | 'TaskCompletion' | 'User', ParentType, ContextType>;
 }>;
 
 export interface NonNegativeIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['NonNegativeInt'], any> {
@@ -693,6 +725,7 @@ export type PushSubscriptionResolvers<ContextType = any, ParentType extends Reso
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   dailyRoutine?: Resolver<ResolversTypes['DailyRoutinePayload'], ParentType, ContextType, Partial<QueryDailyRoutineArgs>>;
+  daySectionSlots?: Resolver<ResolversTypes['DaySectionSlots'], ParentType, ContextType, RequireFields<QueryDaySectionSlotsArgs, 'dayOfWeek' | 'section'>>;
   hello?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
@@ -818,6 +851,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   DayOfWeek?: DayOfWeekResolvers;
   DaySchedule?: DayScheduleResolvers<ContextType>;
   DaySection?: DaySectionResolvers;
+  DaySectionSlots?: DaySectionSlotsResolvers<ContextType>;
   DeleteRoutineSlotPayload?: DeleteRoutineSlotPayloadResolvers<ContextType>;
   DeleteTaskPayload?: DeleteTaskPayloadResolvers<ContextType>;
   File?: GraphQLScalarType;

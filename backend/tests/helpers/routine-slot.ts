@@ -85,8 +85,8 @@ interface RawConnection {
   pageInfo: {
     hasNextPage: boolean
     hasPreviousPage: boolean
-    startCursor: string | null
-    endCursor: string | null
+    startCursor?: string | null
+    endCursor?: string | null
   }
 }
 
@@ -233,5 +233,64 @@ export const queryDailySectionSlots = async (
   return {
     ...connectionPage(slotConnection, result.errors),
     instanceIds: (connection?.edges ?? []).map(edge => String(edge.node.id)),
+  }
+}
+
+const DaySectionSlotsQuery = graphql(`
+  query DaySectionSlotsContainerPage(
+    $dayOfWeek: DayOfWeek!
+    $section: DaySection!
+    $first: NonNegativeInt
+    $after: String
+  ) {
+    daySectionSlots(dayOfWeek: $dayOfWeek, section: $section) {
+      id
+      dayOfWeek
+      section
+      slots(first: $first, after: $after) {
+        edges {
+          node {
+            id
+            position
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  }
+`)
+
+export interface DaySectionSlotsPage extends SectionSlotsPage {
+  containerId: string | null
+  dayOfWeek: string | null
+  section: string | null
+}
+
+export const queryDaySectionSlots = async (
+  args: SectionPageArgs & { dayOfWeek: DayOfWeek; section: DaySection },
+): Promise<DaySectionSlotsPage> => {
+  const result = await executeGraphQL(
+    DaySectionSlotsQuery,
+    {
+      dayOfWeek: args.dayOfWeek,
+      section: args.section,
+      first: args.first,
+      after: args.after,
+    },
+    { yoga: args.yoga, userToken: args.userToken },
+  )
+
+  const container = result.data?.daySectionSlots
+
+  return {
+    ...connectionPage(container?.slots, result.errors),
+    containerId: container?.id ?? null,
+    dayOfWeek: container?.dayOfWeek ?? null,
+    section: container?.section ?? null,
   }
 }

@@ -1,37 +1,19 @@
-export const DAYS = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday',
-] as const
+import {
+  DAY_OF_WEEK_VALUES,
+  type DayOfWeek,
+  type DaySection,
+} from '@my-routines/shared'
 
-export type Day = (typeof DAYS)[number]
+export type { DayOfWeek, DaySection }
 
-export type DayOfWeek = Uppercase<Day>
+// The lowercase form the week picker uses for its buttons and route state.
+export type Day = Lowercase<DayOfWeek>
 
-export const daySelectorToDayOfWeek = (selector: Day): DayOfWeek => {
-  switch (selector) {
-    case 'monday':
-      return 'MONDAY'
-    case 'tuesday':
-      return 'TUESDAY'
-    case 'wednesday':
-      return 'WEDNESDAY'
-    case 'thursday':
-      return 'THURSDAY'
-    case 'friday':
-      return 'FRIDAY'
-    case 'saturday':
-      return 'SATURDAY'
-    case 'sunday':
-      return 'SUNDAY'
-  }
-}
+// `toLowerCase` over the seven known values is total; TypeScript only sees `string`.
+export const DAYS = DAY_OF_WEEK_VALUES.map(day => day.toLowerCase()) as Day[]
 
-export type DaySection = 'MORNING' | 'MIDDAY' | 'EVENING'
+export const daySelectorToDayOfWeek = (selector: Day): DayOfWeek =>
+  selector.toUpperCase() as DayOfWeek
 
 export interface DaySelection {
   dayOfWeek: DayOfWeek

@@ -1,4 +1,7 @@
 import type { ColumnType, Generated } from 'kysely'
+import type { DayOfWeek, DaySection } from '@my-routines/shared'
+
+export type { DayOfWeek, DaySection }
 
 export interface Database {
   users: UsersTable
@@ -40,19 +43,6 @@ export interface TasksTable {
   updated_at: ColumnType<string | null, string | undefined, string>
   deleted_at: string | null
 }
-
-// Single source of truth for these values: the database columns store them, and
-// backend/codegen.ts maps the schema enums here via `enumValues`.
-export type DayOfWeek =
-  | 'MONDAY'
-  | 'TUESDAY'
-  | 'WEDNESDAY'
-  | 'THURSDAY'
-  | 'FRIDAY'
-  | 'SATURDAY'
-  | 'SUNDAY'
-
-export type DaySection = 'MORNING' | 'MIDDAY' | 'EVENING'
 
 export interface RoutineSlotsTable {
   id: Generated<number>

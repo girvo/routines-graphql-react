@@ -40,6 +40,7 @@ const config: CodegenConfig = {
           DailyRoutinePayload: '../schedule/schedule-domain.ts#DailyRoutineData',
           WeeklySchedulePayload: '../schedule/schedule-domain.ts#WeeklyScheduleData',
           DaySchedule: '../schedule/schedule-domain.ts#DayScheduleData',
+          DaySectionSlots: '../schedule/schedule-domain.ts#DaySectionSlotsData',
         },
       },
       plugins: ['typescript', 'typescript-resolvers'],

@@ -33,6 +33,9 @@ type Query {
   dailyRoutine(date: DateTime): DailyRoutinePayload!
 
   weeklySchedule: WeeklySchedulePayload!
+
+  # The reorderable Task list for one day/section, independent of any date.
+  daySectionSlots(dayOfWeek: DayOfWeek!, section: DaySection!): DaySectionSlots!
   tasks(
     first: NonNegativeInt
     after: String
@@ -146,6 +149,15 @@ type DaySchedule {
   morning(first: NonNegativeInt, after: String): RoutineSlotConnection!
   midday(first: NonNegativeInt, after: String): RoutineSlotConnection!
   evening(first: NonNegativeInt, after: String): RoutineSlotConnection!
+}
+
+# Identifiable owner of one day/section Task list. Its id is the stable Relay
+# store key that lets a reorder mutation write the new edge order in place.
+type DaySectionSlots implements Node {
+  id: ID!
+  dayOfWeek: DayOfWeek!
+  section: DaySection!
+  slots(first: NonNegativeInt, after: String): RoutineSlotConnection!
 }
 
 type TaskConnection {

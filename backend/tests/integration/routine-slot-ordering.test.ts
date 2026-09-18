@@ -12,10 +12,17 @@ import {
   deleteRoutineSlot,
   queryWeeklySectionSlots,
   queryDailySectionSlots,
+  queryDaySectionSlots,
 } from '../helpers/routine-slot.ts'
 import { graphql } from '../gql/gql.ts'
 import { db } from '../../src/database/index.ts'
-import { asGlobalId, fromGlobalId, toGlobalId } from '../../src/globalId.ts'
+import {
+  asGlobalId,
+  encodeGlobalId,
+  fromGlobalId,
+  toGlobalId,
+} from '../../src/globalId.ts'
+import { encodeDaySectionSlotsId } from '../../src/schedule/schedule-domain.ts'
 import { decodeBaseCursor } from '../../src/graphql/cursor.ts'
 import type { DayOfWeek, DaySection } from '../../src/database/types.ts'
 import type { GlobalId } from '../../src/globalId.ts'
@@ -67,6 +74,27 @@ const createSlot = async (options: {
 
 type CreatedSlot = Awaited<ReturnType<typeof createSlot>>
 
+const DaySectionSlotsNodeQuery = graphql(`
+  query DaySectionSlotsNode($id: ID!) {
+    node(id: $id) {
+      __typename
+      ... on DaySectionSlots {
+        id
+        dayOfWeek
+        section
+        slots {
+          edges {
+            node {
+              id
+              position
+            }
+          }
+        }
+      }
+    }
+  }
+`)
+
 const createSlots = async (
   count: number,
   target: { dayOfWeek: DayOfWeek; section: DaySection; userToken: string },
@@ -99,6 +127,19 @@ const dayAndSectionRows = (target: {
     .orderBy('position', 'asc')
     .orderBy('id', 'asc')
     .execute()
+
+// Stands in for moveRoutineSlot (T6): rewrites positions straight in the DB so
+// the read paths can be tested against an order creation alone cannot produce.
+const setSlotPositions = async (slotIds: string[]) => {
+  for (const [position, slotId] of slotIds.entries()) {
+    await db
+      .updateTable('routine_slots')
+      .set({ position })
+      .where('id', '=', fromGlobalId(asGlobalId(slotId), 'RoutineSlot'))
+      .where('deleted_at', 'is', null)
+      .execute()
+  }
+}
 
 describe('Section ordering reads', () => {
   it('returns freshly created slots dense from 0 in creation order', async () => {
@@ -285,6 +326,93 @@ describe('Section ordering reads', () => {
     })
 
     expect(new Set(daily.instanceIds).size).toBe(3)
+  })
+
+  it('reorders every read path after a manual position shuffle', async () => {
+    const { userToken } = await createTestUser()
+
+    const mondayMorning = await createSlots(3, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+    const mondayMidday = await createSlots(2, {
+      dayOfWeek: 'MONDAY',
+      section: 'MIDDAY',
+      userToken,
+    })
+    const tuesdayMorning = await createSlots(2, {
+      dayOfWeek: 'TUESDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const shuffled = [mondayMorning[2], mondayMorning[0], mondayMorning[1]]
+    await setSlotPositions(shuffled.map(slot => slot.id))
+
+    const weekly = await queryWeeklySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    })
+    expect(weekly.errors).toBeUndefined()
+    expect(weekly.ids).toEqual(shuffled.map(slot => slot.id))
+    expect(weekly.positions).toEqual([0, 1, 2])
+
+    const daily = await queryDailySectionSlots({
+      yoga,
+      userToken,
+      date: new Date('2025-12-08T12:00:00Z'),
+      section: 'MORNING',
+    })
+    expect(daily.errors).toBeUndefined()
+    expect(daily.ids).toEqual(shuffled.map(slot => slot.id))
+    assert(
+      daily.startCursor !== null && daily.endCursor !== null,
+      'daily section has cursors',
+    )
+    expect(decodeBaseCursor(daily.startCursor)).toEqual({
+      position: 0,
+      id: fromGlobalId(asGlobalId(shuffled[0].id), 'RoutineSlot'),
+    })
+    expect(decodeBaseCursor(daily.endCursor)).toEqual({
+      position: 2,
+      id: fromGlobalId(asGlobalId(shuffled[2].id), 'RoutineSlot'),
+    })
+
+    const container = await queryDaySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    })
+    expect(container.errors).toBeUndefined()
+    expect(container.ids).toEqual(shuffled.map(slot => slot.id))
+    expect(container.positions).toEqual([0, 1, 2])
+    assert(
+      weekly.startCursor !== null && weekly.endCursor !== null,
+      'weekly section has cursors',
+    )
+    expect(container.startCursor).toEqual(weekly.startCursor)
+    expect(container.endCursor).toEqual(weekly.endCursor)
+
+    const middayPage = await queryWeeklySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MIDDAY',
+    })
+    const tuesdayPage = await queryWeeklySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'TUESDAY',
+      section: 'MORNING',
+    })
+    expect(middayPage.ids).toEqual(mondayMidday.map(slot => slot.id))
+    expect(middayPage.positions).toEqual([0, 1])
+    expect(tuesdayPage.ids).toEqual(tuesdayMorning.map(slot => slot.id))
+    expect(tuesdayPage.positions).toEqual([0, 1])
   })
 
   it('keeps Task.slots in created_at order rather than position order', async () => {
@@ -657,5 +785,96 @@ describe('Reviving a deleted slot appends it at the end of its day and section',
     expect(rows.filter(row => row.deleted_at === null).length).toBe(3)
     expect(rows.map(row => row.position)).toEqual([0, 1, 2])
     expect(new Set(rows.map(row => row.task_id)).size).toBe(3)
+  })
+})
+
+describe('DaySectionSlots container reads', () => {
+  it('returns the container with its day, section and position-ordered slots', async () => {
+    const { userToken } = await createTestUser()
+
+    const slots = await createSlots(3, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const page = await queryDaySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    })
+    expect(page.errors).toBeUndefined()
+    expect(page.containerId).toBe(encodeDaySectionSlotsId('MONDAY', 'MORNING'))
+    expect(page.dayOfWeek).toBe('MONDAY')
+    expect(page.section).toBe('MORNING')
+    expect(page.ids).toEqual(slots.map(slot => slot.id))
+    expect(page.positions).toEqual([0, 1, 2])
+    expect(page.hasNextPage).toBe(false)
+
+    const firstPage = await queryDaySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      first: 2,
+    })
+    expect(firstPage.ids).toEqual([slots[0].id, slots[1].id])
+    expect(firstPage.hasNextPage).toBe(true)
+    assert(firstPage.endCursor !== null, 'container page has an end cursor')
+
+    const secondPage = await queryDaySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      first: 2,
+      after: firstPage.endCursor,
+    })
+    expect(secondPage.ids).toEqual([slots[2].id])
+    expect(secondPage.positions).toEqual([2])
+    expect(secondPage.hasNextPage).toBe(false)
+  })
+
+  it('resolves the same container through node(id:) and null for a malformed id', async () => {
+    const { userToken } = await createTestUser()
+
+    const slots = await createSlots(2, {
+      dayOfWeek: 'WEDNESDAY',
+      section: 'EVENING',
+      userToken,
+    })
+
+    const containerId = encodeDaySectionSlotsId('WEDNESDAY', 'EVENING')
+    const containerNode = await executeGraphQL(
+      DaySectionSlotsNodeQuery,
+      { id: containerId },
+      { yoga, userToken },
+    )
+    expect(containerNode.errors).toBeUndefined()
+    assert(
+      containerNode.data?.node?.__typename === 'DaySectionSlots',
+      'got a DaySectionSlots back',
+    )
+    expect(containerNode.data.node.id).toBe(containerId)
+    expect(containerNode.data.node.dayOfWeek).toBe('WEDNESDAY')
+    expect(containerNode.data.node.section).toBe('EVENING')
+    expect(
+      containerNode.data.node.slots.edges.map(edge => edge.node.id),
+    ).toEqual(slots.map(slot => slot.id))
+
+    for (const malformedId of [
+      encodeGlobalId('DaySectionSlots', 'WEDNESDAY'),
+      encodeGlobalId('DaySectionSlots', 'NOTADAY:EVENING'),
+      encodeGlobalId('DaySectionSlots', 'WEDNESDAY:NIGHT'),
+    ]) {
+      const malformed = await executeGraphQL(
+        DaySectionSlotsNodeQuery,
+        { id: malformedId },
+        { yoga, userToken },
+      )
+      expect(malformed.errors).toBeUndefined()
+      expect(malformed.data?.node).toBeNull()
+    }
   })
 })

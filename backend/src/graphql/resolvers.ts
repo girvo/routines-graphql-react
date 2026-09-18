@@ -49,6 +49,10 @@ export const resolvers: Resolvers<Context> = {
         return ScheduleResolvers.resolveDailyTaskInstanceAsNode(id, context)
       }
 
+      if (type === 'DaySectionSlots') {
+        return ScheduleResolvers.resolveDaySectionSlotsAsNode(id, context)
+      }
+
       const adapter = nodeResolvers[type as keyof typeof nodeResolvers]
 
       if (!adapter) {
@@ -70,6 +74,7 @@ export const resolvers: Resolvers<Context> = {
     taskCompletions: TaskCompletionResolvers.taskCompletions,
     dailyRoutine: ScheduleResolvers.dailyRoutine,
     weeklySchedule: ScheduleResolvers.weeklySchedule,
+    daySectionSlots: ScheduleResolvers.daySectionSlots,
   },
   Mutation: {
     createTask: TaskMutations.createTask,
@@ -117,6 +122,9 @@ export const resolvers: Resolvers<Context> = {
     morning: ScheduleResolvers.dayMorning,
     midday: ScheduleResolvers.dayMidday,
     evening: ScheduleResolvers.dayEvening,
+  },
+  DaySectionSlots: {
+    slots: ScheduleResolvers.sectionSlots,
   },
   Node: {
     __resolveType: parent => parent.__typename ?? null,

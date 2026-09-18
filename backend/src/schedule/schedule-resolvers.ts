@@ -4,17 +4,23 @@ import type {
   DailyRoutinePayloadResolvers,
   WeeklySchedulePayloadResolvers,
   DayScheduleResolvers,
+  DaySectionSlotsResolvers,
+  PageInfo,
 } from '../graphql/resolver-types.ts'
 import type { DayOfWeek, DaySection } from '../database/types.ts'
+import { isDayOfWeek, isDaySection } from '@my-routines/shared'
 import type {
   DailyRoutineData,
   DayScheduleData,
+  DaySectionSlotsData,
   DailyTaskInstanceNode,
 } from './schedule-domain.ts'
 import type { GlobalId } from '../globalId.ts'
 import {
-  buildDailyTaskInstanceConnection,
+  buildDailyTaskInstanceEdge,
   dailyTaskInstanceToGraphQL,
+  daySectionSlotsToGraphQL,
+  decodeDaySectionSlotsId,
   decodeDailyTaskInstanceId,
   type DailyTaskInstanceData,
 } from './schedule-domain.ts'
@@ -22,28 +28,14 @@ import {
   tableToDomain as routineSlotTableToDomain,
   buildPositionedRoutineSlotConnection,
   routineSlotToGraphQL,
+  type PositionedRoutineSlotConnection,
+  type RoutineSlotNode,
 } from '../routine-slot/routine-slot-domain.ts'
 import { tableToDomain as taskCompletionTableToDomain } from '../task-completion/task-completion-domain.ts'
 import { getUserDayOfWeek } from '../user-timezone.ts'
 import { GraphQLError } from 'graphql'
 
-const isDayOfWeek = (day: string): day is DayOfWeek => {
-  return [
-    'MONDAY',
-    'TUESDAY',
-    'WEDNESDAY',
-    'THURSDAY',
-    'FRIDAY',
-    'SATURDAY',
-    'SUNDAY',
-  ].includes(day as DayOfWeek)
-}
-
-const isDaySection = (section: string): section is DaySection => {
-  return (['MORNING', 'MIDDAY', 'EVENING'] as const).includes(
-    section as DaySection,
-  )
-}
+const DEFAULT_SECTION_PAGE_SIZE = 10
 
 export const dailyRoutine: QueryResolvers<Context>['dailyRoutine'] = async (
   _parent,
@@ -62,6 +54,55 @@ export const dailyRoutine: QueryResolvers<Context>['dailyRoutine'] = async (
 }
 
 /**
+ * The one implementation every day/section Task list reads through, so the
+ * weekly plan, the Today view and the DaySectionSlots container can never
+ * drift in ordering or cursors.
+ */
+const resolveSectionConnection = async (
+  dayOfWeek: DayOfWeek,
+  section: DaySection,
+  args: { first?: number | null; after?: string | null },
+  context: Context,
+): Promise<PositionedRoutineSlotConnection> => {
+  assertAuthenticated(context)
+
+  const take = args.first ?? DEFAULT_SECTION_PAGE_SIZE
+
+  if (!isDayOfWeek(dayOfWeek)) {
+    throw new GraphQLError(`Invalid day of week ${dayOfWeek}`)
+  }
+
+  if (!isDaySection(section)) {
+    throw new GraphQLError(`Invalid section ${section}`)
+  }
+
+  const routineSlotRows =
+    await context.routineRepo.findAllByDayAndSectionPaginated(
+      context.currentUser.id,
+      dayOfWeek,
+      section,
+      { first: take, after: args.after },
+    )
+
+  return buildPositionedRoutineSlotConnection(routineSlotRows, take)
+}
+
+interface GraphQLRoutineSlotConnection {
+  edges: { node: RoutineSlotNode; cursor: string }[]
+  pageInfo: PageInfo
+}
+
+const sectionConnectionToGraphQL = (
+  connection: PositionedRoutineSlotConnection,
+): GraphQLRoutineSlotConnection => ({
+  edges: connection.edges.map(edge => ({
+    node: routineSlotToGraphQL(edge.node),
+    cursor: edge.cursor,
+  })),
+  pageInfo: connection.pageInfo,
+})
+
+/**
  * NOTE: This is eager, which is a bit rough. The reason for it is simple: this
  * is not a real Node with a real ID, but an ephemeral object that is a pair
  * of distinctly related data that will basically always be loaded together
@@ -69,28 +110,17 @@ export const dailyRoutine: QueryResolvers<Context>['dailyRoutine'] = async (
 const createSectionResolver = <Section extends DaySection>(
   section: Section,
 ): DailyRoutinePayloadResolvers<Context>[Lowercase<Section>] => {
-  return async (parent: DailyRoutineData, { first, after }, context) => {
+  return async (parent: DailyRoutineData, args, context) => {
     assertAuthenticated(context)
 
-    const take = first ?? 10
+    const connection = await resolveSectionConnection(
+      parent.dayOfWeek,
+      section,
+      args,
+      context,
+    )
 
-    if (!isDayOfWeek(parent.dayOfWeek)) {
-      throw new GraphQLError(`Invalid day of week ${parent.dayOfWeek}`)
-    }
-
-    if (!isDaySection(section)) {
-      throw new GraphQLError(`Invalid section ${section}`)
-    }
-
-    const routineSlotRows =
-      await context.routineRepo.findAllByDayAndSectionPaginated(
-        context.currentUser.id,
-        parent.dayOfWeek,
-        section,
-        { first: take, after },
-      )
-
-    const routineSlots = routineSlotRows.map(routineSlotTableToDomain)
+    const routineSlots = connection.edges.map(edge => edge.node)
 
     const completionRows =
       await context.taskCompletionRepo.findByRoutineSlotIdsAndDate(
@@ -110,10 +140,10 @@ const createSectionResolver = <Section extends DaySection>(
       completion: completionsBySlotId.get(slot.id) ?? null,
     }))
 
-    const connection = buildDailyTaskInstanceConnection(instances, take)
+    const instanceEdges = instances.map(buildDailyTaskInstanceEdge)
 
     return {
-      edges: connection.edges.map(edge => ({
+      edges: instanceEdges.map(edge => ({
         node: dailyTaskInstanceToGraphQL(edge.node),
         cursor: edge.cursor,
       })),
@@ -155,45 +185,57 @@ export const sunday = createDayResolver('SUNDAY')
 const createDaySectionResolver = <Section extends DaySection>(
   section: Section,
 ): DayScheduleResolvers<Context>[Lowercase<Section>] => {
-  return async (parent: DayScheduleData, { first, after }, context) => {
-    assertAuthenticated(context)
-
-    const take = first ?? 10
-
-    if (!isDayOfWeek(parent.dayOfWeek)) {
-      throw new GraphQLError(`Invalid day of week ${parent.dayOfWeek}`)
-    }
-
-    if (!isDaySection(section)) {
-      throw new GraphQLError(`Invalid section ${section}`)
-    }
-
-    const routineSlotRows =
-      await context.routineRepo.findAllByDayAndSectionPaginated(
-        context.currentUser.id,
-        parent.dayOfWeek,
-        section,
-        { first: take, after },
-      )
-
-    const connection = buildPositionedRoutineSlotConnection(
-      routineSlotRows,
-      take,
+  return async (parent: DayScheduleData, args, context) => {
+    const connection = await resolveSectionConnection(
+      parent.dayOfWeek,
+      section,
+      args,
+      context,
     )
 
-    return {
-      edges: connection.edges.map(edge => ({
-        node: routineSlotToGraphQL(edge.node),
-        cursor: edge.cursor,
-      })),
-      pageInfo: connection.pageInfo,
-    }
+    return sectionConnectionToGraphQL(connection)
   }
 }
 
 export const dayMorning = createDaySectionResolver('MORNING')
 export const dayMidday = createDaySectionResolver('MIDDAY')
 export const dayEvening = createDaySectionResolver('EVENING')
+
+export const daySectionSlots: QueryResolvers<Context>['daySectionSlots'] =
+  async (_parent, { dayOfWeek, section }, context) => {
+    assertAuthenticated(context)
+
+    return daySectionSlotsToGraphQL(dayOfWeek, section)
+  }
+
+export const sectionSlots: DaySectionSlotsResolvers<Context>['slots'] = async (
+  parent: DaySectionSlotsData,
+  args,
+  context,
+) => {
+  const connection = await resolveSectionConnection(
+    parent.dayOfWeek,
+    parent.section,
+    args,
+    context,
+  )
+
+  return sectionConnectionToGraphQL(connection)
+}
+
+export const resolveDaySectionSlotsAsNode = async (
+  globalId: GlobalId,
+  context: Context,
+): Promise<DaySectionSlotsData | null> => {
+  assertAuthenticated(context)
+
+  try {
+    const decoded = decodeDaySectionSlotsId(globalId)
+    return daySectionSlotsToGraphQL(decoded.dayOfWeek, decoded.section)
+  } catch {
+    return null
+  }
+}
 
 export const resolveDailyTaskInstanceAsNode = async (
   globalId: GlobalId,
