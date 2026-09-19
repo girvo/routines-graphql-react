@@ -151,6 +151,19 @@ export type DeleteTaskPayload = {
   deletedId: Scalars['ID']['output'];
 };
 
+export type MoveRoutineSlotInput = {
+  afterRoutineSlotId?: InputMaybe<Scalars['ID']['input']>;
+  beforeRoutineSlotId?: InputMaybe<Scalars['ID']['input']>;
+  routineSlotId: Scalars['ID']['input'];
+  to?: InputMaybe<SlotMoveDestination>;
+};
+
+export type MoveRoutineSlotPayload = {
+  __typename?: 'MoveRoutineSlotPayload';
+  movedRoutineSlotEdge: RoutineSlotEdge;
+  section: DaySectionSlots;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   completeRoutineSlot?: Maybe<CompleteRoutineSlotPayload>;
@@ -158,6 +171,7 @@ export type Mutation = {
   createTask?: Maybe<CreateTaskPayload>;
   deleteRoutineSlot?: Maybe<DeleteRoutineSlotPayload>;
   deleteTask?: Maybe<DeleteTaskPayload>;
+  moveRoutineSlot?: Maybe<MoveRoutineSlotPayload>;
   registerPushSubscription?: Maybe<RegisterPushSubscriptionPayload>;
   removePushSubscription?: Maybe<RemovePushSubscriptionPayload>;
   sendTestPush?: Maybe<SendTestPushPayload>;
@@ -189,6 +203,11 @@ export type MutationDeleteRoutineSlotArgs = {
 
 export type MutationDeleteTaskArgs = {
   taskId: Scalars['ID']['input'];
+};
+
+
+export type MutationMoveRoutineSlotArgs = {
+  input: MoveRoutineSlotInput;
 };
 
 
@@ -332,6 +351,11 @@ export type SendTestPushPayload = {
   me: User;
   message: Scalars['String']['output'];
 };
+
+export type SlotMoveDestination =
+  | 'BOTTOM'
+  | 'TOP'
+  | '%future added value';
 
 export type Task = Node & {
   __typename?: 'Task';
@@ -532,6 +556,8 @@ export type ResolversTypes = ResolversObject<{
   DeleteTaskPayload: ResolverTypeWrapper<DeleteTaskPayload>;
   File: ResolverTypeWrapper<Scalars['File']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  MoveRoutineSlotInput: MoveRoutineSlotInput;
+  MoveRoutineSlotPayload: ResolverTypeWrapper<Omit<MoveRoutineSlotPayload, 'movedRoutineSlotEdge' | 'section'> & { movedRoutineSlotEdge: ResolversTypes['RoutineSlotEdge'], section: ResolversTypes['DaySectionSlots'] }>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   NonNegativeInt: ResolverTypeWrapper<Scalars['NonNegativeInt']['output']>;
@@ -546,6 +572,7 @@ export type ResolversTypes = ResolversObject<{
   RoutineSlotConnection: ResolverTypeWrapper<Omit<RoutineSlotConnection, 'edges'> & { edges: Array<ResolversTypes['RoutineSlotEdge']> }>;
   RoutineSlotEdge: ResolverTypeWrapper<Omit<RoutineSlotEdge, 'node'> & { node: ResolversTypes['RoutineSlot'] }>;
   SendTestPushPayload: ResolverTypeWrapper<Omit<SendTestPushPayload, 'me'> & { me: ResolversTypes['User'] }>;
+  SlotMoveDestination: SlotMoveDestination;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Task: ResolverTypeWrapper<TaskNode>;
   TaskCompletion: ResolverTypeWrapper<TaskCompletionNode>;
@@ -578,6 +605,8 @@ export type ResolversParentTypes = ResolversObject<{
   DeleteTaskPayload: DeleteTaskPayload;
   File: Scalars['File']['output'];
   ID: Scalars['ID']['output'];
+  MoveRoutineSlotInput: MoveRoutineSlotInput;
+  MoveRoutineSlotPayload: Omit<MoveRoutineSlotPayload, 'movedRoutineSlotEdge' | 'section'> & { movedRoutineSlotEdge: ResolversParentTypes['RoutineSlotEdge'], section: ResolversParentTypes['DaySectionSlots'] };
   Mutation: Record<PropertyKey, never>;
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   NonNegativeInt: Scalars['NonNegativeInt']['output'];
@@ -686,12 +715,18 @@ export interface FileScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'File';
 }
 
+export type MoveRoutineSlotPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['MoveRoutineSlotPayload'] = ResolversParentTypes['MoveRoutineSlotPayload']> = ResolversObject<{
+  movedRoutineSlotEdge?: Resolver<ResolversTypes['RoutineSlotEdge'], ParentType, ContextType>;
+  section?: Resolver<ResolversTypes['DaySectionSlots'], ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   completeRoutineSlot?: Resolver<Maybe<ResolversTypes['CompleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationCompleteRoutineSlotArgs, 'dailyTaskInstanceId'>>;
   createRoutineSlot?: Resolver<Maybe<ResolversTypes['CreateRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationCreateRoutineSlotArgs, 'input'>>;
   createTask?: Resolver<Maybe<ResolversTypes['CreateTaskPayload']>, ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'title'>>;
   deleteRoutineSlot?: Resolver<Maybe<ResolversTypes['DeleteRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoutineSlotArgs, 'routineSlotId'>>;
   deleteTask?: Resolver<Maybe<ResolversTypes['DeleteTaskPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTaskArgs, 'taskId'>>;
+  moveRoutineSlot?: Resolver<Maybe<ResolversTypes['MoveRoutineSlotPayload']>, ParentType, ContextType, RequireFields<MutationMoveRoutineSlotArgs, 'input'>>;
   registerPushSubscription?: Resolver<Maybe<ResolversTypes['RegisterPushSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationRegisterPushSubscriptionArgs, 'input'>>;
   removePushSubscription?: Resolver<Maybe<ResolversTypes['RemovePushSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationRemovePushSubscriptionArgs, 'endpoint'>>;
   sendTestPush?: Resolver<Maybe<ResolversTypes['SendTestPushPayload']>, ParentType, ContextType, RequireFields<MutationSendTestPushArgs, 'endpoint'>>;
@@ -855,6 +890,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   DeleteRoutineSlotPayload?: DeleteRoutineSlotPayloadResolvers<ContextType>;
   DeleteTaskPayload?: DeleteTaskPayloadResolvers<ContextType>;
   File?: GraphQLScalarType;
+  MoveRoutineSlotPayload?: MoveRoutineSlotPayloadResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   NonNegativeInt?: GraphQLScalarType;

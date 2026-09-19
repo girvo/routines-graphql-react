@@ -25,6 +25,11 @@ enum DaySection {
   EVENING
 }
 
+enum SlotMoveDestination {
+  TOP
+  BOTTOM
+}
+
 type Query {
   node(id: ID!): Node
   me: User!
@@ -59,6 +64,7 @@ type Mutation {
 
   createRoutineSlot(input: CreateRoutineSlotInput!): CreateRoutineSlotPayload
   deleteRoutineSlot(routineSlotId: ID!): DeleteRoutineSlotPayload
+  moveRoutineSlot(input: MoveRoutineSlotInput!): MoveRoutineSlotPayload
 
   completeRoutineSlot(dailyTaskInstanceId: ID!): CompleteRoutineSlotPayload
   uncompleteRoutineSlot(dailyTaskInstanceId: ID!): UncompleteRoutineSlotPayload
@@ -219,6 +225,16 @@ input CreateRoutineSlotInput {
   section: DaySection!
 }
 
+input MoveRoutineSlotInput {
+  routineSlotId: ID!
+
+  # Exactly one of these three targets; a move is always relative so a stale
+  # client cannot describe an order that no longer exists.
+  beforeRoutineSlotId: ID
+  afterRoutineSlotId: ID
+  to: SlotMoveDestination
+}
+
 input PushSubscriptionKeysInput {
   p256dh: String!
   auth: String!
@@ -248,6 +264,11 @@ type CreateRoutineSlotPayload {
 
 type DeleteRoutineSlotPayload {
   deletedId: ID!
+}
+
+type MoveRoutineSlotPayload {
+  movedRoutineSlotEdge: RoutineSlotEdge!
+  section: DaySectionSlots!
 }
 
 type CompleteRoutineSlotPayload {

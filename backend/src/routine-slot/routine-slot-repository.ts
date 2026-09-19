@@ -93,6 +93,20 @@ export const computeMove = (
   return orderWithoutMoved
 }
 
+// Rows already at their target position are skipped, so a no-op writes nothing.
+export const changedPositions = (
+  currentRows: readonly Pick<RoutineSlotRow, 'id' | 'position'>[],
+  desiredOrder: readonly number[],
+): RoutineSlotPositionEntry[] => {
+  const storedPositions = new Map(
+    currentRows.map(row => [row.id, row.position]),
+  )
+
+  return desiredOrder.flatMap((id, position) =>
+    storedPositions.get(id) === position ? [] : [{ id, position }],
+  )
+}
+
 const buildCursorCondition = (
   eb: ExpressionBuilder<Database, 'routine_slots'>,
   cursor: { created_at: string; id: number },

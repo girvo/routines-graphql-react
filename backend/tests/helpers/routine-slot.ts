@@ -1,7 +1,10 @@
 import { executeGraphQL, type YogaApp } from './graphql.ts'
 import { graphql } from '../gql/gql.ts'
 import { parse, type GraphQLError } from 'graphql'
-import type { CreateRoutineSlotInput } from '../gql/graphql.ts'
+import type {
+  CreateRoutineSlotInput,
+  MoveRoutineSlotInput,
+} from '../gql/graphql.ts'
 import type { DayOfWeek, DaySection } from '../../src/database/types.ts'
 import type { GlobalId } from '../../src/globalId.ts'
 
@@ -292,5 +295,91 @@ export const queryDaySectionSlots = async (
     containerId: container?.id ?? null,
     dayOfWeek: container?.dayOfWeek ?? null,
     section: container?.section ?? null,
+  }
+}
+
+const MoveRoutineSlotMutation = graphql(`
+  mutation MoveRoutineSlotHelper($input: MoveRoutineSlotInput!) {
+    moveRoutineSlot(input: $input) {
+      movedRoutineSlotEdge {
+        node {
+          id
+          task {
+            id
+          }
+          dayOfWeek
+          section
+          position
+        }
+        cursor
+      }
+      section {
+        id
+        dayOfWeek
+        section
+        slots {
+          edges {
+            node {
+              id
+              position
+            }
+          }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+        }
+      }
+    }
+  }
+`)
+
+export interface MoveRoutineSlotResult {
+  errors?: readonly GraphQLError[]
+  movedId: string | null
+  movedTaskId: string | null
+  movedDayOfWeek: string | null
+  movedSection: string | null
+  movedPosition: number | null
+  movedCursor: string | null
+  section: DaySectionSlotsPage
+}
+
+interface MoveRoutineSlotArgs {
+  input: MoveRoutineSlotInput
+  yoga: YogaApp
+  userToken?: string
+}
+
+export const moveRoutineSlot = async ({
+  input,
+  yoga,
+  userToken,
+}: MoveRoutineSlotArgs): Promise<MoveRoutineSlotResult> => {
+  const result = await executeGraphQL(
+    MoveRoutineSlotMutation,
+    { input },
+    { yoga, userToken },
+  )
+
+  const payload = result.data?.moveRoutineSlot
+  const edge = payload?.movedRoutineSlotEdge
+
+  return {
+    errors: result.errors,
+    movedId: edge?.node.id ?? null,
+    movedTaskId: edge?.node.task.id ?? null,
+    movedDayOfWeek: edge?.node.dayOfWeek ?? null,
+    movedSection: edge?.node.section ?? null,
+    movedPosition: edge?.node.position ?? null,
+    movedCursor: edge?.cursor ?? null,
+    section: {
+      ...connectionPage(payload?.section.slots, result.errors),
+      containerId: payload?.section.id ?? null,
+      dayOfWeek: payload?.section.dayOfWeek ?? null,
+      section: payload?.section.section ?? null,
+    },
   }
 }

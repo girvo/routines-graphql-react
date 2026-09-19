@@ -82,6 +82,7 @@ export const resolvers: Resolvers<Context> = {
     updateTask: TaskMutations.updateTask,
     createRoutineSlot: RoutineSlotMutations.createRoutineSlot,
     deleteRoutineSlot: RoutineSlotMutations.deleteRoutineSlot,
+    moveRoutineSlot: RoutineSlotMutations.moveRoutineSlot,
     completeRoutineSlot: TaskCompletionMutations.completeRoutineSlot,
     uncompleteRoutineSlot: TaskCompletionMutations.uncompleteRoutineSlot,
     registerPushSubscription: PushMutations.registerPushSubscription,

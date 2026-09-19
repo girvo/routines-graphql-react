@@ -10,11 +10,13 @@ import {
 import {
   createRoutineSlot,
   deleteRoutineSlot,
+  moveRoutineSlot,
   queryWeeklySectionSlots,
   queryDailySectionSlots,
   queryDaySectionSlots,
 } from '../helpers/routine-slot.ts'
 import { graphql } from '../gql/gql.ts'
+import { parse } from 'graphql'
 import { db } from '../../src/database/index.ts'
 import {
   asGlobalId,
@@ -26,6 +28,10 @@ import { encodeDaySectionSlotsId } from '../../src/schedule/schedule-domain.ts'
 import { decodeBaseCursor } from '../../src/graphql/cursor.ts'
 import type { DayOfWeek, DaySection } from '../../src/database/types.ts'
 import type { GlobalId } from '../../src/globalId.ts'
+import type {
+  MoveRoutineSlotInput,
+  SlotMoveDestination,
+} from '../gql/graphql.ts'
 
 let yoga: YogaApp
 
@@ -127,19 +133,6 @@ const dayAndSectionRows = (target: {
     .orderBy('position', 'asc')
     .orderBy('id', 'asc')
     .execute()
-
-// Stands in for moveRoutineSlot (T6): rewrites positions straight in the DB so
-// the read paths can be tested against an order creation alone cannot produce.
-const setSlotPositions = async (slotIds: string[]) => {
-  for (const [position, slotId] of slotIds.entries()) {
-    await db
-      .updateTable('routine_slots')
-      .set({ position })
-      .where('id', '=', fromGlobalId(asGlobalId(slotId), 'RoutineSlot'))
-      .where('deleted_at', 'is', null)
-      .execute()
-  }
-}
 
 describe('Section ordering reads', () => {
   it('returns freshly created slots dense from 0 in creation order', async () => {
@@ -328,7 +321,7 @@ describe('Section ordering reads', () => {
     expect(new Set(daily.instanceIds).size).toBe(3)
   })
 
-  it('reorders every read path after a manual position shuffle', async () => {
+  it('reorders every read path after a slot is moved to the top', async () => {
     const { userToken } = await createTestUser()
 
     const mondayMorning = await createSlots(3, {
@@ -348,7 +341,12 @@ describe('Section ordering reads', () => {
     })
 
     const shuffled = [mondayMorning[2], mondayMorning[0], mondayMorning[1]]
-    await setSlotPositions(shuffled.map(slot => slot.id))
+    const moved = await moveRoutineSlot({
+      yoga,
+      userToken,
+      input: { routineSlotId: mondayMorning[2].id, to: 'TOP' },
+    })
+    expect(moved.errors).toBeUndefined()
 
     const weekly = await queryWeeklySectionSlots({
       yoga,
@@ -507,7 +505,7 @@ describe('Section ordering reads', () => {
 })
 
 describe('Deleting renumbers the rest of the day and section', () => {
-  it('renumbers the survivors of a deleted middle slot densely', async () => {
+  it('renumbers the remaining slots after a middle slot is deleted', async () => {
     const { userToken, numericId } = await createTestUser()
 
     const slots = await createSlots(4, {
@@ -544,7 +542,7 @@ describe('Deleting renumbers the rest of the day and section', () => {
     expect(liveRows.map(row => row.position)).toEqual([0, 1, 2])
   })
 
-  it('renumbers the survivors when the last slot is deleted', async () => {
+  it('renumbers the remaining slots when the last slot is deleted', async () => {
     const { userToken } = await createTestUser()
 
     const slots = await createSlots(3, {
@@ -876,5 +874,593 @@ describe('DaySectionSlots container reads', () => {
       expect(malformed.errors).toBeUndefined()
       expect(malformed.data?.node).toBeNull()
     }
+  })
+})
+
+const expectWeeklyOrder = async (
+  userToken: string,
+  target: { dayOfWeek: DayOfWeek; section: DaySection },
+  slots: readonly { id: string }[],
+) => {
+  const page = await queryWeeklySectionSlots({ yoga, userToken, ...target })
+  expect(page.errors).toBeUndefined()
+  expect(page.ids).toEqual(slots.map(slot => slot.id))
+  expect(page.positions).toEqual(slots.map((_slot, index) => index))
+}
+
+const edgeCursorFor = (slotId: string, position: number) => ({
+  position,
+  id: fromGlobalId(asGlobalId(slotId), 'RoutineSlot'),
+})
+
+interface UnusableIdResponse {
+  moveRoutineSlot: { movedRoutineSlotEdge: { cursor: string } } | null
+}
+
+interface UnusableIdVariables {
+  routineSlotId: GlobalId
+  to?: SlotMoveDestination
+}
+
+describe('moveRoutineSlot', () => {
+  it('reorders for each move target and reports the moved edge', async () => {
+    const { userToken } = await createTestUser()
+    const [first, second, third, fourth] = await createSlots(4, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const afterMove = await moveRoutineSlot({
+      yoga,
+      userToken,
+      input: { routineSlotId: first.id, afterRoutineSlotId: third.id },
+    })
+    expect(afterMove.errors).toBeUndefined()
+    expect(afterMove.section.ids).toEqual([
+      second.id,
+      third.id,
+      first.id,
+      fourth.id,
+    ])
+    expect(afterMove.section.positions).toEqual([0, 1, 2, 3])
+    expect(afterMove.movedId).toBe(first.id)
+    expect(afterMove.movedPosition).toBe(2)
+    assert(afterMove.movedCursor !== null, 'moved edge has a cursor')
+    expect(decodeBaseCursor(afterMove.movedCursor)).toEqual(
+      edgeCursorFor(first.id, 2),
+    )
+    expect(afterMove.section.containerId).toBe(
+      encodeDaySectionSlotsId('MONDAY', 'MORNING'),
+    )
+    expect(afterMove.section.dayOfWeek).toBe('MONDAY')
+    expect(afterMove.section.section).toBe('MORNING')
+
+    const beforeMove = await moveRoutineSlot({
+      yoga,
+      userToken,
+      input: { routineSlotId: fourth.id, beforeRoutineSlotId: second.id },
+    })
+    expect(beforeMove.errors).toBeUndefined()
+    expect(beforeMove.section.ids).toEqual([
+      fourth.id,
+      second.id,
+      third.id,
+      first.id,
+    ])
+    expect(beforeMove.movedPosition).toBe(0)
+    assert(beforeMove.movedCursor !== null, 'moved edge has a cursor')
+    expect(decodeBaseCursor(beforeMove.movedCursor)).toEqual(
+      edgeCursorFor(fourth.id, 0),
+    )
+
+    const topMove = await moveRoutineSlot({
+      yoga,
+      userToken,
+      input: { routineSlotId: first.id, to: 'TOP' },
+    })
+    expect(topMove.errors).toBeUndefined()
+    expect(topMove.section.ids).toEqual([
+      first.id,
+      fourth.id,
+      second.id,
+      third.id,
+    ])
+    expect(topMove.movedPosition).toBe(0)
+
+    const bottomMove = await moveRoutineSlot({
+      yoga,
+      userToken,
+      input: { routineSlotId: second.id, to: 'BOTTOM' },
+    })
+    expect(bottomMove.errors).toBeUndefined()
+    expect(bottomMove.section.ids).toEqual([
+      first.id,
+      fourth.id,
+      third.id,
+      second.id,
+    ])
+    expect(bottomMove.section.positions).toEqual([0, 1, 2, 3])
+    expect(bottomMove.movedPosition).toBe(3)
+
+    const expectedOrder = [first, fourth, third, second]
+    await expectWeeklyOrder(
+      userToken,
+      { dayOfWeek: 'MONDAY', section: 'MORNING' },
+      expectedOrder,
+    )
+
+    const weekly = await queryWeeklySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    })
+    assert(weekly.endCursor !== null, 'weekly section has an end cursor')
+    expect(bottomMove.section.ids).toEqual(weekly.ids)
+    expect(bottomMove.section.positions).toEqual(weekly.positions)
+    expect(bottomMove.movedCursor).toEqual(weekly.endCursor)
+
+    const container = await queryDaySectionSlots({
+      yoga,
+      userToken,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    })
+    expect(container.ids).toEqual(weekly.ids)
+
+    const daily = await queryDailySectionSlots({
+      yoga,
+      userToken,
+      date: new Date('2025-12-08T12:00:00Z'),
+      section: 'MORNING',
+    })
+    expect(daily.ids).toEqual(weekly.ids)
+  })
+
+  it('succeeds without changing the order when the move is already true', async () => {
+    const { userToken } = await createTestUser()
+    const slots = await createSlots(3, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const noOps = [
+      { routineSlotId: slots[0].id, to: 'TOP' as const },
+      { routineSlotId: slots[2].id, afterRoutineSlotId: slots[1].id },
+      { routineSlotId: slots[0].id, beforeRoutineSlotId: slots[1].id },
+      { routineSlotId: slots[2].id, to: 'BOTTOM' as const },
+    ]
+
+    for (const input of noOps) {
+      const result = await moveRoutineSlot({ yoga, userToken, input })
+      expect(result.errors).toBeUndefined()
+      expect(result.section.ids).toEqual(slots.map(slot => slot.id))
+      expect(result.section.positions).toEqual([0, 1, 2])
+      expect(result.movedId).toBe(input.routineSlotId)
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'MORNING' },
+        slots,
+      )
+    }
+  })
+
+  it('accepts a move in a single-slot day and section', async () => {
+    const { userToken } = await createTestUser()
+    const [only] = await createSlots(1, {
+      dayOfWeek: 'MONDAY',
+      section: 'EVENING',
+      userToken,
+    })
+
+    for (const input of [
+      { routineSlotId: only.id, to: 'TOP' as const },
+      { routineSlotId: only.id, to: 'BOTTOM' as const },
+    ]) {
+      const result = await moveRoutineSlot({ yoga, userToken, input })
+      expect(result.errors).toBeUndefined()
+      expect(result.movedPosition).toBe(0)
+      expect(result.section.ids).toEqual([only.id])
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'EVENING' },
+        [only],
+      )
+    }
+  })
+
+  it('keeps every position dense when two moves are requested together', async () => {
+    const { userToken, numericId } = await createTestUser()
+    const slots = await createSlots(4, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const results = await Promise.all([
+      moveRoutineSlot({
+        yoga,
+        userToken,
+        input: { routineSlotId: slots[0].id, to: 'BOTTOM' },
+      }),
+      moveRoutineSlot({
+        yoga,
+        userToken,
+        input: { routineSlotId: slots[3].id, to: 'TOP' },
+      }),
+    ])
+
+    for (const result of results) {
+      expect(result.errors).toBeUndefined()
+      expect(new Set(result.section.ids).size).toBe(4)
+      expect(result.section.positions).toEqual([0, 1, 2, 3])
+    }
+
+    // Either serialisation of these two writes ends in this order, so the
+    // assertion holds whichever transaction the database ran first.
+    await expectWeeklyOrder(
+      userToken,
+      { dayOfWeek: 'MONDAY', section: 'MORNING' },
+      [slots[3], slots[1], slots[2], slots[0]],
+    )
+
+    const liveRows = (
+      await dayAndSectionRows({
+        userId: numericId,
+        dayOfWeek: 'MONDAY',
+        section: 'MORNING',
+      })
+    ).filter(row => row.deleted_at === null)
+    expect(new Set(liveRows.map(row => row.id)).size).toBe(4)
+    expect(liveRows.map(row => row.position)).toEqual([0, 1, 2, 3])
+  })
+
+  it('keeps the moved slot edge identity intact', async () => {
+    const { userToken, numericId } = await createTestUser()
+    const slots = await createSlots(3, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const edgeIdentity = async () => {
+      const rows = await dayAndSectionRows({
+        userId: numericId,
+        dayOfWeek: 'MONDAY',
+        section: 'MORNING',
+      })
+      return rows
+        .map(
+          row => `${row.id}:${row.task_id}:${row.day_of_week}:${row.section}`,
+        )
+        .sort()
+    }
+    const before = await edgeIdentity()
+    expect(before).toHaveLength(3)
+
+    const result = await moveRoutineSlot({
+      yoga,
+      userToken,
+      input: { routineSlotId: slots[2].id, beforeRoutineSlotId: slots[0].id },
+    })
+    expect(result.errors).toBeUndefined()
+    expect(result.movedTaskId).toBe(slots[2].task.id)
+    expect(result.movedDayOfWeek).toBe('MONDAY')
+    expect(result.movedSection).toBe('MORNING')
+    expect(result.movedPosition).toBe(0)
+
+    expect(await edgeIdentity()).toEqual(before)
+    await expectWeeklyOrder(
+      userToken,
+      { dayOfWeek: 'MONDAY', section: 'MORNING' },
+      [slots[2], slots[0], slots[1]],
+    )
+  })
+
+  it('keeps two sections of one day independent while reordering the other', async () => {
+    const { userToken, numericId } = await createTestUser()
+
+    const morningSlots: CreatedSlot[] = []
+    const eveningSlots: CreatedSlot[] = []
+    for (let index = 0; index < 3; index += 1) {
+      const task = await createTask({
+        title: `Shared task ${index}`,
+        yoga,
+        userToken,
+      })
+      const taskId = task.data?.createTask?.taskEdge.node.id
+      assert(taskId !== undefined, 'task created')
+      morningSlots.push(
+        await createSlot({
+          taskId,
+          dayOfWeek: 'MONDAY',
+          section: 'MORNING',
+          userToken,
+        }),
+      )
+      eveningSlots.push(
+        await createSlot({
+          taskId,
+          dayOfWeek: 'MONDAY',
+          section: 'EVENING',
+          userToken,
+        }),
+      )
+    }
+
+    const result = await moveRoutineSlot({
+      yoga,
+      userToken,
+      input: { routineSlotId: eveningSlots[2].id, to: 'TOP' },
+    })
+    expect(result.errors).toBeUndefined()
+    expect(result.section.ids).toEqual([
+      eveningSlots[2].id,
+      eveningSlots[0].id,
+      eveningSlots[1].id,
+    ])
+
+    await expectWeeklyOrder(
+      userToken,
+      { dayOfWeek: 'MONDAY', section: 'EVENING' },
+      [eveningSlots[2], eveningSlots[0], eveningSlots[1]],
+    )
+    await expectWeeklyOrder(
+      userToken,
+      { dayOfWeek: 'MONDAY', section: 'MORNING' },
+      morningSlots,
+    )
+
+    const morningRows = await dayAndSectionRows({
+      userId: numericId,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    })
+    expect(morningRows.map(row => row.position)).toEqual([0, 1, 2])
+    expect(morningRows.map(row => row.id)).toEqual(
+      morningSlots.map(slot =>
+        fromGlobalId(asGlobalId(slot.id), 'RoutineSlot'),
+      ),
+    )
+  })
+
+  it('rejects a target count other than one', async () => {
+    const { userToken } = await createTestUser()
+    const slots = await createSlots(3, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const cases: MoveRoutineSlotInput[] = [
+      { routineSlotId: slots[0].id },
+      {
+        routineSlotId: slots[0].id,
+        beforeRoutineSlotId: slots[1].id,
+        afterRoutineSlotId: slots[2].id,
+      },
+      {
+        routineSlotId: slots[0].id,
+        beforeRoutineSlotId: slots[1].id,
+        to: 'TOP',
+      },
+      {
+        routineSlotId: slots[0].id,
+        afterRoutineSlotId: slots[1].id,
+        to: 'BOTTOM',
+      },
+      {
+        routineSlotId: slots[0].id,
+        beforeRoutineSlotId: slots[1].id,
+        afterRoutineSlotId: slots[2].id,
+        to: 'TOP',
+      },
+    ]
+
+    for (const input of cases) {
+      const result = await moveRoutineSlot({ yoga, userToken, input })
+      expect(result.errors?.[0].extensions?.code).toBe('BAD_USER_INPUT')
+      expect(result.errors?.[0].message).toBe(
+        'Provide exactly one of beforeRoutineSlotId, afterRoutineSlotId or to',
+      )
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'MORNING' },
+        slots,
+      )
+    }
+  })
+
+  it('rejects moving a slot relative to itself', async () => {
+    const { userToken } = await createTestUser()
+    const slots = await createSlots(2, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    for (const input of [
+      {
+        routineSlotId: slots[0].id,
+        beforeRoutineSlotId: slots[0].id,
+      },
+      {
+        routineSlotId: slots[1].id,
+        afterRoutineSlotId: slots[1].id,
+      },
+    ] satisfies MoveRoutineSlotInput[]) {
+      const result = await moveRoutineSlot({ yoga, userToken, input })
+      expect(result.errors?.[0].extensions?.code).toBe('BAD_USER_INPUT')
+      expect(result.errors?.[0].message).toBe(
+        'A routine slot cannot be moved relative to itself',
+      )
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'MORNING' },
+        slots,
+      )
+    }
+  })
+
+  it('rejects an anchor from another section or another day', async () => {
+    const { userToken } = await createTestUser()
+    const morning = await createSlots(2, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+    const midday = await createSlots(2, {
+      dayOfWeek: 'MONDAY',
+      section: 'MIDDAY',
+      userToken,
+    })
+    const tuesday = await createSlots(2, {
+      dayOfWeek: 'TUESDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const cases: MoveRoutineSlotInput[] = [
+      { routineSlotId: morning[1].id, beforeRoutineSlotId: midday[0].id },
+      { routineSlotId: morning[1].id, afterRoutineSlotId: tuesday[0].id },
+    ]
+
+    for (const input of cases) {
+      const result = await moveRoutineSlot({ yoga, userToken, input })
+      expect(result.errors?.[0].message).toBe(
+        'Routine slot is not in the same day and section',
+      )
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'MORNING' },
+        morning,
+      )
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'MIDDAY' },
+        midday,
+      )
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'TUESDAY', section: 'MORNING' },
+        tuesday,
+      )
+    }
+  })
+
+  it('reports not found for unknown, deleted and other users slot ids without moving anything', async () => {
+    const { userToken } = await createTestUser()
+    const other = await createTestUser()
+
+    const mine = await createSlots(3, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+    const theirs = await createSlots(2, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken: other.userToken,
+    })
+
+    await deleteRoutineSlot({ routineSlotId: mine[2].id, yoga, userToken })
+    const remaining = [mine[0], mine[1]]
+    const unknownId = toGlobalId('RoutineSlot', 999_999)
+
+    const cases: MoveRoutineSlotInput[] = [
+      { routineSlotId: unknownId, to: 'TOP' },
+      { routineSlotId: mine[2].id, to: 'BOTTOM' },
+      { routineSlotId: theirs[0].id, to: 'TOP' },
+      { routineSlotId: remaining[0].id, beforeRoutineSlotId: unknownId },
+      { routineSlotId: remaining[0].id, afterRoutineSlotId: mine[2].id },
+      { routineSlotId: remaining[1].id, beforeRoutineSlotId: theirs[1].id },
+    ]
+
+    for (const input of cases) {
+      const result = await moveRoutineSlot({ yoga, userToken, input })
+      expect(result.errors?.[0].message).toBe('Routine slot not found')
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'MORNING' },
+        remaining,
+      )
+      await expectWeeklyOrder(
+        other.userToken,
+        { dayOfWeek: 'MONDAY', section: 'MORNING' },
+        theirs,
+      )
+    }
+  })
+
+  it('surfaces the global id decoder message, with no error code, for an unusable slot id', async () => {
+    const { userToken } = await createTestUser()
+    const slots = await createSlots(2, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+    const notASlot = await createTask({ title: 'A task id', yoga, userToken })
+    const taskId = notASlot.data!.createTask!.taskEdge.node.id
+
+    const cases: [GlobalId, string][] = [
+      [
+        asGlobalId('not-a-global-id'),
+        'Invalid global ID format: not-a-global-id',
+      ],
+      [taskId, 'Expected global ID of type RoutineSlot, got Task'],
+    ]
+
+    for (const [routineSlotId, message] of cases) {
+      const result = await executeGraphQL<
+        UnusableIdResponse,
+        UnusableIdVariables
+      >(
+        parse(`
+          mutation MoveSlotWithUnusableId(
+            $routineSlotId: ID!
+            $to: SlotMoveDestination
+          ) {
+            moveRoutineSlot(input: { routineSlotId: $routineSlotId, to: $to }) {
+              movedRoutineSlotEdge {
+                cursor
+              }
+            }
+          }
+        `),
+        { routineSlotId, to: 'TOP' },
+        { yoga, userToken },
+      )
+      expect(result.errors?.[0].message).toBe(message)
+      expect(result.errors?.[0].extensions?.code ?? null).toBeNull()
+      expect(result.data?.moveRoutineSlot).toBeNull()
+      await expectWeeklyOrder(
+        userToken,
+        { dayOfWeek: 'MONDAY', section: 'MORNING' },
+        slots,
+      )
+    }
+  })
+
+  it('rejects an unauthenticated move and leaves the order unchanged', async () => {
+    const { userToken } = await createTestUser()
+    const slots = await createSlots(2, {
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+      userToken,
+    })
+
+    const anonymous = await moveRoutineSlot({
+      yoga,
+      input: { routineSlotId: slots[1].id, to: 'TOP' },
+    })
+    expect(anonymous.errors?.[0].extensions?.code).toBe('UNAUTHENTICATED')
+
+    await expectWeeklyOrder(
+      userToken,
+      { dayOfWeek: 'MONDAY', section: 'MORNING' },
+      slots,
+    )
   })
 })
