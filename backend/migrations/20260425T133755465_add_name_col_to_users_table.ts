@@ -7,7 +7,7 @@ import { Kysely, sql } from 'kysely'
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('users')
-    .addColumn('name', 'varchar', (col) => col.notNull().defaultTo(''))
+    .addColumn('name', 'varchar', col => col.notNull().defaultTo(''))
     .execute()
 
   await sql`UPDATE users SET name = email WHERE name = ''`.execute(db)

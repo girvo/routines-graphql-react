@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-     "noEmit": true, // Optional - see note below
-     "target": "esnext",
-     "module": "nodenext",
-     "rewriteRelativeImportExtensions": true,
-     "erasableSyntaxOnly": true,
-     "verbatimModuleSyntax": true,
-     "strict": true,
-     "skipLibCheck": true,
-     "allowImportingTsExtensions": true, // this is done for codgen reasons, basically
+    "noEmit": true, // Optional - see note below
+    "target": "esnext",
+    "module": "nodenext",
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true // this is done for codgen reasons, basically
   }
 }

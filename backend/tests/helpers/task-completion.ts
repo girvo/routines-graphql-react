@@ -8,7 +8,10 @@ export const dailyTaskInstanceIdFor = (
   routineSlotGlobalId: GlobalId,
   date: Date,
 ): GlobalId =>
-  encodeDailyTaskInstanceId(fromGlobalId(routineSlotGlobalId, 'RoutineSlot'), date)
+  encodeDailyTaskInstanceId(
+    fromGlobalId(routineSlotGlobalId, 'RoutineSlot'),
+    date,
+  )
 
 const CompleteRoutineSlotMutation = graphql(`
   mutation CompleteRoutineSlotHelper($dailyTaskInstanceId: ID!) {

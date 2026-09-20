@@ -27,7 +27,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('auth_key', 'text', col => col.notNull())
     .addColumn('platform', 'text')
     .addColumn('user_agent', 'text')
-    .addColumn('created_at', 'text', col => col.defaultTo(ISO_DEFAULT).notNull())
+    .addColumn('created_at', 'text', col =>
+      col.defaultTo(ISO_DEFAULT).notNull(),
+    )
     .addColumn('last_seen_at', 'text')
     .execute()
 
@@ -56,7 +58,9 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.notNull().defaultTo(0),
     )
     .addColumn('error', 'text')
-    .addColumn('created_at', 'text', col => col.defaultTo(ISO_DEFAULT).notNull())
+    .addColumn('created_at', 'text', col =>
+      col.defaultTo(ISO_DEFAULT).notNull(),
+    )
     .execute()
 
   await db.schema

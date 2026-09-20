@@ -18,9 +18,8 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
   async (_parent, { dailyTaskInstanceId }, context) => {
     assertAuthenticated(context)
 
-    const { date, routineSlotId } = decodeDailyTaskInstanceId(
-      dailyTaskInstanceId,
-    )
+    const { date, routineSlotId } =
+      decodeDailyTaskInstanceId(dailyTaskInstanceId)
 
     const routineSlot = await context.routineRepo.findByIdAndUserId(
       routineSlotId,
@@ -62,9 +61,8 @@ export const uncompleteRoutineSlot: MutationResolvers<Context>['uncompleteRoutin
   async (_parent, { dailyTaskInstanceId }, context) => {
     assertAuthenticated(context)
 
-    const { date, routineSlotId } = decodeDailyTaskInstanceId(
-      dailyTaskInstanceId,
-    )
+    const { date, routineSlotId } =
+      decodeDailyTaskInstanceId(dailyTaskInstanceId)
 
     const routineSlotRow = await context.routineRepo.findByIdAndUserId(
       routineSlotId,

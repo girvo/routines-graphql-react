@@ -132,7 +132,8 @@ describe('Node resolver', () => {
       userToken,
     })
     assert(
-      routineSlot.data?.createRoutineSlot?.routineSlotEdge.node.id !== undefined,
+      routineSlot.data?.createRoutineSlot?.routineSlotEdge.node.id !==
+        undefined,
       'Created a routine slot',
     )
 
@@ -172,13 +173,13 @@ describe('Node resolver', () => {
       userToken,
     })
     assert(
-      routineSlot.data?.createRoutineSlot?.routineSlotEdge.node.id !== undefined,
+      routineSlot.data?.createRoutineSlot?.routineSlotEdge.node.id !==
+        undefined,
       'Created a routine slot',
     )
 
     const completion = await completeRoutineSlot({
-      routineSlotId:
-        routineSlot.data.createRoutineSlot.routineSlotEdge.node.id,
+      routineSlotId: routineSlot.data.createRoutineSlot.routineSlotEdge.node.id,
       yoga,
       userToken,
     })
@@ -224,7 +225,10 @@ describe('Node resolver', () => {
     assert(todayDayOfWeek !== undefined, 'day of week resolved')
 
     const task = await createTask({ title: 'Stretch', yoga, userToken })
-    assert(task.data?.createTask?.taskEdge.node.id !== undefined, 'task created')
+    assert(
+      task.data?.createTask?.taskEdge.node.id !== undefined,
+      'task created',
+    )
 
     const slot = await createRoutineSlot({
       input: {
@@ -301,7 +305,10 @@ describe('Node resolver', () => {
     assert(todayDayOfWeek !== undefined, 'day of week resolved')
 
     const task = await createTask({ title: 'Hydrate', yoga, userToken })
-    assert(task.data?.createTask?.taskEdge.node.id !== undefined, 'task created')
+    assert(
+      task.data?.createTask?.taskEdge.node.id !== undefined,
+      'task created',
+    )
 
     const slot = await createRoutineSlot({
       input: {
@@ -342,7 +349,9 @@ describe('Node resolver', () => {
 
     const completed = await executeGraphQL(
       graphql(`
-        mutation CompleteForDailyTaskInstanceRoundTrip($dailyTaskInstanceId: ID!) {
+        mutation CompleteForDailyTaskInstanceRoundTrip(
+          $dailyTaskInstanceId: ID!
+        ) {
           completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {

@@ -51,99 +51,107 @@ export const authRoutes = async (fastify: FastifyInstance) => {
   const userRepo = createUserRepository(db)
   const refreshTokenRepo = createRefreshTokenRepository(db)
 
-  fastify.post('/api/login', { schema: loginSchema }, async (request, reply) => {
-    const body = request.body as typeof LoginSchema.infer
-    try {
-      const user = await userRepo
-        .findByEmail(body.email)
-        .then(User.tableToDomain)
-      const valid = await compare(body.password, user.passwordHash)
+  fastify.post(
+    '/api/login',
+    { schema: loginSchema },
+    async (request, reply) => {
+      const body = request.body as typeof LoginSchema.infer
+      try {
+        const user = await userRepo
+          .findByEmail(body.email)
+          .then(User.tableToDomain)
+        const valid = await compare(body.password, user.passwordHash)
 
-      if (!valid) return loginError
+        if (!valid) return loginError
 
-      await userRepo.updateLastLoggedIn(user.id)
+        await userRepo.updateLastLoggedIn(user.id)
 
-      const token = createAccessToken(user.id, env.JWT_SECRET)
+        const token = createAccessToken(user.id, env.JWT_SECRET)
 
-      const refreshToken = generateRefreshToken()
-      const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
-      const expiresAt = getRefreshTokenExpiry()
+        const refreshToken = generateRefreshToken()
+        const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
+        const expiresAt = getRefreshTokenExpiry()
 
-      await refreshTokenRepo.createRefreshToken(
-        user.id,
-        tokenHash,
-        expiresAt,
-        request.headers['user-agent'],
-        request.ip,
-      )
+        await refreshTokenRepo.createRefreshToken(
+          user.id,
+          tokenHash,
+          expiresAt,
+          request.headers['user-agent'],
+          request.ip,
+        )
 
-      reply.setCookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: env.ENVIRONMENT === 'production',
-        sameSite: 'strict',
-        maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
-      })
+        reply.setCookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          secure: env.ENVIRONMENT === 'production',
+          sameSite: 'strict',
+          maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+        })
 
-      return {
-        success: true,
-        accessToken: token,
-      }
-    } catch (err) {
-      if (err instanceof NoResultError) {
-        return loginError
-      }
-
-      throw err
-    }
-  })
-
-  fastify.post('/api/signup', { schema: signupSchema }, async (request, reply) => {
-    const body = request.body as typeof SignupSchema.infer
-    try {
-      const passHash = await hash(body.password, 10)
-      const user = await userRepo
-        .createUser(body.email, body.name, passHash)
-        .then(User.tableToDomain)
-
-      const token = createAccessToken(user.id, env.JWT_SECRET)
-
-      const refreshToken = generateRefreshToken()
-      const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
-      const expiresAt = getRefreshTokenExpiry()
-
-      await refreshTokenRepo.createRefreshToken(
-        user.id,
-        tokenHash,
-        expiresAt,
-        request.headers['user-agent'],
-        request.ip,
-      )
-
-      reply.setCookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: env.ENVIRONMENT === 'production',
-        sameSite: 'strict',
-        path: '/',
-        maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
-      })
-
-      return {
-        success: true,
-        accessToken: token,
-      }
-    } catch (err) {
-      if (err instanceof SqliteError) {
-        switch (err.code) {
-          case 'SQLITE_CONSTRAINT_UNIQUE':
-            return SignupError('A user already exists with that email')
-          default:
-            return SignupError(err.message)
+        return {
+          success: true,
+          accessToken: token,
         }
-      }
+      } catch (err) {
+        if (err instanceof NoResultError) {
+          return loginError
+        }
 
-      throw err
-    }
-  })
+        throw err
+      }
+    },
+  )
+
+  fastify.post(
+    '/api/signup',
+    { schema: signupSchema },
+    async (request, reply) => {
+      const body = request.body as typeof SignupSchema.infer
+      try {
+        const passHash = await hash(body.password, 10)
+        const user = await userRepo
+          .createUser(body.email, body.name, passHash)
+          .then(User.tableToDomain)
+
+        const token = createAccessToken(user.id, env.JWT_SECRET)
+
+        const refreshToken = generateRefreshToken()
+        const tokenHash = hashRefreshToken(refreshToken, env.JWT_SECRET)
+        const expiresAt = getRefreshTokenExpiry()
+
+        await refreshTokenRepo.createRefreshToken(
+          user.id,
+          tokenHash,
+          expiresAt,
+          request.headers['user-agent'],
+          request.ip,
+        )
+
+        reply.setCookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          secure: env.ENVIRONMENT === 'production',
+          sameSite: 'strict',
+          path: '/',
+          maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+        })
+
+        return {
+          success: true,
+          accessToken: token,
+        }
+      } catch (err) {
+        if (err instanceof SqliteError) {
+          switch (err.code) {
+            case 'SQLITE_CONSTRAINT_UNIQUE':
+              return SignupError('A user already exists with that email')
+            default:
+              return SignupError(err.message)
+          }
+        }
+
+        throw err
+      }
+    },
+  )
 
   fastify.get('/api/refresh', {}, async (request, reply) => {
     const refreshToken = request.cookies.refreshToken

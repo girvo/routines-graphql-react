@@ -7,11 +7,7 @@ import { taskCompletionToGraphQL } from '../task-completion/task-completion-doma
 import { routineSlotPositionCursor } from '../routine-slot/routine-slot-repository.ts'
 import { parseISO } from 'date-fns'
 import { getUserDayKey } from '../user-timezone.ts'
-import {
-  encodeGlobalId,
-  decodeGlobalId,
-  type GlobalId,
-} from '../globalId.ts'
+import { encodeGlobalId, decodeGlobalId, type GlobalId } from '../globalId.ts'
 
 export interface DailyRoutineData {
   date: Date
@@ -145,7 +141,9 @@ export const dailyTaskInstanceToGraphQL = (
     : null,
 })
 
-export type DailyTaskInstanceNode = ReturnType<typeof dailyTaskInstanceToGraphQL>
+export type DailyTaskInstanceNode = ReturnType<
+  typeof dailyTaskInstanceToGraphQL
+>
 
 export const buildDailyTaskInstanceEdge = (instance: DailyTaskInstanceData) => {
   return {

@@ -112,7 +112,9 @@ describe('Task mutations', () => {
     )
 
     expect(updateResult.data?.updateTask?.task.icon).toBe('star')
-    expect(updateResult.data?.updateTask?.task.title).toBe('Task to update icon')
+    expect(updateResult.data?.updateTask?.task.title).toBe(
+      'Task to update icon',
+    )
   })
 
   it('can delete a task that is created for a user via the deleteTask mutation', async () => {
@@ -149,18 +151,18 @@ describe('Task mutations', () => {
 
     const result = await executeGraphQL(
       graphql(`
-  mutation CreateTaskMutation($title: String!, $icon: String) {
-    createTask(title: $title, icon: $icon) {
-      taskEdge {
-        node {
-          id
-          title
-          icon
+        mutation CreateTaskMutation($title: String!, $icon: String) {
+          createTask(title: $title, icon: $icon) {
+            taskEdge {
+              node {
+                id
+                title
+                icon
+              }
+            }
+          }
         }
-      }
-    }
-  }
-`),
+      `),
       { title: '', icon: null },
       { yoga, userToken },
     )
@@ -221,7 +223,11 @@ describe('Task mutations', () => {
     const { userToken: ownerToken } = await createTestUser()
     const { userToken: otherToken } = await createTestUser()
 
-    const task = await createTask({ title: 'Owner task', yoga, userToken: ownerToken })
+    const task = await createTask({
+      title: 'Owner task',
+      yoga,
+      userToken: ownerToken,
+    })
     const taskId = task.data!.createTask!.taskEdge.node.id
 
     const deleteResult = await executeGraphQL(

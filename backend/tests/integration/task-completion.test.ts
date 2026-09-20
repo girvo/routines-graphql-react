@@ -247,7 +247,11 @@ describe('Task completion mutations', () => {
     const { userToken: ownerToken } = await createTestUser()
     const { userToken: otherToken } = await createTestUser()
 
-    const task = await createTask({ title: 'Owner task', yoga, userToken: ownerToken })
+    const task = await createTask({
+      title: 'Owner task',
+      yoga,
+      userToken: ownerToken,
+    })
     const taskId = task.data!.createTask!.taskEdge.node.id
 
     const slot = await createRoutineSlot({
@@ -259,7 +263,9 @@ describe('Task completion mutations', () => {
 
     const result = await executeGraphQL(
       graphql(`
-        mutation CannotCompleteOtherUsersRoutineSlot($dailyTaskInstanceId: ID!) {
+        mutation CannotCompleteOtherUsersRoutineSlot(
+          $dailyTaskInstanceId: ID!
+        ) {
           completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
             taskCompletionEdge {
               node {

@@ -12,7 +12,10 @@ for (const file of process.argv.slice(2)) {
   if (!file.endsWith(TARGET)) continue
 
   let content = await fs.readFile(file, 'utf-8')
-  const fixed = content.replace(/^export \{ (\w+) \};$/gm, 'export type { $1 };')
+  const fixed = content.replace(
+    /^export \{ (\w+) \};$/gm,
+    'export type { $1 };',
+  )
 
   if (fixed !== content) {
     await fs.writeFile(file, fixed)

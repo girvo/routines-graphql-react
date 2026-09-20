@@ -119,7 +119,12 @@ describe('Routine mutations', () => {
       graphql(`
         mutation CreateSlot($input: CreateRoutineSlotInput!) {
           createRoutineSlot(input: $input) {
-            routineSlotEdge { node { id createdAt } }
+            routineSlotEdge {
+              node {
+                id
+                createdAt
+              }
+            }
           }
         }
       `),
@@ -132,7 +137,8 @@ describe('Routine mutations', () => {
       },
       { yoga, userToken },
     )
-    const originalSlot = createResult.data!.createRoutineSlot!.routineSlotEdge.node
+    const originalSlot =
+      createResult.data!.createRoutineSlot!.routineSlotEdge.node
     const originalCreatedAt = originalSlot.createdAt
 
     // Delete the slot
@@ -153,7 +159,12 @@ describe('Routine mutations', () => {
       graphql(`
         mutation ReviveSlot($input: CreateRoutineSlotInput!) {
           createRoutineSlot(input: $input) {
-            routineSlotEdge { node { id createdAt } }
+            routineSlotEdge {
+              node {
+                id
+                createdAt
+              }
+            }
           }
         }
       `),
@@ -166,7 +177,8 @@ describe('Routine mutations', () => {
       },
       { yoga, userToken },
     )
-    const revivedSlot = reviveResult.data!.createRoutineSlot!.routineSlotEdge.node
+    const revivedSlot =
+      reviveResult.data!.createRoutineSlot!.routineSlotEdge.node
 
     // The revived slot must retain the original created_at timestamp
     expect(revivedSlot.createdAt).toBe(originalCreatedAt)
@@ -176,12 +188,18 @@ describe('Routine mutations', () => {
     const { userToken: ownerToken } = await createTestUser()
     const { userToken: otherToken } = await createTestUser()
 
-    const task = await createTask({ title: 'Owner task', yoga, userToken: ownerToken })
+    const task = await createTask({
+      title: 'Owner task',
+      yoga,
+      userToken: ownerToken,
+    })
     const taskId = task.data!.createTask!.taskEdge.node.id
 
     const result = await executeGraphQL(
       graphql(`
-        mutation CannotCreateRoutineSlotForOtherUsersTask($input: CreateRoutineSlotInput!) {
+        mutation CannotCreateRoutineSlotForOtherUsersTask(
+          $input: CreateRoutineSlotInput!
+        ) {
           createRoutineSlot(input: $input) {
             routineSlotEdge {
               node {
@@ -225,7 +243,9 @@ describe('Routine mutations', () => {
     )
 
     expect(otherSchedule.errors).toBeUndefined()
-    expect(otherSchedule.data?.weeklySchedule.monday.morning.edges.length).toBe(0)
+    expect(otherSchedule.data?.weeklySchedule.monday.morning.edges.length).toBe(
+      0,
+    )
   })
 })
 

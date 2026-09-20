@@ -13,7 +13,8 @@ interface CreateTestUserOptions {
 
 export const createTestUser = async (options: CreateTestUserOptions = {}) => {
   const userRepo = createUserRepository(db)
-  const email = options.email ?? `test-${randomBytes(8).toString('hex')}@example.com`
+  const email =
+    options.email ?? `test-${randomBytes(8).toString('hex')}@example.com`
   const name = options.name ?? 'Test User'
   const passHash = await hash(randomBytes(32).toString('base64'), 10)
   const user = await userRepo.createUser(email, name, passHash)

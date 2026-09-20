@@ -35,10 +35,11 @@ const config: CodegenConfig = {
           RoutineSlot: '../routine-slot/routine-slot-domain.ts#RoutineSlotNode',
           TaskCompletion:
             '../task-completion/task-completion-domain.ts#TaskCompletionNode',
-          PushSubscription:
-            '../push/push-domain.ts#PushSubscriptionNode',
-          DailyRoutinePayload: '../schedule/schedule-domain.ts#DailyRoutineData',
-          WeeklySchedulePayload: '../schedule/schedule-domain.ts#WeeklyScheduleData',
+          PushSubscription: '../push/push-domain.ts#PushSubscriptionNode',
+          DailyRoutinePayload:
+            '../schedule/schedule-domain.ts#DailyRoutineData',
+          WeeklySchedulePayload:
+            '../schedule/schedule-domain.ts#WeeklyScheduleData',
           DaySchedule: '../schedule/schedule-domain.ts#DayScheduleData',
           DaySectionSlots: '../schedule/schedule-domain.ts#DaySectionSlotsData',
         },

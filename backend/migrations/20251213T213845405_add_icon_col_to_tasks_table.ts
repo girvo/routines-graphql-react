@@ -5,15 +5,9 @@
 import { Kysely } from 'kysely'
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await db.schema
-    .alterTable('tasks')
-    .addColumn('icon', 'varchar')
-    .execute()
+  await db.schema.alterTable('tasks').addColumn('icon', 'varchar').execute()
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema
-    .alterTable('tasks')
-    .dropColumn('icon')
-    .execute()
+  await db.schema.alterTable('tasks').dropColumn('icon').execute()
 }

@@ -27,9 +27,7 @@ const fireTimeForDayKey = (dayKey: string): Date =>
 const nextDayKey = (dayKey: string): string => {
   const [year, month, day] = dayKey.split('-').map(Number)
 
-  return new Date(Date.UTC(year, month - 1, day + 1))
-    .toISOString()
-    .slice(0, 10)
+  return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10)
 }
 
 /**
