@@ -28,7 +28,9 @@ interface ColumnInfo {
   name: string
   type: string
   notnull: number
-  dflt_value: any
+  // SQLite reports a default as the source text of its expression, so
+  // `DEFAULT 0` arrives as "0" and `DEFAULT ''` as "''".
+  dflt_value: string | null
   pk: number
 }
 

@@ -66,8 +66,8 @@ function ConfirmStory() {
         confirmLabel="Delete"
         destructive
       >
-        Are you sure you want to delete "Morning walk"? This action cannot be
-        undone.
+        Are you sure you want to delete &quot;Morning walk&quot;? This action
+        cannot be undone.
       </ConfirmDialog>
     </>
   )

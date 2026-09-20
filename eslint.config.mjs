@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
+import reactHooks from 'eslint-plugin-react-hooks'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -51,6 +52,16 @@ export default defineConfig([
       // the workspace root where this config runs.
       react: { version: '19.2' },
     },
+  },
+  // The frontend's own eslint.config.js enables these rules; the root config
+  // has to know the plugin too, otherwise inline directives such as
+  // `eslint-disable react-hooks/refs` in frontend/src resolve to nothing.
+  // Keep this preset in sync with frontend/eslint.config.js: both enable
+  // react-hooks over the same files, and drift between the two makes
+  // `eslint .` and `pnpm --filter @my-routines/frontend lint` disagree.
+  {
+    ...reactHooks.configs.flat.recommended,
+    files: ['frontend/**/*.{js,jsx,ts,tsx}'],
   },
   {
     // Kysely types every generated migration's up/down as Kysely<any>; a

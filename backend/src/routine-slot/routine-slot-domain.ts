@@ -1,6 +1,6 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
-import { toGlobalId, type GlobalId } from '../globalId.ts'
+import { toGlobalId } from '../globalId.ts'
 import {
   routineSlotCursor,
   routineSlotPositionCursor,

@@ -11,10 +11,10 @@ import {
   useJWT,
 } from '@graphql-yoga/plugin-jwt'
 import { readFile } from 'node:fs/promises'
-import { resolve, dirname, join } from 'node:path'
+import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolvers } from './graphql/resolvers.ts'
-import { createContext } from './graphql/context.ts'
+import { createContext, type BaseContext } from './graphql/context.ts'
 import { resolveUser, validateUser } from './auth/auth-context.ts'
 import { getEnv } from './env.ts'
 import { authRoutes } from './auth/auth-routes.ts'
@@ -54,7 +54,7 @@ const envToLogger = {
 export const createApp = async (
   options: YogaServerOptions<
     { req: FastifyRequest; reply: FastifyReply },
-    {}
+    BaseContext
   > & {
     pushSender?: PushSender | null
     hostResolver?: HostAddressResolver

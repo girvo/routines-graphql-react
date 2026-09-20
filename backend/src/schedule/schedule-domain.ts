@@ -14,7 +14,9 @@ export interface DailyRoutineData {
   dayOfWeek: DayOfWeek
 }
 
-export interface WeeklyScheduleData {}
+// WeeklySchedulePayload has no scalar fields of its own; every day field is
+// resolved from context, so the parent carries nothing.
+export type WeeklyScheduleData = Record<string, never>
 
 export interface DayScheduleData {
   dayOfWeek: DayOfWeek

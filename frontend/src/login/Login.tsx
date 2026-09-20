@@ -7,7 +7,7 @@ export const Login = () => (
     endpoint="/api/login"
     footer={
       <AuthFormFooterLink to="/register">
-        Don't have an account? Register
+        Don&apos;t have an account? Register
       </AuthFormFooterLink>
     }
   />

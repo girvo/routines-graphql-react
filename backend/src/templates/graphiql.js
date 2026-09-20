@@ -128,12 +128,11 @@ function renderLoginForm() {
 async function renderGraphiQL() {
   const fetcher = await createGraphQLFetcher()
 
-  ReactDOM.render(
+  ReactDOM.createRoot(document.getElementById('graphiql')).render(
     React.createElement(GraphiQL, {
       fetcher: fetcher,
       defaultEditorToolsVisibility: true,
     }),
-    document.getElementById('graphiql'),
   )
 }
 

@@ -1,6 +1,6 @@
 import { type Context } from '../graphql/context.ts'
 import { type ResolveUserFn, type ValidateUserFn } from '@envelop/generic-auth'
-import { type UserDomain, tableToDomain } from '../user/user-domain.ts'
+import { type UserDomain } from '../user/user-domain.ts'
 import { type } from 'arktype'
 import { GraphQLError } from 'graphql'
 
@@ -25,7 +25,7 @@ export const resolveUser: ResolveUserFn<
     const user = await context.users.load(userId)
 
     return user
-  } catch (e) {
+  } catch {
     return null
   }
 }

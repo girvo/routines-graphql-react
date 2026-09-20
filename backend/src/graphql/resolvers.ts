@@ -1,4 +1,4 @@
-import type { Resolvers, Scalars } from './resolver-types.ts'
+import type { Resolvers } from './resolver-types.ts'
 import type { Context } from './context.ts'
 import type { NodeResolver, NodeType } from './types.ts'
 import { DateTimeResolver, NonNegativeIntResolver } from 'graphql-scalars'
@@ -30,7 +30,7 @@ export const resolvers: Resolvers<Context> = {
     hello: () => {
       return 'world'
     },
-    me: async (_, {}, context) => {
+    me: async (_, _args, context) => {
       const user = await getUser(context)
       return userToGraphQL(user)
     },
@@ -39,7 +39,7 @@ export const resolvers: Resolvers<Context> = {
 
       try {
         type = decodeGlobalId(id).type
-      } catch (error) {
+      } catch {
         throw new GraphQLError('Invalid node ID', {
           extensions: { code: 'BAD_USER_INPUT' },
         })
@@ -64,7 +64,7 @@ export const resolvers: Resolvers<Context> = {
       try {
         const internalId = fromGlobalId(id, type)
         return adapter(internalId, context)
-      } catch (error) {
+      } catch {
         throw new GraphQLError('Invalid node ID', {
           extensions: { code: 'BAD_USER_INPUT' },
         })

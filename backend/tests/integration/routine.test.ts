@@ -267,6 +267,7 @@ describe('Task.slots query resolver', () => {
       yoga,
       userToken,
     })
+    expect(slot.errors).toBeUndefined()
 
     const taskQuery = await executeGraphQL(
       graphql(`

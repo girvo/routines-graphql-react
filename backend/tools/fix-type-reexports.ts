@@ -11,7 +11,7 @@ const TARGET = 'src/graphql/resolver-types.ts'
 for (const file of process.argv.slice(2)) {
   if (!file.endsWith(TARGET)) continue
 
-  let content = await fs.readFile(file, 'utf-8')
+  const content = await fs.readFile(file, 'utf-8')
   const fixed = content.replace(
     /^export \{ (\w+) \};$/gm,
     'export type { $1 };',

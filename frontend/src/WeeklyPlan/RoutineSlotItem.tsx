@@ -110,8 +110,8 @@ export const RoutineSlotItem = ({
         destructive
       >
         <Body>
-          Are you sure you want to remove "{routineSlot.task.title}" from this
-          routine slot?
+          Are you sure you want to remove &quot;{routineSlot.task.title}&quot;
+          from this routine slot?
         </Body>
       </ConfirmDialog>
     </div>
