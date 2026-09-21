@@ -13,7 +13,6 @@ interface DaySectionProps extends DaySelection {
   label: string
   section: DaySection_section$key
   queryRef: PreloadedQuery<AddTaskDropdownQuery> | null | undefined
-  connectionId: string
   onButtonHover: () => void
 }
 
@@ -23,21 +22,31 @@ export const DaySection = ({
   dayOfWeek,
   daySection,
   queryRef,
-  connectionId,
   onButtonHover,
 }: DaySectionProps) => {
   const data = useFragment(
     graphql`
-      fragment DaySection_section on RoutineSlotConnection {
-        edges {
-          __typename
+      fragment DaySection_section on DaySectionSlots {
+        id
+        dayOfWeek
+        section
+        slots(first: 100) @connection(key: "DaySection_slots") {
+          __id
+          edges {
+            cursor
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          ...WeeklyPlanRoutineSection_section
         }
-        ...WeeklyPlanRoutineSection_section
       }
     `,
     section,
   )
-  const count = data.edges.length
+  const count = data.slots.edges.length
+  const connectionId = data.slots.__id
 
   return (
     <section className={styles.section}>
@@ -66,7 +75,9 @@ export const DaySection = ({
       <div className={styles.headerDivider} />
       <div className={styles.body}>
         {count === 0 && <div className={styles.empty}>No tasks added</div>}
-        {count > 0 && <WeeklyPlanRoutineSection weeklyPlanSection={data} />}
+        {count > 0 && (
+          <WeeklyPlanRoutineSection weeklyPlanSection={data.slots} />
+        )}
         <div className={styles.mobileAddRow}>
           <AddTaskDropdown
             variant="row"

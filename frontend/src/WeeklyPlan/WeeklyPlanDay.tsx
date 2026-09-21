@@ -1,47 +1,24 @@
-import { graphql, useFragment, useQueryLoader } from 'react-relay'
+import { useQueryLoader } from 'react-relay'
 import { DaySection } from './DaySection.tsx'
-import type { WeeklyPlanDay_day$key } from './__generated__/WeeklyPlanDay_day.graphql'
+import type { DaySection_section$key } from './__generated__/DaySection_section.graphql.ts'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import AddTaskDropdownQueryNode from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { DayOfWeek } from './days.ts'
 import styles from './WeeklyPlanDay.module.css'
 
 interface WeeklyPlanDayProps {
-  day: WeeklyPlanDay_day$key
   dayOfWeek: DayOfWeek
+  morning: DaySection_section$key
+  midday: DaySection_section$key
+  evening: DaySection_section$key
 }
 
-export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
-  const daySchedule = useFragment<WeeklyPlanDay_day$key>(
-    graphql`
-      fragment WeeklyPlanDay_day on DaySchedule {
-        dayOfWeek
-        morning(first: 100) @connection(key: "WeeklyPlanDaySlots_morning") {
-          __id
-          edges {
-            cursor
-          }
-          ...DaySection_section
-        }
-        midday(first: 100) @connection(key: "WeeklyPlanDaySlots_midday") {
-          __id
-          edges {
-            cursor
-          }
-          ...DaySection_section
-        }
-        evening(first: 100) @connection(key: "WeeklyPlanDaySlots_evening") {
-          __id
-          edges {
-            cursor
-          }
-          ...DaySection_section
-        }
-      }
-    `,
-    day,
-  )
-
+export const WeeklyPlanDay = ({
+  dayOfWeek,
+  morning,
+  midday,
+  evening,
+}: WeeklyPlanDayProps) => {
   const [queryRef, loadQuery] = useQueryLoader<AddTaskDropdownQuery>(
     AddTaskDropdownQueryNode,
   )
@@ -56,29 +33,26 @@ export const WeeklyPlanDay = ({ day, dayOfWeek }: WeeklyPlanDayProps) => {
     <div className={styles.day}>
       <DaySection
         label="Morning"
-        section={daySchedule.morning}
+        section={morning}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="MORNING"
-        connectionId={daySchedule.morning.__id}
         onButtonHover={handleButtonHover}
       />
       <DaySection
         label="Midday"
-        section={daySchedule.midday}
+        section={midday}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="MIDDAY"
-        connectionId={daySchedule.midday.__id}
         onButtonHover={handleButtonHover}
       />
       <DaySection
         label="Evening"
-        section={daySchedule.evening}
+        section={evening}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="EVENING"
-        connectionId={daySchedule.evening.__id}
         onButtonHover={handleButtonHover}
       />
     </div>

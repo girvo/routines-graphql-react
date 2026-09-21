@@ -18,28 +18,89 @@ const WeeklyPlanPage = ({ queries }: Props) => {
   const schedule = usePreloadedQuery<WeeklyPlanPageQuery>(
     graphql`
       query WeeklyPlanPageQuery {
-        weeklySchedule {
-          monday {
-            ...WeeklyPlanDay_day
-          }
-          tuesday {
-            ...WeeklyPlanDay_day
-          }
-          wednesday {
-            ...WeeklyPlanDay_day
-          }
-          thursday {
-            ...WeeklyPlanDay_day
-          }
-          friday {
-            ...WeeklyPlanDay_day
-          }
-          saturday {
-            ...WeeklyPlanDay_day
-          }
-          sunday {
-            ...WeeklyPlanDay_day
-          }
+        mondayMorning: daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {
+          ...DaySection_section
+        }
+        mondayMidday: daySectionSlots(dayOfWeek: MONDAY, section: MIDDAY) {
+          ...DaySection_section
+        }
+        mondayEvening: daySectionSlots(dayOfWeek: MONDAY, section: EVENING) {
+          ...DaySection_section
+        }
+        tuesdayMorning: daySectionSlots(dayOfWeek: TUESDAY, section: MORNING) {
+          ...DaySection_section
+        }
+        tuesdayMidday: daySectionSlots(dayOfWeek: TUESDAY, section: MIDDAY) {
+          ...DaySection_section
+        }
+        tuesdayEvening: daySectionSlots(dayOfWeek: TUESDAY, section: EVENING) {
+          ...DaySection_section
+        }
+        wednesdayMorning: daySectionSlots(
+          dayOfWeek: WEDNESDAY
+          section: MORNING
+        ) {
+          ...DaySection_section
+        }
+        wednesdayMidday: daySectionSlots(
+          dayOfWeek: WEDNESDAY
+          section: MIDDAY
+        ) {
+          ...DaySection_section
+        }
+        wednesdayEvening: daySectionSlots(
+          dayOfWeek: WEDNESDAY
+          section: EVENING
+        ) {
+          ...DaySection_section
+        }
+        thursdayMorning: daySectionSlots(
+          dayOfWeek: THURSDAY
+          section: MORNING
+        ) {
+          ...DaySection_section
+        }
+        thursdayMidday: daySectionSlots(dayOfWeek: THURSDAY, section: MIDDAY) {
+          ...DaySection_section
+        }
+        thursdayEvening: daySectionSlots(
+          dayOfWeek: THURSDAY
+          section: EVENING
+        ) {
+          ...DaySection_section
+        }
+        fridayMorning: daySectionSlots(dayOfWeek: FRIDAY, section: MORNING) {
+          ...DaySection_section
+        }
+        fridayMidday: daySectionSlots(dayOfWeek: FRIDAY, section: MIDDAY) {
+          ...DaySection_section
+        }
+        fridayEvening: daySectionSlots(dayOfWeek: FRIDAY, section: EVENING) {
+          ...DaySection_section
+        }
+        saturdayMorning: daySectionSlots(
+          dayOfWeek: SATURDAY
+          section: MORNING
+        ) {
+          ...DaySection_section
+        }
+        saturdayMidday: daySectionSlots(dayOfWeek: SATURDAY, section: MIDDAY) {
+          ...DaySection_section
+        }
+        saturdayEvening: daySectionSlots(
+          dayOfWeek: SATURDAY
+          section: EVENING
+        ) {
+          ...DaySection_section
+        }
+        sundayMorning: daySectionSlots(dayOfWeek: SUNDAY, section: MORNING) {
+          ...DaySection_section
+        }
+        sundayMidday: daySectionSlots(dayOfWeek: SUNDAY, section: MIDDAY) {
+          ...DaySection_section
+        }
+        sundayEvening: daySectionSlots(dayOfWeek: SUNDAY, section: EVENING) {
+          ...DaySection_section
         }
       }
     `,
@@ -49,7 +110,8 @@ const WeeklyPlanPage = ({ queries }: Props) => {
   const currentIndex = DAYS.indexOf(selectedDay)
   const goToPreviousDay = () =>
     setSelectedDay(DAYS[(currentIndex - 1 + DAYS.length) % DAYS.length])
-  const goToNextDay = () => setSelectedDay(DAYS[(currentIndex + 1) % DAYS.length])
+  const goToNextDay = () =>
+    setSelectedDay(DAYS[(currentIndex + 1) % DAYS.length])
 
   return (
     <div className={styles.page}>
@@ -75,8 +137,10 @@ const WeeklyPlanPage = ({ queries }: Props) => {
           <WeekDaySelector selected={selectedDay} onSelect={setSelectedDay} />
         </aside>
         <WeeklyPlanDay
-          day={schedule.weeklySchedule[selectedDay]}
           dayOfWeek={daySelectorToDayOfWeek(selectedDay)}
+          morning={schedule[`${selectedDay}Morning`]}
+          midday={schedule[`${selectedDay}Midday`]}
+          evening={schedule[`${selectedDay}Evening`]}
         />
       </div>
     </div>
