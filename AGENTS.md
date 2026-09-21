@@ -13,6 +13,7 @@ When a validation command fails, inspect the exact failing file/line, local impo
 When a narrow validation command fails, do not continue abstract reasoning for more than one short pass. Convert the failure into the smallest concrete experiment that can prove or disprove the current hypothesis.
 
 Required loop:
+
 1. State the current hypothesis in one sentence.
 2. Make the smallest code or test-harness change that isolates that hypothesis.
 3. Rerun the same narrow failing command.
@@ -102,35 +103,15 @@ The backend uses:
 - **No Emit**: TypeScript is used for type checking only; Node.js runs .ts files directly
 - **Verbatim Module Syntax**: Import/export syntax is preserved as-is
 
-## Comments and coding format
+## Comments
 
-Do NOT write useless comments like in the following typescript code snippet:
+Default is none. A comment must pass both tests or be deleted:
 
-```
-// Get all tables
-const tables = db.prepare(`
-  SELECT name FROM sqlite_master
-  WHERE type='table' AND name NOT LIKE 'sqlite_%'
-  ORDER BY name
-`).all() as Array<{ name: string }>;
+1. **Deletion test.** Remove it. Could a competent reader now do the wrong thing that the code, types, and test names do not stop? If not, it was worthless.
+2. **Visibility test.** It may only name things visible in this file. A comment that mentions a component, server behaviour, screen-reader announcement, or later task the reader cannot see from here is written for me, not for you.
 
-console.log('Tables:', tables.map(t => t.name).join(', '));
-console.log('\n');
+Never narrate code — make names carry it instead. `// Get all tables` above `const tables = db.prepare(...)` is worthless, and so is `// treat the runner-up as the top` above `if (index === 1) return { to: 'TOP' }`: the second one explains a decision, which is the failure mode to watch for. If a name cannot carry the meaning, extract a helper whose name can.
 
-// For each table, get its schema
-tables.forEach(({ name }) => {
-  console.log(`TABLE: ${name}`);
-  console.log('─'.repeat(60));
+No docblocks in `src/`. Never explain a decision inline — encode it in a test name, a named helper, a tighter type, or PLAN.md. If none of those fit, the file is doing too much: split it instead of annotating it. If you feel you MUST write a docblock, ask the user first to confirm.
 
-  // Get column info
-  const columns = db.prepare(`PRAGMA table_info(${name})`).all() as Array<{
-    cid: number;
-    name: string;
-    type: string;
-    notnull: number;
-    dflt_value: any;
-    pk: number;
-  }>;
-```
-
-These comments are unhelpful: ensure your variable names and function names are clear and self-documenting instead. Only write comments when a block of code is not clear at a first glance as to what it is doing.
+Compiler and lint directives (`@ts-expect-error`, `eslint-disable`) are not prose and are not covered here. This ban is safe only while nothing outside this repo imports these `src/` trees; if that changes, or a doc tool is added, revisit it.
