@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<706b819781c3214c31cdcfc61bc60fae>>
+ * @generated SignedSource<<1765a265cd75f5481fc240d7baacae1e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,8 +10,9 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type RoutineSlotItemStory_mondayDay$data = {
-  readonly morning: {
+export type RoutineSlotItemStory_daySection$data = {
+  readonly id: string;
+  readonly slots: {
     readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
@@ -25,14 +26,22 @@ export type RoutineSlotItemStory_mondayDay$data = {
       readonly hasNextPage: boolean;
     };
   };
-  readonly " $fragmentType": "RoutineSlotItemStory_mondayDay";
+  readonly " $fragmentType": "RoutineSlotItemStory_daySection";
 };
-export type RoutineSlotItemStory_mondayDay$key = {
-  readonly " $data"?: RoutineSlotItemStory_mondayDay$data;
-  readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItemStory_mondayDay">;
+export type RoutineSlotItemStory_daySection$key = {
+  readonly " $data"?: RoutineSlotItemStory_daySection$data;
+  readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItemStory_daySection">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": {
@@ -42,19 +51,20 @@ const node: ReaderFragment = {
         "cursor": null,
         "direction": "forward",
         "path": [
-          "morning"
+          "slots"
         ]
       }
     ]
   },
-  "name": "RoutineSlotItemStory_mondayDay",
+  "name": "RoutineSlotItemStory_daySection",
   "selections": [
+    (v0/*: any*/),
     {
-      "alias": "morning",
+      "alias": "slots",
       "args": null,
       "concreteType": "RoutineSlotConnection",
       "kind": "LinkedField",
-      "name": "__RoutineSlotItemStory_morning_connection",
+      "name": "__RoutineSlotItemStory_slots_connection",
       "plural": false,
       "selections": [
         {
@@ -80,13 +90,7 @@ const node: ReaderFragment = {
               "name": "node",
               "plural": false,
               "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "id",
-                  "storageKey": null
-                },
+                (v0/*: any*/),
                 {
                   "args": null,
                   "kind": "FragmentSpread",
@@ -146,10 +150,11 @@ const node: ReaderFragment = {
       "storageKey": null
     }
   ],
-  "type": "DaySchedule",
+  "type": "DaySectionSlots",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "77d2a3a6c30c9e428eff1c07ce019dcf";
+(node as any).hash = "03c8a23aa9d4075f1d415b7f41c2cda4";
 
 export default node;

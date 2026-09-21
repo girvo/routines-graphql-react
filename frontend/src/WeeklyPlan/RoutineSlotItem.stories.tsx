@@ -8,12 +8,74 @@ import {
   useLazyLoadQuery,
 } from 'react-relay'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
-import { ConnectionHandler, commitLocalUpdate } from 'relay-runtime'
+import {
+  ConnectionHandler,
+  commitLocalUpdate,
+  type OperationDescriptor,
+} from 'relay-runtime'
 import { ToastProvider } from '../toast/ToastProvider'
 
 import { RoutineSlotItem } from './RoutineSlotItem'
 import type { RoutineSlotItemStoryQuery } from './__generated__/RoutineSlotItemStoryQuery.graphql'
-import type { RoutineSlotItemStory_mondayDay$key } from './__generated__/RoutineSlotItemStory_mondayDay.graphql'
+import type { RoutineSlotItemStory_daySection$key } from './__generated__/RoutineSlotItemStory_daySection.graphql'
+
+const CONTAINER_ID = 'day-section-slots-monday-morning'
+
+interface MockSlot {
+  id: string
+  taskId: string
+  title: string
+  cursor: string
+}
+
+const PUSHUPS: MockSlot = {
+  id: 'routine-slot-pushups',
+  taskId: 'task-pushups',
+  title: 'Pushups',
+  cursor: 'cursor-pushups',
+}
+const SQUATS: MockSlot = {
+  id: 'routine-slot-squats',
+  taskId: 'task-squats',
+  title: 'Squats',
+  cursor: 'cursor-squats',
+}
+const READ_SLOTS: MockSlot[] = [PUSHUPS, SQUATS]
+
+const generateDaySectionRead = (operation: OperationDescriptor) => {
+  let edgeIndex = 0
+  let slotIndex = 0
+  let currentSlot = READ_SLOTS[0]
+
+  return MockPayloadGenerator.generate(operation, {
+    DaySectionSlots: () => ({
+      id: CONTAINER_ID,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    }),
+    RoutineSlotConnection: () => ({
+      edges: READ_SLOTS.map(() => ({})),
+    }),
+    RoutineSlotEdge: () => ({ cursor: READ_SLOTS[edgeIndex++].cursor }),
+    RoutineSlot() {
+      currentSlot = READ_SLOTS[slotIndex++]
+      return {
+        id: currentSlot.id,
+        dayOfWeek: 'MONDAY',
+        section: 'MORNING',
+      }
+    },
+    Task: () => ({
+      id: currentSlot.taskId,
+      title: currentSlot.title,
+      icon: 'dumbbell',
+    }),
+    PageInfo: () => ({
+      endCursor: READ_SLOTS[READ_SLOTS.length - 1].cursor,
+      hasNextPage: false,
+    }),
+  })
+}
 
 const seedTaskSlotsConnection = (
   environment: ReturnType<typeof createMockEnvironment>,
@@ -41,78 +103,17 @@ let deleteReject: ((reason?: Error) => void) | undefined
 const createEnvironment = () => {
   const environment = createMockEnvironment()
 
-  const routineSlots = [
-    {
-      id: 'routine-slot-pushups',
-      title: 'Pushups',
-      taskId: 'task-pushups',
-      cursor: 'cursor-pushups',
-    },
-    {
-      id: 'routine-slot-squats',
-      title: 'Squats',
-      taskId: 'task-squats',
-      cursor: 'cursor-squats',
-    },
-  ]
-  let routineSlotEdgeIndex = 0
-  let routineSlotIndex = 0
-  let taskIndex = 0
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op, {
-      WeeklySchedulePayload() {
-        return {}
-      },
-      DaySchedule() {
-        return {
-          dayOfWeek: 'MONDAY',
-        }
-      },
-      RoutineSlotConnection() {
-        return {
-          edges: [{}, {}],
-        }
-      },
-      RoutineSlotEdge() {
-        return {
-          cursor: routineSlots[routineSlotEdgeIndex++].cursor,
-        }
-      },
-      RoutineSlot() {
-        const slot = routineSlots[routineSlotIndex++]
-        return {
-          id: slot.id,
-          dayOfWeek: 'MONDAY',
-        }
-      },
-      Task() {
-        const slot = routineSlots[taskIndex++]
-        return {
-          id: slot.taskId,
-          title: slot.title,
-          icon: 'dumbbell',
-        }
-      },
-      PageInfo() {
-        return {
-          endCursor: 'cursor-squats',
-          hasNextPage: false,
-        }
-      },
-    }),
-  )
-
+  environment.mock.queueOperationResolver(generateDaySectionRead)
   environment.mock.queueOperationResolver(op =>
     MockPayloadGenerator.generate(op, {
       DeleteRoutineSlotPayload() {
         return {
-          deletedId: 'routine-slot-pushups',
+          deletedId: PUSHUPS.id,
         }
       },
     }),
   )
-  seedTaskSlotsConnection(environment, 'task-pushups')
+  seedTaskSlotsConnection(environment, PUSHUPS.taskId)
 
   return environment
 }
@@ -121,20 +122,19 @@ const RoutineSlotListStoryInner = () => {
   const data = useLazyLoadQuery<RoutineSlotItemStoryQuery>(
     graphql`
       query RoutineSlotItemStoryQuery @relay_test_operation {
-        weeklySchedule {
-          monday {
-            ...RoutineSlotItemStory_mondayDay
-          }
+        daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {
+          ...RoutineSlotItemStory_daySection
         }
       }
     `,
     {},
   )
 
-  const mondayDay = useFragment<RoutineSlotItemStory_mondayDay$key>(
+  const daySection = useFragment<RoutineSlotItemStory_daySection$key>(
     graphql`
-      fragment RoutineSlotItemStory_mondayDay on DaySchedule {
-        morning(first: 100) @connection(key: "RoutineSlotItemStory_morning") {
+      fragment RoutineSlotItemStory_daySection on DaySectionSlots {
+        id
+        slots(first: 100) @connection(key: "RoutineSlotItemStory_slots") {
           __id
           edges {
             cursor
@@ -150,16 +150,16 @@ const RoutineSlotListStoryInner = () => {
         }
       }
     `,
-    data.weeklySchedule.monday,
+    data.daySectionSlots,
   )
 
   return (
     <div>
-      {mondayDay.morning.edges.map(edge => (
+      {daySection.slots.edges.map(edge => (
         <RoutineSlotItem
           key={edge.node.id}
           routineSlot={edge.node}
-          connectionId={mondayDay.morning.__id}
+          connectionId={daySection.slots.__id}
         />
       ))}
     </div>
@@ -183,70 +183,8 @@ const RoutineSlotListStory = () => {
 const createDeleteErrorEnvironment = () => {
   const environment = createMockEnvironment()
 
-  const routineSlots = [
-    {
-      id: 'routine-slot-pushups',
-      title: 'Pushups',
-      taskId: 'task-pushups',
-      cursor: 'cursor-pushups',
-    },
-    {
-      id: 'routine-slot-squats',
-      title: 'Squats',
-      taskId: 'task-squats',
-      cursor: 'cursor-squats',
-    },
-  ]
-  let routineSlotEdgeIndex = 0
-  let routineSlotIndex = 0
-  let taskIndex = 0
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op, {
-      WeeklySchedulePayload() {
-        return {}
-      },
-      DaySchedule() {
-        return {
-          dayOfWeek: 'MONDAY',
-        }
-      },
-      RoutineSlotConnection() {
-        return {
-          edges: [{}, {}],
-        }
-      },
-      RoutineSlotEdge() {
-        return {
-          cursor: routineSlots[routineSlotEdgeIndex++].cursor,
-        }
-      },
-      RoutineSlot() {
-        const slot = routineSlots[routineSlotIndex++]
-        return {
-          id: slot.id,
-          dayOfWeek: 'MONDAY',
-        }
-      },
-      Task() {
-        const slot = routineSlots[taskIndex++]
-        return {
-          id: slot.taskId,
-          title: slot.title,
-          icon: 'dumbbell',
-        }
-      },
-      PageInfo() {
-        return {
-          endCursor: 'cursor-squats',
-          hasNextPage: false,
-        }
-      },
-    }),
-  )
-
-  seedTaskSlotsConnection(environment, 'task-pushups')
-
+  environment.mock.queueOperationResolver(generateDaySectionRead)
+  seedTaskSlotsConnection(environment, PUSHUPS.taskId)
   environment.mock.queueOperationResolver(
     () =>
       new Promise((_, reject) => {

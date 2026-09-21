@@ -10,14 +10,27 @@ import {
 } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
-import { ConnectionHandler, commitLocalUpdate } from 'relay-runtime'
+import {
+  ConnectionHandler,
+  commitLocalUpdate,
+  type OperationDescriptor,
+} from 'relay-runtime'
 
 import { AddTaskDropdown } from './AddTaskDropdown'
 import { RoutineSlotItem } from './RoutineSlotItem'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql'
 import AddTaskDropdownQueryNode from './__generated__/AddTaskDropdownQuery.graphql'
 import type { AddTaskDropdownStoryQuery } from './__generated__/AddTaskDropdownStoryQuery.graphql'
-import type { AddTaskDropdownStory_mondayDay$key } from './__generated__/AddTaskDropdownStory_mondayDay.graphql'
+import type { AddTaskDropdownStory_daySection$key } from './__generated__/AddTaskDropdownStory_daySection.graphql'
+
+const CONTAINER_ID = 'day-section-slots-monday-morning'
+
+const PUSHUPS = {
+  id: 'routine-slot-pushups',
+  taskId: 'task-pushups',
+  title: 'Pushups',
+  cursor: 'cursor-pushups',
+}
 
 const seedTaskSlotsConnection = (
   environment: ReturnType<typeof createMockEnvironment>,
@@ -40,9 +53,7 @@ const seedTaskSlotsConnection = (
   })
 }
 
-const createStoryEnvironment = () => {
-  const environment = createMockEnvironment()
-
+const generateDropdownTasks = (operation: OperationDescriptor) => {
   const dropdownTasks = [
     {
       id: 'task-planks',
@@ -60,29 +71,60 @@ const createStoryEnvironment = () => {
   let dropdownEdgeIndex = 0
   let dropdownTaskIndex = 0
 
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op, {
-      TaskConnection() {
-        return {
-          edges: [{}, {}],
-          pageInfo: { endCursor: 'cursor-running', hasNextPage: false },
-        }
-      },
-      TaskEdge() {
-        return {
-          cursor: dropdownTasks[dropdownEdgeIndex++].cursor,
-        }
-      },
-      Task() {
-        const task = dropdownTasks[dropdownTaskIndex++]
-        return {
-          id: task.id,
-          title: task.title,
-          icon: task.icon,
-        }
-      },
+  return MockPayloadGenerator.generate(operation, {
+    TaskConnection() {
+      return {
+        edges: [{}, {}],
+        pageInfo: { endCursor: 'cursor-running', hasNextPage: false },
+      }
+    },
+    TaskEdge() {
+      return {
+        cursor: dropdownTasks[dropdownEdgeIndex++].cursor,
+      }
+    },
+    Task() {
+      const task = dropdownTasks[dropdownTaskIndex++]
+      return {
+        id: task.id,
+        title: task.title,
+        icon: task.icon,
+      }
+    },
+  })
+}
+
+const generateDaySectionRead = (operation: OperationDescriptor) =>
+  MockPayloadGenerator.generate(operation, {
+    DaySectionSlots: () => ({
+      id: CONTAINER_ID,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
     }),
-  )
+    RoutineSlotConnection: () => ({
+      edges: [{}],
+    }),
+    RoutineSlotEdge: () => ({ cursor: PUSHUPS.cursor }),
+    RoutineSlot: () => ({
+      id: PUSHUPS.id,
+      dayOfWeek: 'MONDAY',
+      section: 'MORNING',
+    }),
+    Task: () => ({
+      id: PUSHUPS.taskId,
+      title: PUSHUPS.title,
+      icon: 'dumbbell',
+    }),
+    PageInfo: () => ({
+      endCursor: PUSHUPS.cursor,
+      hasNextPage: false,
+    }),
+  })
+
+const createStoryEnvironment = () => {
+  const environment = createMockEnvironment()
+
+  environment.mock.queueOperationResolver(generateDropdownTasks)
   environment.mock.queuePendingOperation(AddTaskDropdownQueryNode, {})
   const dropdownQueryRef = loadQuery(
     environment,
@@ -91,62 +133,7 @@ const createStoryEnvironment = () => {
   ) as PreloadedQuery<AddTaskDropdownQuery>
   seedTaskSlotsConnection(environment, 'task-planks')
 
-  const routineSlots = [
-    {
-      id: 'routine-slot-pushups',
-      title: 'Pushups',
-      taskId: 'task-pushups',
-      cursor: 'cursor-pushups',
-    },
-  ]
-  let routineSlotEdgeIndex = 0
-  let routineSlotIndex = 0
-  let routineTaskIndex = 0
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op, {
-      WeeklySchedulePayload() {
-        return {}
-      },
-      DaySchedule() {
-        return {
-          dayOfWeek: 'MONDAY',
-        }
-      },
-      RoutineSlotConnection() {
-        return {
-          edges: [{}],
-        }
-      },
-      RoutineSlotEdge() {
-        return {
-          cursor: routineSlots[routineSlotEdgeIndex++].cursor,
-        }
-      },
-      RoutineSlot() {
-        const slot = routineSlots[routineSlotIndex++]
-        return {
-          id: slot.id,
-          dayOfWeek: 'MONDAY',
-          section: 'MORNING',
-        }
-      },
-      Task() {
-        const slot = routineSlots[routineTaskIndex++]
-        return {
-          id: slot.taskId,
-          title: slot.title,
-          icon: 'dumbbell',
-        }
-      },
-      PageInfo() {
-        return {
-          endCursor: 'cursor-pushups',
-          hasNextPage: false,
-        }
-      },
-    }),
-  )
+  environment.mock.queueOperationResolver(generateDaySectionRead)
 
   environment.mock.queueOperationResolver(op =>
     MockPayloadGenerator.generate(op, {
@@ -186,20 +173,19 @@ const AddTaskDropdownStoryInner = ({
   const routineData = useLazyLoadQuery<AddTaskDropdownStoryQuery>(
     graphql`
       query AddTaskDropdownStoryQuery @relay_test_operation {
-        weeklySchedule {
-          monday {
-            ...AddTaskDropdownStory_mondayDay
-          }
+        daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {
+          ...AddTaskDropdownStory_daySection
         }
       }
     `,
     {},
   )
 
-  const mondayDay = useFragment<AddTaskDropdownStory_mondayDay$key>(
+  const daySection = useFragment<AddTaskDropdownStory_daySection$key>(
     graphql`
-      fragment AddTaskDropdownStory_mondayDay on DaySchedule {
-        morning(first: 100) @connection(key: "AddTaskDropdownStory_morning") {
+      fragment AddTaskDropdownStory_daySection on DaySectionSlots {
+        id
+        slots(first: 100) @connection(key: "AddTaskDropdownStory_slots") {
           __id
           edges {
             cursor
@@ -215,23 +201,23 @@ const AddTaskDropdownStoryInner = ({
         }
       }
     `,
-    routineData.weeklySchedule.monday,
+    routineData.daySectionSlots,
   )
 
   return (
     <div>
-      {mondayDay.morning.edges.map(edge => (
+      {daySection.slots.edges.map(edge => (
         <RoutineSlotItem
           key={edge.node.id}
           routineSlot={edge.node}
-          connectionId={mondayDay.morning.__id}
+          connectionId={daySection.slots.__id}
         />
       ))}
       <AddTaskDropdown
         queryRef={queryRef}
         dayOfWeek="MONDAY"
         daySection="MORNING"
-        connectionId={mondayDay.morning.__id}
+        connectionId={daySection.slots.__id}
         onButtonHover={() => {}}
         variant="button"
       />
@@ -265,46 +251,7 @@ let createReject: ((reason?: Error) => void) | undefined
 const createErrorEnvironment = () => {
   const environment = createMockEnvironment()
 
-  const dropdownTasks = [
-    {
-      id: 'task-planks',
-      title: 'Planks',
-      icon: 'dumbbell',
-      cursor: 'cursor-planks',
-    },
-    {
-      id: 'task-running',
-      title: 'Running',
-      icon: 'run',
-      cursor: 'cursor-running',
-    },
-  ]
-  let dropdownEdgeIndex = 0
-  let dropdownTaskIndex = 0
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op, {
-      TaskConnection() {
-        return {
-          edges: [{}, {}],
-          pageInfo: { endCursor: 'cursor-running', hasNextPage: false },
-        }
-      },
-      TaskEdge() {
-        return {
-          cursor: dropdownTasks[dropdownEdgeIndex++].cursor,
-        }
-      },
-      Task() {
-        const task = dropdownTasks[dropdownTaskIndex++]
-        return {
-          id: task.id,
-          title: task.title,
-          icon: task.icon,
-        }
-      },
-    }),
-  )
+  environment.mock.queueOperationResolver(generateDropdownTasks)
   environment.mock.queuePendingOperation(AddTaskDropdownQueryNode, {})
   const dropdownQueryRef = loadQuery(
     environment,
@@ -313,62 +260,7 @@ const createErrorEnvironment = () => {
   ) as PreloadedQuery<AddTaskDropdownQuery>
   seedTaskSlotsConnection(environment, 'task-planks')
 
-  const routineSlots = [
-    {
-      id: 'routine-slot-pushups',
-      title: 'Pushups',
-      taskId: 'task-pushups',
-      cursor: 'cursor-pushups',
-    },
-  ]
-  let routineSlotEdgeIndex = 0
-  let routineSlotIndex = 0
-  let routineTaskIndex = 0
-
-  environment.mock.queueOperationResolver(op =>
-    MockPayloadGenerator.generate(op, {
-      WeeklySchedulePayload() {
-        return {}
-      },
-      DaySchedule() {
-        return {
-          dayOfWeek: 'MONDAY',
-        }
-      },
-      RoutineSlotConnection() {
-        return {
-          edges: [{}],
-        }
-      },
-      RoutineSlotEdge() {
-        return {
-          cursor: routineSlots[routineSlotEdgeIndex++].cursor,
-        }
-      },
-      RoutineSlot() {
-        const slot = routineSlots[routineSlotIndex++]
-        return {
-          id: slot.id,
-          dayOfWeek: 'MONDAY',
-          section: 'MORNING',
-        }
-      },
-      Task() {
-        const slot = routineSlots[routineTaskIndex++]
-        return {
-          id: slot.taskId,
-          title: slot.title,
-          icon: 'dumbbell',
-        }
-      },
-      PageInfo() {
-        return {
-          endCursor: 'cursor-pushups',
-          hasNextPage: false,
-        }
-      },
-    }),
-  )
+  environment.mock.queueOperationResolver(generateDaySectionRead)
 
   environment.mock.queueOperationResolver(
     () =>
@@ -453,4 +345,3 @@ export const AddTaskWithServerError: Story = {
     expect(await canvas.findByText('Pushups')).toBeInTheDocument()
   },
 }
-

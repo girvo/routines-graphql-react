@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<92c401fc3146312af6b4a9941cb81bd2>>
+ * @generated SignedSource<<5e5bf88bfdac58c6e496d74c3d61fbb1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,10 +12,8 @@ import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type RoutineSlotItemStoryQuery$variables = Record<PropertyKey, never>;
 export type RoutineSlotItemStoryQuery$data = {
-  readonly weeklySchedule: {
-    readonly monday: {
-      readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItemStory_mondayDay">;
-    };
+  readonly daySectionSlots: {
+    readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItemStory_daySection">;
   };
 };
 export type RoutineSlotItemStoryQuery = {
@@ -27,8 +25,13 @@ const node: ConcreteRequest = (function(){
 var v0 = [
   {
     "kind": "Literal",
-    "name": "first",
-    "value": 100
+    "name": "dayOfWeek",
+    "value": "MONDAY"
+  },
+  {
+    "kind": "Literal",
+    "name": "section",
+    "value": "MORNING"
   }
 ],
 v1 = {
@@ -38,19 +41,26 @@ v1 = {
   "name": "id",
   "storageKey": null
 },
-v2 = {
+v2 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 100
+  }
+],
+v3 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "ID"
 },
-v3 = {
+v4 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "String"
 },
-v4 = {
+v5 = {
   "enumValues": null,
   "nullable": true,
   "plural": false,
@@ -65,30 +75,19 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": null,
-        "concreteType": "WeeklySchedulePayload",
+        "args": (v0/*: any*/),
+        "concreteType": "DaySectionSlots",
         "kind": "LinkedField",
-        "name": "weeklySchedule",
+        "name": "daySectionSlots",
         "plural": false,
         "selections": [
           {
-            "alias": null,
             "args": null,
-            "concreteType": "DaySchedule",
-            "kind": "LinkedField",
-            "name": "monday",
-            "plural": false,
-            "selections": [
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "RoutineSlotItemStory_mondayDay"
-              }
-            ],
-            "storageKey": null
+            "kind": "FragmentSpread",
+            "name": "RoutineSlotItemStory_daySection"
           }
         ],
-        "storageKey": null
+        "storageKey": "daySectionSlots(dayOfWeek:\"MONDAY\",section:\"MORNING\")"
       }
     ],
     "type": "Query",
@@ -102,49 +101,58 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": null,
-        "concreteType": "WeeklySchedulePayload",
+        "args": (v0/*: any*/),
+        "concreteType": "DaySectionSlots",
         "kind": "LinkedField",
-        "name": "weeklySchedule",
+        "name": "daySectionSlots",
         "plural": false,
         "selections": [
+          (v1/*: any*/),
           {
             "alias": null,
-            "args": null,
-            "concreteType": "DaySchedule",
+            "args": (v2/*: any*/),
+            "concreteType": "RoutineSlotConnection",
             "kind": "LinkedField",
-            "name": "monday",
+            "name": "slots",
             "plural": false,
             "selections": [
               {
                 "alias": null,
-                "args": (v0/*: any*/),
-                "concreteType": "RoutineSlotConnection",
+                "args": null,
+                "concreteType": "RoutineSlotEdge",
                 "kind": "LinkedField",
-                "name": "morning",
-                "plural": false,
+                "name": "edges",
+                "plural": true,
                 "selections": [
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "RoutineSlotEdge",
+                    "kind": "ScalarField",
+                    "name": "cursor",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "RoutineSlot",
                     "kind": "LinkedField",
-                    "name": "edges",
-                    "plural": true,
+                    "name": "node",
+                    "plural": false,
                     "selections": [
+                      (v1/*: any*/),
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "cursor",
+                        "name": "dayOfWeek",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "RoutineSlot",
+                        "concreteType": "Task",
                         "kind": "LinkedField",
-                        "name": "node",
+                        "name": "task",
                         "plural": false,
                         "selections": [
                           (v1/*: any*/),
@@ -152,144 +160,120 @@ return {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "dayOfWeek",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "Task",
-                            "kind": "LinkedField",
-                            "name": "task",
-                            "plural": false,
-                            "selections": [
-                              (v1/*: any*/),
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "title",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "icon",
-                                "storageKey": null
-                              }
-                            ],
+                            "name": "title",
                             "storageKey": null
                           },
                           {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "__typename",
+                            "name": "icon",
                             "storageKey": null
                           }
                         ],
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "PageInfo",
-                    "kind": "LinkedField",
-                    "name": "pageInfo",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "endCursor",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "hasNextPage",
+                        "name": "__typename",
                         "storageKey": null
                       }
                     ],
                     "storageKey": null
-                  },
-                  {
-                    "kind": "ClientExtension",
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "__id",
-                        "storageKey": null
-                      }
-                    ]
                   }
                 ],
-                "storageKey": "morning(first:100)"
+                "storageKey": null
               },
               {
                 "alias": null,
-                "args": (v0/*: any*/),
-                "filters": null,
-                "handle": "connection",
-                "key": "RoutineSlotItemStory_morning",
-                "kind": "LinkedHandle",
-                "name": "morning"
+                "args": null,
+                "concreteType": "PageInfo",
+                "kind": "LinkedField",
+                "name": "pageInfo",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "endCursor",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasNextPage",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "kind": "ClientExtension",
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "__id",
+                    "storageKey": null
+                  }
+                ]
               }
             ],
-            "storageKey": null
+            "storageKey": "slots(first:100)"
+          },
+          {
+            "alias": null,
+            "args": (v2/*: any*/),
+            "filters": null,
+            "handle": "connection",
+            "key": "RoutineSlotItemStory_slots",
+            "kind": "LinkedHandle",
+            "name": "slots"
           }
         ],
-        "storageKey": null
+        "storageKey": "daySectionSlots(dayOfWeek:\"MONDAY\",section:\"MORNING\")"
       }
     ]
   },
   "params": {
-    "cacheID": "c8d80cc5550bd8763559d30f04fc1b45",
+    "cacheID": "04341ad4fa35afb3880236d873948e26",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
-        "weeklySchedule": {
+        "daySectionSlots": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
-          "type": "WeeklySchedulePayload"
+          "type": "DaySectionSlots"
         },
-        "weeklySchedule.monday": {
-          "enumValues": null,
-          "nullable": false,
-          "plural": false,
-          "type": "DaySchedule"
-        },
-        "weeklySchedule.monday.morning": {
+        "daySectionSlots.id": (v3/*: any*/),
+        "daySectionSlots.slots": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
           "type": "RoutineSlotConnection"
         },
-        "weeklySchedule.monday.morning.__id": (v2/*: any*/),
-        "weeklySchedule.monday.morning.edges": {
+        "daySectionSlots.slots.__id": (v3/*: any*/),
+        "daySectionSlots.slots.edges": {
           "enumValues": null,
           "nullable": false,
           "plural": true,
           "type": "RoutineSlotEdge"
         },
-        "weeklySchedule.monday.morning.edges.cursor": (v3/*: any*/),
-        "weeklySchedule.monday.morning.edges.node": {
+        "daySectionSlots.slots.edges.cursor": (v4/*: any*/),
+        "daySectionSlots.slots.edges.node": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
           "type": "RoutineSlot"
         },
-        "weeklySchedule.monday.morning.edges.node.__typename": (v3/*: any*/),
-        "weeklySchedule.monday.morning.edges.node.dayOfWeek": {
+        "daySectionSlots.slots.edges.node.__typename": (v4/*: any*/),
+        "daySectionSlots.slots.edges.node.dayOfWeek": {
           "enumValues": [
             "MONDAY",
             "TUESDAY",
@@ -303,24 +287,24 @@ return {
           "plural": false,
           "type": "DayOfWeek"
         },
-        "weeklySchedule.monday.morning.edges.node.id": (v2/*: any*/),
-        "weeklySchedule.monday.morning.edges.node.task": {
+        "daySectionSlots.slots.edges.node.id": (v3/*: any*/),
+        "daySectionSlots.slots.edges.node.task": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
           "type": "Task"
         },
-        "weeklySchedule.monday.morning.edges.node.task.icon": (v4/*: any*/),
-        "weeklySchedule.monday.morning.edges.node.task.id": (v2/*: any*/),
-        "weeklySchedule.monday.morning.edges.node.task.title": (v3/*: any*/),
-        "weeklySchedule.monday.morning.pageInfo": {
+        "daySectionSlots.slots.edges.node.task.icon": (v5/*: any*/),
+        "daySectionSlots.slots.edges.node.task.id": (v3/*: any*/),
+        "daySectionSlots.slots.edges.node.task.title": (v4/*: any*/),
+        "daySectionSlots.slots.pageInfo": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
           "type": "PageInfo"
         },
-        "weeklySchedule.monday.morning.pageInfo.endCursor": (v4/*: any*/),
-        "weeklySchedule.monday.morning.pageInfo.hasNextPage": {
+        "daySectionSlots.slots.pageInfo.endCursor": (v5/*: any*/),
+        "daySectionSlots.slots.pageInfo.hasNextPage": {
           "enumValues": null,
           "nullable": false,
           "plural": false,
@@ -330,11 +314,11 @@ return {
     },
     "name": "RoutineSlotItemStoryQuery",
     "operationKind": "query",
-    "text": "query RoutineSlotItemStoryQuery {\n  weeklySchedule {\n    monday {\n      ...RoutineSlotItemStory_mondayDay\n    }\n  }\n}\n\nfragment RoutineSlotItemStory_mondayDay on DaySchedule {\n  morning(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        ...RoutineSlotItem_routineSlot\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n"
+    "text": "query RoutineSlotItemStoryQuery {\n  daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...RoutineSlotItemStory_daySection\n    id\n  }\n}\n\nfragment RoutineSlotItemStory_daySection on DaySectionSlots {\n  id\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        ...RoutineSlotItem_routineSlot\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "a1e256730aef6372e4aedb0ffbc5881a";
+(node as any).hash = "0463474794832166c3e0864295b68d6d";
 
 export default node;

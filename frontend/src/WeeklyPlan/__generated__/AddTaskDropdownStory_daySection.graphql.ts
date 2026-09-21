@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5687fa3ded54036063fde235398c34db>>
+ * @generated SignedSource<<27b91da73cb251aeee2c8dbc1c742854>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,8 +10,9 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type AddTaskDropdownStory_mondayDay$data = {
-  readonly morning: {
+export type AddTaskDropdownStory_daySection$data = {
+  readonly id: string;
+  readonly slots: {
     readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
@@ -25,14 +26,22 @@ export type AddTaskDropdownStory_mondayDay$data = {
       readonly hasNextPage: boolean;
     };
   };
-  readonly " $fragmentType": "AddTaskDropdownStory_mondayDay";
+  readonly " $fragmentType": "AddTaskDropdownStory_daySection";
 };
-export type AddTaskDropdownStory_mondayDay$key = {
-  readonly " $data"?: AddTaskDropdownStory_mondayDay$data;
-  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdownStory_mondayDay">;
+export type AddTaskDropdownStory_daySection$key = {
+  readonly " $data"?: AddTaskDropdownStory_daySection$data;
+  readonly " $fragmentSpreads": FragmentRefs<"AddTaskDropdownStory_daySection">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": {
@@ -42,19 +51,20 @@ const node: ReaderFragment = {
         "cursor": null,
         "direction": "forward",
         "path": [
-          "morning"
+          "slots"
         ]
       }
     ]
   },
-  "name": "AddTaskDropdownStory_mondayDay",
+  "name": "AddTaskDropdownStory_daySection",
   "selections": [
+    (v0/*: any*/),
     {
-      "alias": "morning",
+      "alias": "slots",
       "args": null,
       "concreteType": "RoutineSlotConnection",
       "kind": "LinkedField",
-      "name": "__AddTaskDropdownStory_morning_connection",
+      "name": "__AddTaskDropdownStory_slots_connection",
       "plural": false,
       "selections": [
         {
@@ -80,13 +90,7 @@ const node: ReaderFragment = {
               "name": "node",
               "plural": false,
               "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "id",
-                  "storageKey": null
-                },
+                (v0/*: any*/),
                 {
                   "args": null,
                   "kind": "FragmentSpread",
@@ -146,10 +150,11 @@ const node: ReaderFragment = {
       "storageKey": null
     }
   ],
-  "type": "DaySchedule",
+  "type": "DaySectionSlots",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "c11019bce2f45ce137ed5d5d715b759c";
+(node as any).hash = "c309808a760850e1676d8f99aef021aa";
 
 export default node;
