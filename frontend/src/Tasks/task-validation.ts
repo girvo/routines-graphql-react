@@ -3,7 +3,8 @@ import { iconNameSet } from '../utils/icons'
 
 const lucideIconName = type('string >= 1').narrow(
   (s, ctx) =>
-    iconNameSet.has(s) || ctx.mustBe('a valid Lucide icon name like "list-todo"'),
+    iconNameSet.has(s) ||
+    ctx.mustBe('a valid Lucide icon name like "list-todo"'),
 )
 
 export const taskFormSchema = type({

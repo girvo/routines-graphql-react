@@ -9,7 +9,7 @@ export const useMutationErrorHandler = () => {
       errors: readonly PayloadError[] | null | undefined,
     ): boolean => {
       if (!errors?.length) return false
-      errors.forEach((error) => showError(getErrorMessage(error)))
+      errors.forEach(error => showError(getErrorMessage(error)))
       return true
     },
     showError: (error: Error) => showError(getErrorMessage(error)),

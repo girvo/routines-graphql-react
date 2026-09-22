@@ -19,9 +19,15 @@ export const AllSizes: Story = {
       <Body size="lg">Body Lg — 15px / 400</Body>
       <Body size="md">Body Md — 14px / 400</Body>
       <Body size="sm">Body Sm — 13px / 400</Body>
-      <Body size="lg" strong>Body Strong Lg — 15px / 500</Body>
-      <Body size="md" strong>Body Strong Md — 14px / 500</Body>
-      <Body size="sm" strong>Body Strong Sm — 13px / 500</Body>
+      <Body size="lg" strong>
+        Body Strong Lg — 15px / 500
+      </Body>
+      <Body size="md" strong>
+        Body Strong Md — 14px / 500
+      </Body>
+      <Body size="sm" strong>
+        Body Strong Sm — 13px / 500
+      </Body>
     </div>
   ),
 }

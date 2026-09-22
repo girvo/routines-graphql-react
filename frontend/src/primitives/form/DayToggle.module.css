@@ -21,7 +21,7 @@
   }
 }
 
-.root:hover:not(:disabled):not(.selected) {
+.root:hover:not(:disabled, .selected) {
   background: var(--stroke-line);
 }
 

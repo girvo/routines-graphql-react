@@ -3,10 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { COMPONENT_NAME } from '../COMPONENT_NAME'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
 import { Suspense } from 'react'
-import {
-  RelayEnvironmentProvider,
-  loadQuery,
-} from 'react-relay'
+import { RelayEnvironmentProvider, loadQuery } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
 import type { QUERY_TYPE } from '../__generated__/QUERY_FILE.graphql'
 import QUERY_NODE from '../__generated__/QUERY_FILE.graphql'
@@ -23,10 +20,7 @@ const COMPONENT_NAMEStory = () => {
   //   MockPayloadGenerator.generate(op),
   // )
 
-  environment.mock.queuePendingOperation(
-    QUERY_NODE,
-    {},
-  )
+  environment.mock.queuePendingOperation(QUERY_NODE, {})
 
   const queryRef = loadQuery(
     environment,
@@ -37,10 +31,7 @@ const COMPONENT_NAMEStory = () => {
   return (
     <Suspense fallback="Loading...">
       <RelayEnvironmentProvider environment={environment}>
-        <COMPONENT_NAME
-          QUERY_PROP={queryRef}
-          OTHER_PROP=""
-        />
+        <COMPONENT_NAME QUERY_PROP={queryRef} OTHER_PROP="" />
       </RelayEnvironmentProvider>
     </Suspense>
   )

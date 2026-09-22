@@ -41,25 +41,27 @@ Use `template/preloaded-query-story.tsx` when the component uses **`usePreloaded
 
 Replace all placeholders:
 
-| Placeholder | Replace with |
-|---|---|
-| `COMPONENT_NAME` | The exported component name (e.g., `RoutineSlotItem`) |
-| `DIR` | The component's directory relative to `frontend/src/` (e.g., `WeeklyPlan`) |
-| `GRAPHQL_TYPE` | The type name from the fragment definition (e.g., `Task`, `Query`) |
-| `FRAGMENT_NAME` | The fragment name used in the component (e.g., `RoutineSlotItem`) |
-| `FRAGMENT_PROP` | The prop name on the component that accepts the fragment key (e.g., `task`) |
-| `QUERY_TYPE` | The query type name (e.g., `AddTaskDropdownQuery`) |
-| `QUERY_FILE` | The generated query filename without extension (e.g., `AddTaskDropdownQuery`) |
-| `QUERY_NODE` | The imported query node identifier (e.g., `AddTaskDropdownQueryNode`) |
-| `QUERY_PROP` | The prop name on the component that accepts the `PreloadedQuery` (e.g., `queryRef`) |
+| Placeholder      | Replace with                                                                        |
+| ---------------- | ----------------------------------------------------------------------------------- |
+| `COMPONENT_NAME` | The exported component name (e.g., `RoutineSlotItem`)                               |
+| `DIR`            | The component's directory relative to `frontend/src/` (e.g., `WeeklyPlan`)          |
+| `GRAPHQL_TYPE`   | The type name from the fragment definition (e.g., `Task`, `Query`)                  |
+| `FRAGMENT_NAME`  | The fragment name used in the component (e.g., `RoutineSlotItem`)                   |
+| `FRAGMENT_PROP`  | The prop name on the component that accepts the fragment key (e.g., `task`)         |
+| `QUERY_TYPE`     | The query type name (e.g., `AddTaskDropdownQuery`)                                  |
+| `QUERY_FILE`     | The generated query filename without extension (e.g., `AddTaskDropdownQuery`)       |
+| `QUERY_NODE`     | The imported query node identifier (e.g., `AddTaskDropdownQueryNode`)               |
+| `QUERY_PROP`     | The prop name on the component that accepts the `PreloadedQuery` (e.g., `queryRef`) |
 
 **For non-Relay props:**
+
 - `string` props like `connectionId` → pass `""`
 - Callback props → pass `() => {}` (or `() => { console.log('...') }` for visibility)
 
 **For the MockPayloadGenerator:** use `MockPayloadGenerator.generate(op)` with no custom resolvers — it auto-generates all scalar fields. `queueOperationResolver` is **consumed after each operation**, so queue one resolver for the initial query plus one for each mutation the component can trigger (in the order they'd be called).
 
 **For preloaded query components** (using the `preloaded-query-story.tsx` template):
+
 - Import the compiled query node from the component's existing generated file: `import QueryNode from '../__generated__/QueryName.graphql'`
 - Import the query type: `import type { QueryName } from '../__generated__/QueryName.graphql'`
 - Call `environment.mock.queuePendingOperation(QueryNode, {})` to register the pending operation
@@ -69,6 +71,7 @@ Replace all placeholders:
 - The generated file path in Step 2 is **not needed** for preloaded query stories (no new generated file is created)
 
 **If the component renders inside a table** (top-level `<tr>` or `<td>`), wrap the story output with:
+
 ```tsx
 <table className="table">
   <tbody>
@@ -100,6 +103,7 @@ For preloaded query stories: **no relay compiler run is needed** — the story i
 ## Step 7: Verify
 
 Check that:
+
 - For fragment stories: the `__tests__/__generated__` file was created
 - For fragment stories: the import of the generated query type resolves (uses `.graphql` extension, not `.graphql.ts`)
 - For preloaded query stories: the query node import path matches the component's existing generated file

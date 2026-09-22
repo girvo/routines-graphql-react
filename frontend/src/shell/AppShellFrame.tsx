@@ -20,7 +20,9 @@ export const AppShellFrame = ({
     {sidebar ? <aside className={styles.sidebar}>{sidebar}</aside> : null}
     <div className={styles.content}>
       {topBar ? <div className={styles.topBar}>{topBar}</div> : null}
-      {belowHeader ? <div className={styles.belowHeader}>{belowHeader}</div> : null}
+      {belowHeader ? (
+        <div className={styles.belowHeader}>{belowHeader}</div>
+      ) : null}
       <main className={styles.main}>{children}</main>
       {dock ? <div className={styles.dock}>{dock}</div> : null}
     </div>

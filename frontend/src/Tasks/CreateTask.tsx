@@ -1,4 +1,9 @@
-import { useCallback, type Dispatch, type KeyboardEvent, type SetStateAction } from 'react'
+import {
+  useCallback,
+  type Dispatch,
+  type KeyboardEvent,
+  type SetStateAction,
+} from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arktypeResolver } from '@hookform/resolvers/arktype'
 import { useMutation, graphql } from 'react-relay'
@@ -19,7 +24,10 @@ interface CreateTaskProps {
   setIsCreating: Dispatch<SetStateAction<boolean>>
 }
 
-export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => {
+export const CreateTask = ({
+  connectionId,
+  setIsCreating,
+}: CreateTaskProps) => {
   const {
     register,
     control,
@@ -81,7 +89,10 @@ export const CreateTask = ({ connectionId, setIsCreating }: CreateTaskProps) => 
               title: data.title,
               icon: data.icon || null,
               createdAt: new Date().toISOString(),
-              slots: { edges: [], pageInfo: { endCursor: null, hasNextPage: false } },
+              slots: {
+                edges: [],
+                pageInfo: { endCursor: null, hasNextPage: false },
+              },
             },
           },
         },

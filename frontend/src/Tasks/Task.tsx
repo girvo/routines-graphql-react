@@ -10,7 +10,11 @@ import { sectionCounts, sectionLabel } from './section-counts.ts'
 import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
 import { IconBadge } from '../primitives/badge/IconBadge.tsx'
 import { Button } from '../primitives/Button.tsx'
-import { Popover, PopoverContent, PopoverTrigger } from '../primitives/overlay/popover/Popover.tsx'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../primitives/overlay/popover/Popover.tsx'
 import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import styles from './Task.module.css'
@@ -21,7 +25,11 @@ interface TaskProps {
   connectionId: string
 }
 
-export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => {
+export const Task = ({
+  task: taskData,
+  updatable,
+  connectionId,
+}: TaskProps) => {
   const task = useFragment(
     graphql`
       fragment Task_task on Task {
@@ -102,7 +110,11 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
             <span className={styles.unassigned}>Not yet assigned</span>
           ) : (
             sections.map(({ section, count }) => (
-              <SectionChip key={section} label={sectionLabel(section)} count={count} />
+              <SectionChip
+                key={section}
+                label={sectionLabel(section)}
+                count={count}
+              />
             ))
           )}
         </div>
@@ -156,7 +168,13 @@ export const Task = ({ task: taskData, updatable, connectionId }: TaskProps) => 
   )
 }
 
-const TaskMenu = ({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) => (
+const TaskMenu = ({
+  onEdit,
+  onDelete,
+}: {
+  onEdit: () => void
+  onDelete: () => void
+}) => (
   <div className={styles.menu}>
     <Button
       leadingIcon={Pencil}

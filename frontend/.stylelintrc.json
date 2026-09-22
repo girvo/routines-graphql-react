@@ -16,7 +16,17 @@
     "keyframes-name-pattern": null,
     "at-rule-no-unknown": [
       true,
-      { "ignoreAtRules": ["plugin", "theme", "tailwind", "apply", "variants", "responsive", "screen"] }
+      {
+        "ignoreAtRules": [
+          "plugin",
+          "theme",
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen"
+        ]
+      }
     ]
   }
 }

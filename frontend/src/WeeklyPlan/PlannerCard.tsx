@@ -12,9 +12,7 @@ export const PlannerCard = ({ header, children, empty }: PlannerCardProps) => (
   <Card className={styles.layout}>
     {header}
     <div className={styles.divider} />
-    <div className={styles.body}>
-      {empty ?? children}
-    </div>
+    <div className={styles.body}>{empty ?? children}</div>
   </Card>
 )
 

@@ -19,8 +19,14 @@ export const resolveSide = (
   const spaceBelow = viewportHeight - trigger.bottom
   const spaceAbove = trigger.top
   const needed = contentHeight + GAP
-  if (initialSide === 'bottom' && spaceBelow < needed && spaceAbove > spaceBelow) return 'top'
-  if (initialSide === 'top' && spaceAbove < needed && spaceBelow > spaceAbove) return 'bottom'
+  if (
+    initialSide === 'bottom' &&
+    spaceBelow < needed &&
+    spaceAbove > spaceBelow
+  )
+    return 'top'
+  if (initialSide === 'top' && spaceAbove < needed && spaceBelow > spaceAbove)
+    return 'bottom'
   return initialSide
 }
 
@@ -55,8 +61,18 @@ export const computePosition = (
   placement: Placement,
   viewport: Viewport,
 ) => {
-  const side = resolveSide(getInitialSide(placement), trigger, content.height, viewport.height)
-  const left = resolveLeft(getAlign(placement), trigger, content.width, viewport.width)
+  const side = resolveSide(
+    getInitialSide(placement),
+    trigger,
+    content.height,
+    viewport.height,
+  )
+  const left = resolveLeft(
+    getAlign(placement),
+    trigger,
+    content.width,
+    viewport.width,
+  )
 
   let top = trigger.bottom + GAP
   if (side === 'top') top = trigger.top - content.height - GAP

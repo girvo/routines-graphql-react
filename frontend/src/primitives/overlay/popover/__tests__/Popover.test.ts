@@ -70,19 +70,23 @@ describe('computePosition', () => {
   it('places below+start with a gap', () => {
     const trigger = rect({ top: 100, left: 200, width: 40, height: 30 })
     const content = rect({ width: 160, height: 120 })
-    expect(computePosition(trigger, content, 'bottom-start', VIEWPORT)).toEqual({
-      top: 134,
-      left: 200,
-    })
+    expect(computePosition(trigger, content, 'bottom-start', VIEWPORT)).toEqual(
+      {
+        top: 134,
+        left: 200,
+      },
+    )
   })
 
   it('places above when bottom-start would overflow and above has room', () => {
     const trigger = rect({ top: 700, left: 200, width: 40, height: 30 })
     const content = rect({ width: 160, height: 200 })
-    expect(computePosition(trigger, content, 'bottom-start', VIEWPORT)).toEqual({
-      top: 496,
-      left: 200,
-    })
+    expect(computePosition(trigger, content, 'bottom-start', VIEWPORT)).toEqual(
+      {
+        top: 496,
+        left: 200,
+      },
+    )
   })
 
   it('applies scrollY/scrollX offsets to the returned coordinates', () => {

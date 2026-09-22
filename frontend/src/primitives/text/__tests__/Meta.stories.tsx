@@ -19,8 +19,12 @@ export const AllSizes: Story = {
       <Meta size="md">Meta Md — 12px / 400</Meta>
       <Meta size="sm">Meta Sm — 13px / 400</Meta>
       <Meta size="xs">Meta Xs — 11px / 400</Meta>
-      <Meta size="md" strong>Meta Strong Md — 12px / 500</Meta>
-      <Meta size="sm" strong>Meta Strong Sm — 13px / 500</Meta>
+      <Meta size="md" strong>
+        Meta Strong Md — 12px / 500
+      </Meta>
+      <Meta size="sm" strong>
+        Meta Strong Sm — 13px / 500
+      </Meta>
     </div>
   ),
 }

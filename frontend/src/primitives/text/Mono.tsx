@@ -16,5 +16,7 @@ export const Mono = <E extends MonoElement = 'code'>({
   ...rest
 }: MonoProps<E>) => {
   const Tag = (as ?? 'code') as ElementType
-  return <Tag className={clsx('typo-mono', `typo-${size}`, className)} {...rest} />
+  return (
+    <Tag className={clsx('typo-mono', `typo-${size}`, className)} {...rest} />
+  )
 }

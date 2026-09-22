@@ -10,7 +10,7 @@ import type { DesktopSidebarQuery } from '../__generated__/DesktopSidebarQuery.g
 
 const renderer = () => {
   const environment = createMockEnvironment()
-  environment.mock.queueOperationResolver((op) =>
+  environment.mock.queueOperationResolver(op =>
     MockPayloadGenerator.generate(op, {
       User() {
         return {

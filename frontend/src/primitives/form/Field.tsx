@@ -34,9 +34,9 @@ export const Field = ({
     throw new Error('<Field> requires a single React element child')
   }
 
-  const describedBy = [error ? errorId : null, hint ? hintId : null]
-    .filter(Boolean)
-    .join(' ') || undefined
+  const describedBy =
+    [error ? errorId : null, hint ? hintId : null].filter(Boolean).join(' ') ||
+    undefined
 
   const control = cloneElement(children, {
     id: children.props.id ?? inputId,

@@ -7,7 +7,7 @@
 - `pnpm install`
 - `pnpm dev` to start backend, frontend, storybook via `concurrently`
 - `pnpm dev:split` to start backend, frontend, storybook in a Tmux split window
-  -  `Ctrl-b` - `:kill-session` to stop the tmux session
+  - `Ctrl-b` - `:kill-session` to stop the tmux session
 
 ## VSCode
 

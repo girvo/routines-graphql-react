@@ -37,13 +37,20 @@ export const CheckBox = ({
   children,
   ...rest
 }: CheckBoxProps) => (
-  <label className={clsx(styles.root, styles[size], disabled && styles.disabled, className)}>
+  <label
+    className={clsx(
+      styles.root,
+      styles[size],
+      disabled && styles.disabled,
+      className,
+    )}
+  >
     <input
       type="checkbox"
       className={styles.input}
       checked={checked}
       disabled={disabled}
-      onChange={(e) => onChange?.(e.target.checked)}
+      onChange={e => onChange?.(e.target.checked)}
       {...rest}
     />
     <span className={styles.box} aria-hidden>

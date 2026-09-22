@@ -18,12 +18,18 @@ export const Card = <E extends CardElement = 'div'>({
   const Tag = (as ?? 'div') as ElementType
   return (
     <Tag
-      className={clsx(responsive ? styles.cardResponsive : styles.card, className)}
+      className={clsx(
+        responsive ? styles.cardResponsive : styles.card,
+        className,
+      )}
       {...rest}
     />
   )
 }
 
-export const CardBody = ({ className, ...rest }: ComponentPropsWithoutRef<'div'>) => (
+export const CardBody = ({
+  className,
+  ...rest
+}: ComponentPropsWithoutRef<'div'>) => (
   <div className={clsx(styles.body, className)} {...rest} />
 )

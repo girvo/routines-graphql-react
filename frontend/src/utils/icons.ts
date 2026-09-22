@@ -262,7 +262,15 @@ export const iconCategories: { label: string; icons: IconName[] }[] = [
   },
   {
     label: 'General',
-    icons: ['list-todo', 'circle-check', 'star', 'bell', 'flag', 'target', 'zap'],
+    icons: [
+      'list-todo',
+      'circle-check',
+      'star',
+      'bell',
+      'flag',
+      'target',
+      'zap',
+    ],
   },
 ]
 

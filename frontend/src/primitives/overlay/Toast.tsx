@@ -21,12 +21,23 @@ const iconFor = {
   info: Info,
 } as const
 
-export const Toast = ({ type, children, onDismiss, exiting, className }: ToastProps) => {
+export const Toast = ({
+  type,
+  children,
+  onDismiss,
+  exiting,
+  className,
+}: ToastProps) => {
   const Icon = iconFor[type]
   return (
     <div
       role="alert"
-      className={clsx(styles.toast, styles[type], exiting && styles.exiting, className)}
+      className={clsx(
+        styles.toast,
+        styles[type],
+        exiting && styles.exiting,
+        className,
+      )}
     >
       <Icon className={styles.icon} aria-hidden />
       <div className={styles.message}>{children}</div>

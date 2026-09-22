@@ -10,10 +10,21 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const Controlled = ({ size, disabled }: { size?: 'sm' | 'md'; disabled?: boolean }) => {
+const Controlled = ({
+  size,
+  disabled,
+}: {
+  size?: 'sm' | 'md'
+  disabled?: boolean
+}) => {
   const [checked, setChecked] = useState(false)
   return (
-    <CheckBox checked={checked} onChange={setChecked} size={size} disabled={disabled}>
+    <CheckBox
+      checked={checked}
+      onChange={setChecked}
+      size={size}
+      disabled={disabled}
+    >
       Remember me
     </CheckBox>
   )
@@ -34,7 +45,13 @@ export const NoVisibleLabel: Story = {
   render: () => {
     const Wrapper = () => {
       const [checked, setChecked] = useState(false)
-      return <CheckBox checked={checked} onChange={setChecked} aria-label="Complete task" />
+      return (
+        <CheckBox
+          checked={checked}
+          onChange={setChecked}
+          aria-label="Complete task"
+        />
+      )
     }
     return <Wrapper />
   },
@@ -43,7 +60,14 @@ export const NoVisibleLabel: Story = {
 export const States: Story = {
   args: { checked: false, 'aria-label': 'states' },
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        alignItems: 'flex-start',
+      }}
+    >
       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
         <CheckBox checked={false} aria-label="unchecked md" />
         <CheckBox checked aria-label="checked md" />

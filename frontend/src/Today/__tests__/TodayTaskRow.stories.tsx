@@ -188,7 +188,9 @@ export const CompleteWithServerError: Story = {
     completeReject = undefined
 
     await waitFor(() =>
-      expect(canvas.getByRole('checkbox', { name: /pushups/i })).not.toBeChecked(),
+      expect(
+        canvas.getByRole('checkbox', { name: /pushups/i }),
+      ).not.toBeChecked(),
     )
   },
 }

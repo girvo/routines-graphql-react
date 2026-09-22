@@ -32,28 +32,52 @@
 
 .error {
   background: var(--status-error-bg);
-  border-color: color-mix(in srgb, var(--status-error-fg) 25%, var(--stroke-line));
+  border-color: color-mix(
+    in srgb,
+    var(--status-error-fg) 25%,
+    var(--stroke-line)
+  );
   border-left-color: var(--status-error-fg);
 }
-.error .icon { color: var(--status-error-fg); }
+.error .icon {
+  color: var(--status-error-fg);
+}
 
 .success {
   background: var(--status-success-bg);
-  border-color: color-mix(in srgb, var(--status-success-fg) 25%, var(--stroke-line));
+  border-color: color-mix(
+    in srgb,
+    var(--status-success-fg) 25%,
+    var(--stroke-line)
+  );
   border-left-color: var(--status-success-fg);
 }
-.success .icon { color: var(--status-success-fg); }
+.success .icon {
+  color: var(--status-success-fg);
+}
 
 .warning {
   background: var(--status-warning-bg);
-  border-color: color-mix(in srgb, var(--status-warning-fg) 25%, var(--stroke-line));
+  border-color: color-mix(
+    in srgb,
+    var(--status-warning-fg) 25%,
+    var(--stroke-line)
+  );
   border-left-color: var(--status-warning-fg);
 }
-.warning .icon { color: var(--status-warning-fg); }
+.warning .icon {
+  color: var(--status-warning-fg);
+}
 
 .info {
   background: var(--status-info-bg);
-  border-color: color-mix(in srgb, var(--status-info-fg) 25%, var(--stroke-line));
+  border-color: color-mix(
+    in srgb,
+    var(--status-info-fg) 25%,
+    var(--stroke-line)
+  );
   border-left-color: var(--status-info-fg);
 }
-.info .icon { color: var(--status-info-fg); }
+.info .icon {
+  color: var(--status-info-fg);
+}

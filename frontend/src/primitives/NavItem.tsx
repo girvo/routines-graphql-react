@@ -29,6 +29,8 @@ export const NavItem = ({
   >
     <Icon className={styles.icon} />
     <span className={styles.label}>{label}</span>
-    {count !== undefined && <CountBadge count={count} className={styles.count} />}
+    {count !== undefined && (
+      <CountBadge count={count} className={styles.count} />
+    )}
   </button>
 )

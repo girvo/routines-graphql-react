@@ -25,7 +25,9 @@ export const Ghost: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: 320 }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', gap: 12, width: 320 }}
+    >
       <TextInput size="sm" placeholder="sm (32)" leadingIcon={Search} />
       <TextInput size="md" placeholder="md (36)" leadingIcon={Search} />
     </div>
@@ -54,9 +56,21 @@ export const States: Story = {
     <Panel>
       <TextInput placeholder="Bordered empty" leadingIcon={Search} />
       <TextInput defaultValue="Bordered value" leadingIcon={Search} />
-      <TextInput placeholder="Bordered disabled" leadingIcon={Search} disabled />
-      <TextInput variant="filled" placeholder="Filled empty" leadingIcon={Search} />
-      <TextInput variant="filled" defaultValue="Filled value" leadingIcon={Search} />
+      <TextInput
+        placeholder="Bordered disabled"
+        leadingIcon={Search}
+        disabled
+      />
+      <TextInput
+        variant="filled"
+        placeholder="Filled empty"
+        leadingIcon={Search}
+      />
+      <TextInput
+        variant="filled"
+        defaultValue="Filled value"
+        leadingIcon={Search}
+      />
       <TextInput variant="ghost" placeholder="Ghost inline" />
       <TextInput variant="ghost" defaultValue="Ghost with value" />
     </Panel>

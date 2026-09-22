@@ -26,7 +26,12 @@ export const Body = <E extends BodyElement = 'p'>({
   const Tag = (as ?? 'p') as ElementType
   return (
     <Tag
-      className={clsx('typo-body', sizeClass[size], strong && 'typo-medium', className)}
+      className={clsx(
+        'typo-body',
+        sizeClass[size],
+        strong && 'typo-medium',
+        className,
+      )}
       {...rest}
     />
   )

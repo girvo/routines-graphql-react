@@ -1,5 +1,10 @@
 import { graphql, usePaginationFragment } from 'react-relay'
-import { startTransition, useEffect, type Dispatch, type SetStateAction } from 'react'
+import {
+  startTransition,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+} from 'react'
 import { useDebounceCallback } from 'usehooks-ts'
 import { Task } from './Task.tsx'
 import { CreateTask } from './CreateTask.tsx'
@@ -23,44 +28,42 @@ export const TasksList = ({
   setIsCreating,
   searchQuery,
 }: TasksListProps) => {
-  const { data, loadNext, hasNext, isLoadingNext, refetch } = usePaginationFragment(
-    graphql`
-      fragment TasksList_tasks on Query
-      @refetchable(queryName: "TasksListPaginationQuery")
-      @argumentDefinitions(
-        count: { type: "NonNegativeInt", defaultValue: 20 }
-        cursor: { type: "String" }
-        titleSearch: { type: "String", defaultValue: null }
-      ) {
-        tasks(first: $count, after: $cursor, titleSearch: $titleSearch)
-          @connection(key: "TasksList_tasks") {
-          __id
-          edges {
-            node {
-              id
-              title
-              ...Task_task
-              ...EditTask_task
+  const { data, loadNext, hasNext, isLoadingNext, refetch } =
+    usePaginationFragment(
+      graphql`
+        fragment TasksList_tasks on Query
+        @refetchable(queryName: "TasksListPaginationQuery")
+        @argumentDefinitions(
+          count: { type: "NonNegativeInt", defaultValue: 20 }
+          cursor: { type: "String" }
+          titleSearch: { type: "String", defaultValue: null }
+        ) {
+          tasks(first: $count, after: $cursor, titleSearch: $titleSearch)
+            @connection(key: "TasksList_tasks") {
+            __id
+            edges {
+              node {
+                id
+                title
+                ...Task_task
+                ...EditTask_task
+              }
             }
           }
         }
-      }
-    `,
-    tasksRef,
-  )
+      `,
+      tasksRef,
+    )
 
   const loadedCount = data.tasks.edges.length
   const subtitle = hasNext ? `${loadedCount}+ total` : `${loadedCount} total`
   usePageHeader({ subtitle })
 
-  const debouncedRefetch = useDebounceCallback(
-    (titleSearch: string | null) => {
-      startTransition(() => {
-        refetch({ titleSearch })
-      })
-    },
-    300,
-  )
+  const debouncedRefetch = useDebounceCallback((titleSearch: string | null) => {
+    startTransition(() => {
+      refetch({ titleSearch })
+    })
+  }, 300)
 
   useEffect(() => {
     debouncedRefetch(searchQuery.trim() ? searchQuery : null)
@@ -75,7 +78,10 @@ export const TasksList = ({
     <Card responsive>
       <TasksTableHeader />
       {isCreating && (
-        <CreateTask setIsCreating={setIsCreating} connectionId={data.tasks.__id} />
+        <CreateTask
+          setIsCreating={setIsCreating}
+          connectionId={data.tasks.__id}
+        />
       )}
       {showEmpty && (
         <div className={styles.empty}>

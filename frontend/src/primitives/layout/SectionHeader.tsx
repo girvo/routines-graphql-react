@@ -9,7 +9,12 @@ interface SectionHeaderProps {
   dense?: boolean
 }
 
-export const SectionHeader = ({ title, count, action, dense }: SectionHeaderProps) => (
+export const SectionHeader = ({
+  title,
+  count,
+  action,
+  dense,
+}: SectionHeaderProps) => (
   <div className={clsx(styles.root, dense && styles.dense)}>
     <div className={styles.hl}>
       <span className={styles.title}>{title}</span>

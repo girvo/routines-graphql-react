@@ -195,9 +195,13 @@ environment.mock.queueOperationResolver(op =>
 // Seed secondary connection IDs that the component will include in
 // mutation variables, e.g. ConnectionHandler.getConnectionID(task.id, 'Task_slots').
 commitLocalUpdate(environment, store => {
-  const connectionId = ConnectionHandler.getConnectionID('task-pushups', 'Task_slots')
+  const connectionId = ConnectionHandler.getConnectionID(
+    'task-pushups',
+    'Task_slots',
+  )
   const connection =
-    store.get(connectionId) ?? store.create(connectionId, 'RoutineSlotConnection')
+    store.get(connectionId) ??
+    store.create(connectionId, 'RoutineSlotConnection')
   const pageInfo =
     connection.getLinkedRecord('pageInfo') ??
     store.create(`${connectionId}:pageInfo`, 'PageInfo')
@@ -265,6 +269,7 @@ export const Default: Story = {
 Always `await` `userEvent.*` calls. Always `await` async queries.
 
 **For each story that triggers a mutation, add exactly one DOM assertion that proves the mutation reached the store:**
+
 - If the mutation appends an edge: `await waitFor(() => expect(canvas.getAllByText('Planks').length).toBeGreaterThan(0))`
 - If the mutation deletes a record: `await waitFor(() => expect(screen.queryByText('Pushups')).not.toBeInTheDocument())`
 - If the mutation toggles state: `await waitFor(() => expect(canvas.getByRole('checkbox')).toBeChecked())`
@@ -284,6 +289,7 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
 - **Queue extra resolvers in the story setup, not the play.** Every operation the `play` will trigger needs its own queued resolver. The story already queues the initial query; add one resolver per mutation, refetch, or follow-up query the play will fire. If the resolvers run out, Relay throws.
 - **Use a fresh mock environment per story mount.** Create the environment inside a story wrapper with `useState(createEnvironment)` or inside the render function. Do not share a module-scope environment across Storybook stories; queued resolvers and pending operations are consumed state.
 - **Wire custom environments with story-level `render`.** If a story variant needs a different Relay environment than `meta.component`, define a custom story wrapper and wire it directly:
+
   ```tsx
   const DeleteWithServerErrorStory = () => {
     const [environment] = useState(createDeleteErrorEnvironment)
@@ -306,7 +312,9 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
     },
   }
   ```
+
   If a module-scope deferred resolver handle such as `deleteReject` is `undefined`, verify this `render` wiring and queued resolver order before reasoning about Relay internals.
+
 - **Mock data is deterministic but ugly.** Default fields look like `"<mock-value-for-field-\"title\">"`. Either match against those literal strings (fine for assertions you don't read) or pass a custom resolver in the story setup that returns realistic values for the fields the play asserts on:
   ```ts
   environment.mock.queueOperationResolver(op =>
@@ -318,6 +326,7 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
 - **Optimistic updates land synchronously**, then Relay rolls them back when the operation settles and applies the real payload. For optimistic Relay mutations, prefer DOM assertions over harness-coupled operation-variable assertions: assert the optimistic UI appears, trigger the mocked operation settlement, then assert the final user-visible state. A successful payload should preserve the committed UI; a rejected operation should roll it back.
 
   If the test must observe an intermediate optimistic state before rollback, use a controlled deferred rejection. Do **not** use `setTimeout(..., 0)` for these tests; it can reject before the `play` function observes the optimistic state.
+
   ```ts
   let rejectMutation: ((reason?: Error) => void) | undefined
 
@@ -334,8 +343,11 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
   reject?.(new Error('Update failed'))
   rejectMutation = undefined
   ```
+
   A timed rejection is acceptable only when the test does not need to observe the intermediate optimistic state and only needs to assert the final rollback/error state.
+
 - `queueOperationResolver` may also return an asynchronously resolved promise. If the test must observe both the optimistic state and a different server-confirmed state, prefer a controlled deferred resolve over a fixed timeout:
+
   ```ts
   let resolveMutation: (() => void) | undefined
 
@@ -353,6 +365,7 @@ For stories built on `createMockEnvironment` + `MockPayloadGenerator`:
   resolve?.()
   resolveMutation = undefined
   ```
+
 - **Declarative mutation handlers run against the connection IDs in variables.** If a component passes `[mainConnectionId, ConnectionHandler.getConnectionID(task.id, 'Task_slots')]`, both IDs must exist in the mock store or Relay warns. Seed optional/secondary connections with `commitLocalUpdate` only when that connection ID is actually passed in mutation variables or appears in a concrete Relay warning; do not seed a connection merely because a fragment contains `@connection`.
 - **Use the correct commit APIs.** `environment.commitPayload(operationDescriptor, payload)` requires an operation descriptor. To set up local records/connections with no operation, use `commitLocalUpdate(environment, updater)`. Do **not** call `environment.commitPayload({ data: { ... } })` or `environment.mock.getStore().commitPayload(...)`.
 - **Read the generated `.graphql.ts` files before writing resolvers.** Confirm the exact root fields, connection keys, and whether the query/fragment requests `__id` on connections. If the generated file shows `ClientExtension` with `__id` on a connection, your resolver must return `__id` on that connection record.
@@ -397,20 +410,27 @@ Before reaching for any spy, ask: **what is the observable behavior I want to ve
 The hierarchy, in order of preference:
 
 1. **DOM assertions.** The element exists, has focus, has a class, has `aria-selected="true"`, has the right text, scrolled into view. This is the highest-fidelity test — it verifies the user-visible outcome.
+
    ```ts
    await userEvent.keyboard('{ArrowDown}')
-   expect((await screen.findAllByRole('option'))[0]).toHaveAttribute('aria-selected', 'true')
+   expect((await screen.findAllByRole('option'))[0]).toHaveAttribute(
+     'aria-selected',
+     'true',
+   )
    ```
 
 2. **Side-effect observation through the existing test harness.** For Relay-backed stories, the mock environment already records every operation — assert mutations fired by inspecting it, not by spying on a callback:
+
    ```ts
    const op = environment.mock.getMostRecentOperation()
    expect(op.fragment.node.name).toBe('AddTaskDropdownRoutineSlotMutation')
    expect(op.request.variables).toMatchObject({ taskId: 'pushups-id' })
    ```
+
    For toasts, query for the toast text. For navigation, assert the URL changed (or the new route's content rendered).
 
 3. **`fn()` spy on a callback the component already accepts.** If the component genuinely has a prop like `onSelect` or `onClose` that exists for production reasons, declare it as `fn()` in `meta.args` and assert on calls:
+
    ```ts
    const meta = {
      title: 'WeeklyPlan/AddTaskDropdown',
@@ -421,11 +441,14 @@ The hierarchy, in order of preference:
    export const PicksATask: Story = {
      play: async ({ args, canvasElement }) => {
        const canvas = within(canvasElement)
-       await userEvent.click(await canvas.findByRole('option', { name: /pushups/i }))
+       await userEvent.click(
+         await canvas.findByRole('option', { name: /pushups/i }),
+       )
        expect(args.onSelect).toHaveBeenCalledTimes(1)
      },
    }
    ```
+
    `fn()` preserves the parameter types from the component's prop signature, so call assertions stay type-safe.
 
 4. **Vitest module spying** (`vi.spyOn`, `vi.mock`). Reach for this only when there's no DOM signal and no callback to spy on — e.g., a fire-and-forget call into a utility module.
@@ -498,7 +521,7 @@ describe('auth-store', () => {
 
 ## Step 11: Forbidden patterns (will cause silent failures)
 
-- ❌ `useLazyLoadQuery(graphql\`query ... { ... @connection(...) }\`, {})` with no mock resolver that returns `__id` on the connection
+- ❌ `useLazyLoadQuery(graphql\`query ... { ... @connection(...) }\`, {})`with no mock resolver that returns`\_\_id` on the connection
 - ❌ Casting `data as { tasks: { __id: string } }` without first reading the generated fragment to confirm `__id` is requested
 - ❌ Passing a hardcoded `connectionId="test_connection"` to a component when the real code derives the ID via `ConnectionHandler.getConnectionID(parentId, key)` — these will never match unless the mock explicitly registers that exact ID
 - ❌ Queueing a mutation resolver while ignoring the connection IDs the component sends in mutation variables

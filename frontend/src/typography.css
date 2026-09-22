@@ -14,7 +14,7 @@
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-[class*="typo-"] {
+[class*='typo-'] {
   font-family: var(--font-sans);
 }
 
@@ -72,26 +72,60 @@
 
 /* Sizes — override font-size on any role. Listed after roles so cascade wins at equal specificity. */
 
-.typo-xs { font-size: var(--fs-xs); }
-.typo-sm { font-size: var(--fs-sm); }
-.typo-md { font-size: var(--fs-md); }
-.typo-lg { font-size: var(--fs-lg); }
-.typo-xl { font-size: var(--fs-xl); }
-.typo-2xl { font-size: var(--fs-2xl); }
-.typo-3xl { font-size: var(--fs-3xl); }
+.typo-xs {
+  font-size: var(--fs-xs);
+}
+.typo-sm {
+  font-size: var(--fs-sm);
+}
+.typo-md {
+  font-size: var(--fs-md);
+}
+.typo-lg {
+  font-size: var(--fs-lg);
+}
+.typo-xl {
+  font-size: var(--fs-xl);
+}
+.typo-2xl {
+  font-size: var(--fs-2xl);
+}
+.typo-3xl {
+  font-size: var(--fs-3xl);
+}
 
 /* Weight overrides */
 
-.typo-regular { font-weight: var(--fw-regular); }
-.typo-medium { font-weight: var(--fw-medium); }
-.typo-semibold { font-weight: var(--fw-semibold); }
-.typo-bold { font-weight: var(--fw-bold); }
+.typo-regular {
+  font-weight: var(--fw-regular);
+}
+.typo-medium {
+  font-weight: var(--fw-medium);
+}
+.typo-semibold {
+  font-weight: var(--fw-semibold);
+}
+.typo-bold {
+  font-weight: var(--fw-bold);
+}
 
 /* Letter-spacing overrides */
 
-.typo-ls-tight-md { letter-spacing: var(--ls-tight-md); }
-.typo-ls-tight-sm { letter-spacing: var(--ls-tight-sm); }
-.typo-ls-wide-xs { letter-spacing: var(--ls-wide-xs); }
-.typo-ls-wide-sm { letter-spacing: var(--ls-wide-sm); }
-.typo-ls-wide-md { letter-spacing: var(--ls-wide-md); }
-.typo-ls-wide-lg { letter-spacing: var(--ls-wide-lg); }
+.typo-ls-tight-md {
+  letter-spacing: var(--ls-tight-md);
+}
+.typo-ls-tight-sm {
+  letter-spacing: var(--ls-tight-sm);
+}
+.typo-ls-wide-xs {
+  letter-spacing: var(--ls-wide-xs);
+}
+.typo-ls-wide-sm {
+  letter-spacing: var(--ls-wide-sm);
+}
+.typo-ls-wide-md {
+  letter-spacing: var(--ls-wide-md);
+}
+.typo-ls-wide-lg {
+  letter-spacing: var(--ls-wide-lg);
+}

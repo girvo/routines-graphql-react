@@ -18,7 +18,10 @@ export const Success: Story = {
 }
 
 export const Warning: Story = {
-  args: { type: 'warning', children: 'This task has no routine slots assigned.' },
+  args: {
+    type: 'warning',
+    children: 'This task has no routine slots assigned.',
+  },
 }
 
 export const Info: Story = {
@@ -36,11 +39,21 @@ export const Dismissible: Story = {
 export const Stack: Story = {
   args: { type: 'info', children: '' },
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: 360 }}>
-      <Toast type="success" onDismiss={() => {}}>Task created.</Toast>
-      <Toast type="info" onDismiss={() => {}}>Autosaving…</Toast>
-      <Toast type="warning" onDismiss={() => {}}>No slots assigned.</Toast>
-      <Toast type="error" onDismiss={() => {}}>Failed to save.</Toast>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', gap: 8, width: 360 }}
+    >
+      <Toast type="success" onDismiss={() => {}}>
+        Task created.
+      </Toast>
+      <Toast type="info" onDismiss={() => {}}>
+        Autosaving…
+      </Toast>
+      <Toast type="warning" onDismiss={() => {}}>
+        No slots assigned.
+      </Toast>
+      <Toast type="error" onDismiss={() => {}}>
+        Failed to save.
+      </Toast>
     </div>
   ),
 }

@@ -6,8 +6,15 @@ const meta = {
   component: MobileDock,
   parameters: { layout: 'fullscreen' },
   decorators: [
-    (Story) => (
-      <div style={{ width: 390, height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    Story => (
+      <div
+        style={{
+          width: 390,
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <div style={{ flex: 1, background: '#ffffff' }} />
         <Story />
       </div>

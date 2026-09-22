@@ -18,13 +18,29 @@ export const OverflowMenu: Story = {
     <div style={{ padding: 80 }}>
       <Popover placement="bottom-end">
         <PopoverTrigger>
-          <Button variant="ghost" iconOnly={MoreHorizontal} aria-label="More actions" />
+          <Button
+            variant="ghost"
+            iconOnly={MoreHorizontal}
+            aria-label="More actions"
+          />
         </PopoverTrigger>
         <PopoverContent>
-          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 140 }}>
-            <button style={{ textAlign: 'left', padding: '6px 8px' }}>Edit</button>
-            <button style={{ textAlign: 'left', padding: '6px 8px' }}>Duplicate</button>
-            <button style={{ textAlign: 'left', padding: '6px 8px', color: '#b91c1c' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', minWidth: 140 }}
+          >
+            <button style={{ textAlign: 'left', padding: '6px 8px' }}>
+              Edit
+            </button>
+            <button style={{ textAlign: 'left', padding: '6px 8px' }}>
+              Duplicate
+            </button>
+            <button
+              style={{
+                textAlign: 'left',
+                padding: '6px 8px',
+                color: '#b91c1c',
+              }}
+            >
               Delete
             </button>
           </div>
@@ -55,14 +71,22 @@ export const BottomStart: Story = {
 export const FlipsAboveNearViewportBottom: Story = {
   args: { children: null },
   render: () => (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'flex-end', padding: 16 }}>
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'flex-end',
+        padding: 16,
+      }}
+    >
       <Popover placement="bottom-start">
         <PopoverTrigger>
           <Button variant="secondary">Near bottom — should flip up</Button>
         </PopoverTrigger>
         <PopoverContent>
           <div style={{ padding: 8, height: 200, width: 200 }}>
-            200×200 content. Opens above the trigger when the bottom of the viewport is too close.
+            200×200 content. Opens above the trigger when the bottom of the
+            viewport is too close.
           </div>
         </PopoverContent>
       </Popover>
@@ -74,7 +98,7 @@ const ControlledTemplate = () => {
   const [open, setOpen] = useState(false)
   return (
     <div style={{ padding: 80, display: 'flex', gap: 12 }}>
-      <Button variant="secondary" onClick={() => setOpen((v) => !v)}>
+      <Button variant="secondary" onClick={() => setOpen(v => !v)}>
         Toggle from outside
       </Button>
       <Popover open={open} onOpenChange={setOpen} placement="bottom-start">

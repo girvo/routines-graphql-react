@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { resolveSide } from './popover/helpers.ts'
@@ -74,7 +81,10 @@ export const Tooltip = ({ label, side = 'top', children }: TooltipProps) => {
       const caret = caretRef.current
       if (caret) {
         const caretMax = contentRect.width - CARET_INSET
-        const caretLeft = Math.max(CARET_INSET, Math.min(triggerCenter - left, caretMax))
+        const caretLeft = Math.max(
+          CARET_INSET,
+          Math.min(triggerCenter - left, caretMax),
+        )
         caret.style.left = `${caretLeft}px`
         caret.dataset.side = resolvedSide
       }
@@ -99,7 +109,8 @@ export const Tooltip = ({ label, side = 'top', children }: TooltipProps) => {
 
   useEffect(() => {
     if (!open) return
-    const focusable = wrapperRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
+    const focusable =
+      wrapperRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
     if (!focusable) return
     const previous = focusable.getAttribute('aria-describedby')
     focusable.setAttribute(
@@ -119,7 +130,7 @@ export const Tooltip = ({ label, side = 'top', children }: TooltipProps) => {
         className={styles.trigger}
         onMouseEnter={scheduleShow}
         onMouseLeave={hideNow}
-        onFocus={(e) => {
+        onFocus={e => {
           if (e.target.matches(':focus-visible')) setOpen(true)
         }}
         onBlur={hideNow}
@@ -133,7 +144,12 @@ export const Tooltip = ({ label, side = 'top', children }: TooltipProps) => {
               id={tooltipId}
               role="tooltip"
               className={styles.tooltip}
-              style={{ position: 'absolute', top: 0, left: 0, visibility: 'hidden' }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                visibility: 'hidden',
+              }}
             >
               {label}
               <span ref={caretRef} className={styles.caret} aria-hidden />

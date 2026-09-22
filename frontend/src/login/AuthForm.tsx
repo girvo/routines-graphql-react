@@ -73,7 +73,10 @@ export const AuthForm = ({
       const validatedResponse = authResponse(json)
 
       if (validatedResponse instanceof type.errors) {
-        console.error('Invalid response from server:', validatedResponse.summary)
+        console.error(
+          'Invalid response from server:',
+          validatedResponse.summary,
+        )
         setError('root', { message: 'Invalid server response' })
         return
       }
@@ -112,7 +115,11 @@ export const AuthForm = ({
         <Title size="md" className={styles.title}>
           {title}
         </Title>
-        <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form
+          className={styles.form}
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
           {withName && (
             <Field label="Name" hideLabel error={nameError}>
               <TextInput
@@ -142,7 +149,12 @@ export const AuthForm = ({
               {...register('password')}
             />
           </Field>
-          <Button type="submit" variant="primary" loading={isSubmitting} fullWidth>
+          <Button
+            type="submit"
+            variant="primary"
+            loading={isSubmitting}
+            fullWidth
+          >
             {submitLabel}
           </Button>
           {errors.root?.message && (
@@ -157,7 +169,10 @@ export const AuthForm = ({
 
 type AuthFormFooterLinkProps = { to: string; children: ReactNode }
 
-export const AuthFormFooterLink = ({ to, children }: AuthFormFooterLinkProps) => (
+export const AuthFormFooterLink = ({
+  to,
+  children,
+}: AuthFormFooterLinkProps) => (
   <NavLink to={to} className={styles.footerLink}>
     {children}
   </NavLink>

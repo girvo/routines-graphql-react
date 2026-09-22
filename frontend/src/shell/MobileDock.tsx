@@ -24,10 +24,15 @@ const tabClass = ({ isActive }: { isActive: boolean }) =>
 
 export const MobileDock = () => (
   <nav className={styles.root}>
-    {routes.map((route) => {
+    {routes.map(route => {
       const Icon = route.icon
       return (
-        <NavLink key={route.to} to={route.to} end={route.end} className={tabClass}>
+        <NavLink
+          key={route.to}
+          to={route.to}
+          end={route.end}
+          className={tabClass}
+        >
           <Icon className={styles.icon} />
           <span className={styles.label}>{route.label}</span>
         </NavLink>

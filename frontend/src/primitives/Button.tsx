@@ -1,4 +1,9 @@
-import { forwardRef, type ButtonHTMLAttributes, type ComponentType, type ReactNode } from 'react'
+import {
+  forwardRef,
+  type ButtonHTMLAttributes,
+  type ComponentType,
+  type ReactNode,
+} from 'react'
 import { Loader2 } from 'lucide-react'
 import { clsx } from 'clsx'
 import styles from './Button.module.css'
@@ -30,13 +35,20 @@ type IconOnlyButtonProps = CommonProps & {
 
 type ButtonProps = LabelledButtonProps | IconOnlyButtonProps
 
-const renderLeading = (loading: boolean, LeadingIcon: IconComponent | undefined) => {
-  if (loading) return <Loader2 className={clsx(styles.icon, styles.spinner)} aria-hidden />
+const renderLeading = (
+  loading: boolean,
+  LeadingIcon: IconComponent | undefined,
+) => {
+  if (loading)
+    return <Loader2 className={clsx(styles.icon, styles.spinner)} aria-hidden />
   if (LeadingIcon) return <LeadingIcon className={styles.icon} />
   return null
 }
 
-const renderTrailing = (loading: boolean, TrailingIcon: IconComponent | undefined) => {
+const renderTrailing = (
+  loading: boolean,
+  TrailingIcon: IconComponent | undefined,
+) => {
   if (loading) return null
   if (TrailingIcon) return <TrailingIcon className={styles.icon} />
   return null
@@ -65,13 +77,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       const { iconOnly: IconOnly, ...iconRest } = rest as IconOnlyButtonProps
       restProps = iconRest
       if (loading) {
-        body = <Loader2 className={clsx(styles.icon, styles.spinner)} aria-hidden />
+        body = (
+          <Loader2 className={clsx(styles.icon, styles.spinner)} aria-hidden />
+        )
       } else {
         body = <IconOnly className={styles.icon} />
       }
     } else {
-      const { leadingIcon: LeadingIcon, trailingIcon: TrailingIcon, children, ...labelRest } =
-        rest as LabelledButtonProps
+      const {
+        leadingIcon: LeadingIcon,
+        trailingIcon: TrailingIcon,
+        children,
+        ...labelRest
+      } = rest as LabelledButtonProps
       restProps = labelRest
       body = (
         <>

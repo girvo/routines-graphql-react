@@ -27,7 +27,12 @@ export const Bottom: Story = {
   render: () => (
     <div style={{ padding: 80 }}>
       <Tooltip label="Edit task" side="bottom">
-        <Button variant="ghost" size="sm" iconOnly={Pencil} aria-label="Edit task" />
+        <Button
+          variant="ghost"
+          size="sm"
+          iconOnly={Pencil}
+          aria-label="Edit task"
+        />
       </Tooltip>
     </div>
   ),
@@ -36,7 +41,14 @@ export const Bottom: Story = {
 export const FlipsBelowNearViewportTop: Story = {
   args: { label: 'Flips down', children: <span /> },
   render: () => (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'flex-start', padding: 16 }}>
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'flex-start',
+        padding: 16,
+      }}
+    >
       <Tooltip label="Tooltip flips down when the trigger is near the top">
         <Button variant="secondary">Near top — should flip down</Button>
       </Tooltip>
@@ -60,13 +72,28 @@ export const RowOfActions: Story = {
   render: () => (
     <div style={{ padding: 80, display: 'flex', gap: 4 }}>
       <Tooltip label="Edit task">
-        <Button variant="ghost" size="sm" iconOnly={Pencil} aria-label="Edit task" />
+        <Button
+          variant="ghost"
+          size="sm"
+          iconOnly={Pencil}
+          aria-label="Edit task"
+        />
       </Tooltip>
       <Tooltip label="Delete task">
-        <Button variant="ghost" size="sm" iconOnly={Trash2} aria-label="Delete task" />
+        <Button
+          variant="ghost"
+          size="sm"
+          iconOnly={Trash2}
+          aria-label="Delete task"
+        />
       </Tooltip>
       <Tooltip label="Remove from slot">
-        <Button variant="ghost" size="sm" iconOnly={X} aria-label="Remove from slot" />
+        <Button
+          variant="ghost"
+          size="sm"
+          iconOnly={X}
+          aria-label="Remove from slot"
+        />
       </Tooltip>
     </div>
   ),

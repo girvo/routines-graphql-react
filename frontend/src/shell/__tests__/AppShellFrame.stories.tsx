@@ -35,7 +35,11 @@ export const Default: Story = {
   args: { children: null },
   render: () => (
     <AppShellFrame
-      sidebar={<div style={{ width: 240, height: '100%' }}>{slot('Sidebar (240)', '#f5f5f5')}</div>}
+      sidebar={
+        <div style={{ width: 240, height: '100%' }}>
+          {slot('Sidebar (240)', '#f5f5f5')}
+        </div>
+      }
       topBar={slot('TopBar (48)', '#fafafa', 48)}
       dock={slot('Dock (56)', '#fafafa', 56)}
     >
@@ -47,7 +51,10 @@ export const Default: Story = {
 export const NoSidebar: Story = {
   args: { children: null },
   render: () => (
-    <AppShellFrame topBar={slot('TopBar', '#fafafa', 48)} dock={slot('Dock', '#fafafa', 56)}>
+    <AppShellFrame
+      topBar={slot('TopBar', '#fafafa', 48)}
+      dock={slot('Dock', '#fafafa', 56)}
+    >
       {slot('Main content', '#ffffff')}
     </AppShellFrame>
   ),
@@ -55,5 +62,7 @@ export const NoSidebar: Story = {
 
 export const OnlyMain: Story = {
   args: { children: null },
-  render: () => <AppShellFrame>{slot('Main content', '#ffffff')}</AppShellFrame>,
+  render: () => (
+    <AppShellFrame>{slot('Main content', '#ffffff')}</AppShellFrame>
+  ),
 }

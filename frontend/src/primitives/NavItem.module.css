@@ -16,7 +16,7 @@
     color var(--transition-default);
 }
 
-.root:hover:not(:disabled):not(.active) {
+.root:hover:not(:disabled, .active) {
   background: var(--surface-soft);
   color: var(--text-ink);
 }

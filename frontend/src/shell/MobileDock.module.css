@@ -3,7 +3,8 @@
   flex-direction: row;
   background: var(--surface);
   border-top: var(--border-width) solid var(--stroke-line-medium);
-  padding: var(--control-gap) 0 max(var(--control-gap), env(safe-area-inset-bottom));
+  padding: var(--control-gap) 0
+    max(var(--control-gap), env(safe-area-inset-bottom));
 }
 
 .tab {

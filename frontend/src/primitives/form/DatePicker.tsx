@@ -15,7 +15,11 @@ import {
   subMonths,
 } from 'date-fns'
 import { clsx } from 'clsx'
-import { Popover, PopoverContent, PopoverTrigger } from '../overlay/popover/Popover.tsx'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../overlay/popover/Popover.tsx'
 import { Button } from '../Button.tsx'
 import styles from './DatePicker.module.css'
 
@@ -37,7 +41,9 @@ export const DatePicker = ({
   'aria-label': ariaLabel,
 }: DatePickerProps) => {
   const [open, setOpen] = useState(false)
-  const [viewMonth, setViewMonth] = useState(() => startOfMonth(value ?? new Date()))
+  const [viewMonth, setViewMonth] = useState(() =>
+    startOfMonth(value ?? new Date()),
+  )
 
   const today = startOfDay(new Date())
 
@@ -46,7 +52,10 @@ export const DatePicker = ({
     end: endOfWeek(endOfMonth(viewMonth)),
   })
 
-  const nextMonthDisabled = isAfter(startOfMonth(addMonths(viewMonth, 1)), today)
+  const nextMonthDisabled = isAfter(
+    startOfMonth(addMonths(viewMonth, 1)),
+    today,
+  )
 
   const handleSelect = (day: Date) => {
     onChange(day)
@@ -83,7 +92,9 @@ export const DatePicker = ({
           >
             <ChevronLeft className={styles.navIcon} />
           </button>
-          <span className={styles.monthLabel}>{format(viewMonth, 'MMMM yyyy')}</span>
+          <span className={styles.monthLabel}>
+            {format(viewMonth, 'MMMM yyyy')}
+          </span>
           <button
             type="button"
             className={styles.nav}
@@ -102,7 +113,7 @@ export const DatePicker = ({
           ))}
         </div>
         <div className={styles.grid} role="grid">
-          {days.map((day) => {
+          {days.map(day => {
             const isFuture = isAfter(day, today)
             const isSelected = value !== null && isSameDay(day, value)
             const isOutsideMonth = !isSameMonth(day, viewMonth)

@@ -16,9 +16,15 @@ export const Default: Story = {
 export const AllSizes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <Title size="lg" as="h1">Title Lg — 20px / 600</Title>
-      <Title size="md" as="h2">Title Md — 18px / 600</Title>
-      <Title size="sm" as="h3">Title Sm — 15px / 600</Title>
+      <Title size="lg" as="h1">
+        Title Lg — 20px / 600
+      </Title>
+      <Title size="md" as="h2">
+        Title Md — 18px / 600
+      </Title>
+      <Title size="sm" as="h3">
+        Title Sm — 15px / 600
+      </Title>
     </div>
   ),
 }

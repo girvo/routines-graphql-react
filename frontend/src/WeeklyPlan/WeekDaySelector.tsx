@@ -9,10 +9,14 @@ interface WeekDaySelectorProps {
   counts?: Partial<Record<Day, number>>
 }
 
-export const WeekDaySelector = ({ selected, onSelect, counts }: WeekDaySelectorProps) => (
+export const WeekDaySelector = ({
+  selected,
+  onSelect,
+  counts,
+}: WeekDaySelectorProps) => (
   <nav className={styles.root} aria-label="Days of the week">
     <div className={styles.heading}>Days</div>
-    {DAYS.map((day) => {
+    {DAYS.map(day => {
       const isActive = day === selected
       const count = counts?.[day]
       return (

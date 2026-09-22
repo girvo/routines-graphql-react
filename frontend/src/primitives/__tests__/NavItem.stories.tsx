@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { Calendar, CalendarDays, ListTodo, Settings, LogOut } from 'lucide-react'
+import {
+  Calendar,
+  CalendarDays,
+  ListTodo,
+  Settings,
+  LogOut,
+} from 'lucide-react'
 import { NavItem } from '../NavItem'
 
 const meta = {
@@ -34,8 +40,10 @@ const ITEMS = [
 const SidebarTemplate = () => {
   const [current, setCurrent] = useState('today')
   return (
-    <div style={{ width: 216, display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {ITEMS.map((item) => (
+    <div
+      style={{ width: 216, display: 'flex', flexDirection: 'column', gap: 2 }}
+    >
+      {ITEMS.map(item => (
         <NavItem
           key={item.key}
           icon={item.icon}

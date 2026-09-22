@@ -31,7 +31,9 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
   )
 
   const total = data.edges.length
-  const completed = data.edges.filter((edge) => edge.node.completion !== null).length
+  const completed = data.edges.filter(
+    edge => edge.node.completion !== null,
+  ).length
   const progress = `${completed}/${total}`
 
   return (
@@ -50,7 +52,7 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
             No {label.toLowerCase()} tasks scheduled
           </div>
         )}
-        {data.edges.map((edge) => (
+        {data.edges.map(edge => (
           <TodayTaskRow key={edge.node.routineSlot.id} instance={edge.node} />
         ))}
       </div>

@@ -21,7 +21,8 @@ const emptyContext: PageHeaderContextValue = {
   clearSlots: () => {},
 }
 
-export const PageHeaderContext = createContext<PageHeaderContextValue>(emptyContext)
+export const PageHeaderContext =
+  createContext<PageHeaderContextValue>(emptyContext)
 
 interface UsePageHeaderInput {
   title?: string
@@ -30,7 +31,12 @@ interface UsePageHeaderInput {
   belowHeader?: ReactNode
 }
 
-export const usePageHeader = ({ title, subtitle, actions, belowHeader }: UsePageHeaderInput) => {
+export const usePageHeader = ({
+  title,
+  subtitle,
+  actions,
+  belowHeader,
+}: UsePageHeaderInput) => {
   const { setSlots, clearSlots } = use(PageHeaderContext)
 
   useEffect(() => {

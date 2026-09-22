@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { clsx } from 'clsx'
-import { Popover, PopoverContent, PopoverTrigger } from '../overlay/popover/Popover.tsx'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../overlay/popover/Popover.tsx'
 import { IconBadge } from '../badge/IconBadge.tsx'
 import {
   iconCategories,
@@ -59,7 +63,10 @@ export const IconPicker = ({
                     <button
                       key={name}
                       type="button"
-                      className={clsx(styles.tile, isSelected && styles.selected)}
+                      className={clsx(
+                        styles.tile,
+                        isSelected && styles.selected,
+                      )}
                       onClick={() => handleSelect(name)}
                       aria-label={iconLabel(name)}
                       aria-pressed={isSelected}

@@ -26,11 +26,10 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 const WeekTemplate = () => {
   const [selected, setSelected] = useState<Set<string>>(
-
-      () => new Set(['Mon', 'Wed', 'Fri']),
-    )
+    () => new Set(['Mon', 'Wed', 'Fri']),
+  )
   const toggle = (day: string) => {
-    setSelected((prev) => {
+    setSelected(prev => {
       const next = new Set(prev)
       if (next.has(day)) next.delete(day)
       else next.add(day)
@@ -39,7 +38,7 @@ const WeekTemplate = () => {
   }
   return (
     <div style={{ display: 'flex', gap: 6 }}>
-      {DAYS.map((day) => (
+      {DAYS.map(day => (
         <DayToggle
           key={day}
           day={day}

@@ -23,7 +23,12 @@ export const Meta = <E extends MetaElement = 'span'>({
   const Tag = (as ?? 'span') as ElementType
   return (
     <Tag
-      className={clsx('typo-body', sizeClass[size], strong && 'typo-medium', className)}
+      className={clsx(
+        'typo-body',
+        sizeClass[size],
+        strong && 'typo-medium',
+        className,
+      )}
       {...rest}
     />
   )

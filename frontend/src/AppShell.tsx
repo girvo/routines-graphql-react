@@ -1,21 +1,8 @@
-import {
-  Suspense,
-  use,
-  useCallback,
-  useState,
-  type ReactNode,
-} from 'react'
-import {
-  Outlet,
-  useMatches,
-  type UIMatch,
-} from 'react-router-dom'
+import { Suspense, use, useCallback, useState, type ReactNode } from 'react'
+import { Outlet, useMatches, type UIMatch } from 'react-router-dom'
 import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
 import { AuthContext } from './auth/auth-store.ts'
-import {
-  PageHeaderContext,
-  type PageHeaderSlots,
-} from './utils/page-header.ts'
+import { PageHeaderContext, type PageHeaderSlots } from './utils/page-header.ts'
 import { AppShellFrame } from './shell/AppShellFrame.tsx'
 import { DesktopSidebar } from './shell/DesktopSidebar.tsx'
 import { MobileDock } from './shell/MobileDock.tsx'
@@ -34,7 +21,11 @@ type TopBarSlotProps = {
   onLogout: () => void
 }
 
-const TopBarSlot = ({ routeTitle, routeSubtitle, onLogout }: TopBarSlotProps) => {
+const TopBarSlot = ({
+  routeTitle,
+  routeSubtitle,
+  onLogout,
+}: TopBarSlotProps) => {
   const { title, subtitle, actions } = use(PageHeaderContext)
   return (
     <TopBar
@@ -73,16 +64,18 @@ const AppShell = ({ queries }: Props) => {
     window.location.href = '/'
   }, [clearAccessToken])
 
-  const routeTitle = matches.findLast((m) => m.handle?.title)?.handle?.title ?? 'Routines'
-  const routeSubtitle = matches.findLast((m) => m.handle?.subtitle)?.handle?.subtitle
-  const Loading = matches.findLast((m) => m.handle?.loading)?.handle?.loading
+  const routeTitle =
+    matches.findLast(m => m.handle?.title)?.handle?.title ?? 'Routines'
+  const routeSubtitle = matches.findLast(m => m.handle?.subtitle)?.handle
+    ?.subtitle
+  const Loading = matches.findLast(m => m.handle?.loading)?.handle?.loading
 
   const setSlots = useCallback((next: Partial<PageHeaderSlots>) => {
-    setSlotsState((prev) => ({ ...prev, ...next }))
+    setSlotsState(prev => ({ ...prev, ...next }))
   }, [])
 
   const clearSlots = useCallback((keys: Array<keyof PageHeaderSlots>) => {
-    setSlotsState((prev) => {
+    setSlotsState(prev => {
       const next = { ...prev }
       for (const key of keys) next[key] = null
       return next
@@ -92,8 +85,16 @@ const AppShell = ({ queries }: Props) => {
   return (
     <PageHeaderContext value={{ ...slots, setSlots, clearSlots }}>
       <AppShellFrame
-        sidebar={<DesktopSidebar user={queries.userQuery} onLogout={handleLogout} />}
-        topBar={<TopBarSlot routeTitle={routeTitle} routeSubtitle={routeSubtitle} onLogout={handleLogout} />}
+        sidebar={
+          <DesktopSidebar user={queries.userQuery} onLogout={handleLogout} />
+        }
+        topBar={
+          <TopBarSlot
+            routeTitle={routeTitle}
+            routeSubtitle={routeSubtitle}
+            onLogout={handleLogout}
+          />
+        }
         belowHeader={<BelowHeaderSlot />}
         dock={<MobileDock />}
       >

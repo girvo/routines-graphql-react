@@ -9,7 +9,12 @@ interface AddTaskRowProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const AddTaskRow = forwardRef<HTMLButtonElement, AddTaskRowProps>(
   ({ label = 'Add task', className, type = 'button', ...rest }, ref) => (
-    <button ref={ref} type={type} className={clsx(styles.root, className)} {...rest}>
+    <button
+      ref={ref}
+      type={type}
+      className={clsx(styles.root, className)}
+      {...rest}
+    >
       <span className={styles.plusBox} aria-hidden>
         <Plus className={styles.icon} />
       </span>
