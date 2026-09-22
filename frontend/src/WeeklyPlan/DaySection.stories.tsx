@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { OperationDescriptor } from 'relay-runtime'
+import { ConnectionHandler, type OperationDescriptor } from 'relay-runtime'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { Suspense, useState } from 'react'
 import {
@@ -122,18 +122,19 @@ const DaySectionStoryInner = () => {
 }
 
 const StoryMoveTrigger = () => {
-  const [commitMove] = useDaySectionMoveTask()
+  const { moveSlot } = useDaySectionMoveTask({
+    connectionId: ConnectionHandler.getConnectionID(
+      CONTAINER_ID,
+      'DaySection_slots',
+    ),
+    slotIds: READ_ORDER.map(slot => slot.id),
+    dayOfWeek: 'MONDAY',
+  })
 
   return (
     <button
       type="button"
-      onClick={() =>
-        commitMove({
-          variables: {
-            input: { routineSlotId: PUSHUPS.id, to: 'BOTTOM' },
-          },
-        })
-      }
+      onClick={() => moveSlot(PUSHUPS.id, { to: 'BOTTOM' })}
     >
       Move Pushups to bottom
     </button>
