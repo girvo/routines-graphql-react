@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { COMPONENT_NAME } from './COMPONENT_NAME'
+import { COMPONENT_NAME } from '../COMPONENT_NAME'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
 import { Suspense } from 'react'
 import {

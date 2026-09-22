@@ -17,9 +17,11 @@ import styles from './Popover.module.css'
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
+export type PopoverOpenSource = 'pointer' | 'keyboard'
+
 type PopoverContextValue = {
   open: boolean
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, source: PopoverOpenSource) => void
   triggerRef: RefObject<HTMLSpanElement | null>
   contentId: string
   placement: Placement
@@ -29,7 +31,8 @@ const PopoverContext = createContext<PopoverContextValue | null>(null)
 
 const usePopoverContext = () => {
   const ctx = use(PopoverContext)
-  if (!ctx) throw new Error('Popover subcomponents must be rendered inside <Popover>')
+  if (!ctx)
+    throw new Error('Popover subcomponents must be rendered inside <Popover>')
   return ctx
 }
 
@@ -40,7 +43,7 @@ type PopoverProps = {
   children: ReactNode
   placement?: Placement
   open?: boolean
-  onOpenChange?: (open: boolean) => void
+  onOpenChange?: (open: boolean, source: PopoverOpenSource) => void
   defaultOpen?: boolean
 }
 
@@ -56,9 +59,9 @@ export const Popover = ({
   const open = isControlled ? controlledOpen : uncontrolledOpen
 
   const setOpen = useCallback(
-    (next: boolean) => {
+    (next: boolean, source: PopoverOpenSource = 'pointer') => {
       if (!isControlled) setUncontrolledOpen(next)
-      onOpenChange?.(next)
+      onOpenChange?.(next, source)
     },
     [isControlled, onOpenChange],
   )
@@ -67,7 +70,9 @@ export const Popover = ({
   const contentId = useId()
 
   return (
-    <PopoverContext.Provider value={{ open, setOpen, triggerRef, contentId, placement }}>
+    <PopoverContext.Provider
+      value={{ open, setOpen, triggerRef, contentId, placement }}
+    >
       {children}
     </PopoverContext.Provider>
   )
@@ -102,7 +107,7 @@ export const PopoverTrigger = ({ children }: PopoverTriggerProps) => {
 
   const onClick = (e: MouseEvent) => {
     if (e.defaultPrevented) return
-    setOpen(!open)
+    setOpen(!open, e.detail > 0 ? 'pointer' : 'keyboard')
   }
 
   return (
@@ -123,7 +128,8 @@ export const PopoverContent = ({
   className,
   label,
 }: PopoverContentProps) => {
-  const { open, setOpen, triggerRef, contentId, placement } = usePopoverContext()
+  const { open, setOpen, triggerRef, contentId, placement } =
+    usePopoverContext()
   const contentRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
@@ -162,14 +168,14 @@ export const PopoverContent = ({
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       e.stopPropagation()
-      setOpen(false)
+      setOpen(false, 'keyboard')
       focusableWithin(triggerRef.current)?.focus()
     }
     const onPointerDown = (e: PointerEvent) => {
       const target = e.target as Node
       if (contentRef.current?.contains(target)) return
       if (triggerRef.current?.contains(target)) return
-      setOpen(false)
+      setOpen(false, 'pointer')
     }
     document.addEventListener('keydown', onKey)
     document.addEventListener('pointerdown', onPointerDown)

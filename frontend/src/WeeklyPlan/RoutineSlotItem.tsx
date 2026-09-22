@@ -26,6 +26,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  type PopoverOpenSource,
 } from '../primitives/overlay/popover/Popover.tsx'
 import { GripVertical, Loader, X } from 'lucide-react'
 import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
@@ -53,6 +54,7 @@ export const RoutineSlotItem = ({
 }: RoutineSlotItemProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isMoveOpen, setIsMoveOpen] = useState(false)
+  const [moveOpenedViaKeyboard, setMoveOpenedViaKeyboard] = useState(false)
   const moveButtonRef = useRef<HTMLButtonElement>(null)
   const moveMenuRef = useRef<HTMLDivElement>(null)
   const routineSlot = useFragment(
@@ -91,10 +93,22 @@ export const RoutineSlotItem = ({
 
   useEffect(() => {
     if (!isMoveOpen) return
-    moveMenuRef.current
-      ?.querySelector<HTMLButtonElement>(MENU_ITEM_SELECTOR)
-      ?.focus()
-  }, [isMoveOpen])
+    if (moveOpenedViaKeyboard) {
+      moveMenuRef.current
+        ?.querySelector<HTMLButtonElement>(MENU_ITEM_SELECTOR)
+        ?.focus()
+      return
+    }
+    moveMenuRef.current?.focus()
+  }, [isMoveOpen, moveOpenedViaKeyboard])
+
+  const handleMoveMenuOpenChange = (
+    open: boolean,
+    source: PopoverOpenSource,
+  ) => {
+    setIsMoveOpen(open)
+    setMoveOpenedViaKeyboard(open && source === 'keyboard')
+  }
 
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const items = [
@@ -116,6 +130,8 @@ export const RoutineSlotItem = ({
       next = 0
     } else if (event.key === 'End') {
       next = items.length - 1
+    } else if (event.key === 'Tab' && current < 0) {
+      next = event.shiftKey ? items.length - 1 : 0
     }
     if (next < 0) return
     event.preventDefault()
@@ -149,7 +165,7 @@ export const RoutineSlotItem = ({
       {canMove && (
         <Popover
           open={isMoveOpen}
-          onOpenChange={setIsMoveOpen}
+          onOpenChange={handleMoveMenuOpenChange}
           placement="bottom-end"
         >
           <PopoverTrigger>
@@ -171,6 +187,7 @@ export const RoutineSlotItem = ({
               role="menu"
               aria-label={`Move ${title}`}
               className={styles.moveMenu}
+              tabIndex={-1}
               onKeyDown={handleMenuKeyDown}
             >
               {MOVE_COMMANDS.map(({ command, label }) => (

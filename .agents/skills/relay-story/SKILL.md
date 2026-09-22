@@ -21,11 +21,13 @@ Read the component file and identify:
 
 ## Step 2: Determine paths
 
-Story files go side by side with their source files:
+Story files go in a `__tests__` folder next to their source files:
 
 - Component: `frontend/src/[Dir]/[ComponentName].tsx`
-- Story: `frontend/src/[Dir]/[ComponentName].stories.tsx`
-- Generated: `frontend/src/[Dir]/__generated__/[ComponentName]StoryInnerQuery.graphql.ts`
+- Story: `frontend/src/[Dir]/__tests__/[ComponentName].stories.tsx`
+- Generated: `frontend/src/[Dir]/__tests__/__generated__/[ComponentName]StoryInnerQuery.graphql.ts`
+
+Relay writes artifacts into a `__generated__` folder beside the file that defines the operation. A query or fragment defined in the story lands in `__tests__/__generated__/` (import it as `./__generated__/...`); anything the component defines stays in `[Dir]/__generated__/` (import it as `../__generated__/...`).
 
 ## Step 3: Choose the right template
 
@@ -58,8 +60,8 @@ Replace all placeholders:
 **For the MockPayloadGenerator:** use `MockPayloadGenerator.generate(op)` with no custom resolvers — it auto-generates all scalar fields. `queueOperationResolver` is **consumed after each operation**, so queue one resolver for the initial query plus one for each mutation the component can trigger (in the order they'd be called).
 
 **For preloaded query components** (using the `preloaded-query-story.tsx` template):
-- Import the compiled query node from the component's existing generated file: `import QueryNode from './__generated__/QueryName.graphql'`
-- Import the query type: `import type { QueryName } from './__generated__/QueryName.graphql'`
+- Import the compiled query node from the component's existing generated file: `import QueryNode from '../__generated__/QueryName.graphql'`
+- Import the query type: `import type { QueryName } from '../__generated__/QueryName.graphql'`
 - Call `environment.mock.queuePendingOperation(QueryNode, {})` to register the pending operation
 - Call `loadQuery(environment, QueryNode, {}) as PreloadedQuery<QueryName>` to get the preloaded query reference
 - Pass the `queryRef` to the component
@@ -77,11 +79,11 @@ Replace all placeholders:
 
 **The `title` in `meta`** should be `'[Dir]/[ComponentName]'` (e.g., `'WeeklyPlan/RoutineSlotItem'`).
 
-**Import path:** The story is in the same directory as the component, so the relative import is `./[ComponentName]`.
+**Import path:** The story is in the component directory's `__tests__` folder, so the relative import is `../[ComponentName]`.
 
 ## Step 5: Write the story file
 
-Write the completed story to `frontend/src/[Dir]/[ComponentName].stories.tsx`.
+Write the completed story to `frontend/src/[Dir]/__tests__/[ComponentName].stories.tsx`.
 
 ## Step 6: Run the Relay compiler
 
@@ -91,14 +93,14 @@ For fragment-based stories (node-fragment / multi-fragment templates):
 pnpm --filter @my-routines/frontend relay
 ```
 
-This generates the `__generated__/[ComponentName]StoryInnerQuery.graphql.ts` file that the story imports from `./__generated__/[ComponentName]StoryInnerQuery.graphql`.
+This generates `__tests__/__generated__/[ComponentName]StoryInnerQuery.graphql.ts`, which the story imports from `./__generated__/[ComponentName]StoryInnerQuery.graphql`.
 
 For preloaded query stories: **no relay compiler run is needed** — the story imports the query node from the component's existing generated file.
 
 ## Step 7: Verify
 
 Check that:
-- For fragment stories: the `__generated__` file was created
+- For fragment stories: the `__tests__/__generated__` file was created
 - For fragment stories: the import of the generated query type resolves (uses `.graphql` extension, not `.graphql.ts`)
 - For preloaded query stories: the query node import path matches the component's existing generated file
 - No TypeScript errors in the story (check LSP diagnostics)

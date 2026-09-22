@@ -9,3 +9,7 @@ setProjectAnnotations([a11yAddonAnnotations, projectAnnotations]);
 // Polyfill Node.js `global` for relay-test-utils in browser tests
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).global = globalThis;
+
+if (!document.getElementById('toast-root')) {
+  document.body.appendChild(document.createElement('div')).id = 'toast-root'
+}

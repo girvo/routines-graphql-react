@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { COMPONENT_NAME } from './COMPONENT_NAME'
+import { COMPONENT_NAME } from '../COMPONENT_NAME'
 import { createMockEnvironment, MockPayloadGenerator } from 'relay-test-utils'
 import { Suspense } from 'react'
 import {
@@ -8,8 +8,8 @@ import {
   loadQuery,
 } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
-import type { QUERY_TYPE } from './__generated__/QUERY_FILE.graphql'
-import QUERY_NODE from './__generated__/QUERY_FILE.graphql'
+import type { QUERY_TYPE } from '../__generated__/QUERY_FILE.graphql'
+import QUERY_NODE from '../__generated__/QUERY_FILE.graphql'
 
 const COMPONENT_NAMEStory = () => {
   const environment = createMockEnvironment()

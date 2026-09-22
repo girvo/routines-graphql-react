@@ -45,7 +45,7 @@ Follow this flow in order. Do not write or revise the `play` function until the 
 
 Before editing any `*.stories.tsx` that uses Relay:
 
-1. **Read the generated query file** — `src/<component>/__generated__/<QueryName>.graphql.ts`
+1. **Read the generated query file** — story-defined queries are in `src/<Dir>/__tests__/__generated__/<QueryName>.graphql.ts`; the component's own queries and fragments are in `src/<Dir>/__generated__/`
    - Confirm the exact root fields the query requests
    - Note any `@connection` directives and their `key` values
    - Note any `ClientExtension` fields like `__id` that appear on connections
@@ -440,7 +440,7 @@ This skill is for Storybook interaction tests. In this repo, **component interac
 
 Use standalone Vitest only when the behavior is not story-shaped:
 
-- Pure functions and small helpers: `*.test.ts` in the `unit` project.
+- Pure functions and small helpers: `__tests__/*.test.ts` in the `unit` project.
 - Stores or browser APIs that need DOM globals but no rendered component, such as `localStorage`: add `// @vitest-environment jsdom` at the top of a `*.test.ts` file and keep the test focused on the store/helper.
 - Provider/router/app flows that cannot be represented as a useful story: ask the user before adding new browser-test tooling or a new Vitest project.
 
@@ -451,7 +451,7 @@ For auth/store-style tests, prefer simple Vitest assertions over rendered compon
 ```ts
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest'
-import { clearAccessToken, getAccessToken, setAccessToken } from './auth-store'
+import { clearAccessToken, getAccessToken, setAccessToken } from '../auth-store'
 
 describe('auth-store', () => {
   beforeEach(() => {
@@ -478,7 +478,7 @@ describe('auth-store', () => {
   ```
 - Run the relevant Storybook interaction tests:
   ```
-  pnpm --filter @my-routines/frontend test:storybook src/path/to/Foo.stories.tsx
+  pnpm --filter @my-routines/frontend test:storybook src/path/to/__tests__/Foo.stories.tsx
   ```
 - Run unit tests when you added or changed `*.test.ts` files:
   ```
