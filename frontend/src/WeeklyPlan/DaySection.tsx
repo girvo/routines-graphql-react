@@ -76,7 +76,10 @@ export const DaySection = ({
       <div className={styles.body}>
         {count === 0 && <div className={styles.empty}>No tasks added</div>}
         {count > 0 && (
-          <WeeklyPlanRoutineSection weeklyPlanSection={data.slots} />
+          <WeeklyPlanRoutineSection
+            weeklyPlanSection={data.slots}
+            dayOfWeek={dayOfWeek}
+          />
         )}
         <div className={styles.mobileAddRow}>
           <AddTaskDropdown

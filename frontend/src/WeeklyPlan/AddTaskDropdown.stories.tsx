@@ -18,6 +18,7 @@ import {
 
 import { AddTaskDropdown } from './AddTaskDropdown'
 import { RoutineSlotItem } from './RoutineSlotItem'
+import { useDaySectionMoveTask } from './DaySectionMoveTask'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql'
 import AddTaskDropdownQueryNode from './__generated__/AddTaskDropdownQuery.graphql'
 import type { AddTaskDropdownStoryQuery } from './__generated__/AddTaskDropdownStoryQuery.graphql'
@@ -204,6 +205,13 @@ const AddTaskDropdownStoryInner = ({
     routineData.daySectionSlots,
   )
 
+  const slotIds = daySection.slots.edges.map(edge => edge.node.id)
+  const { moveSlot, isMoving } = useDaySectionMoveTask({
+    connectionId: daySection.slots.__id,
+    slotIds,
+    dayOfWeek: 'MONDAY',
+  })
+
   return (
     <div>
       {daySection.slots.edges.map(edge => (
@@ -211,6 +219,7 @@ const AddTaskDropdownStoryInner = ({
           key={edge.node.id}
           routineSlot={edge.node}
           connectionId={daySection.slots.__id}
+          move={{ slotIds, moveSlot, isMoving }}
         />
       ))}
       <AddTaskDropdown

@@ -1,10 +1,17 @@
 import { graphql, useMutation, useRelayEnvironment } from 'react-relay'
 import { composeUpdaters } from '../relay/compose-updaters.ts'
 import { reorderConnectionEdgesOnce } from '../relay/reorder-connection-edges.ts'
+import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { invalidateDailyRoutinesForDayOfWeek } from './invalidate-daily-routines.ts'
 import { applyMove, type MoveTarget } from './task-order.ts'
 import type { DayOfWeek } from './days.ts'
 import type { DaySectionMoveTaskMutation } from './__generated__/DaySectionMoveTaskMutation.graphql.ts'
+
+export interface DaySectionMove {
+  slotIds: readonly string[]
+  isMoving: boolean
+  moveSlot: (routineSlotId: string, target: MoveTarget) => void
+}
 
 interface DaySectionMoveTaskOptions {
   connectionId: string
@@ -18,6 +25,7 @@ export const useDaySectionMoveTask = ({
   dayOfWeek,
 }: DaySectionMoveTaskOptions) => {
   const environment = useRelayEnvironment()
+  const { showPayloadErrors, showError } = useMutationErrorHandler()
   const [commit, isMoving] = useMutation<DaySectionMoveTaskMutation>(graphql`
     mutation DaySectionMoveTaskMutation($input: MoveRoutineSlotInput!) {
       moveRoutineSlot(input: $input) {
@@ -48,6 +56,10 @@ export const useDaySectionMoveTask = ({
         reorder,
         invalidateDailyRoutinesForDayOfWeek(environment, dayOfWeek),
       ),
+      onCompleted: (_response, errors) => {
+        showPayloadErrors(errors)
+      },
+      onError: showError,
     })
   }
 

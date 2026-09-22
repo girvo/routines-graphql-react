@@ -115,9 +115,14 @@ export const PopoverTrigger = ({ children }: PopoverTriggerProps) => {
 type PopoverContentProps = {
   children: ReactNode
   className?: string
+  label?: string
 }
 
-export const PopoverContent = ({ children, className }: PopoverContentProps) => {
+export const PopoverContent = ({
+  children,
+  className,
+  label,
+}: PopoverContentProps) => {
   const { open, setOpen, triggerRef, contentId, placement } = usePopoverContext()
   const contentRef = useRef<HTMLDivElement>(null)
 
@@ -181,6 +186,7 @@ export const PopoverContent = ({ children, className }: PopoverContentProps) => 
       ref={contentRef}
       id={contentId}
       role="dialog"
+      aria-label={label}
       className={clsx(styles.content, className)}
       style={{ position: 'absolute', top: 0, left: 0, visibility: 'hidden' }}
     >

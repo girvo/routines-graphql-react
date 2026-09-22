@@ -16,6 +16,7 @@ import {
 import { ToastProvider } from '../toast/ToastProvider'
 
 import { RoutineSlotItem } from './RoutineSlotItem'
+import { useDaySectionMoveTask } from './DaySectionMoveTask'
 import type { RoutineSlotItemStoryQuery } from './__generated__/RoutineSlotItemStoryQuery.graphql'
 import type { RoutineSlotItemStory_daySection$key } from './__generated__/RoutineSlotItemStory_daySection.graphql'
 
@@ -153,6 +154,13 @@ const RoutineSlotListStoryInner = () => {
     data.daySectionSlots,
   )
 
+  const slotIds = daySection.slots.edges.map(edge => edge.node.id)
+  const { moveSlot, isMoving } = useDaySectionMoveTask({
+    connectionId: daySection.slots.__id,
+    slotIds,
+    dayOfWeek: 'MONDAY',
+  })
+
   return (
     <div>
       {daySection.slots.edges.map(edge => (
@@ -160,6 +168,7 @@ const RoutineSlotListStoryInner = () => {
           key={edge.node.id}
           routineSlot={edge.node}
           connectionId={daySection.slots.__id}
+          move={{ slotIds, moveSlot, isMoving }}
         />
       ))}
     </div>

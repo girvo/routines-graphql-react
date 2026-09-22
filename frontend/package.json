@@ -18,6 +18,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@loop-payments/react-router-relay": "^2.1.3",
     "@my-routines/shared": "workspace:*",
