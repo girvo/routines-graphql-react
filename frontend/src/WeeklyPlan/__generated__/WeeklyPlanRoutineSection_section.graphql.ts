@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d07e6e88a850a5f43c803d692810efe4>>
+ * @generated SignedSource<<aa295ba615ae5e88f244a791aefff717>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,6 +15,9 @@ export type WeeklyPlanRoutineSection_section$data = {
   readonly edges: ReadonlyArray<{
     readonly node: {
       readonly id: string;
+      readonly task: {
+        readonly title: string;
+      };
       readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem_routineSlot">;
     };
   }>;
@@ -55,6 +58,24 @@ const node: ReaderFragment = {
               "storageKey": null
             },
             {
+              "alias": null,
+              "args": null,
+              "concreteType": "Task",
+              "kind": "LinkedField",
+              "name": "task",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "title",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            },
+            {
               "args": null,
               "kind": "FragmentSpread",
               "name": "RoutineSlotItem_routineSlot"
@@ -82,6 +103,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "295be559866377dad7af5524c1cc5905";
+(node as any).hash = "1ccb096b9f5d64ccdde1d635cc0cf9fc";
 
 export default node;

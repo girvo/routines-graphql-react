@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9fd8018f2dbe3bdf5349680b9706fc79>>
+ * @generated SignedSource<<5f4b0bb0c749ec257401e9505446256c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -176,7 +176,6 @@ return {
                         "storageKey": null
                       },
                       (v1/*: any*/),
-                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -185,7 +184,6 @@ return {
                         "name": "task",
                         "plural": false,
                         "selections": [
-                          (v1/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -193,6 +191,7 @@ return {
                             "name": "title",
                             "storageKey": null
                           },
+                          (v1/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -202,7 +201,8 @@ return {
                           }
                         ],
                         "storageKey": null
-                      }
+                      },
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -264,7 +264,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "af4c695901bc4f9e8e5a6d657e45c780",
+    "cacheID": "24748d406649614c0e0d3509b6c80776",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -335,7 +335,7 @@ return {
     },
     "name": "DaySectionStoryQuery",
     "operationKind": "query",
-    "text": "query DaySectionStoryQuery {\n  daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  id\n  dayOfWeek\n  section\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    ...WeeklyPlanRoutineSection_section\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
+    "text": "query DaySectionStoryQuery {\n  daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  id\n  dayOfWeek\n  section\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    ...WeeklyPlanRoutineSection_section\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      task {\n        title\n        id\n      }\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
   }
 };
 })();

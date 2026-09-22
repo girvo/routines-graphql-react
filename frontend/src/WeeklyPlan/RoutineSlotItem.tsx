@@ -7,8 +7,8 @@ import {
   useRelayEnvironment,
 } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime'
-import { announce } from '@atlaskit/pragmatic-drag-and-drop-live-region'
 import { iconComponent } from '../utils/icons.ts'
+import { announceMove } from './announce-move.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { invalidateDailyRoutinesForDayOfWeek } from './invalidate-daily-routines.ts'
 import type { DaySectionMove } from './DaySectionMoveTask.ts'
@@ -27,18 +27,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '../primitives/overlay/popover/Popover.tsx'
-import { ChevronsUpDown, Loader, X } from 'lucide-react'
+import { GripVertical, Loader, X } from 'lucide-react'
 import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
 import { Body } from '../primitives/text/Body.tsx'
 
 const MENU_ITEM_SELECTOR = '[role="menuitem"]:not([disabled])'
 
-const MOVE_COMMANDS: readonly { command: MoveCommand; label: string }[] = [
+const MOVE_COMMANDS = [
   { command: 'up', label: 'Move up' },
   { command: 'down', label: 'Move down' },
   { command: 'top', label: 'Move to top' },
   { command: 'bottom', label: 'Move to bottom' },
-]
+] as const
 
 interface RoutineSlotItemProps {
   routineSlot: RoutineSlotItem_routineSlot$key
@@ -130,14 +130,12 @@ export const RoutineSlotItem = ({
 
     const nextOrder = applyMove(move.slotIds, routineSlot.id, target)
     move.moveSlot(routineSlot.id, target)
-
-    const destination =
-      'to' in target
-        ? target.to === 'TOP'
-          ? 'the top'
-          : 'the bottom'
-        : `position ${nextOrder.indexOf(routineSlot.id) + 1} of ${nextOrder.length}`
-    announce(`${title} moved to ${destination}`)
+    announceMove({
+      title,
+      movedId: routineSlot.id,
+      target,
+      nextOrder,
+    })
   }
 
   return (
@@ -148,48 +146,51 @@ export const RoutineSlotItem = ({
         })}
       </span>
       <span className={styles.label}>{title}</span>
-      <Popover
-        open={isMoveOpen}
-        onOpenChange={setIsMoveOpen}
-        placement="bottom-end"
-      >
-        <PopoverTrigger>
-          <Tooltip label="Move">
-            <Button
-              ref={moveButtonRef}
-              size="sm"
-              variant="ghost"
-              iconOnly={ChevronsUpDown}
-              aria-label={`Move ${title}`}
-              disabled={!canMove}
-            />
-          </Tooltip>
-        </PopoverTrigger>
-        <PopoverContent label={`Move ${title}`}>
-          <div
-            ref={moveMenuRef}
-            role="menu"
-            aria-label={`Move ${title}`}
-            className={styles.moveMenu}
-            onKeyDown={handleMenuKeyDown}
-          >
-            {MOVE_COMMANDS.map(({ command, label }) => (
+      {canMove && (
+        <Popover
+          open={isMoveOpen}
+          onOpenChange={setIsMoveOpen}
+          placement="bottom-end"
+        >
+          <PopoverTrigger>
+            <Tooltip label="Move">
               <Button
-                key={command}
-                role="menuitem"
+                ref={moveButtonRef}
                 size="sm"
                 variant="ghost"
-                align="start"
-                fullWidth
-                disabled={move.isMoving || !targetFor(command)}
-                onClick={() => handleMoveCommand(command)}
-              >
-                {label}
-              </Button>
-            ))}
-          </div>
-        </PopoverContent>
-      </Popover>
+                iconOnly={GripVertical}
+                aria-label={`Move ${title}`}
+                className={styles.gripControl}
+                data-slot-drag-handle="true"
+              />
+            </Tooltip>
+          </PopoverTrigger>
+          <PopoverContent label={`Move ${title}`}>
+            <div
+              ref={moveMenuRef}
+              role="menu"
+              aria-label={`Move ${title}`}
+              className={styles.moveMenu}
+              onKeyDown={handleMenuKeyDown}
+            >
+              {MOVE_COMMANDS.map(({ command, label }) => (
+                <Button
+                  key={command}
+                  role="menuitem"
+                  size="sm"
+                  variant="ghost"
+                  align="start"
+                  fullWidth
+                  disabled={move.isMoving || !targetFor(command)}
+                  onClick={() => handleMoveCommand(command)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+      )}
       <Tooltip label="Remove">
         <Button
           className={!isLoading ? styles.dangerHover : undefined}

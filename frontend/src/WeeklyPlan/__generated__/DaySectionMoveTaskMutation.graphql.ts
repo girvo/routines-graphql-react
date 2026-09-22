@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e49bb45614b72ec2ec914a06765211c0>>
+ * @generated SignedSource<<2d0eada614cdeb743cc4814145a04231>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -217,7 +217,6 @@ return {
                             "storageKey": null
                           },
                           (v3/*: any*/),
-                          (v5/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -226,7 +225,6 @@ return {
                             "name": "task",
                             "plural": false,
                             "selections": [
-                              (v3/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -234,6 +232,7 @@ return {
                                 "name": "title",
                                 "storageKey": null
                               },
+                              (v3/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -243,7 +242,8 @@ return {
                               }
                             ],
                             "storageKey": null
-                          }
+                          },
+                          (v5/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -308,12 +308,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e093a5efe167ca9c9519bf53501c7b8b",
+    "cacheID": "7ebf56542927330222d64859b5aacbc4",
     "id": null,
     "metadata": {},
     "name": "DaySectionMoveTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation DaySectionMoveTaskMutation(\n  $input: MoveRoutineSlotInput!\n) {\n  moveRoutineSlot(input: $input) {\n    movedRoutineSlotEdge {\n      cursor\n      node {\n        id\n        position\n      }\n    }\n    section {\n      ...DaySection_section\n      id\n    }\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  id\n  dayOfWeek\n  section\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    ...WeeklyPlanRoutineSection_section\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
+    "text": "mutation DaySectionMoveTaskMutation(\n  $input: MoveRoutineSlotInput!\n) {\n  moveRoutineSlot(input: $input) {\n    movedRoutineSlotEdge {\n      cursor\n      node {\n        id\n        position\n      }\n    }\n    section {\n      ...DaySection_section\n      id\n    }\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  id\n  dayOfWeek\n  section\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    ...WeeklyPlanRoutineSection_section\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      task {\n        title\n        id\n      }\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
   }
 };
 })();

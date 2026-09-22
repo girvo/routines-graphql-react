@@ -18,6 +18,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^3.1.0",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.2.2",
     "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@loop-payments/react-router-relay": "^2.1.3",

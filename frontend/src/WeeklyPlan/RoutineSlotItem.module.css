@@ -31,6 +31,16 @@
   white-space: nowrap;
 }
 
+.gripControl {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.gripControl svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
 .dangerHover:hover:not(:disabled) {
   color: var(--accent-danger);
 }

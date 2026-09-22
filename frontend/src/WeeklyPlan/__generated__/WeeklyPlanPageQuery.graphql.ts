@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<434c626523105bcff2afe36fe0c9a6e1>>
+ * @generated SignedSource<<c786d45e48c79568b1740ee5d5a7395d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -293,7 +293,6 @@ v35 = [
                 "storageKey": null
               },
               (v32/*: any*/),
-              (v33/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -302,7 +301,6 @@ v35 = [
                 "name": "task",
                 "plural": false,
                 "selections": [
-                  (v32/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -310,6 +308,7 @@ v35 = [
                     "name": "title",
                     "storageKey": null
                   },
+                  (v32/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -319,7 +318,8 @@ v35 = [
                   }
                 ],
                 "storageKey": null
-              }
+              },
+              (v33/*: any*/)
             ],
             "storageKey": null
           }
@@ -816,12 +816,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d6b448d41d55c7fe9fadebc209a60ed8",
+    "cacheID": "c36040711b230f1267de05854644f7da",
     "id": null,
     "metadata": {},
     "name": "WeeklyPlanPageQuery",
     "operationKind": "query",
-    "text": "query WeeklyPlanPageQuery {\n  mondayMorning: daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  mondayMidday: daySectionSlots(dayOfWeek: MONDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  mondayEvening: daySectionSlots(dayOfWeek: MONDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  tuesdayMorning: daySectionSlots(dayOfWeek: TUESDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  tuesdayMidday: daySectionSlots(dayOfWeek: TUESDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  tuesdayEvening: daySectionSlots(dayOfWeek: TUESDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  wednesdayMorning: daySectionSlots(dayOfWeek: WEDNESDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  wednesdayMidday: daySectionSlots(dayOfWeek: WEDNESDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  wednesdayEvening: daySectionSlots(dayOfWeek: WEDNESDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  thursdayMorning: daySectionSlots(dayOfWeek: THURSDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  thursdayMidday: daySectionSlots(dayOfWeek: THURSDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  thursdayEvening: daySectionSlots(dayOfWeek: THURSDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  fridayMorning: daySectionSlots(dayOfWeek: FRIDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  fridayMidday: daySectionSlots(dayOfWeek: FRIDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  fridayEvening: daySectionSlots(dayOfWeek: FRIDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  saturdayMorning: daySectionSlots(dayOfWeek: SATURDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  saturdayMidday: daySectionSlots(dayOfWeek: SATURDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  saturdayEvening: daySectionSlots(dayOfWeek: SATURDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  sundayMorning: daySectionSlots(dayOfWeek: SUNDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  sundayMidday: daySectionSlots(dayOfWeek: SUNDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  sundayEvening: daySectionSlots(dayOfWeek: SUNDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  id\n  dayOfWeek\n  section\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    ...WeeklyPlanRoutineSection_section\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
+    "text": "query WeeklyPlanPageQuery {\n  mondayMorning: daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  mondayMidday: daySectionSlots(dayOfWeek: MONDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  mondayEvening: daySectionSlots(dayOfWeek: MONDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  tuesdayMorning: daySectionSlots(dayOfWeek: TUESDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  tuesdayMidday: daySectionSlots(dayOfWeek: TUESDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  tuesdayEvening: daySectionSlots(dayOfWeek: TUESDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  wednesdayMorning: daySectionSlots(dayOfWeek: WEDNESDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  wednesdayMidday: daySectionSlots(dayOfWeek: WEDNESDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  wednesdayEvening: daySectionSlots(dayOfWeek: WEDNESDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  thursdayMorning: daySectionSlots(dayOfWeek: THURSDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  thursdayMidday: daySectionSlots(dayOfWeek: THURSDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  thursdayEvening: daySectionSlots(dayOfWeek: THURSDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  fridayMorning: daySectionSlots(dayOfWeek: FRIDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  fridayMidday: daySectionSlots(dayOfWeek: FRIDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  fridayEvening: daySectionSlots(dayOfWeek: FRIDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  saturdayMorning: daySectionSlots(dayOfWeek: SATURDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  saturdayMidday: daySectionSlots(dayOfWeek: SATURDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  saturdayEvening: daySectionSlots(dayOfWeek: SATURDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n  sundayMorning: daySectionSlots(dayOfWeek: SUNDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  sundayMidday: daySectionSlots(dayOfWeek: SUNDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n  sundayEvening: daySectionSlots(dayOfWeek: SUNDAY, section: EVENING) {\n    ...DaySection_section\n    id\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  id\n  dayOfWeek\n  section\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    ...WeeklyPlanRoutineSection_section\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      task {\n        title\n        id\n      }\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
   }
 };
 })();

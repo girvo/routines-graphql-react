@@ -1,0 +1,39 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  position: relative;
+  -webkit-touch-callout: none;
+  /* stylelint-disable-next-line property-no-vendor-prefix -- iOS Safari below 17 only honours the prefixed user-select */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.row + .row {
+  border-top: var(--border-width) solid var(--stroke-hairline);
+}
+
+.row[data-dragging] {
+  opacity: 0.4;
+}
+
+.row[data-drop-indicator='before']::before,
+.row[data-drop-indicator='after']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--outline-width);
+  background: var(--accent);
+}
+
+.row[data-drop-indicator='before']::before {
+  top: calc(var(--outline-width) / -2);
+}
+
+.row[data-drop-indicator='after']::after {
+  bottom: calc(var(--outline-width) / -2);
+}
