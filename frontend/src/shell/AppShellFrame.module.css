@@ -22,9 +22,12 @@
   flex-shrink: 0;
   /* iOS 26+ standalone probes the viewport edges for a full-width fixed/sticky
      box; finding one, it paints the status-bar band in that box's colour
-     instead of laying its scroll-edge blur over our header. */
+     instead of laying its scroll-edge blur over our header. It reads the
+     sticky box's own background-color, so that has to live here, not on
+     the TopBar inside. */
   position: sticky;
   top: 0;
+  background: var(--surface);
 }
 
 .belowHeader {
@@ -42,6 +45,7 @@
   /* Same edge probe as .topBar, for the bottom scroll-edge effect. */
   position: sticky;
   bottom: 0;
+  background: var(--surface);
 }
 
 @media (min-width: 1024px) {
