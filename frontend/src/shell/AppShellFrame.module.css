@@ -20,6 +20,11 @@
 
 .topBar {
   flex-shrink: 0;
+  /* iOS 26+ standalone probes the viewport edges for a full-width fixed/sticky
+     box; finding one, it paints the status-bar band in that box's colour
+     instead of laying its scroll-edge blur over our header. */
+  position: sticky;
+  top: 0;
 }
 
 .belowHeader {
@@ -34,6 +39,9 @@
 
 .dock {
   flex-shrink: 0;
+  /* Same edge probe as .topBar, for the bottom scroll-edge effect. */
+  position: sticky;
+  bottom: 0;
 }
 
 @media (min-width: 1024px) {

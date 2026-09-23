@@ -3,8 +3,10 @@
   flex-direction: row;
   background: var(--surface);
   border-top: var(--border-width) solid var(--stroke-line-medium);
+  /* Let the home indicator sit over part of the tab padding, like native tab
+     bars, instead of stacking the full inset beneath it. */
   padding: var(--control-gap) 0
-    max(var(--control-gap), env(safe-area-inset-bottom));
+    max(var(--control-gap), calc(env(safe-area-inset-bottom) - var(--space-3)));
 }
 
 .tab {
