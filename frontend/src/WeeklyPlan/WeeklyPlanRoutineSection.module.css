@@ -6,6 +6,10 @@
 
 .row {
   position: relative;
+  background: var(--surface);
+  transition:
+    background-color var(--transition-default),
+    box-shadow var(--transition-default);
   -webkit-touch-callout: none;
   /* stylelint-disable-next-line property-no-vendor-prefix -- iOS Safari below 17 only honours the prefixed user-select */
   -webkit-user-select: none;
@@ -16,8 +20,23 @@
   border-top: var(--border-width) solid var(--stroke-hairline);
 }
 
+.row[data-lifting] {
+  background: var(--surface-soft);
+}
+
+.row[data-touch-dragging] {
+  z-index: 1;
+  box-shadow: var(--shadow-elevated);
+}
+
 .row[data-dragging] {
   opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    transition: none;
+  }
 }
 
 .row[data-drop-indicator='before']::before,

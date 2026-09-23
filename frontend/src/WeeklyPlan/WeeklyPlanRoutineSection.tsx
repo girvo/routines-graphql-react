@@ -16,6 +16,7 @@ import {
 import type { Instruction } from '@atlaskit/pragmatic-drag-and-drop-hitbox/list-item'
 import { RoutineSlotItem } from './RoutineSlotItem.tsx'
 import { useDaySectionMoveTask } from './DaySectionMoveTask.ts'
+import { useSlotTouchDrag, type SlotDropAnchor } from './SlotTouchDrag.ts'
 import type { DaySectionMove } from './DaySectionMoveTask.ts'
 import { announceMove } from './announce-move.ts'
 import {
@@ -42,11 +43,6 @@ interface SortableSlot {
   id: string
   title: string
   routineSlot: RoutineSlotItem_routineSlot$key
-}
-
-interface DropIndicator {
-  slotId: string
-  relation: DropRelation
 }
 
 const REORDER_OPERATIONS = {
@@ -78,7 +74,7 @@ const relationFor = (instruction: Instruction | null): DropRelation | null => {
 const dropAnchor = (
   dropTargets: readonly DropTargetRecord[],
   listId: string,
-): DropIndicator | null => {
+): SlotDropAnchor | null => {
   const record = dropTargets[0]
   if (!record) return null
   const anchor = draggedSlot(record.data, listId)
@@ -90,16 +86,11 @@ const dropAnchor = (
 const canReorderRows = (move: DaySectionMove) =>
   move.slotIds.length > 1 && !move.isMoving
 
-const commitDrop = (
-  context: DragContext,
-  source: ElementDragPayload,
-  dropTargets: readonly DropTargetRecord[],
+const moveSlotToAnchor = (
+  move: DaySectionMove,
+  moved: DraggedSlot,
+  anchor: SlotDropAnchor,
 ) => {
-  const { listId, move } = context
-  const moved = draggedSlot(source.data, listId)
-  const anchor = dropAnchor(dropTargets, listId)
-  if (!moved || !anchor) return
-
   const target = moveTargetForDrop(
     move.slotIds,
     moved.slotId,
@@ -116,6 +107,18 @@ const commitDrop = (
     target,
     nextOrder,
   })
+}
+
+const commitDrop = (
+  context: DragContext,
+  source: ElementDragPayload,
+  dropTargets: readonly DropTargetRecord[],
+) => {
+  const { listId, move } = context
+  const moved = draggedSlot(source.data, listId)
+  const anchor = dropAnchor(dropTargets, listId)
+  if (!moved || !anchor) return
+  moveSlotToAnchor(move, moved, anchor)
 }
 
 interface SortableRoutineSlotRowProps {
@@ -183,6 +186,7 @@ const SortableRoutineSlotRow = ({
     <li
       ref={rowRef}
       className={styles.row}
+      data-slot-id={slotId}
       data-drop-indicator={dropIndicator ?? undefined}
     >
       <RoutineSlotItem
@@ -205,8 +209,9 @@ const SortableRoutineSlotList = ({
   slots,
   move,
 }: SortableRoutineSlotListProps) => {
+  const listRef = useRef<HTMLUListElement>(null)
   const context = useRef<DragContext>({ listId, move })
-  const [indicator, setIndicator] = useState<DropIndicator | null>(null)
+  const [indicator, setIndicator] = useState<SlotDropAnchor | null>(null)
 
   useEffect(() => {
     context.current = { listId, move }
@@ -227,8 +232,23 @@ const SortableRoutineSlotList = ({
     [listId],
   )
 
+  useSlotTouchDrag(listRef, {
+    handleSelector: DRAG_HANDLE_SELECTOR,
+    canStart: () => canReorderRows(context.current.move),
+    onAnchorChange: setIndicator,
+    onDrop: (movedSlotId, anchor) => {
+      const moved = slots.find(slot => slot.id === movedSlotId)
+      if (!moved) return
+      moveSlotToAnchor(
+        context.current.move,
+        { slotId: moved.id, title: moved.title },
+        anchor,
+      )
+    },
+  })
+
   return (
-    <ul className={styles.list} role="list">
+    <ul ref={listRef} className={styles.list} role="list">
       {slots.map(slot => (
         <SortableRoutineSlotRow
           key={slot.id}

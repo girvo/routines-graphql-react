@@ -63,3 +63,51 @@ export const dropRow = (
 export const endAnyActiveDrag = () => {
   document.dispatchEvent(new DragEvent('dragend', { bubbles: true }))
 }
+
+const TOUCH_POINTER_ID = 11
+
+const dispatchPointer = (
+  type: 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel',
+  target: Element,
+  point: { clientX: number; clientY: number },
+  pointerType: 'touch' | 'mouse' = 'touch',
+) => {
+  target.dispatchEvent(
+    new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      pointerId: TOUCH_POINTER_ID,
+      pointerType,
+      isPrimary: true,
+      ...point,
+    }),
+  )
+}
+
+export const touchPressHandle = (row: Element) => {
+  const handle = dragHandleOf(row)
+  dispatchPointer('pointerdown', handle, pointOf(handle, 0.5))
+  return handle
+}
+
+export const mousePressHandle = (row: Element) => {
+  const handle = dragHandleOf(row)
+  dispatchPointer('pointerdown', handle, pointOf(handle, 0.5), 'mouse')
+  return handle
+}
+
+export const touchMoveHandleTo = (
+  handle: Element,
+  row: Element,
+  edge: DragEdge,
+) => {
+  dispatchPointer('pointermove', handle, edgePoint(row, edge))
+}
+
+export const touchReleaseHandle = (handle: Element) => {
+  dispatchPointer('pointerup', handle, pointOf(handle, 0.5))
+}
+
+export const touchCancelHandle = (handle: Element) => {
+  dispatchPointer('pointercancel', handle, pointOf(handle, 0.5))
+}
