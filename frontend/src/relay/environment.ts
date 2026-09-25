@@ -12,34 +12,7 @@ import {
   setAccessToken,
   clearAccessToken,
 } from '../auth/auth-store'
-
-let refreshPromise: Promise<string> | null = null
-
-async function refreshAccessToken(): Promise<string> {
-  if (refreshPromise) {
-    return refreshPromise
-  }
-
-  refreshPromise = fetch('/api/refresh', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include', // Send refresh token cookie
-  })
-    .then(async response => {
-      if (!response.ok) {
-        throw new Error('Refresh failed')
-      }
-      const data = await response.json()
-      return data.accessToken
-    })
-    .finally(() => {
-      refreshPromise = null
-    })
-
-  return refreshPromise
-}
+import { refreshAccessToken } from '../auth/session.ts'
 
 type GraphQLErrorWithCode = { extensions?: { code?: string } }
 

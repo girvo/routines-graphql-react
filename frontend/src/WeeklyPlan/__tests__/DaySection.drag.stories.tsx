@@ -1,29 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, screen, waitFor, within } from 'storybook/test'
+import { expect, screen, waitFor } from 'storybook/test'
 import { cleanup } from '@atlaskit/pragmatic-drag-and-drop-live-region'
 
 import {
-  BOTTOM_ORDER,
-  BOTTOM_TITLES,
   chooseMove,
   createEnvironmentWith,
   deferredMoveResolver,
-  MIDDAY_ORDER,
-  MIDDAY_TITLES,
+  loadedRows,
   mockSection,
+  MIDDAY,
+  MORNING,
+  moveButtonOf,
   moveOperations,
   moveOperationsQueued,
-  PLANKS,
-  PUSHUPS,
-  READ_ORDER,
-  readTheServerBack,
-  rowHolding,
+  movedToEnd,
+  reordered,
+  rowsOf,
   settleTheMove,
-  SQUATS,
-  TITLES,
-  titlesInOrder,
-  UP_ORDER,
-  UP_TITLES,
+  slotIdsOf,
+  titleOf,
+  waitForOrder,
 } from './DaySection.storyHarness'
 import {
   DaySectionStoryView,
@@ -49,44 +45,36 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const listHolding = (canvasElement: HTMLElement, title: string) => {
-  const list = rowHolding(canvasElement, title).closest('ul')
-  if (!list) throw new Error(`no list holds ${title}`)
-  return list
-}
-
-const titlesInList = (list: Element) =>
-  within(list as HTMLElement)
-    .getAllByRole('listitem')
-    .map(row => row.textContent ?? '')
+const slotListsIn = (canvasElement: HTMLElement) =>
+  [...canvasElement.querySelectorAll('ul')].filter(
+    list => rowsOf(list).length > 0,
+  )
 
 export const DragDownToTheLastRowMovesToBottom: Story = {
   render: () => (
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(BOTTOM_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(movedToEnd(MORNING, 0)),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const rows = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
+    const source = rows[0]
+    const target = rows[rows.length - 1]
     cleanup()
 
     endAnyActiveDrag()
-    const source = rowHolding(canvasElement, 'Pushups')
-    const target = rowHolding(canvasElement, 'Planks')
     const dataTransfer = new DataTransfer()
 
     liftRow(source, dataTransfer)
     await nextFrame()
     expect(source).toHaveAttribute('data-dragging', 'true')
-    expect(dragHandleOf(source)).toBe(
-      canvas.getByRole('button', { name: 'Move Pushups' }),
-    )
+    expect(dragHandleOf(source)).toBe(moveButtonOf(source))
 
     hoverRow(target, 'after', dataTransfer)
 
@@ -101,25 +89,21 @@ export const DragDownToTheLastRowMovesToBottom: Story = {
       expect(moveOperations).toHaveLength(1)
     })
     expect(moveOperations[0]?.request.variables.input).toEqual({
-      routineSlotId: PUSHUPS.id,
+      routineSlotId: before[0],
       to: 'BOTTOM',
     })
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(BOTTOM_TITLES)
-    })
+    await waitForOrder(canvasElement, movedToEnd(before, 0))
     expect(target).not.toHaveAttribute('data-drop-indicator')
 
     settleTheMove()
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(BOTTOM_TITLES)
-    })
+    await waitForOrder(canvasElement, movedToEnd(before, 0))
 
     await waitFor(
       () => {
         expect(screen.getByRole('status')).toHaveTextContent(
-          'Pushups moved to the bottom',
+          `${titleOf(source)} moved to the bottom`,
         )
       },
       { timeout: 3000 },
@@ -132,19 +116,19 @@ export const DragUpSendsABeforeTarget: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(UP_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(reordered(MORNING, 2, 1)),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const rows = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
+    const source = rows[2]
+    const target = rows[1]
 
     endAnyActiveDrag()
-    const source = rowHolding(canvasElement, 'Planks')
-    const target = rowHolding(canvasElement, 'Squats')
     const dataTransfer = new DataTransfer()
 
     liftRow(source, dataTransfer)
@@ -160,24 +144,20 @@ export const DragUpSendsABeforeTarget: Story = {
       expect(moveOperations).toHaveLength(1)
     })
     expect(moveOperations[0]?.request.variables.input).toEqual({
-      routineSlotId: PLANKS.id,
-      beforeRoutineSlotId: SQUATS.id,
+      routineSlotId: before[2],
+      beforeRoutineSlotId: before[1],
     })
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(UP_TITLES)
-    })
+    await waitForOrder(canvasElement, reordered(before, 2, 1))
 
     settleTheMove()
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(UP_TITLES)
-    })
+    await waitForOrder(canvasElement, reordered(before, 2, 1))
 
     await waitFor(
       () => {
         expect(screen.getByRole('status')).toHaveTextContent(
-          'Planks moved to position 2 of 3',
+          `${titleOf(source)} moved to position 2 of ${before.length}`,
         )
       },
       { timeout: 3000 },
@@ -189,17 +169,17 @@ export const DragOntoItsOwnRowIsNotADropTarget: Story = {
   render: () => (
     <DaySectionStoryView
       createReadAndMoves={() =>
-        createEnvironmentWith([mockSection('MORNING', READ_ORDER)])
+        createEnvironmentWith([mockSection('MORNING', MORNING)])
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const rows = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
+    const row = rows[0]
+    const other = rows[rows.length - 1]
 
     endAnyActiveDrag()
-    const row = rowHolding(canvasElement, 'Pushups')
-    const other = rowHolding(canvasElement, 'Planks')
     const dataTransfer = new DataTransfer()
 
     liftRow(row, dataTransfer)
@@ -218,9 +198,7 @@ export const DragOntoItsOwnRowIsNotADropTarget: Story = {
 
     dropRow(row, 'before', dataTransfer)
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(TITLES)
-    })
+    await waitForOrder(canvasElement, before)
     expect(moveOperationsQueued()).toEqual([])
   },
 }
@@ -230,25 +208,21 @@ export const DragWhileAMoveIsInFlightIsIgnored: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(READ_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(MORNING),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const [first, source, target] = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
 
-    await chooseMove(canvasElement, 'Pushups', 'Move to bottom')
+    await chooseMove(first, 'Move to bottom')
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(BOTTOM_TITLES)
-    })
+    await waitForOrder(canvasElement, movedToEnd(before, 0))
 
     endAnyActiveDrag()
-    const source = rowHolding(canvasElement, 'Squats')
-    const target = rowHolding(canvasElement, 'Planks')
     const dataTransfer = new DataTransfer()
 
     liftRow(source, dataTransfer)
@@ -263,7 +237,7 @@ export const DragWhileAMoveIsInFlightIsIgnored: Story = {
 
     settleTheMove()
 
-    await readTheServerBack(canvasElement)
+    await waitForOrder(canvasElement, before)
   },
 }
 
@@ -272,19 +246,19 @@ export const DragFromTheRowBodyIsIgnored: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(BOTTOM_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(movedToEnd(MORNING, 0)),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const rows = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
+    const row = rows[0]
+    const target = rows[rows.length - 1]
 
     endAnyActiveDrag()
-    const row = rowHolding(canvasElement, 'Pushups')
-    const target = rowHolding(canvasElement, 'Planks')
     const dataTransfer = new DataTransfer()
 
     liftRowBody(row, dataTransfer)
@@ -295,7 +269,7 @@ export const DragFromTheRowBodyIsIgnored: Story = {
     hoverRow(target, 'after', dataTransfer)
     dropRow(target, 'after', dataTransfer)
 
-    expect(titlesInOrder(canvasElement)).toEqual(TITLES)
+    expect(slotIdsOf(canvasElement)).toEqual(before)
     expect(moveOperations).toHaveLength(0)
   },
 }
@@ -305,24 +279,28 @@ export const DragFromAnotherSectionIsNotADropTarget: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith([
-          mockSection('MORNING', READ_ORDER),
-          mockSection('MIDDAY', MIDDAY_ORDER),
+          mockSection('MORNING', MORNING),
+          mockSection('MIDDAY', MIDDAY),
         ])
       }
       Inner={DaySectionPairStoryInner}
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    await loadedRows(canvasElement)
+    await waitFor(() => {
+      expect(slotListsIn(canvasElement)).toHaveLength(2)
+    })
+    const [ownList, foreignList] = slotListsIn(canvasElement)
+    const ownBefore = slotIdsOf(ownList)
+    const foreignBefore = slotIdsOf(foreignList)
+    const ownRows = rowsOf(ownList)
+    const source = ownRows[0]
+    const ownTarget = ownRows[ownRows.length - 1]
+    const [foreignRow] = rowsOf(foreignList)
     cleanup()
 
     endAnyActiveDrag()
-    const source = rowHolding(canvasElement, 'Pushups')
-    const ownTarget = rowHolding(canvasElement, 'Planks')
-    const foreignRow = rowHolding(canvasElement, 'Burpees')
-    const morningList = listHolding(canvasElement, 'Pushups')
-    const middayList = listHolding(canvasElement, 'Burpees')
     const dataTransfer = new DataTransfer()
 
     liftRow(source, dataTransfer)
@@ -346,8 +324,8 @@ export const DragFromAnotherSectionIsNotADropTarget: Story = {
 
     dropRow(foreignRow, 'before', dataTransfer)
 
-    expect(titlesInList(morningList)).toEqual(TITLES)
-    expect(titlesInList(middayList)).toEqual(MIDDAY_TITLES)
+    expect(slotIdsOf(ownList)).toEqual(ownBefore)
+    expect(slotIdsOf(foreignList)).toEqual(foreignBefore)
     expect(moveOperationsQueued()).toEqual([])
   },
 }

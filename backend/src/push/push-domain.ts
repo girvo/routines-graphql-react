@@ -1,6 +1,5 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
-import { toGlobalId } from '../globalId.ts'
 import type { PushSubscriptionRow } from './push-repository.ts'
 
 const PushSubscriptionDomain = type({
@@ -30,14 +29,3 @@ export const tableToDomain = (
     lastSeenAt: input.last_seen_at ? parseISO(input.last_seen_at) : null,
   })
 }
-
-export const pushSubscriptionToGraphQL = (sub: PushSubscriptionDomain) => ({
-  __typename: 'PushSubscription' as const,
-  id: toGlobalId('PushSubscription', sub.id),
-  endpoint: sub.endpoint,
-  platform: sub.platform,
-  createdAt: sub.createdAt,
-  lastSeenAt: sub.lastSeenAt,
-})
-
-export type PushSubscriptionNode = ReturnType<typeof pushSubscriptionToGraphQL>

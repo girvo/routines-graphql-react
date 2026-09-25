@@ -1,17 +1,13 @@
 import {
   tableToDomain,
   buildTaskCompletionEdge,
-  taskCompletionToGraphQL,
 } from './task-completion-domain.ts'
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { GraphQLError } from 'graphql'
 import { SqliteError } from 'better-sqlite3'
 import { tableToDomain as routineSlotTableToDomain } from '../routine-slot/routine-slot-domain.ts'
-import {
-  decodeDailyTaskInstanceId,
-  dailyTaskInstanceToGraphQL,
-} from '../schedule/schedule-domain.ts'
+import { decodeDailyTaskInstanceId } from '../schedule/schedule-domain.ts'
 import { toGlobalId } from '../globalId.ts'
 
 export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlot'] =
@@ -51,7 +47,7 @@ export const completeRoutineSlot: MutationResolvers<Context>['completeRoutineSlo
 
     return {
       taskCompletionEdge: {
-        node: taskCompletionToGraphQL(completionEdge.node),
+        node: completionEdge.node,
         cursor: completionEdge.cursor,
       },
     }
@@ -91,11 +87,11 @@ export const uncompleteRoutineSlot: MutationResolvers<Context>['uncompleteRoutin
     }
 
     return {
-      dailyTaskInstance: dailyTaskInstanceToGraphQL({
+      dailyTaskInstance: {
         date,
         routineSlot: routineSlotTableToDomain(routineSlotRow),
         completion: null,
-      }),
+      },
       deletedId: toGlobalId('TaskCompletion', existingRow.id),
     }
   }

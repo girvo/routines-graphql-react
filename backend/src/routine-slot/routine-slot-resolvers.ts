@@ -1,22 +1,19 @@
 import { GraphQLError } from 'graphql'
 import type { Context } from '../graphql/context.ts'
-import type { NodeResolver } from '../graphql/types.ts'
+import type { NodeLoader } from '../graphql/types.ts'
 import type { RoutineSlotResolvers } from '../graphql/resolver-types.ts'
-import { fromGlobalId } from '../globalId.ts'
-import { routineSlotToGraphQL } from './routine-slot-domain.ts'
-import { taskToGraphQL } from '../task/task-domain.ts'
 
-export const resolveRoutineTaskAsNode: NodeResolver<'RoutineSlot'> = async (
-  id,
-  context,
-) => {
+export const resolveRoutineTaskAsNode: NodeLoader<
+  'RoutineSlot',
+  number
+> = async (id, context) => {
   const routineSlot = await context.routineSlots.load(id)
 
-  if (!routineSlot || routineSlot instanceof Error) {
+  if (!routineSlot) {
     return null
   }
 
-  return routineSlotToGraphQL(routineSlot)
+  return routineSlot
 }
 
 export const task: RoutineSlotResolvers<Context>['task'] = async (
@@ -24,10 +21,10 @@ export const task: RoutineSlotResolvers<Context>['task'] = async (
   _args,
   context,
 ) => {
-  const task = await context.tasks.load(fromGlobalId(parent.task.id, 'Task'))
+  const task = await context.tasks.load(parent.taskId)
   if (!task) {
-    throw new GraphQLError('Task not found') // TBD: fix this
+    throw new GraphQLError('Task not found')
   }
 
-  return taskToGraphQL(task)
+  return task
 }

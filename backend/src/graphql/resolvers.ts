@@ -1,11 +1,22 @@
 import type { Resolvers } from './resolver-types.ts'
 import type { Context } from './context.ts'
-import type { NodeResolver, NodeType } from './types.ts'
+import type { NodeLoader, NodeResolver, NodeType } from './types.ts'
 import { DateTimeResolver, NonNegativeIntResolver } from 'graphql-scalars'
 import { GraphQLError } from 'graphql'
-import { decodeGlobalId, fromGlobalId } from '../globalId.ts'
+import {
+  decodeGlobalId,
+  fromGlobalId,
+  toGlobalId,
+  type GlobalId,
+} from '../globalId.ts'
+import {
+  decodeDailyTaskInstanceId,
+  decodeDaySectionSlotsId,
+  encodeDailyTaskInstanceId,
+  encodeDaySectionSlotsId,
+} from '../schedule/schedule-domain.ts'
 import { getUser } from '../auth/auth-context.ts'
-import { userToGraphQL, deriveInitials } from '../user/user-domain.ts'
+import { deriveInitials } from '../user/user-domain.ts'
 import * as UserResolvers from '../user/user-resolvers.ts'
 import * as TaskResolvers from '../task/task-resolvers.ts'
 import * as TaskMutations from '../task/task-mutations.ts'
@@ -17,63 +28,89 @@ import * as ScheduleResolvers from '../schedule/schedule-resolvers.ts'
 import * as PushResolvers from '../push/push-resolvers.ts'
 import * as PushMutations from '../push/push-mutations.ts'
 
+const invalidNodeId = () =>
+  new GraphQLError('Invalid node ID', {
+    extensions: { code: 'BAD_USER_INPUT' },
+  })
+
+const decodedWith =
+  <T extends NodeType, Key>(
+    type: T,
+    decode: (globalId: GlobalId) => Key,
+    load: NodeLoader<T, Key>,
+  ): NodeResolver<T> =>
+  async (globalId, context) => {
+    let key: Key
+    try {
+      key = decode(globalId)
+    } catch {
+      throw invalidNodeId()
+    }
+    const node = await load(key, context)
+    return node && { ...node, __typename: type }
+  }
+
+const integerIdNode = <T extends NodeType>(
+  type: T,
+  load: NodeLoader<T, number>,
+): NodeResolver<T> =>
+  decodedWith(type, globalId => fromGlobalId(globalId, type), load)
+
 const nodeResolvers: { [NodeName in NodeType]: NodeResolver<NodeName> } = {
-  User: UserResolvers.resolveUserAsNode,
-  Task: TaskResolvers.resolveTaskAsNode,
-  RoutineSlot: RoutineSlotResolvers.resolveRoutineTaskAsNode,
-  TaskCompletion: TaskCompletionResolvers.resolveTaskCompletionAsNode,
-  PushSubscription: PushResolvers.resolvePushSubscriptionAsNode,
+  User: integerIdNode('User', UserResolvers.resolveUserAsNode),
+  Task: integerIdNode('Task', TaskResolvers.resolveTaskAsNode),
+  RoutineSlot: integerIdNode(
+    'RoutineSlot',
+    RoutineSlotResolvers.resolveRoutineTaskAsNode,
+  ),
+  TaskCompletion: integerIdNode(
+    'TaskCompletion',
+    TaskCompletionResolvers.resolveTaskCompletionAsNode,
+  ),
+  PushSubscription: integerIdNode(
+    'PushSubscription',
+    PushResolvers.resolvePushSubscriptionAsNode,
+  ),
+  DailyTaskInstance: decodedWith(
+    'DailyTaskInstance',
+    decodeDailyTaskInstanceId,
+    ScheduleResolvers.resolveDailyTaskInstanceAsNode,
+  ),
+  DaySectionSlots: decodedWith(
+    'DaySectionSlots',
+    decodeDaySectionSlotsId,
+    ScheduleResolvers.resolveDaySectionSlotsAsNode,
+  ),
 }
+
+const isNodeType = (type: string): type is NodeType =>
+  Object.hasOwn(nodeResolvers, type)
 
 export const resolvers: Resolvers<Context> = {
   Query: {
     hello: () => {
       return 'world'
     },
-    me: async (_, _args, context) => {
-      const user = await getUser(context)
-      return userToGraphQL(user)
-    },
-    node: async (_, { id }, context) => {
+    me: (_, _args, context) => getUser(context),
+    node: (_, { id }, context) => {
       let type: string
-
       try {
         type = decodeGlobalId(id).type
       } catch {
-        throw new GraphQLError('Invalid node ID', {
-          extensions: { code: 'BAD_USER_INPUT' },
-        })
+        throw invalidNodeId()
       }
 
-      if (type === 'DailyTaskInstance') {
-        return ScheduleResolvers.resolveDailyTaskInstanceAsNode(id, context)
-      }
-
-      if (type === 'DaySectionSlots') {
-        return ScheduleResolvers.resolveDaySectionSlotsAsNode(id, context)
-      }
-
-      const adapter = nodeResolvers[type as keyof typeof nodeResolvers]
-
-      if (!adapter) {
+      if (!isNodeType(type)) {
         throw new GraphQLError(`Unknown node type: ${type}`, {
           extensions: { code: 'BAD_USER_INPUT' },
         })
       }
 
-      try {
-        const internalId = fromGlobalId(id, type)
-        return adapter(internalId, context)
-      } catch {
-        throw new GraphQLError('Invalid node ID', {
-          extensions: { code: 'BAD_USER_INPUT' },
-        })
-      }
+      return nodeResolvers[type](id, context)
     },
     tasks: TaskResolvers.tasksResolver,
     taskCompletions: TaskCompletionResolvers.taskCompletions,
     dailyRoutine: ScheduleResolvers.dailyRoutine,
-    weeklySchedule: ScheduleResolvers.weeklySchedule,
     daySectionSlots: ScheduleResolvers.daySectionSlots,
   },
   Mutation: {
@@ -90,18 +127,22 @@ export const resolvers: Resolvers<Context> = {
     sendTestPush: PushMutations.sendTestPush,
   },
   User: {
+    id: user => toGlobalId('User', user.id),
     initials: ({ name }) => deriveInitials(name),
     pushSubscriptions: PushResolvers.pushSubscriptions,
     morningReminderEnabled: PushResolvers.morningReminderEnabled,
   },
   Task: {
+    id: task => toGlobalId('Task', task.id),
     completions: TaskResolvers.completions,
     slots: TaskResolvers.slots,
   },
   RoutineSlot: {
+    id: slot => toGlobalId('RoutineSlot', slot.id),
     task: RoutineSlotResolvers.task,
   },
   TaskCompletion: {
+    id: completion => toGlobalId('TaskCompletion', completion.id),
     routineSlot: TaskCompletionResolvers.routineSlot,
     dailyTaskInstance: TaskCompletionResolvers.dailyTaskInstance,
   },
@@ -110,25 +151,20 @@ export const resolvers: Resolvers<Context> = {
     midday: ScheduleResolvers.midday,
     evening: ScheduleResolvers.evening,
   },
-  WeeklySchedulePayload: {
-    monday: ScheduleResolvers.monday,
-    tuesday: ScheduleResolvers.tuesday,
-    wednesday: ScheduleResolvers.wednesday,
-    thursday: ScheduleResolvers.thursday,
-    friday: ScheduleResolvers.friday,
-    saturday: ScheduleResolvers.saturday,
-    sunday: ScheduleResolvers.sunday,
+  PushSubscription: {
+    id: subscription => toGlobalId('PushSubscription', subscription.id),
   },
-  DaySchedule: {
-    morning: ScheduleResolvers.dayMorning,
-    midday: ScheduleResolvers.dayMidday,
-    evening: ScheduleResolvers.dayEvening,
+  DailyTaskInstance: {
+    id: instance =>
+      encodeDailyTaskInstanceId(instance.routineSlot.id, instance.date),
   },
   DaySectionSlots: {
+    id: container =>
+      encodeDaySectionSlotsId(container.dayOfWeek, container.section),
     slots: ScheduleResolvers.sectionSlots,
   },
   Node: {
-    __resolveType: parent => parent.__typename ?? null,
+    __resolveType: parent => parent.__typename,
   },
   // Custom scalars
   DateTime: DateTimeResolver,

@@ -2,8 +2,6 @@ import type { DayOfWeek, DaySection } from '../database/types.ts'
 import { isDayOfWeek, isDaySection } from '@my-routines/shared'
 import type { RoutineSlotDomain } from '../routine-slot/routine-slot-domain.ts'
 import type { TaskCompletionDomain } from '../task-completion/task-completion-domain.ts'
-import { routineSlotToGraphQL } from '../routine-slot/routine-slot-domain.ts'
-import { taskCompletionToGraphQL } from '../task-completion/task-completion-domain.ts'
 import { routineSlotPositionCursor } from '../routine-slot/routine-slot-repository.ts'
 import { parseISO } from 'date-fns'
 import { getUserDayKey } from '../user-timezone.ts'
@@ -11,14 +9,6 @@ import { encodeGlobalId, decodeGlobalId, type GlobalId } from '../globalId.ts'
 
 export interface DailyRoutineData {
   date: Date
-  dayOfWeek: DayOfWeek
-}
-
-// WeeklySchedulePayload has no scalar fields of its own; every day field is
-// resolved from context, so the parent carries nothing.
-export type WeeklyScheduleData = Record<string, never>
-
-export interface DayScheduleData {
   dayOfWeek: DayOfWeek
 }
 
@@ -116,36 +106,9 @@ export const decodeDaySectionSlotsId = (
 }
 
 export interface DaySectionSlotsData {
-  __typename: 'DaySectionSlots'
-  id: GlobalId
   dayOfWeek: DayOfWeek
   section: DaySection
 }
-
-export const daySectionSlotsToGraphQL = (
-  dayOfWeek: DayOfWeek,
-  section: DaySection,
-): DaySectionSlotsData => ({
-  __typename: DAY_SECTION_SLOTS_TYPENAME,
-  id: encodeDaySectionSlotsId(dayOfWeek, section),
-  dayOfWeek,
-  section,
-})
-
-export const dailyTaskInstanceToGraphQL = (
-  instance: DailyTaskInstanceData,
-) => ({
-  __typename: 'DailyTaskInstance' as const,
-  id: encodeDailyTaskInstanceId(instance.routineSlot.id, instance.date),
-  routineSlot: routineSlotToGraphQL(instance.routineSlot),
-  completion: instance.completion
-    ? taskCompletionToGraphQL(instance.completion)
-    : null,
-})
-
-export type DailyTaskInstanceNode = ReturnType<
-  typeof dailyTaskInstanceToGraphQL
->
 
 export const buildDailyTaskInstanceEdge = (instance: DailyTaskInstanceData) => {
   return {

@@ -37,8 +37,6 @@ type Query {
   # Get today's routine (or specific date)
   dailyRoutine(date: DateTime): DailyRoutinePayload!
 
-  weeklySchedule: WeeklySchedulePayload!
-
   # The reorderable Task list for one day/section, independent of any date.
   daySectionSlots(dayOfWeek: DayOfWeek!, section: DaySection!): DaySectionSlots!
   tasks(
@@ -138,23 +136,6 @@ type DailyTaskInstance implements Node {
   id: ID!
   routineSlot: RoutineSlot!
   completion: TaskCompletion
-}
-
-type WeeklySchedulePayload {
-  monday: DaySchedule!
-  tuesday: DaySchedule!
-  wednesday: DaySchedule!
-  thursday: DaySchedule!
-  friday: DaySchedule!
-  saturday: DaySchedule!
-  sunday: DaySchedule!
-}
-
-type DaySchedule {
-  dayOfWeek: DayOfWeek!
-  morning(first: NonNegativeInt, after: String): RoutineSlotConnection!
-  midday(first: NonNegativeInt, after: String): RoutineSlotConnection!
-  evening(first: NonNegativeInt, after: String): RoutineSlotConnection!
 }
 
 # Identifiable owner of one day/section Task list. Its id is the stable Relay

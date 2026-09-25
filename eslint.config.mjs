@@ -28,6 +28,13 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   {
+    // The editor's ESLint server loads this config and frontend/eslint.config.js
+    // in one process, where typescript-eslint cannot infer which root to use.
+    languageOptions: {
+      parserOptions: { tsconfigRootDir: import.meta.dirname },
+    },
+  },
+  {
     // Names starting with _ are parameters that are deliberately not read,
     // such as the unused GraphQL resolver parent.
     rules: {

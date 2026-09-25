@@ -29,18 +29,19 @@ const config: CodegenConfig = {
           DayOfWeek: '../database/types.ts#DayOfWeek',
           DaySection: '../database/types.ts#DaySection',
         },
+        resolversNonOptionalTypename: { interfaceImplementingType: true },
         mappers: {
-          User: '../user/user-domain.ts#UserNode',
-          Task: '../task/task-domain.ts#TaskNode',
-          RoutineSlot: '../routine-slot/routine-slot-domain.ts#RoutineSlotNode',
+          User: '../user/user-domain.ts#UserDomain',
+          Task: '../task/task-domain.ts#TaskDomain',
+          RoutineSlot:
+            '../routine-slot/routine-slot-domain.ts#RoutineSlotDomain',
           TaskCompletion:
-            '../task-completion/task-completion-domain.ts#TaskCompletionNode',
-          PushSubscription: '../push/push-domain.ts#PushSubscriptionNode',
+            '../task-completion/task-completion-domain.ts#TaskCompletionDomain',
+          PushSubscription: '../push/push-domain.ts#PushSubscriptionDomain',
+          DailyTaskInstance:
+            '../schedule/schedule-domain.ts#DailyTaskInstanceData',
           DailyRoutinePayload:
             '../schedule/schedule-domain.ts#DailyRoutineData',
-          WeeklySchedulePayload:
-            '../schedule/schedule-domain.ts#WeeklyScheduleData',
-          DaySchedule: '../schedule/schedule-domain.ts#DayScheduleData',
           DaySectionSlots: '../schedule/schedule-domain.ts#DaySectionSlotsData',
         },
       },

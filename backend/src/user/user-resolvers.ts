@@ -1,8 +1,10 @@
-import { userToGraphQL } from './user-domain.ts'
-import type { NodeResolver } from '../graphql/types.ts'
+import type { NodeLoader } from '../graphql/types.ts'
 import { assertAuthenticated } from '../graphql/context.ts'
 
-export const resolveUserAsNode: NodeResolver<'User'> = async (id, context) => {
+export const resolveUserAsNode: NodeLoader<'User', number> = async (
+  id,
+  context,
+) => {
   assertAuthenticated(context)
 
   if (id !== context.currentUser.id) {
@@ -11,9 +13,9 @@ export const resolveUserAsNode: NodeResolver<'User'> = async (id, context) => {
 
   const user = await context.users.load(id)
 
-  if (!user || user instanceof Error) {
+  if (!user) {
     return null
   }
 
-  return userToGraphQL(user)
+  return user
 }

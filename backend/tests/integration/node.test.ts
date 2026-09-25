@@ -11,6 +11,7 @@ import {
   type YogaApp,
 } from '../helpers/graphql.ts'
 import { graphql } from '../gql/gql.ts'
+import { encodeGlobalId } from '../../src/globalId.ts'
 import { createRoutineSlot } from '../helpers/routine-slot.ts'
 import { completeRoutineSlot } from '../helpers/task-completion.ts'
 
@@ -93,6 +94,37 @@ describe('Node resolver', () => {
     assert(userNode.data?.node?.__typename === 'User', 'Got a user back')
     expect(userNode.data?.node.email).toBe(testEmail)
     expect(userNode.data?.node.id).toBe(globalId)
+  })
+
+  it('returns null without an error for a well-formed id that matches nothing', async () => {
+    const { userToken } = await createTestUser()
+
+    const missing = await executeGraphQL(
+      NodeQuery,
+      { id: encodeGlobalId('Task', '999999') },
+      { yoga, userToken },
+    )
+
+    expect(missing.errors).toBeUndefined()
+    expect(missing.data?.node).toBeNull()
+  })
+
+  it('rejects a malformed id for a known node type', async () => {
+    const { userToken } = await createTestUser()
+
+    for (const malformedId of [
+      encodeGlobalId('Task', 'not-a-number'),
+      encodeGlobalId('DailyTaskInstance', 'no-separator'),
+    ]) {
+      const malformed = await executeGraphQL(
+        NodeQuery,
+        { id: malformedId },
+        { yoga, userToken },
+      )
+
+      expect(malformed.data?.node).toBeNull()
+      expect(malformed.errors?.[0]?.extensions?.code).toBe('BAD_USER_INPUT')
+    }
   })
 
   it('correctly resolves the Task node', async () => {

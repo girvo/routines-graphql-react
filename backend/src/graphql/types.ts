@@ -1,25 +1,38 @@
 import type { Context } from './context.ts'
-import type { UserNode } from '../user/user-domain.ts'
-import type { TaskNode } from '../task/task-domain.ts'
-import type { RoutineSlotNode } from '../routine-slot/routine-slot-domain.ts'
-import type { TaskCompletionNode } from '../task-completion/task-completion-domain.ts'
-import type { PushSubscriptionNode } from '../push/push-domain.ts'
+import type { UserDomain } from '../user/user-domain.ts'
+import type { TaskDomain } from '../task/task-domain.ts'
+import type { RoutineSlotDomain } from '../routine-slot/routine-slot-domain.ts'
+import type { TaskCompletionDomain } from '../task-completion/task-completion-domain.ts'
+import type { PushSubscriptionDomain } from '../push/push-domain.ts'
+import type {
+  DailyTaskInstanceData,
+  DaySectionSlotsData,
+} from '../schedule/schedule-domain.ts'
+import type { GlobalId } from '../globalId.ts'
 
-export type NodeDomains =
-  | UserNode
-  | TaskNode
-  | RoutineSlotNode
-  | TaskCompletionNode
-  | PushSubscriptionNode
+export interface NodeDomains {
+  User: UserDomain
+  Task: TaskDomain
+  RoutineSlot: RoutineSlotDomain
+  TaskCompletion: TaskCompletionDomain
+  PushSubscription: PushSubscriptionDomain
+  DailyTaskInstance: DailyTaskInstanceData
+  DaySectionSlots: DaySectionSlotsData
+}
 
-// Extract the typename literals
-export type NodeType = NodeDomains['__typename']
+export type NodeType = keyof NodeDomains
 
-// Resolver type: given a typename, return the corresponding model
-export type NodeResolver<T extends NodeType> = (
-  id: number,
+export type TypedNode<T extends NodeType> = NodeDomains[T] & { __typename: T }
+
+export type NodeLoader<T extends NodeType, Key> = (
+  key: Key,
   context: Context,
-) => Promise<Extract<NodeDomains, { __typename: T }> | null>
+) => Promise<NodeDomains[T] | null>
+
+export type NodeResolver<T extends NodeType> = (
+  globalId: GlobalId,
+  context: Context,
+) => Promise<TypedNode<T> | null>
 
 export interface PaginationArgs {
   first: number

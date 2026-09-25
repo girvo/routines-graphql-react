@@ -1,7 +1,6 @@
 import {
   tableToDomain,
   buildPositionedRoutineSlotEdge,
-  routineSlotToGraphQL,
 } from './routine-slot-domain.ts'
 import type {
   MutationResolvers,
@@ -16,8 +15,8 @@ import {
   computeMove,
   type RoutineSlotMoveTarget,
 } from './routine-slot-repository.ts'
-import { daySectionSlotsToGraphQL } from '../schedule/schedule-domain.ts'
 import { GraphQLError } from 'graphql'
+import { compactSectionPositions } from './routine-slot-removal.ts'
 import { SqliteError } from 'better-sqlite3'
 
 const badUserInput = (message: string) =>
@@ -151,7 +150,7 @@ export const createRoutineSlot: MutationResolvers<Context>['createRoutineSlot'] 
 
     return {
       routineSlotEdge: {
-        node: routineSlotToGraphQL(edge.node),
+        node: edge.node,
         cursor: edge.cursor,
       },
     }
@@ -220,10 +219,10 @@ export const moveRoutineSlot: MutationResolvers<Context>['moveRoutineSlot'] =
 
     return {
       movedRoutineSlotEdge: {
-        node: routineSlotToGraphQL(edge.node),
+        node: edge.node,
         cursor: edge.cursor,
       },
-      section: daySectionSlotsToGraphQL(moved.dayOfWeek, moved.section),
+      section: { dayOfWeek: moved.dayOfWeek, section: moved.section },
     }
   }
 
@@ -244,17 +243,11 @@ export const deleteRoutineSlot: MutationResolvers<Context>['deleteRoutineSlot'] 
         throw new GraphQLError('Routine slot not found')
       }
 
-      const remainingRows = await tx.listByDayAndSection(
+      await compactSectionPositions(
+        tx,
         context.currentUser.id,
         slot.day_of_week,
         slot.section,
-      )
-
-      await tx.setPositions(
-        changedPositions(
-          remainingRows,
-          remainingRows.map(row => row.id),
-        ),
       )
     })
 

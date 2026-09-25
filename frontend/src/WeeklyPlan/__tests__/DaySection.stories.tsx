@@ -3,17 +3,18 @@ import { expect, screen, waitFor, within } from 'storybook/test'
 import { cleanup } from '@atlaskit/pragmatic-drag-and-drop-live-region'
 
 import {
-  BOTTOM_ORDER,
-  BOTTOM_TITLES,
   chooseMove,
   createEnvironmentWith,
   deferredMoveResolver,
+  idsOf,
+  loadedRows,
   mockSection,
-  READ_ORDER,
+  MORNING,
+  movedToEnd,
   settleTheMove,
-  SQUATS,
-  TITLES,
-  titlesInOrder,
+  slotIdsOf,
+  titleOf,
+  waitForOrder,
 } from './DaySection.storyHarness'
 import { DaySectionStoryView } from './DaySection.storyView'
 
@@ -21,8 +22,8 @@ const DaySectionStory = () => (
   <DaySectionStoryView
     createReadAndMoves={() =>
       createEnvironmentWith(
-        [mockSection('MORNING', READ_ORDER)],
-        deferredMoveResolver(BOTTOM_ORDER),
+        [mockSection('MORNING', MORNING)],
+        deferredMoveResolver(movedToEnd(MORNING, 0)),
       )
     }
   />
@@ -42,23 +43,20 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => <DaySectionStory />,
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-
-    await canvas.findByText('Pushups')
-    expect(titlesInOrder(canvasElement)).toEqual(TITLES)
+    const [first] = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
+    expect(before).toEqual(idsOf(MORNING))
     cleanup()
 
-    await chooseMove(canvasElement, 'Pushups', 'Move to bottom')
+    await chooseMove(first, 'Move to bottom')
     settleTheMove()
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(BOTTOM_TITLES)
-    })
+    await waitForOrder(canvasElement, movedToEnd(before, 0))
 
     await waitFor(
       () => {
         expect(screen.getByRole('status')).toHaveTextContent(
-          'Pushups moved to the bottom',
+          `${titleOf(first)} moved to the bottom`,
         )
       },
       { timeout: 3000 },
@@ -70,19 +68,21 @@ export const SingleTaskSectionOffersNoMoveControl: Story = {
   render: () => (
     <DaySectionStoryView
       createReadAndMoves={() =>
-        createEnvironmentWith([mockSection('MORNING', [SQUATS])])
+        createEnvironmentWith([mockSection('MORNING', MORNING.slice(0, 1))])
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+    const rows = await loadedRows(canvasElement)
+    expect(rows).toHaveLength(1)
 
-    expect(await canvas.findByText('Squats')).toBeInTheDocument()
-    expect(canvas.getAllByText('Squats')).toHaveLength(1)
-    expect(canvasElement.querySelector('[data-slot-drag-handle]')).toBeNull()
+    const [only] = rows
+    expect(only.querySelector('[data-slot-drag-handle]')).toBeNull()
     expect(
-      canvas.queryByRole('button', { name: 'Move Squats' }),
+      within(only).queryByRole('button', { name: /^Move / }),
     ).not.toBeInTheDocument()
-    expect(canvas.getByRole('button', { name: /remove/i })).toBeInTheDocument()
+    expect(
+      within(only).getByRole('button', { name: /remove/i }),
+    ).toBeInTheDocument()
   },
 }

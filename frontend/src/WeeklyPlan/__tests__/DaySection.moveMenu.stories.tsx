@@ -3,22 +3,23 @@ import { expect, screen, userEvent, waitFor, within } from 'storybook/test'
 import { cleanup } from '@atlaskit/pragmatic-drag-and-drop-live-region'
 
 import {
-  BOTTOM_ORDER,
-  BOTTOM_TITLES,
   chooseMove,
   commandIn,
   createEnvironmentWith,
   deferredMoveResolver,
+  loadedRows,
   mockSection,
+  MORNING,
+  moveButtonOf,
   moveOperations,
+  movedToEnd,
   openMoveMenu,
-  PLANKS,
-  PUSHUPS,
-  READ_ORDER,
-  readTheServerBack,
+  reordered,
+  rowFor,
   settleTheMove,
-  SQUATS,
-  titlesInOrder,
+  slotIdsOf,
+  titleOf,
+  waitForOrder,
 } from './DaySection.storyHarness'
 import { DaySectionStoryView } from './DaySection.storyView'
 
@@ -82,64 +83,54 @@ export const CommandsSendRelativeTargets: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(READ_ORDER),
-          deferredMoveResolver(READ_ORDER),
-          deferredMoveResolver(READ_ORDER),
-          deferredMoveResolver(READ_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(MORNING),
+          deferredMoveResolver(MORNING),
+          deferredMoveResolver(MORNING),
+          deferredMoveResolver(MORNING),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    await loadedRows(canvasElement)
+    const ids = slotIdsOf(canvasElement)
+    const first = ids[0]
+    const second = ids[1]
+    const secondToLast = ids[ids.length - 2]
+    const last = ids[ids.length - 1]
 
-    await chooseMove(canvasElement, 'Squats', 'Move up')
-    await waitFor(() => {
-      expect(moveOperations).toHaveLength(1)
-    })
-    expect(moveOperations[0]?.request.variables.input).toEqual({
-      routineSlotId: SQUATS.id,
-      to: 'TOP',
-    })
-    settleTheMove()
-    await readTheServerBack(canvasElement)
+    const expectMoveSent = async (
+      count: number,
+      input: Record<string, string>,
+    ) => {
+      await waitFor(() => {
+        expect(moveOperations).toHaveLength(count)
+      })
+      expect(moveOperations[count - 1]?.request.variables.input).toEqual(input)
+      settleTheMove()
+      await waitForOrder(canvasElement, ids)
+    }
 
-    await chooseMove(canvasElement, 'Squats', 'Move down')
-    await waitFor(() => {
-      expect(moveOperations).toHaveLength(2)
-    })
-    expect(moveOperations[1]?.request.variables.input).toEqual({
-      routineSlotId: SQUATS.id,
-      to: 'BOTTOM',
-    })
-    settleTheMove()
-    await readTheServerBack(canvasElement)
+    await chooseMove(rowFor(canvasElement, second), 'Move up')
+    await expectMoveSent(1, { routineSlotId: second, to: 'TOP' })
 
-    await chooseMove(canvasElement, 'Pushups', 'Move down')
-    await waitFor(() => {
-      expect(moveOperations).toHaveLength(3)
-    })
-    expect(moveOperations[2]?.request.variables.input).toEqual({
-      routineSlotId: PUSHUPS.id,
-      afterRoutineSlotId: SQUATS.id,
-    })
-    settleTheMove()
-    await readTheServerBack(canvasElement)
+    await chooseMove(rowFor(canvasElement, secondToLast), 'Move down')
+    await expectMoveSent(2, { routineSlotId: secondToLast, to: 'BOTTOM' })
 
-    await chooseMove(canvasElement, 'Planks', 'Move up')
-    await waitFor(() => {
-      expect(moveOperations).toHaveLength(4)
+    await chooseMove(rowFor(canvasElement, first), 'Move down')
+    await expectMoveSent(3, {
+      routineSlotId: first,
+      afterRoutineSlotId: second,
     })
-    expect(moveOperations[3]?.request.variables.input).toEqual({
-      routineSlotId: PLANKS.id,
-      beforeRoutineSlotId: SQUATS.id,
-    })
-    settleTheMove()
-    await readTheServerBack(canvasElement)
 
-    const menu = await openMoveMenu(canvasElement, 'Pushups')
+    await chooseMove(rowFor(canvasElement, last), 'Move up')
+    await expectMoveSent(4, {
+      routineSlotId: last,
+      beforeRoutineSlotId: secondToLast,
+    })
+
+    const menu = await openMoveMenu(rowFor(canvasElement, first))
     const alreadyFirst = within(menu).getByRole('menuitem', {
       name: 'Move up',
     })
@@ -154,19 +145,18 @@ export const ScreenReaderHearsTheNewPosition: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver([SQUATS, PUSHUPS, PLANKS]),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(reordered(MORNING, 0, 1)),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const [first] = await loadedRows(canvasElement)
+    const total = slotIdsOf(canvasElement).length
     cleanup()
 
-    await openMoveMenu(canvasElement, 'Pushups')
-    const menu = await screen.findByRole('menu')
+    const menu = await openMoveMenu(first)
     expect(
       within(menu)
         .getAllByRole('menuitem')
@@ -186,18 +176,18 @@ export const ScreenReaderHearsTheNewPosition: Story = {
 
     await userEvent.keyboard('{Escape}')
     expect(screen.queryByRole('menu')).not.toBeInTheDocument()
-    expect(canvas.getByRole('button', { name: 'Move Pushups' })).toHaveFocus()
+    expect(moveButtonOf(first)).toHaveFocus()
 
-    await chooseMove(canvasElement, 'Pushups', 'Move down')
+    await chooseMove(first, 'Move down')
 
-    expect(canvas.getByRole('button', { name: 'Move Pushups' })).toHaveFocus()
+    expect(moveButtonOf(first)).toHaveFocus()
 
     settleTheMove()
 
     await waitFor(
       () => {
         expect(screen.getByRole('status')).toHaveTextContent(
-          'Pushups moved to position 2 of 3',
+          `${titleOf(first)} moved to position 2 of ${total}`,
         )
       },
       { timeout: 3000 },
@@ -210,29 +200,27 @@ export const SecondMoveIsNotOfferedWhileOneIsInFlight: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(READ_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(MORNING),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const [first, second] = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
 
-    await chooseMove(canvasElement, 'Pushups', 'Move to bottom')
+    await chooseMove(first, 'Move to bottom')
 
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(BOTTOM_TITLES)
-    })
+    await waitForOrder(canvasElement, movedToEnd(before, 0))
 
-    const menu = await openMoveMenu(canvasElement, 'Squats')
+    const menu = await openMoveMenu(second)
     const items = await within(menu).findAllByRole('menuitem')
     items.forEach(item => expect(item).toBeDisabled())
 
     settleTheMove()
 
-    await readTheServerBack(canvasElement)
+    await waitForOrder(canvasElement, before)
     expect(moveOperations).toHaveLength(1)
   },
 }
@@ -242,17 +230,16 @@ export const PointerOpenedMenuSelectsNoCommand: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(BOTTOM_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(movedToEnd(MORNING, 0)),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const [first, second] = await loadedRows(canvasElement)
 
-    const mouseMenu = await openMoveMenu(canvasElement, 'Squats')
+    const mouseMenu = await openMoveMenu(second)
     expect(mouseMenu).toHaveFocus()
     expect(commandIn(mouseMenu, 'Move up')).not.toHaveFocus()
 
@@ -263,14 +250,14 @@ export const PointerOpenedMenuSelectsNoCommand: Story = {
 
     await userEvent.keyboard('{Escape}')
 
-    canvas.getByRole('button', { name: 'Move Squats' }).focus()
+    moveButtonOf(second).focus()
     await userEvent.keyboard('{Enter}')
     const keyboardMenu = await screen.findByRole('menu')
     expect(commandIn(keyboardMenu, 'Move up')).toHaveFocus()
 
     await userEvent.keyboard('{Escape}')
 
-    const topRowMenu = await openMoveMenu(canvasElement, 'Pushups')
+    const topRowMenu = await openMoveMenu(first)
     expect(commandIn(topRowMenu, 'Move up')).toBeDisabled()
     expect(commandIn(topRowMenu, 'Move down')).not.toHaveFocus()
 

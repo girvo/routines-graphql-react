@@ -1,8 +1,10 @@
 import { GraphQLError } from 'graphql'
-import { tableToDomain, taskToGraphQL } from './task-domain.ts'
+import { tableToDomain } from './task-domain.ts'
 import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
-import { taskCursor } from './task-repository.ts'
+import { createTaskRepository, taskCursor } from './task-repository.ts'
+import { createRoutineSlotRepository } from '../routine-slot/routine-slot-repository.ts'
+import { removeSlotsOfTask } from '../routine-slot/routine-slot-removal.ts'
 import { fromGlobalId } from '../globalId.ts'
 
 export const createTask: MutationResolvers<Context>['createTask'] = async (
@@ -26,7 +28,7 @@ export const createTask: MutationResolvers<Context>['createTask'] = async (
 
   return {
     taskEdge: {
-      node: taskToGraphQL(task),
+      node: task,
       cursor: taskCursor.encode({
         createdAt: task.createdAt.toISOString(),
         id: task.id,
@@ -43,14 +45,16 @@ export const deleteTask: MutationResolvers<Context>['deleteTask'] = async (
 ) => {
   assertAuthenticated(context)
 
-  const result = await context.taskRepo.deleteTask(
-    fromGlobalId(taskId, 'Task'),
-    context.currentUser.id,
-  )
+  const id = fromGlobalId(taskId, 'Task')
+  const userId = context.currentUser.id
 
-  if (result.numUpdatedRows < 1n) {
-    throw new GraphQLError('Task not found')
-  }
+  await context.db.transaction().execute(async tx => {
+    const result = await createTaskRepository(tx).deleteTask(id, userId)
+    if (result.numUpdatedRows < 1n) {
+      throw new GraphQLError('Task not found')
+    }
+    await removeSlotsOfTask(createRoutineSlotRepository(tx), id, userId)
+  })
 
   return {
     deletedId: taskId,
@@ -77,6 +81,6 @@ export const updateTask: MutationResolvers<Context>['updateTask'] = async (
   context.tasks.prime(updatedTask.id, updatedTask)
 
   return {
-    task: taskToGraphQL(updatedTask),
+    task: updatedTask,
   }
 }

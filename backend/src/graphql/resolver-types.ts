@@ -2,12 +2,12 @@ import type { DayOfWeek } from '../database/types.ts';
 import type { DaySection } from '../database/types.ts';
 import type { GlobalId } from '../globalId.ts';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import type { UserNode } from '../user/user-domain.ts';
-import type { TaskNode } from '../task/task-domain.ts';
-import type { RoutineSlotNode } from '../routine-slot/routine-slot-domain.ts';
-import type { TaskCompletionNode } from '../task-completion/task-completion-domain.ts';
-import type { PushSubscriptionNode } from '../push/push-domain.ts';
-import type { DailyRoutineData, WeeklyScheduleData, DayScheduleData, DaySectionSlotsData } from '../schedule/schedule-domain.ts';
+import type { UserDomain } from '../user/user-domain.ts';
+import type { TaskDomain } from '../task/task-domain.ts';
+import type { RoutineSlotDomain } from '../routine-slot/routine-slot-domain.ts';
+import type { TaskCompletionDomain } from '../task-completion/task-completion-domain.ts';
+import type { PushSubscriptionDomain } from '../push/push-domain.ts';
+import type { DailyTaskInstanceData, DailyRoutineData, DaySectionSlotsData } from '../schedule/schedule-domain.ts';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -98,32 +98,6 @@ export type DailyTaskInstanceEdge = {
 };
 
 export type { DayOfWeek };
-
-export type DaySchedule = {
-  __typename?: 'DaySchedule';
-  dayOfWeek: DayOfWeek;
-  evening: RoutineSlotConnection;
-  midday: RoutineSlotConnection;
-  morning: RoutineSlotConnection;
-};
-
-
-export type DayScheduleEveningArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
-};
-
-
-export type DayScheduleMiddayArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
-};
-
-
-export type DayScheduleMorningArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['NonNegativeInt']['input']>;
-};
 
 export type { DaySection };
 
@@ -270,7 +244,6 @@ export type Query = {
   node?: Maybe<Node>;
   taskCompletions: TaskCompletionConnection;
   tasks: TaskConnection;
-  weeklySchedule: WeeklySchedulePayload;
 };
 
 
@@ -441,17 +414,6 @@ export type User = Node & {
   pushSubscriptions: Array<PushSubscription>;
 };
 
-export type WeeklySchedulePayload = {
-  __typename?: 'WeeklySchedulePayload';
-  friday: DaySchedule;
-  monday: DaySchedule;
-  saturday: DaySchedule;
-  sunday: DaySchedule;
-  thursday: DaySchedule;
-  tuesday: DaySchedule;
-  wednesday: DaySchedule;
-};
-
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -526,13 +488,13 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   Node:
-    | ( Omit<DailyTaskInstance, 'completion' | 'routineSlot'> & { completion?: Maybe<_RefType['TaskCompletion']>, routineSlot: _RefType['RoutineSlot'] } )
-    | ( DaySectionSlotsData )
-    | ( PushSubscriptionNode )
-    | ( RoutineSlotNode )
-    | ( TaskNode )
-    | ( TaskCompletionNode )
-    | ( UserNode )
+    | ( DailyTaskInstanceData & { __typename: 'DailyTaskInstance' } )
+    | ( DaySectionSlotsData & { __typename: 'DaySectionSlots' } )
+    | ( PushSubscriptionDomain & { __typename: 'PushSubscription' } )
+    | ( RoutineSlotDomain & { __typename: 'RoutineSlot' } )
+    | ( TaskDomain & { __typename: 'Task' } )
+    | ( TaskCompletionDomain & { __typename: 'TaskCompletion' } )
+    | ( UserDomain & { __typename: 'User' } )
   ;
 }>;
 
@@ -544,12 +506,11 @@ export type ResolversTypes = ResolversObject<{
   CreateRoutineSlotPayload: ResolverTypeWrapper<Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversTypes['RoutineSlotEdge'] }>;
   CreateTaskPayload: ResolverTypeWrapper<Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversTypes['TaskEdge'] }>;
   DailyRoutinePayload: ResolverTypeWrapper<DailyRoutineData>;
-  DailyTaskInstance: ResolverTypeWrapper<Omit<DailyTaskInstance, 'completion' | 'routineSlot'> & { completion?: Maybe<ResolversTypes['TaskCompletion']>, routineSlot: ResolversTypes['RoutineSlot'] }>;
+  DailyTaskInstance: ResolverTypeWrapper<DailyTaskInstanceData>;
   DailyTaskInstanceConnection: ResolverTypeWrapper<Omit<DailyTaskInstanceConnection, 'edges'> & { edges: Array<ResolversTypes['DailyTaskInstanceEdge']> }>;
   DailyTaskInstanceEdge: ResolverTypeWrapper<Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversTypes['DailyTaskInstance'] }>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   DayOfWeek: DayOfWeek;
-  DaySchedule: ResolverTypeWrapper<DayScheduleData>;
   DaySection: DaySection;
   DaySectionSlots: ResolverTypeWrapper<DaySectionSlotsData>;
   DeleteRoutineSlotPayload: ResolverTypeWrapper<DeleteRoutineSlotPayload>;
@@ -562,20 +523,20 @@ export type ResolversTypes = ResolversObject<{
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   NonNegativeInt: ResolverTypeWrapper<Scalars['NonNegativeInt']['output']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
-  PushSubscription: ResolverTypeWrapper<PushSubscriptionNode>;
+  PushSubscription: ResolverTypeWrapper<PushSubscriptionDomain>;
   PushSubscriptionKeysInput: PushSubscriptionKeysInput;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   RegisterPushSubscriptionInput: RegisterPushSubscriptionInput;
   RegisterPushSubscriptionPayload: ResolverTypeWrapper<Omit<RegisterPushSubscriptionPayload, 'me' | 'pushSubscription'> & { me: ResolversTypes['User'], pushSubscription: ResolversTypes['PushSubscription'] }>;
   RemovePushSubscriptionPayload: ResolverTypeWrapper<Omit<RemovePushSubscriptionPayload, 'me'> & { me: ResolversTypes['User'] }>;
-  RoutineSlot: ResolverTypeWrapper<RoutineSlotNode>;
+  RoutineSlot: ResolverTypeWrapper<RoutineSlotDomain>;
   RoutineSlotConnection: ResolverTypeWrapper<Omit<RoutineSlotConnection, 'edges'> & { edges: Array<ResolversTypes['RoutineSlotEdge']> }>;
   RoutineSlotEdge: ResolverTypeWrapper<Omit<RoutineSlotEdge, 'node'> & { node: ResolversTypes['RoutineSlot'] }>;
   SendTestPushPayload: ResolverTypeWrapper<Omit<SendTestPushPayload, 'me'> & { me: ResolversTypes['User'] }>;
   SlotMoveDestination: SlotMoveDestination;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Task: ResolverTypeWrapper<TaskNode>;
-  TaskCompletion: ResolverTypeWrapper<TaskCompletionNode>;
+  Task: ResolverTypeWrapper<TaskDomain>;
+  TaskCompletion: ResolverTypeWrapper<TaskCompletionDomain>;
   TaskCompletionConnection: ResolverTypeWrapper<Omit<TaskCompletionConnection, 'edges'> & { edges: Array<ResolversTypes['TaskCompletionEdge']> }>;
   TaskCompletionEdge: ResolverTypeWrapper<Omit<TaskCompletionEdge, 'node'> & { node: ResolversTypes['TaskCompletion'] }>;
   TaskConnection: ResolverTypeWrapper<Omit<TaskConnection, 'edges'> & { edges: Array<ResolversTypes['TaskEdge']> }>;
@@ -583,8 +544,7 @@ export type ResolversTypes = ResolversObject<{
   UncompleteRoutineSlotPayload: ResolverTypeWrapper<Omit<UncompleteRoutineSlotPayload, 'dailyTaskInstance'> & { dailyTaskInstance: ResolversTypes['DailyTaskInstance'] }>;
   UpdateTaskInput: UpdateTaskInput;
   UpdateTaskPayload: ResolverTypeWrapper<Omit<UpdateTaskPayload, 'task'> & { task: ResolversTypes['Task'] }>;
-  User: ResolverTypeWrapper<UserNode>;
-  WeeklySchedulePayload: ResolverTypeWrapper<WeeklyScheduleData>;
+  User: ResolverTypeWrapper<UserDomain>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -595,11 +555,10 @@ export type ResolversParentTypes = ResolversObject<{
   CreateRoutineSlotPayload: Omit<CreateRoutineSlotPayload, 'routineSlotEdge'> & { routineSlotEdge: ResolversParentTypes['RoutineSlotEdge'] };
   CreateTaskPayload: Omit<CreateTaskPayload, 'taskEdge'> & { taskEdge: ResolversParentTypes['TaskEdge'] };
   DailyRoutinePayload: DailyRoutineData;
-  DailyTaskInstance: Omit<DailyTaskInstance, 'completion' | 'routineSlot'> & { completion?: Maybe<ResolversParentTypes['TaskCompletion']>, routineSlot: ResolversParentTypes['RoutineSlot'] };
+  DailyTaskInstance: DailyTaskInstanceData;
   DailyTaskInstanceConnection: Omit<DailyTaskInstanceConnection, 'edges'> & { edges: Array<ResolversParentTypes['DailyTaskInstanceEdge']> };
   DailyTaskInstanceEdge: Omit<DailyTaskInstanceEdge, 'node'> & { node: ResolversParentTypes['DailyTaskInstance'] };
   DateTime: Scalars['DateTime']['output'];
-  DaySchedule: DayScheduleData;
   DaySectionSlots: DaySectionSlotsData;
   DeleteRoutineSlotPayload: DeleteRoutineSlotPayload;
   DeleteTaskPayload: DeleteTaskPayload;
@@ -611,19 +570,19 @@ export type ResolversParentTypes = ResolversObject<{
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   NonNegativeInt: Scalars['NonNegativeInt']['output'];
   PageInfo: PageInfo;
-  PushSubscription: PushSubscriptionNode;
+  PushSubscription: PushSubscriptionDomain;
   PushSubscriptionKeysInput: PushSubscriptionKeysInput;
   Query: Record<PropertyKey, never>;
   RegisterPushSubscriptionInput: RegisterPushSubscriptionInput;
   RegisterPushSubscriptionPayload: Omit<RegisterPushSubscriptionPayload, 'me' | 'pushSubscription'> & { me: ResolversParentTypes['User'], pushSubscription: ResolversParentTypes['PushSubscription'] };
   RemovePushSubscriptionPayload: Omit<RemovePushSubscriptionPayload, 'me'> & { me: ResolversParentTypes['User'] };
-  RoutineSlot: RoutineSlotNode;
+  RoutineSlot: RoutineSlotDomain;
   RoutineSlotConnection: Omit<RoutineSlotConnection, 'edges'> & { edges: Array<ResolversParentTypes['RoutineSlotEdge']> };
   RoutineSlotEdge: Omit<RoutineSlotEdge, 'node'> & { node: ResolversParentTypes['RoutineSlot'] };
   SendTestPushPayload: Omit<SendTestPushPayload, 'me'> & { me: ResolversParentTypes['User'] };
   String: Scalars['String']['output'];
-  Task: TaskNode;
-  TaskCompletion: TaskCompletionNode;
+  Task: TaskDomain;
+  TaskCompletion: TaskCompletionDomain;
   TaskCompletionConnection: Omit<TaskCompletionConnection, 'edges'> & { edges: Array<ResolversParentTypes['TaskCompletionEdge']> };
   TaskCompletionEdge: Omit<TaskCompletionEdge, 'node'> & { node: ResolversParentTypes['TaskCompletion'] };
   TaskConnection: Omit<TaskConnection, 'edges'> & { edges: Array<ResolversParentTypes['TaskEdge']> };
@@ -631,8 +590,7 @@ export type ResolversParentTypes = ResolversObject<{
   UncompleteRoutineSlotPayload: Omit<UncompleteRoutineSlotPayload, 'dailyTaskInstance'> & { dailyTaskInstance: ResolversParentTypes['DailyTaskInstance'] };
   UpdateTaskInput: UpdateTaskInput;
   UpdateTaskPayload: Omit<UpdateTaskPayload, 'task'> & { task: ResolversParentTypes['Task'] };
-  User: UserNode;
-  WeeklySchedulePayload: WeeklyScheduleData;
+  User: UserDomain;
 }>;
 
 export type AuthenticatedDirectiveArgs = { };
@@ -685,13 +643,6 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type DayOfWeekResolvers = EnumResolverSignature<{ FRIDAY?: any, MONDAY?: any, SATURDAY?: any, SUNDAY?: any, THURSDAY?: any, TUESDAY?: any, WEDNESDAY?: any }, ResolversTypes['DayOfWeek']>;
-
-export type DayScheduleResolvers<ContextType = any, ParentType extends ResolversParentTypes['DaySchedule'] = ResolversParentTypes['DaySchedule']> = ResolversObject<{
-  dayOfWeek?: Resolver<ResolversTypes['DayOfWeek'], ParentType, ContextType>;
-  evening?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<DayScheduleEveningArgs>>;
-  midday?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<DayScheduleMiddayArgs>>;
-  morning?: Resolver<ResolversTypes['RoutineSlotConnection'], ParentType, ContextType, Partial<DayScheduleMorningArgs>>;
-}>;
 
 export type DaySectionResolvers = EnumResolverSignature<{ EVENING?: any, MIDDAY?: any, MORNING?: any }, ResolversTypes['DaySection']>;
 
@@ -766,7 +717,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   taskCompletions?: Resolver<ResolversTypes['TaskCompletionConnection'], ParentType, ContextType, Partial<QueryTaskCompletionsArgs>>;
   tasks?: Resolver<ResolversTypes['TaskConnection'], ParentType, ContextType, Partial<QueryTasksArgs>>;
-  weeklySchedule?: Resolver<ResolversTypes['WeeklySchedulePayload'], ParentType, ContextType>;
 }>;
 
 export type RegisterPushSubscriptionPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegisterPushSubscriptionPayload'] = ResolversParentTypes['RegisterPushSubscriptionPayload']> = ResolversObject<{
@@ -864,16 +814,6 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type WeeklySchedulePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['WeeklySchedulePayload'] = ResolversParentTypes['WeeklySchedulePayload']> = ResolversObject<{
-  friday?: Resolver<ResolversTypes['DaySchedule'], ParentType, ContextType>;
-  monday?: Resolver<ResolversTypes['DaySchedule'], ParentType, ContextType>;
-  saturday?: Resolver<ResolversTypes['DaySchedule'], ParentType, ContextType>;
-  sunday?: Resolver<ResolversTypes['DaySchedule'], ParentType, ContextType>;
-  thursday?: Resolver<ResolversTypes['DaySchedule'], ParentType, ContextType>;
-  tuesday?: Resolver<ResolversTypes['DaySchedule'], ParentType, ContextType>;
-  wednesday?: Resolver<ResolversTypes['DaySchedule'], ParentType, ContextType>;
-}>;
-
 export type Resolvers<ContextType = any> = ResolversObject<{
   CompleteRoutineSlotPayload?: CompleteRoutineSlotPayloadResolvers<ContextType>;
   CreateRoutineSlotPayload?: CreateRoutineSlotPayloadResolvers<ContextType>;
@@ -884,7 +824,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   DailyTaskInstanceEdge?: DailyTaskInstanceEdgeResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DayOfWeek?: DayOfWeekResolvers;
-  DaySchedule?: DayScheduleResolvers<ContextType>;
   DaySection?: DaySectionResolvers;
   DaySectionSlots?: DaySectionSlotsResolvers<ContextType>;
   DeleteRoutineSlotPayload?: DeleteRoutineSlotPayloadResolvers<ContextType>;
@@ -912,7 +851,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   UncompleteRoutineSlotPayload?: UncompleteRoutineSlotPayloadResolvers<ContextType>;
   UpdateTaskPayload?: UpdateTaskPayloadResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
-  WeeklySchedulePayload?: WeeklySchedulePayloadResolvers<ContextType>;
 }>;
 
 export type DirectiveResolvers<ContextType = any> = ResolversObject<{

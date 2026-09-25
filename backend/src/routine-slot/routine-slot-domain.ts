@@ -1,6 +1,5 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
-import { toGlobalId } from '../globalId.ts'
 import {
   routineSlotCursor,
   routineSlotPositionCursor,
@@ -34,18 +33,6 @@ export const tableToDomain = (input: RoutineSlotRow): RoutineSlotDomain => {
     deletedAt: input.deleted_at ? parseISO(input.deleted_at) : null,
   })
 }
-
-export const routineSlotToGraphQL = (slot: RoutineSlotDomain) => ({
-  __typename: 'RoutineSlot' as const,
-  id: toGlobalId('RoutineSlot', slot.id),
-  task: { id: toGlobalId('Task', slot.taskId) },
-  dayOfWeek: slot.dayOfWeek,
-  section: slot.section,
-  position: slot.position,
-  createdAt: slot.createdAt,
-})
-
-export type RoutineSlotNode = ReturnType<typeof routineSlotToGraphQL>
 
 export const buildRoutineSlotEdge = (slot: RoutineSlotDomain) => {
   return {

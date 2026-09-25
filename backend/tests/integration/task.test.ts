@@ -8,6 +8,9 @@ import {
   type YogaApp,
 } from '../helpers/graphql.ts'
 import { graphql } from '../gql/gql.ts'
+import { createRoutineSlot } from '../helpers/routine-slot.ts'
+import type { GlobalId } from '../../src/globalId.ts'
+import type { DayOfWeek, DaySection } from '../../src/database/types.ts'
 
 let yoga: YogaApp
 
@@ -459,5 +462,156 @@ describe('Task queries', () => {
 
     expect(searchResult.errors).toBeUndefined()
     expect(searchResult.data?.tasks.edges.length).toEqual(2)
+  })
+})
+
+const SectionWithTasksQuery = graphql(`
+  query DeletedTaskSection($dayOfWeek: DayOfWeek!, $section: DaySection!) {
+    daySectionSlots(dayOfWeek: $dayOfWeek, section: $section) {
+      slots(first: 100) {
+        edges {
+          node {
+            id
+            position
+            task {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`)
+
+const DailyRoutineWithTasksQuery = graphql(`
+  query DeletedTaskDailyRoutine($date: DateTime) {
+    dailyRoutine(date: $date) {
+      morning(first: 100) {
+        edges {
+          node {
+            routineSlot {
+              id
+              task {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`)
+
+const DeletedTaskNodeQuery = graphql(`
+  query DeletedTaskSlotNode($id: ID!) {
+    node(id: $id) {
+      id
+    }
+  }
+`)
+
+const DeleteTaskMutation = graphql(`
+  mutation DeleteTaskWithSlots($taskId: ID!) {
+    deleteTask(taskId: $taskId) {
+      deletedId
+    }
+  }
+`)
+
+const slotFor = async (
+  taskId: GlobalId,
+  dayOfWeek: DayOfWeek,
+  section: DaySection,
+  userToken: string,
+) => {
+  const created = await createRoutineSlot({
+    input: { taskId, dayOfWeek, section },
+    yoga,
+    userToken,
+  })
+  expect(created.errors).toBeUndefined()
+  return created.data!.createRoutineSlot!.routineSlotEdge.node.id
+}
+
+const taskFor = async (title: string, userToken: string) => {
+  const created = await createTask({ title, yoga, userToken })
+  return created.data!.createTask!.taskEdge.node.id
+}
+
+const sectionSlots = async (
+  dayOfWeek: DayOfWeek,
+  section: DaySection,
+  userToken: string,
+) => {
+  const result = await executeGraphQL(
+    SectionWithTasksQuery,
+    { dayOfWeek, section },
+    { yoga, userToken },
+  )
+  expect(result.errors).toBeUndefined()
+  return result.data!.daySectionSlots.slots.edges.map(edge => edge.node)
+}
+
+describe('Deleting a task that has routine slots', () => {
+  it('removes its slots from every section and keeps the remaining positions dense', async () => {
+    const { userToken } = await createTestUser()
+    const doomed = await taskFor('Doomed', userToken)
+    const survivor = await taskFor('Survivor', userToken)
+
+    await slotFor(doomed, 'MONDAY', 'MORNING', userToken)
+    const survivorSlot = await slotFor(survivor, 'MONDAY', 'MORNING', userToken)
+    await slotFor(doomed, 'TUESDAY', 'EVENING', userToken)
+
+    const deleted = await executeGraphQL(
+      DeleteTaskMutation,
+      { taskId: doomed },
+      { yoga, userToken },
+    )
+    expect(deleted.errors).toBeUndefined()
+
+    expect(await sectionSlots('MONDAY', 'MORNING', userToken)).toEqual([
+      { id: survivorSlot, position: 0, task: { id: survivor } },
+    ])
+    expect(await sectionSlots('TUESDAY', 'EVENING', userToken)).toEqual([])
+  })
+
+  it('removes its slots from the daily routine', async () => {
+    const { userToken } = await createTestUser()
+    const doomed = await taskFor('Doomed', userToken)
+    await slotFor(doomed, 'MONDAY', 'MORNING', userToken)
+
+    await executeGraphQL(
+      DeleteTaskMutation,
+      { taskId: doomed },
+      { yoga, userToken },
+    )
+
+    const monday = await executeGraphQL(
+      DailyRoutineWithTasksQuery,
+      { date: new Date('2025-12-08T12:00:00Z') },
+      { yoga, userToken },
+    )
+    expect(monday.errors).toBeUndefined()
+    expect(monday.data?.dailyRoutine.morning.edges).toEqual([])
+  })
+
+  it('makes its slots unreachable through node(id:)', async () => {
+    const { userToken } = await createTestUser()
+    const doomed = await taskFor('Doomed', userToken)
+    const doomedSlot = await slotFor(doomed, 'MONDAY', 'MORNING', userToken)
+
+    await executeGraphQL(
+      DeleteTaskMutation,
+      { taskId: doomed },
+      { yoga, userToken },
+    )
+
+    const node = await executeGraphQL(
+      DeletedTaskNodeQuery,
+      { id: doomedSlot },
+      { yoga, userToken },
+    )
+    expect(node.errors).toBeUndefined()
+    expect(node.data?.node).toBeNull()
   })
 })

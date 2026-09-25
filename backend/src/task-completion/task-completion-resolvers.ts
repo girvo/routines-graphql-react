@@ -1,15 +1,9 @@
-import {
-  buildTaskCompletionConnection,
-  taskCompletionToGraphQL,
-} from './task-completion-domain.ts'
-import type { NodeResolver } from '../graphql/types.ts'
+import { buildTaskCompletionConnection } from './task-completion-domain.ts'
+import type { NodeLoader } from '../graphql/types.ts'
 import type { TaskCompletionResolvers } from '../graphql/resolver-types.ts'
 import type { QueryResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { GraphQLError } from 'graphql'
-import { routineSlotToGraphQL } from '../routine-slot/routine-slot-domain.ts'
-import { fromGlobalId } from '../globalId.ts'
-import { encodeDailyTaskInstanceId } from '../schedule/schedule-domain.ts'
 
 export const taskCompletions: QueryResolvers<Context>['taskCompletions'] =
   async (_parent, { first, after, startDate, endDate }, context) => {
@@ -28,50 +22,40 @@ export const taskCompletions: QueryResolvers<Context>['taskCompletions'] =
     )
 
     return {
-      edges: connection.edges.map(edge => ({
-        node: taskCompletionToGraphQL(edge.node),
-        cursor: edge.cursor,
-      })),
+      edges: connection.edges,
       pageInfo: connection.pageInfo,
     }
   }
 
-export const resolveTaskCompletionAsNode: NodeResolver<
-  'TaskCompletion'
+export const resolveTaskCompletionAsNode: NodeLoader<
+  'TaskCompletion',
+  number
 > = async (id, context) => {
   const taskCompletion = await context.taskCompletions.load(id)
 
-  if (!taskCompletion || taskCompletion instanceof Error) {
+  if (!taskCompletion) {
     return null
   }
 
-  return taskCompletionToGraphQL(taskCompletion)
+  return taskCompletion
 }
 
 export const routineSlot: TaskCompletionResolvers<Context>['routineSlot'] =
   async (parent, _args, context) => {
-    const routineSlot = await context.routineSlots.load(
-      fromGlobalId(parent.routineSlot.id, 'RoutineSlot'),
-    )
+    const routineSlot = await context.routineSlots.load(parent.routineSlotId)
     if (!routineSlot) {
       throw new GraphQLError('Routine slot not found')
     }
 
-    return routineSlotToGraphQL(routineSlot)
+    return routineSlot
   }
 
 export const dailyTaskInstance: TaskCompletionResolvers<Context>['dailyTaskInstance'] =
   async (parent, _args, context) => {
-    const slotId = fromGlobalId(parent.routineSlot.id, 'RoutineSlot')
-    const slot = await context.routineSlots.load(slotId)
+    const slot = await context.routineSlots.load(parent.routineSlotId)
     if (!slot) {
       throw new GraphQLError('Routine slot not found')
     }
 
-    return {
-      __typename: 'DailyTaskInstance' as const,
-      id: encodeDailyTaskInstanceId(slotId, parent.completedAt),
-      routineSlot: routineSlotToGraphQL(slot),
-      completion: parent,
-    }
+    return { date: parent.completedAt, routineSlot: slot, completion: parent }
   }

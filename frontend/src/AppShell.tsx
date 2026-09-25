@@ -69,10 +69,10 @@ const AppShell = ({ queries }: Props) => {
     void fetch('/api/logout', {
       method: 'POST',
       credentials: 'same-origin',
-      keepalive: true,
+    }).finally(() => {
+      clearAccessToken()
+      window.location.href = '/'
     })
-    clearAccessToken()
-    window.location.href = '/'
   }, [clearAccessToken])
 
   const routeTitle =

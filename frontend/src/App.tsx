@@ -5,7 +5,7 @@ import { preparePreloadableRoutes } from '@loop-payments/react-router-relay'
 import { AuthContext } from './auth/auth-store'
 import { authedRouteConfig, unAuthedRouteConfig } from './routes.tsx'
 
-// Constructed lazily — only when hasAccessToken is true. createBrowserRouter
+// Constructed lazily — only once the session is signed in. createBrowserRouter
 // fires loaders on creation, and the authed routes' loaders make GraphQL
 // requests that 401-loop if there's no token.
 const AuthedApp = () => {
@@ -29,13 +29,15 @@ const AuthedApp = () => {
 }
 
 export default function App() {
-  const { hasAccessToken } = use(AuthContext)
+  const { status } = use(AuthContext)
 
   const unauthedRouter = useMemo(() => {
     return createBrowserRouter(unAuthedRouteConfig)
   }, [])
 
-  if (!hasAccessToken) {
+  if (status === 'restoring') return null
+
+  if (status === 'signedOut') {
     return <RouterProvider router={unauthedRouter} />
   }
 

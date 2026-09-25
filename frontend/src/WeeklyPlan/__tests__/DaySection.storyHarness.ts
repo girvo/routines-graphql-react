@@ -5,6 +5,7 @@ import {
   type MockEnvironment,
 } from 'relay-test-utils'
 import type { GraphQLResponse, OperationDescriptor } from 'relay-runtime'
+import { edgeIndexOf } from '../../relay/__tests__/mock-resolver-path.ts'
 
 type MockSectionName = 'MORNING' | 'MIDDAY'
 
@@ -15,64 +16,49 @@ interface MockSlot {
   cursor: string
 }
 
-export const PUSHUPS: MockSlot = {
-  id: 'routine-slot-pushups',
-  taskId: 'task-pushups',
-  title: 'Pushups',
-  cursor: 'cursor-pushups',
-}
-export const SQUATS: MockSlot = {
-  id: 'routine-slot-squats',
-  taskId: 'task-squats',
-  title: 'Squats',
-  cursor: 'cursor-squats',
-}
-export const PLANKS: MockSlot = {
-  id: 'routine-slot-planks',
-  taskId: 'task-planks',
-  title: 'Planks',
-  cursor: 'cursor-planks',
+const mockSlots = (label: string, count: number): MockSlot[] =>
+  Array.from({ length: count }, (_, index) => {
+    const key = `${label.toLowerCase()}-${index + 1}`
+    return {
+      id: `routine-slot-${key}`,
+      taskId: `task-${key}`,
+      title: `${label} task ${index + 1}`,
+      cursor: `cursor-${key}`,
+    }
+  })
+
+export const MORNING = mockSlots('Morning', 3)
+export const MIDDAY = mockSlots('Midday', 2)
+
+export const reordered = <T>(
+  items: readonly T[],
+  from: number,
+  to: number,
+): T[] => {
+  const next = [...items]
+  const [item] = next.splice(from, 1)
+  next.splice(to, 0, item)
+  return next
 }
 
-export const READ_ORDER: MockSlot[] = [PUSHUPS, SQUATS, PLANKS]
-export const BOTTOM_ORDER: MockSlot[] = [SQUATS, PLANKS, PUSHUPS]
-export const UP_ORDER: MockSlot[] = [PUSHUPS, PLANKS, SQUATS]
-const BURPEES: MockSlot = {
-  id: 'routine-slot-burpees',
-  taskId: 'task-burpees',
-  title: 'Burpees',
-  cursor: 'cursor-burpees',
-}
-const SITUPS: MockSlot = {
-  id: 'routine-slot-situps',
-  taskId: 'task-situps',
-  title: 'Situps',
-  cursor: 'cursor-situps',
-}
+export const movedToEnd = <T>(items: readonly T[], from: number): T[] =>
+  reordered(items, from, items.length - 1)
 
-export const MIDDAY_ORDER: MockSlot[] = [BURPEES, SITUPS]
-
-export const TITLES = ['Pushups', 'Squats', 'Planks']
-export const BOTTOM_TITLES = ['Squats', 'Planks', 'Pushups']
-export const UP_TITLES = ['Pushups', 'Planks', 'Squats']
-export const MIDDAY_TITLES = ['Burpees', 'Situps']
+export const idsOf = (slots: readonly MockSlot[]) => slots.map(slot => slot.id)
 
 interface MockSection {
   containerId: string
   name: MockSectionName
-  nodesInGenerationOrder: readonly MockSlot[]
-  edgeCount: number
+  slots: readonly MockSlot[]
 }
 
 export const mockSection = (
   name: MockSectionName,
-  nodesInGenerationOrder: readonly MockSlot[],
-  edgeCount: number = nodesInGenerationOrder.length,
+  slots: readonly MockSlot[],
 ): MockSection => ({
   containerId: `day-section-slots-monday-${name.toLowerCase()}`,
   name,
-  nodesInGenerationOrder,
-  edgeCount,
+  slots,
 })
 
 export type MoveLabel =
@@ -85,45 +71,37 @@ const generateDaySections = (
   operation: OperationDescriptor,
   sections: readonly MockSection[],
 ) => {
-  const cursors = sections.map(section => ({
-    section,
-    edge: 0,
-    node: 0,
-    current: section.nodesInGenerationOrder[0],
-  }))
-  let active = cursors[0]
+  let active = sections[0]
+  const slotAt = (path: readonly string[] | null | undefined) => {
+    const index = edgeIndexOf(path)
+    return index === null ? undefined : active.slots[index]
+  }
 
   return MockPayloadGenerator.generate(operation, {
-    DaySectionSlots: context => {
-      const requested = String(context.args?.section ?? '')
+    DaySectionSlots: ({ args }) => {
       active =
-        cursors.find(cursor => cursor.section.name === requested) ?? active
+        sections.find(section => section.name === args?.section) ?? active
       return {
-        id: active.section.containerId,
+        id: active.containerId,
         dayOfWeek: 'MONDAY',
-        section: active.section.name,
+        section: active.name,
       }
     },
     RoutineSlotConnection: () => ({
-      edges: Array.from({ length: active.section.edgeCount }, () => ({})),
+      edges: active.slots.map(() => ({})),
     }),
-    RoutineSlotEdge: () => ({
-      cursor: active.section.nodesInGenerationOrder[active.edge++].cursor,
-    }),
-    RoutineSlot() {
-      active.current = active.section.nodesInGenerationOrder[active.node++]
-      return {
-        id: active.current.id,
-        dayOfWeek: 'MONDAY',
-        section: active.section.name,
-        position: active.node,
-      }
+    RoutineSlotEdge: ({ path }) => {
+      const slot = slotAt(path)
+      return slot && { cursor: slot.cursor }
     },
-    Task: () => ({
-      id: active.current.taskId,
-      title: active.current.title,
-      icon: 'dumbbell',
-    }),
+    RoutineSlot: ({ path }) => {
+      const slot = slotAt(path)
+      return slot && { id: slot.id, dayOfWeek: 'MONDAY', section: active.name }
+    },
+    Task: ({ path }) => {
+      const slot = slotAt(path)
+      return slot && { id: slot.taskId, title: slot.title, icon: 'dumbbell' }
+    },
     PageInfo: () => ({ endCursor: null, hasNextPage: false }),
   })
 }
@@ -179,16 +157,36 @@ export const createEnvironmentWith = (
   return environment
 }
 
-export const titlesInOrder = (canvasElement: HTMLElement) =>
-  within(canvasElement)
-    .getAllByRole('listitem')
-    .map(row => row.textContent ?? '')
+const SLOT_ROW = 'li[data-slot-id]'
 
-export const rowHolding = (canvasElement: HTMLElement, title: string) => {
-  const row = within(canvasElement).getByText(title).closest('li')
-  if (!row) throw new Error(`no list row holds ${title}`)
+export const rowsOf = (container: ParentNode) => [
+  ...container.querySelectorAll<HTMLLIElement>(SLOT_ROW),
+]
+
+export const slotIdsOf = (container: ParentNode) =>
+  rowsOf(container).map(row => row.dataset.slotId ?? '')
+
+export const loadedRows = async (container: HTMLElement) => {
+  await waitFor(() => {
+    expect(rowsOf(container).length).toBeGreaterThan(0)
+  })
+  return rowsOf(container)
+}
+
+export const rowFor = (container: ParentNode, slotId: string) => {
+  const row = container.querySelector<HTMLLIElement>(
+    `${SLOT_ROW}[data-slot-id="${CSS.escape(slotId)}"]`,
+  )
+  if (!row) throw new Error(`no row holds slot ${slotId}`)
   return row
 }
+
+export const titleOf = (row: Element) => row.textContent ?? ''
+
+export const waitForOrder = (container: ParentNode, slotIds: string[]) =>
+  waitFor(() => {
+    expect(slotIdsOf(container)).toEqual(slotIds)
+  })
 
 export const moveOperationsQueued = () => {
   expect(storyEnvironment).toBeDefined()
@@ -197,26 +195,19 @@ export const moveOperationsQueued = () => {
     .filter(name => name === 'DaySectionMoveTaskMutation')
 }
 
-export const openMoveMenu = async (
-  canvasElement: HTMLElement,
-  title: string,
-) => {
-  const canvas = within(canvasElement)
-  await userEvent.click(
-    await canvas.findByRole('button', { name: `Move ${title}` }),
-  )
+export const moveButtonOf = (row: HTMLElement) =>
+  within(row).getByRole('button', { name: /^Move / })
+
+export const openMoveMenu = async (row: HTMLElement) => {
+  await userEvent.click(moveButtonOf(row))
   return screen.findByRole('menu')
 }
 
 export const commandIn = (menu: HTMLElement, label: MoveLabel) =>
   within(menu).getByRole('menuitem', { name: label })
 
-export const chooseMove = async (
-  canvasElement: HTMLElement,
-  title: string,
-  command: MoveLabel,
-) => {
-  const menu = await openMoveMenu(canvasElement, title)
+export const chooseMove = async (row: HTMLElement, command: MoveLabel) => {
+  const menu = await openMoveMenu(row)
   await userEvent.click(
     await within(menu).findByRole('menuitem', { name: command }),
   )
@@ -234,10 +225,4 @@ export const rejectTheMove = (message: string) => {
   expect(reject).toBeDefined()
   reject?.(new Error(message))
   failMove = undefined
-}
-
-export const readTheServerBack = async (canvasElement: HTMLElement) => {
-  await waitFor(() => {
-    expect(titlesInOrder(canvasElement)).toEqual(TITLES)
-  })
 }

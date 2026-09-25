@@ -1,6 +1,5 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
-import { toGlobalId } from '../globalId.ts'
 import { taskCursor, type TaskRow } from './task-repository.ts'
 import type { PageInfo } from '../graphql/resolver-types.ts'
 
@@ -27,17 +26,6 @@ export const tableToDomain = (input: TaskRow): TaskDomain => {
     deletedAt: input.deleted_at ? parseISO(input.deleted_at) : null,
   })
 }
-
-export const taskToGraphQL = (task: TaskDomain) => ({
-  __typename: 'Task' as const,
-  id: toGlobalId('Task', task.id),
-  title: task.title,
-  icon: task.icon,
-  createdAt: task.createdAt,
-  updatedAt: task.updatedAt,
-})
-
-export type TaskNode = ReturnType<typeof taskToGraphQL>
 
 export const buildTaskEdge = (
   task: TaskDomain,

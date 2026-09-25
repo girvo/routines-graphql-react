@@ -1,6 +1,5 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
-import { toGlobalId } from '../globalId.ts'
 import {
   taskCompletionCursor,
   type TaskCompletionRow,
@@ -28,19 +27,6 @@ export const tableToDomain = (
     createdAt: parseISO(input.created_at),
   })
 }
-
-export const taskCompletionToGraphQL = (completion: TaskCompletionDomain) => ({
-  __typename: 'TaskCompletion' as const,
-  id: toGlobalId('TaskCompletion', completion.id),
-  routineSlot: {
-    id: toGlobalId('RoutineSlot', completion.routineSlotId),
-  },
-  userId: completion.userId,
-  completedAt: completion.completedAt,
-  createdAt: completion.createdAt,
-})
-
-export type TaskCompletionNode = ReturnType<typeof taskCompletionToGraphQL>
 
 export const buildTaskCompletionEdge = (completion: TaskCompletionDomain) => {
   return {

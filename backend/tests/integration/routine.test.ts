@@ -225,13 +225,11 @@ describe('Routine mutations', () => {
     const otherSchedule = await executeGraphQL(
       graphql(`
         query OtherUsersMondayMorningAfterUnauthorizedSlotCreate {
-          weeklySchedule {
-            monday {
-              morning(first: 10) {
-                edges {
-                  node {
-                    id
-                  }
+          daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {
+            slots(first: 10) {
+              edges {
+                node {
+                  id
                 }
               }
             }
@@ -243,9 +241,7 @@ describe('Routine mutations', () => {
     )
 
     expect(otherSchedule.errors).toBeUndefined()
-    expect(otherSchedule.data?.weeklySchedule.monday.morning.edges.length).toBe(
-      0,
-    )
+    expect(otherSchedule.data?.daySectionSlots.slots.edges).toHaveLength(0)
   })
 })
 

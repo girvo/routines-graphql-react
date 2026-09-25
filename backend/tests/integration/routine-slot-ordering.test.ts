@@ -11,9 +11,8 @@ import {
   createRoutineSlot,
   deleteRoutineSlot,
   moveRoutineSlot,
-  queryWeeklySectionSlots,
-  queryDailySectionSlots,
   queryDaySectionSlots,
+  queryDailySectionSlots,
 } from '../helpers/routine-slot.ts'
 import { graphql } from '../gql/gql.ts'
 import { parse } from 'graphql'
@@ -145,7 +144,7 @@ describe('Section ordering reads', () => {
     })
     expect(slots.map(slot => slot.position)).toEqual([0, 1, 2])
 
-    const page = await queryWeeklySectionSlots({
+    const page = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -197,7 +196,7 @@ describe('Section ordering reads', () => {
       { dayOfWeek: 'MONDAY', section: 'MIDDAY' },
       { dayOfWeek: 'TUESDAY', section: 'MORNING' },
     ] as const) {
-      const page = await queryWeeklySectionSlots({
+      const page = await queryDaySectionSlots({
         yoga,
         userToken,
         dayOfWeek: target.dayOfWeek,
@@ -218,7 +217,7 @@ describe('Section ordering reads', () => {
       userToken,
     })
 
-    const firstPage = await queryWeeklySectionSlots({
+    const firstPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -230,7 +229,7 @@ describe('Section ordering reads', () => {
     expect(firstPage.hasNextPage).toBe(true)
     assert(firstPage.endCursor !== null, 'first page has an end cursor')
 
-    const secondPage = await queryWeeklySectionSlots({
+    const secondPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -244,7 +243,7 @@ describe('Section ordering reads', () => {
     expect(secondPage.hasNextPage).toBe(true)
     assert(secondPage.endCursor !== null, 'second page has an end cursor')
 
-    const thirdPage = await queryWeeklySectionSlots({
+    const thirdPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -262,7 +261,7 @@ describe('Section ordering reads', () => {
     expect(visited).toEqual(slots.map(slot => slot.id))
   })
 
-  it('mirrors the weekly order in dailyRoutine with position cursors', async () => {
+  it('mirrors the container order in dailyRoutine with position cursors', async () => {
     const { userToken } = await createTestUser()
 
     const monday = new Date('2025-12-08T12:00:00Z')
@@ -287,7 +286,7 @@ describe('Section ordering reads', () => {
       userToken,
     })
 
-    const weekly = await queryWeeklySectionSlots({
+    const container = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -301,7 +300,7 @@ describe('Section ordering reads', () => {
     })
 
     expect(daily.errors).toBeUndefined()
-    expect(daily.ids).toEqual(weekly.ids)
+    expect(daily.ids).toEqual(container.ids)
     expect(daily.ids).toEqual(slots.map(slot => slot.id))
     expect(daily.positions).toEqual([0, 1, 2])
 
@@ -348,15 +347,15 @@ describe('Section ordering reads', () => {
     })
     expect(moved.errors).toBeUndefined()
 
-    const weekly = await queryWeeklySectionSlots({
+    const container = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
       section: 'MORNING',
     })
-    expect(weekly.errors).toBeUndefined()
-    expect(weekly.ids).toEqual(shuffled.map(slot => slot.id))
-    expect(weekly.positions).toEqual([0, 1, 2])
+    expect(container.errors).toBeUndefined()
+    expect(container.ids).toEqual(shuffled.map(slot => slot.id))
+    expect(container.positions).toEqual([0, 1, 2])
 
     const daily = await queryDailySectionSlots({
       yoga,
@@ -379,29 +378,18 @@ describe('Section ordering reads', () => {
       id: fromGlobalId(asGlobalId(shuffled[2].id), 'RoutineSlot'),
     })
 
-    const container = await queryDaySectionSlots({
-      yoga,
-      userToken,
-      dayOfWeek: 'MONDAY',
-      section: 'MORNING',
-    })
-    expect(container.errors).toBeUndefined()
-    expect(container.ids).toEqual(shuffled.map(slot => slot.id))
-    expect(container.positions).toEqual([0, 1, 2])
     assert(
-      weekly.startCursor !== null && weekly.endCursor !== null,
-      'weekly section has cursors',
+      container.startCursor !== null && container.endCursor !== null,
+      'container section has cursors',
     )
-    expect(container.startCursor).toEqual(weekly.startCursor)
-    expect(container.endCursor).toEqual(weekly.endCursor)
 
-    const middayPage = await queryWeeklySectionSlots({
+    const middayPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
       section: 'MIDDAY',
     })
-    const tuesdayPage = await queryWeeklySectionSlots({
+    const tuesdayPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'TUESDAY',
@@ -454,7 +442,7 @@ describe('Section ordering reads', () => {
     })
     expect(revived.id).toBe(morningSlot.id)
 
-    const morningSection = await queryWeeklySectionSlots({
+    const morningSection = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -522,7 +510,7 @@ describe('Deleting renumbers the rest of the day and section', () => {
     expect(deleted.errors).toBeUndefined()
     expect(deleted.data?.deleteRoutineSlot?.deletedId).toBe(slots[1].id)
 
-    const page = await queryWeeklySectionSlots({
+    const page = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -558,7 +546,7 @@ describe('Deleting renumbers the rest of the day and section', () => {
     })
     expect(deleted.errors).toBeUndefined()
 
-    const page = await queryWeeklySectionSlots({
+    const page = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -590,13 +578,13 @@ describe('Deleting renumbers the rest of the day and section', () => {
     })
     expect(forbidden.errors?.[0].message).toBe('Routine slot not found')
 
-    const myPage = await queryWeeklySectionSlots({
+    const myPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
       section: 'MORNING',
     })
-    const theirPage = await queryWeeklySectionSlots({
+    const theirPage = await queryDaySectionSlots({
       yoga,
       userToken: other.userToken,
       dayOfWeek: 'MONDAY',
@@ -629,7 +617,7 @@ describe('Deleting renumbers the rest of the day and section', () => {
     })
     expect(secondDelete.errors?.[0].message).toBe('Routine slot not found')
 
-    const page = await queryWeeklySectionSlots({
+    const page = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -674,19 +662,19 @@ describe('Deleting renumbers the rest of the day and section', () => {
       userToken,
     })
 
-    const morningPage = await queryWeeklySectionSlots({
+    const morningPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
       section: 'MORNING',
     })
-    const middayPage = await queryWeeklySectionSlots({
+    const middayPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
       section: 'MIDDAY',
     })
-    const tuesdayPage = await queryWeeklySectionSlots({
+    const tuesdayPage = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'TUESDAY',
@@ -723,7 +711,7 @@ describe('Deleting renumbers the rest of the day and section', () => {
     expect(missing.errors?.[0].message).toBe('Routine slot not found')
     expect(missing.data?.deleteRoutineSlot).toBeNull()
 
-    const page = await queryWeeklySectionSlots({
+    const page = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -765,7 +753,7 @@ describe('Reviving a deleted slot appends it at the end of its day and section',
     expect(revivedNode.id).toBe(slots[1].id)
     expect(revivedNode.position).toBe(2)
 
-    const page = await queryWeeklySectionSlots({
+    const page = await queryDaySectionSlots({
       yoga,
       userToken,
       dayOfWeek: 'MONDAY',
@@ -834,7 +822,7 @@ describe('DaySectionSlots container reads', () => {
     expect(secondPage.hasNextPage).toBe(false)
   })
 
-  it('resolves the same container through node(id:) and null for a malformed id', async () => {
+  it('resolves the same container through node(id:) and rejects a malformed id', async () => {
     const { userToken } = await createTestUser()
 
     const slots = await createSlots(2, {
@@ -871,18 +859,18 @@ describe('DaySectionSlots container reads', () => {
         { id: malformedId },
         { yoga, userToken },
       )
-      expect(malformed.errors).toBeUndefined()
       expect(malformed.data?.node).toBeNull()
+      expect(malformed.errors?.[0]?.extensions?.code).toBe('BAD_USER_INPUT')
     }
   })
 })
 
-const expectWeeklyOrder = async (
+const expectSectionOrder = async (
   userToken: string,
   target: { dayOfWeek: DayOfWeek; section: DaySection },
   slots: readonly { id: string }[],
 ) => {
-  const page = await queryWeeklySectionSlots({ yoga, userToken, ...target })
+  const page = await queryDaySectionSlots({ yoga, userToken, ...target })
   expect(page.errors).toBeUndefined()
   expect(page.ids).toEqual(slots.map(slot => slot.id))
   expect(page.positions).toEqual(slots.map((_slot, index) => index))
@@ -984,22 +972,11 @@ describe('moveRoutineSlot', () => {
     expect(bottomMove.movedPosition).toBe(3)
 
     const expectedOrder = [first, fourth, third, second]
-    await expectWeeklyOrder(
+    await expectSectionOrder(
       userToken,
       { dayOfWeek: 'MONDAY', section: 'MORNING' },
       expectedOrder,
     )
-
-    const weekly = await queryWeeklySectionSlots({
-      yoga,
-      userToken,
-      dayOfWeek: 'MONDAY',
-      section: 'MORNING',
-    })
-    assert(weekly.endCursor !== null, 'weekly section has an end cursor')
-    expect(bottomMove.section.ids).toEqual(weekly.ids)
-    expect(bottomMove.section.positions).toEqual(weekly.positions)
-    expect(bottomMove.movedCursor).toEqual(weekly.endCursor)
 
     const container = await queryDaySectionSlots({
       yoga,
@@ -1007,7 +984,10 @@ describe('moveRoutineSlot', () => {
       dayOfWeek: 'MONDAY',
       section: 'MORNING',
     })
-    expect(container.ids).toEqual(weekly.ids)
+    assert(container.endCursor !== null, 'container section has an end cursor')
+    expect(bottomMove.section.ids).toEqual(container.ids)
+    expect(bottomMove.section.positions).toEqual(container.positions)
+    expect(bottomMove.movedCursor).toEqual(container.endCursor)
 
     const daily = await queryDailySectionSlots({
       yoga,
@@ -1015,7 +995,7 @@ describe('moveRoutineSlot', () => {
       date: new Date('2025-12-08T12:00:00Z'),
       section: 'MORNING',
     })
-    expect(daily.ids).toEqual(weekly.ids)
+    expect(daily.ids).toEqual(container.ids)
   })
 
   it('succeeds without changing the order when the move is already true', async () => {
@@ -1039,7 +1019,7 @@ describe('moveRoutineSlot', () => {
       expect(result.section.ids).toEqual(slots.map(slot => slot.id))
       expect(result.section.positions).toEqual([0, 1, 2])
       expect(result.movedId).toBe(input.routineSlotId)
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'MORNING' },
         slots,
@@ -1063,7 +1043,7 @@ describe('moveRoutineSlot', () => {
       expect(result.errors).toBeUndefined()
       expect(result.movedPosition).toBe(0)
       expect(result.section.ids).toEqual([only.id])
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'EVENING' },
         [only],
@@ -1100,7 +1080,7 @@ describe('moveRoutineSlot', () => {
 
     // Either serialisation of these two writes ends in this order, so the
     // assertion holds whichever transaction the database ran first.
-    await expectWeeklyOrder(
+    await expectSectionOrder(
       userToken,
       { dayOfWeek: 'MONDAY', section: 'MORNING' },
       [slots[3], slots[1], slots[2], slots[0]],
@@ -1152,7 +1132,7 @@ describe('moveRoutineSlot', () => {
     expect(result.movedPosition).toBe(0)
 
     expect(await edgeIdentity()).toEqual(before)
-    await expectWeeklyOrder(
+    await expectSectionOrder(
       userToken,
       { dayOfWeek: 'MONDAY', section: 'MORNING' },
       [slots[2], slots[0], slots[1]],
@@ -1202,12 +1182,12 @@ describe('moveRoutineSlot', () => {
       eveningSlots[1].id,
     ])
 
-    await expectWeeklyOrder(
+    await expectSectionOrder(
       userToken,
       { dayOfWeek: 'MONDAY', section: 'EVENING' },
       [eveningSlots[2], eveningSlots[0], eveningSlots[1]],
     )
-    await expectWeeklyOrder(
+    await expectSectionOrder(
       userToken,
       { dayOfWeek: 'MONDAY', section: 'MORNING' },
       morningSlots,
@@ -1265,7 +1245,7 @@ describe('moveRoutineSlot', () => {
       expect(result.errors?.[0].message).toBe(
         'Provide exactly one of beforeRoutineSlotId, afterRoutineSlotId or to',
       )
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'MORNING' },
         slots,
@@ -1296,7 +1276,7 @@ describe('moveRoutineSlot', () => {
       expect(result.errors?.[0].message).toBe(
         'A routine slot cannot be moved relative to itself',
       )
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'MORNING' },
         slots,
@@ -1332,17 +1312,17 @@ describe('moveRoutineSlot', () => {
       expect(result.errors?.[0].message).toBe(
         'Routine slot is not in the same day and section',
       )
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'MORNING' },
         morning,
       )
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'MIDDAY' },
         midday,
       )
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'TUESDAY', section: 'MORNING' },
         tuesday,
@@ -1381,12 +1361,12 @@ describe('moveRoutineSlot', () => {
     for (const input of cases) {
       const result = await moveRoutineSlot({ yoga, userToken, input })
       expect(result.errors?.[0].message).toBe('Routine slot not found')
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'MORNING' },
         remaining,
       )
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         other.userToken,
         { dayOfWeek: 'MONDAY', section: 'MORNING' },
         theirs,
@@ -1435,7 +1415,7 @@ describe('moveRoutineSlot', () => {
       expect(result.errors?.[0].message).toBe(message)
       expect(result.errors?.[0].extensions?.code ?? null).toBeNull()
       expect(result.data?.moveRoutineSlot).toBeNull()
-      await expectWeeklyOrder(
+      await expectSectionOrder(
         userToken,
         { dayOfWeek: 'MONDAY', section: 'MORNING' },
         slots,
@@ -1457,7 +1437,7 @@ describe('moveRoutineSlot', () => {
     })
     expect(anonymous.errors?.[0].extensions?.code).toBe('UNAUTHENTICATED')
 
-    await expectWeeklyOrder(
+    await expectSectionOrder(
       userToken,
       { dayOfWeek: 'MONDAY', section: 'MORNING' },
       slots,

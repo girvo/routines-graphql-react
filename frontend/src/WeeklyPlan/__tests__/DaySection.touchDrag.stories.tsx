@@ -1,21 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, screen, waitFor, within } from 'storybook/test'
+import { expect, screen, waitFor } from 'storybook/test'
 import { cleanup } from '@atlaskit/pragmatic-drag-and-drop-live-region'
 
 import {
-  BOTTOM_ORDER,
-  BOTTOM_TITLES,
   createEnvironmentWith,
   deferredMoveResolver,
+  loadedRows,
   mockSection,
+  MORNING,
   moveOperations,
   moveOperationsQueued,
-  PUSHUPS,
-  READ_ORDER,
-  rowHolding,
+  movedToEnd,
   settleTheMove,
-  TITLES,
-  titlesInOrder,
+  slotIdsOf,
+  titleOf,
+  waitForOrder,
 } from './DaySection.storyHarness'
 import { DaySectionStoryView } from './DaySection.storyView'
 import {
@@ -42,19 +41,18 @@ export const TouchDragFromTheGripMovesWithoutALongPress: Story = {
     <DaySectionStoryView
       createReadAndMoves={() =>
         createEnvironmentWith(
-          [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(BOTTOM_ORDER),
+          [mockSection('MORNING', MORNING)],
+          deferredMoveResolver(movedToEnd(MORNING, 0)),
         )
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
+    const rows = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
+    const source = rows[0]
+    const target = rows[rows.length - 1]
     cleanup()
-
-    const source = rowHolding(canvasElement, 'Pushups')
-    const target = rowHolding(canvasElement, 'Planks')
 
     const handle = touchPressHandle(source)
     expect(source).toHaveAttribute('data-lifting', 'true')
@@ -75,12 +73,10 @@ export const TouchDragFromTheGripMovesWithoutALongPress: Story = {
       expect(moveOperations).toHaveLength(1)
     })
     expect(moveOperations[0]?.request.variables.input).toEqual({
-      routineSlotId: PUSHUPS.id,
+      routineSlotId: before[0],
       to: 'BOTTOM',
     })
-    await waitFor(() => {
-      expect(titlesInOrder(canvasElement)).toEqual(BOTTOM_TITLES)
-    })
+    await waitForOrder(canvasElement, movedToEnd(before, 0))
     expect(target).not.toHaveAttribute('data-drop-indicator')
     ;(handle as HTMLElement).click()
     await nextFrame()
@@ -91,7 +87,7 @@ export const TouchDragFromTheGripMovesWithoutALongPress: Story = {
     await waitFor(
       () => {
         expect(screen.getByRole('status')).toHaveTextContent(
-          'Pushups moved to the bottom',
+          `${titleOf(source)} moved to the bottom`,
         )
       },
       { timeout: 3000 },
@@ -103,15 +99,13 @@ export const TouchPressWithoutMovingStillOpensTheMoveMenu: Story = {
   render: () => (
     <DaySectionStoryView
       createReadAndMoves={() =>
-        createEnvironmentWith([mockSection('MORNING', READ_ORDER)])
+        createEnvironmentWith([mockSection('MORNING', MORNING)])
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
-
-    const row = rowHolding(canvasElement, 'Squats')
+    const [, row] = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
     const handle = touchPressHandle(row)
     expect(row).toHaveAttribute('data-lifting', 'true')
 
@@ -119,7 +113,7 @@ export const TouchPressWithoutMovingStillOpensTheMoveMenu: Story = {
     expect(row).not.toHaveAttribute('data-lifting')
     ;(handle as HTMLElement).click()
     expect(await screen.findByRole('menu')).toBeInTheDocument()
-    expect(titlesInOrder(canvasElement)).toEqual(TITLES)
+    expect(slotIdsOf(canvasElement)).toEqual(before)
     expect(moveOperationsQueued()).toEqual([])
   },
 }
@@ -128,16 +122,15 @@ export const SystemCancelledTouchDragLeavesTheOrderAlone: Story = {
   render: () => (
     <DaySectionStoryView
       createReadAndMoves={() =>
-        createEnvironmentWith([mockSection('MORNING', READ_ORDER)])
+        createEnvironmentWith([mockSection('MORNING', MORNING)])
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
-
-    const source = rowHolding(canvasElement, 'Pushups')
-    const target = rowHolding(canvasElement, 'Planks')
+    const rows = await loadedRows(canvasElement)
+    const before = slotIdsOf(canvasElement)
+    const source = rows[0]
+    const target = rows[rows.length - 1]
 
     const handle = touchPressHandle(source)
     touchMoveHandleTo(handle, target, 'after')
@@ -153,7 +146,7 @@ export const SystemCancelledTouchDragLeavesTheOrderAlone: Story = {
     expect(source).not.toHaveAttribute('data-lifting')
     expect(source).not.toHaveAttribute('data-touch-dragging')
     expect(source.style.transform).toBe('')
-    expect(titlesInOrder(canvasElement)).toEqual(TITLES)
+    expect(slotIdsOf(canvasElement)).toEqual(before)
     expect(moveOperationsQueued()).toEqual([])
   },
 }
@@ -162,15 +155,12 @@ export const MousePressOnTheGripLeavesDraggingToTheNativePath: Story = {
   render: () => (
     <DaySectionStoryView
       createReadAndMoves={() =>
-        createEnvironmentWith([mockSection('MORNING', READ_ORDER)])
+        createEnvironmentWith([mockSection('MORNING', MORNING)])
       }
     />
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await canvas.findByText('Pushups')
-
-    const row = rowHolding(canvasElement, 'Pushups')
+    const [row] = await loadedRows(canvasElement)
     mousePressHandle(row)
     expect(row).not.toHaveAttribute('data-lifting')
   },

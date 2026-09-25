@@ -143,56 +143,6 @@ const SECTION_FIELD: Record<DaySection, string> = {
   EVENING: 'evening',
 }
 
-const WEEKLY_DAY_FIELD: Record<DayOfWeek, string> = {
-  MONDAY: 'monday',
-  TUESDAY: 'tuesday',
-  WEDNESDAY: 'wednesday',
-  THURSDAY: 'thursday',
-  FRIDAY: 'friday',
-  SATURDAY: 'saturday',
-  SUNDAY: 'sunday',
-}
-
-interface WeeklySectionResponse {
-  weeklySchedule: Record<string, Record<string, RawConnection>>
-}
-
-interface WeeklySectionVariables {
-  first?: number
-  after?: string
-}
-
-export const queryWeeklySectionSlots = async (
-  args: SectionPageArgs & { dayOfWeek: DayOfWeek; section: DaySection },
-): Promise<SectionSlotsPage> => {
-  const dayField = WEEKLY_DAY_FIELD[args.dayOfWeek]
-  const sectionField = SECTION_FIELD[args.section]
-
-  const result = await executeGraphQL<
-    WeeklySectionResponse,
-    WeeklySectionVariables
-  >(
-    parse(`
-      query WeeklySectionOrder($first: NonNegativeInt, $after: String) {
-        weeklySchedule {
-          ${dayField} {
-            ${sectionField}(first: $first, after: $after) {
-              ${CONNECTION_FIELDS('id position')}
-            }
-          }
-        }
-      }
-    `),
-    { first: args.first, after: args.after },
-    { yoga: args.yoga, userToken: args.userToken },
-  )
-
-  return connectionPage(
-    result.data?.weeklySchedule[dayField]?.[sectionField],
-    result.errors,
-  )
-}
-
 interface DailySectionResponse {
   dailyRoutine: Record<string, RawConnection>
 }

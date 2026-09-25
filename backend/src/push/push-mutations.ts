@@ -3,8 +3,7 @@ import type { MutationResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { toGlobalId } from '../globalId.ts'
 import { getUserDayKey } from '../user-timezone.ts'
-import { tableToDomain, pushSubscriptionToGraphQL } from './push-domain.ts'
-import { userToGraphQL } from '../user/user-domain.ts'
+import { tableToDomain } from './push-domain.ts'
 import { buildMorningReminderPayload } from './push-payload.ts'
 import { assertPublicPushEndpoint } from './endpoint-policy.ts'
 import { testPushRateLimiter } from './rate-limit.ts'
@@ -63,7 +62,7 @@ const assertValidKeys = (keys: { p256dh: string; auth: string }) => {
 const payloadOwner = (context: Context) => {
   assertAuthenticated(context)
 
-  return userToGraphQL(context.currentUser)
+  return context.currentUser
 }
 
 export const registerPushSubscription: MutationResolvers<Context>['registerPushSubscription'] =
@@ -93,7 +92,7 @@ export const registerPushSubscription: MutationResolvers<Context>['registerPushS
     })
 
     return {
-      pushSubscription: pushSubscriptionToGraphQL(tableToDomain(row)),
+      pushSubscription: tableToDomain(row),
       me: payloadOwner(context),
     }
   }

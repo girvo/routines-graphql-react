@@ -1,9 +1,9 @@
 import { createContext } from 'react'
 
-const ACCESS_TOKEN_KEY = 'accessToken'
+export type AuthStatus = 'restoring' | 'signedIn' | 'signedOut'
 
 interface AuthContext {
-  hasAccessToken: boolean
+  status: AuthStatus
   setAccessToken: (token: string | null) => void
   clearAccessToken: () => void
 }
@@ -13,10 +13,7 @@ type Listener = () => void
 class AuthStore {
   private listeners = new Set<Listener>()
   private accessToken: string | null = null
-
-  constructor() {
-    this.accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY)
-  }
+  private restoring = true
 
   subscribe = (listener: Listener) => {
     this.listeners.add(listener)
@@ -25,8 +22,9 @@ class AuthStore {
     }
   }
 
-  getSnapshot = () => {
-    return this.accessToken !== null
+  getSnapshot = (): AuthStatus => {
+    if (this.restoring) return 'restoring'
+    return this.accessToken === null ? 'signedOut' : 'signedIn'
   }
 
   get token(): string | null {
@@ -34,17 +32,12 @@ class AuthStore {
   }
 
   setAccessToken = (token: string | null) => {
-    const hadToken = this.accessToken !== null
-    const hasToken = token !== null
+    const previousStatus = this.getSnapshot()
 
-    if (token) {
-      window.localStorage.setItem(ACCESS_TOKEN_KEY, token)
-    } else {
-      window.localStorage.removeItem(ACCESS_TOKEN_KEY)
-    }
+    this.restoring = false
     this.accessToken = token
 
-    if (hadToken !== hasToken) {
+    if (this.getSnapshot() !== previousStatus) {
       this.listeners.forEach(listener => listener())
     }
   }
@@ -53,7 +46,7 @@ class AuthStore {
 export const authStore = new AuthStore()
 
 export const AuthContext = createContext<AuthContext>({
-  hasAccessToken: false,
+  status: 'signedOut',
   setAccessToken: authStore.setAccessToken,
   clearAccessToken: () => authStore.setAccessToken(null),
 })

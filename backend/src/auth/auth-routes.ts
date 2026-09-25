@@ -1,4 +1,5 @@
-import type { FastifyInstance } from 'fastify'
+import type { FastifyInstance, FastifyReply } from 'fastify'
+import type { CookieSerializeOptions } from '@fastify/cookie'
 import { type } from 'arktype'
 import { compare, hash } from 'bcryptjs'
 import { NoResultError } from 'kysely'
@@ -16,6 +17,8 @@ import {
 } from './auth-utils.ts'
 import { createUserRepository } from '../user/user-repository.ts'
 import { db } from '../database/index.ts'
+
+const LEGACY_REFRESH_COOKIE_PATH = '/api'
 
 const LoginSchema = type({
   email: 'string.email',
@@ -50,6 +53,23 @@ export const authRoutes = async (fastify: FastifyInstance) => {
   const env = getEnv()
   const userRepo = createUserRepository(db)
   const refreshTokenRepo = createRefreshTokenRepository(db)
+  const refreshCookieOptions: CookieSerializeOptions = {
+    httpOnly: true,
+    secure: env.ENVIRONMENT === 'production',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+  }
+
+  const setRefreshCookie = (reply: FastifyReply, token: string) => {
+    reply.setCookie('refreshToken', token, refreshCookieOptions)
+    reply.clearCookie('refreshToken', { path: LEGACY_REFRESH_COOKIE_PATH })
+  }
+
+  const clearRefreshCookies = (reply: FastifyReply) => {
+    reply.clearCookie('refreshToken', { path: '/' })
+    reply.clearCookie('refreshToken', { path: LEGACY_REFRESH_COOKIE_PATH })
+  }
 
   fastify.post(
     '/api/login',
@@ -80,12 +100,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
           request.ip,
         )
 
-        reply.setCookie('refreshToken', refreshToken, {
-          httpOnly: true,
-          secure: env.ENVIRONMENT === 'production',
-          sameSite: 'strict',
-          maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
-        })
+        setRefreshCookie(reply, refreshToken)
 
         return {
           success: true,
@@ -126,13 +141,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
           request.ip,
         )
 
-        reply.setCookie('refreshToken', refreshToken, {
-          httpOnly: true,
-          secure: env.ENVIRONMENT === 'production',
-          sameSite: 'strict',
-          path: '/',
-          maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
-        })
+        setRefreshCookie(reply, refreshToken)
 
         return {
           success: true,
@@ -168,7 +177,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
       const storedToken = await refreshTokenRepo.findByTokenHash(tokenHash)
 
       if (!storedToken) {
-        reply.clearCookie('refreshToken')
+        clearRefreshCookies(reply)
         return reply.code(401).send({
           success: false,
           errors: [{ message: 'Invalid refresh token' }],
@@ -178,7 +187,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
       const tokenDomain = RefreshToken.tableToDomain(storedToken)
 
       if (tokenDomain.revokedAt) {
-        reply.clearCookie('refreshToken')
+        clearRefreshCookies(reply)
         return reply.code(401).send({
           success: false,
           errors: [{ message: 'Refresh token has been revoked' }],
@@ -186,7 +195,7 @@ export const authRoutes = async (fastify: FastifyInstance) => {
       }
 
       if (tokenDomain.expiresAt < new Date()) {
-        reply.clearCookie('refreshToken')
+        clearRefreshCookies(reply)
         return reply.code(401).send({
           success: false,
           errors: [{ message: 'Refresh token has expired' }],
@@ -210,19 +219,14 @@ export const authRoutes = async (fastify: FastifyInstance) => {
         newExpiresAt,
       )
 
-      reply.setCookie('refreshToken', newRefreshToken, {
-        httpOnly: true,
-        secure: env.ENVIRONMENT === 'production',
-        sameSite: 'strict',
-        maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
-      })
+      setRefreshCookie(reply, newRefreshToken)
 
       return {
         success: true,
         accessToken: newAccessToken,
       }
     } catch (err) {
-      reply.clearCookie('refreshToken')
+      clearRefreshCookies(reply)
       throw err
     }
   })
@@ -248,13 +252,13 @@ export const authRoutes = async (fastify: FastifyInstance) => {
           await refreshTokenRepo.revokeToken(storedToken.id)
         }
 
-        reply.clearCookie('refreshToken')
+        clearRefreshCookies(reply)
 
         return {
           success: true,
         }
       } catch (err) {
-        reply.clearCookie('refreshToken')
+        clearRefreshCookies(reply)
         throw err
       }
     },

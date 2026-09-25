@@ -1,12 +1,12 @@
 import type { Context } from '../graphql/context.ts'
-import type { NodeResolver } from '../graphql/types.ts'
+import type { NodeLoader } from '../graphql/types.ts'
 import type { UserResolvers } from '../graphql/resolver-types.ts'
 import { assertAuthenticated } from '../graphql/context.ts'
-import { fromGlobalId } from '../globalId.ts'
-import { tableToDomain, pushSubscriptionToGraphQL } from './push-domain.ts'
+import { tableToDomain } from './push-domain.ts'
 
-export const resolvePushSubscriptionAsNode: NodeResolver<
-  'PushSubscription'
+export const resolvePushSubscriptionAsNode: NodeLoader<
+  'PushSubscription',
+  number
 > = async (id, context) => {
   assertAuthenticated(context)
 
@@ -19,20 +19,20 @@ export const resolvePushSubscriptionAsNode: NodeResolver<
     return null
   }
 
-  return pushSubscriptionToGraphQL(tableToDomain(row))
+  return tableToDomain(row)
 }
 
 export const pushSubscriptions: UserResolvers<Context>['pushSubscriptions'] =
   async (parent, _args, context) => {
-    const userId = fromGlobalId(parent.id, 'User')
+    const userId = parent.id
     const rows = await context.pushRepo.findByUserId(userId)
 
-    return rows.map(tableToDomain).map(pushSubscriptionToGraphQL)
+    return rows.map(tableToDomain)
   }
 
 export const morningReminderEnabled: UserResolvers<Context>['morningReminderEnabled'] =
   async (parent, _args, context) => {
-    const userId = fromGlobalId(parent.id, 'User')
+    const userId = parent.id
     const rows = await context.pushRepo.findByUserId(userId)
 
     return rows.length > 0

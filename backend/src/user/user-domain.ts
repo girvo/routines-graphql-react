@@ -1,6 +1,5 @@
 import { type } from 'arktype'
 import { parseISO } from 'date-fns'
-import { toGlobalId } from '../globalId.ts'
 import type { UserRow } from './user-repository.ts'
 
 const UserDomain = type({
@@ -28,16 +27,6 @@ export const tableToDomain = (input: UserRow): UserDomain => {
 
   return UserDomain.assert(result)
 }
-
-export const userToGraphQL = (user: UserDomain) => ({
-  __typename: 'User' as const,
-  id: toGlobalId('User', user.id),
-  email: user.email,
-  name: user.name,
-  createdAt: user.createdAt,
-})
-
-export type UserNode = ReturnType<typeof userToGraphQL>
 
 export const deriveInitials = (name: string): string => {
   const parts = name.trim().split(/\s+/).filter(Boolean)

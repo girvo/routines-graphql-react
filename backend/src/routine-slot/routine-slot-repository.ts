@@ -253,6 +253,19 @@ const routineSlotFunctions = (db: Kysely<Database>) => {
         .execute()
     },
 
+    async listByTaskIdAndUserId(
+      taskId: number,
+      userId: number,
+    ): Promise<RoutineSlotRow[]> {
+      return db
+        .selectFrom('routine_slots')
+        .selectAll()
+        .where('task_id', '=', taskId)
+        .where('user_id', '=', userId)
+        .where('deleted_at', 'is', null)
+        .execute()
+    },
+
     async findAllByTaskIdAndUserIdPaginated(
       taskId: number,
       userId: number,

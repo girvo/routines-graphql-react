@@ -1,29 +1,25 @@
-import { buildTaskConnection, taskToGraphQL } from './task-domain.ts'
-import type { NodeResolver } from '../graphql/types.ts'
+import { buildTaskConnection } from './task-domain.ts'
+import type { NodeLoader } from '../graphql/types.ts'
 import type {
   QueryResolvers,
   TaskResolvers,
 } from '../graphql/resolver-types.ts'
 import { assertAuthenticated, type Context } from '../graphql/context.ts'
 import { taskCursor } from './task-repository.ts'
-import { fromGlobalId } from '../globalId.ts'
-import {
-  buildTaskCompletionConnection,
-  taskCompletionToGraphQL,
-} from '../task-completion/task-completion-domain.ts'
-import {
-  buildRoutineSlotConnection,
-  routineSlotToGraphQL,
-} from '../routine-slot/routine-slot-domain.ts'
+import { buildTaskCompletionConnection } from '../task-completion/task-completion-domain.ts'
+import { buildRoutineSlotConnection } from '../routine-slot/routine-slot-domain.ts'
 
-export const resolveTaskAsNode: NodeResolver<'Task'> = async (id, context) => {
+export const resolveTaskAsNode: NodeLoader<'Task', number> = async (
+  id,
+  context,
+) => {
   const task = await context.tasks.load(id)
 
-  if (!task || task instanceof Error) {
+  if (!task) {
     return null
   }
 
-  return taskToGraphQL(task)
+  return task
 }
 
 export const tasksResolver: QueryResolvers<Context>['tasks'] = async (
@@ -50,10 +46,7 @@ export const tasksResolver: QueryResolvers<Context>['tasks'] = async (
   connection.edges.forEach(({ node }) => context.tasks.prime(node.id, node))
 
   return {
-    edges: connection.edges.map(edge => ({
-      node: taskToGraphQL(edge.node),
-      cursor: edge.cursor,
-    })),
+    edges: connection.edges,
     pageInfo: connection.pageInfo,
   }
 }
@@ -68,7 +61,7 @@ export const completions: TaskResolvers<Context>['completions'] = async (
 
   const completionResults =
     await context.taskCompletionRepo.findByTaskIdPaginated(
-      fromGlobalId(parent.id, 'Task'),
+      parent.id,
       context.currentUser.id,
       { first: take, ...args },
     )
@@ -80,10 +73,7 @@ export const completions: TaskResolvers<Context>['completions'] = async (
   )
 
   return {
-    edges: connection.edges.map(edge => ({
-      node: taskCompletionToGraphQL(edge.node),
-      cursor: edge.cursor,
-    })),
+    edges: connection.edges,
     pageInfo: connection.pageInfo,
   }
 }
@@ -97,7 +87,7 @@ export const slots: TaskResolvers<Context>['slots'] = async (
   const take = first ?? 10
 
   const slotRows = await context.routineRepo.findAllByTaskIdAndUserIdPaginated(
-    fromGlobalId(parent.id, 'Task'),
+    parent.id,
     context.currentUser.id,
     { first: take, after },
   )
@@ -109,10 +99,7 @@ export const slots: TaskResolvers<Context>['slots'] = async (
   )
 
   return {
-    edges: connection.edges.map(edge => ({
-      node: routineSlotToGraphQL(edge.node),
-      cursor: edge.cursor,
-    })),
+    edges: connection.edges,
     pageInfo: connection.pageInfo,
   }
 }
