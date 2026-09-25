@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0e083c7401c2520fb0b17c5ab3304b8b>>
+ * @generated SignedSource<<e7f757f0a5116d77b53d1c6d8d349e89>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -53,40 +53,31 @@ v3 = [
     "value": "MIDDAY"
   }
 ],
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "dayOfWeek",
-  "storageKey": null
-},
-v6 = [
+v4 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 100
   }
 ],
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
 v7 = [
-  (v4/*: any*/),
-  (v5/*: any*/),
   {
     "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "section",
-    "storageKey": null
-  },
-  {
-    "alias": null,
-    "args": (v6/*: any*/),
+    "args": (v4/*: any*/),
     "concreteType": "RoutineSlotConnection",
     "kind": "LinkedField",
     "name": "slots",
@@ -100,6 +91,7 @@ v7 = [
         "name": "edges",
         "plural": true,
         "selections": [
+          (v5/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -115,14 +107,8 @@ v7 = [
             "name": "node",
             "plural": false,
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__typename",
-                "storageKey": null
-              },
-              (v4/*: any*/),
+              (v5/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -138,7 +124,7 @@ v7 = [
                     "name": "title",
                     "storageKey": null
                   },
-                  (v4/*: any*/),
+                  (v6/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -148,13 +134,24 @@ v7 = [
                   }
                 ],
                 "storageKey": null
-              },
-              (v5/*: any*/)
+              }
             ],
             "storageKey": null
           }
         ],
         "storageKey": null
+      },
+      {
+        "kind": "ClientExtension",
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__id",
+            "storageKey": null
+          }
+        ]
       },
       {
         "alias": null,
@@ -180,31 +177,20 @@ v7 = [
           }
         ],
         "storageKey": null
-      },
-      {
-        "kind": "ClientExtension",
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__id",
-            "storageKey": null
-          }
-        ]
       }
     ],
     "storageKey": "slots(first:100)"
   },
   {
     "alias": null,
-    "args": (v6/*: any*/),
+    "args": (v4/*: any*/),
     "filters": null,
     "handle": "connection",
     "key": "DaySection_slots",
     "kind": "LinkedHandle",
     "name": "slots"
-  }
+  },
+  (v6/*: any*/)
 ],
 v8 = {
   "enumValues": null,
@@ -213,78 +199,54 @@ v8 = {
   "type": "DaySectionSlots"
 },
 v9 = {
-  "enumValues": [
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY",
-    "SUNDAY"
-  ],
-  "nullable": false,
-  "plural": false,
-  "type": "DayOfWeek"
-},
-v10 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "ID"
 },
-v11 = {
-  "enumValues": [
-    "MORNING",
-    "MIDDAY",
-    "EVENING"
-  ],
-  "nullable": false,
-  "plural": false,
-  "type": "DaySection"
-},
-v12 = {
+v10 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "RoutineSlotConnection"
 },
-v13 = {
+v11 = {
   "enumValues": null,
   "nullable": false,
   "plural": true,
   "type": "RoutineSlotEdge"
 },
-v14 = {
+v12 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "String"
 },
-v15 = {
+v13 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "RoutineSlot"
 },
-v16 = {
+v14 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "Task"
 },
-v17 = {
+v15 = {
   "enumValues": null,
   "nullable": true,
   "plural": false,
   "type": "String"
 },
-v18 = {
+v16 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
   "type": "PageInfo"
 },
-v19 = {
+v17 = {
   "enumValues": null,
   "nullable": false,
   "plural": false,
@@ -350,53 +312,49 @@ return {
     ]
   },
   "params": {
-    "cacheID": "17cf1ee52908c10add7bfa491758fdce",
+    "cacheID": "5ffdc3f4832918d499de6be6cf3e3931",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
         "midday": (v8/*: any*/),
-        "midday.dayOfWeek": (v9/*: any*/),
-        "midday.id": (v10/*: any*/),
-        "midday.section": (v11/*: any*/),
-        "midday.slots": (v12/*: any*/),
-        "midday.slots.__id": (v10/*: any*/),
-        "midday.slots.edges": (v13/*: any*/),
-        "midday.slots.edges.cursor": (v14/*: any*/),
-        "midday.slots.edges.node": (v15/*: any*/),
-        "midday.slots.edges.node.__typename": (v14/*: any*/),
-        "midday.slots.edges.node.dayOfWeek": (v9/*: any*/),
-        "midday.slots.edges.node.id": (v10/*: any*/),
-        "midday.slots.edges.node.task": (v16/*: any*/),
-        "midday.slots.edges.node.task.icon": (v17/*: any*/),
-        "midday.slots.edges.node.task.id": (v10/*: any*/),
-        "midday.slots.edges.node.task.title": (v14/*: any*/),
-        "midday.slots.pageInfo": (v18/*: any*/),
-        "midday.slots.pageInfo.endCursor": (v17/*: any*/),
-        "midday.slots.pageInfo.hasNextPage": (v19/*: any*/),
+        "midday.id": (v9/*: any*/),
+        "midday.slots": (v10/*: any*/),
+        "midday.slots.__id": (v9/*: any*/),
+        "midday.slots.edges": (v11/*: any*/),
+        "midday.slots.edges.__typename": (v12/*: any*/),
+        "midday.slots.edges.cursor": (v12/*: any*/),
+        "midday.slots.edges.node": (v13/*: any*/),
+        "midday.slots.edges.node.__typename": (v12/*: any*/),
+        "midday.slots.edges.node.id": (v9/*: any*/),
+        "midday.slots.edges.node.task": (v14/*: any*/),
+        "midday.slots.edges.node.task.icon": (v15/*: any*/),
+        "midday.slots.edges.node.task.id": (v9/*: any*/),
+        "midday.slots.edges.node.task.title": (v12/*: any*/),
+        "midday.slots.pageInfo": (v16/*: any*/),
+        "midday.slots.pageInfo.endCursor": (v15/*: any*/),
+        "midday.slots.pageInfo.hasNextPage": (v17/*: any*/),
         "morning": (v8/*: any*/),
-        "morning.dayOfWeek": (v9/*: any*/),
-        "morning.id": (v10/*: any*/),
-        "morning.section": (v11/*: any*/),
-        "morning.slots": (v12/*: any*/),
-        "morning.slots.__id": (v10/*: any*/),
-        "morning.slots.edges": (v13/*: any*/),
-        "morning.slots.edges.cursor": (v14/*: any*/),
-        "morning.slots.edges.node": (v15/*: any*/),
-        "morning.slots.edges.node.__typename": (v14/*: any*/),
-        "morning.slots.edges.node.dayOfWeek": (v9/*: any*/),
-        "morning.slots.edges.node.id": (v10/*: any*/),
-        "morning.slots.edges.node.task": (v16/*: any*/),
-        "morning.slots.edges.node.task.icon": (v17/*: any*/),
-        "morning.slots.edges.node.task.id": (v10/*: any*/),
-        "morning.slots.edges.node.task.title": (v14/*: any*/),
-        "morning.slots.pageInfo": (v18/*: any*/),
-        "morning.slots.pageInfo.endCursor": (v17/*: any*/),
-        "morning.slots.pageInfo.hasNextPage": (v19/*: any*/)
+        "morning.id": (v9/*: any*/),
+        "morning.slots": (v10/*: any*/),
+        "morning.slots.__id": (v9/*: any*/),
+        "morning.slots.edges": (v11/*: any*/),
+        "morning.slots.edges.__typename": (v12/*: any*/),
+        "morning.slots.edges.cursor": (v12/*: any*/),
+        "morning.slots.edges.node": (v13/*: any*/),
+        "morning.slots.edges.node.__typename": (v12/*: any*/),
+        "morning.slots.edges.node.id": (v9/*: any*/),
+        "morning.slots.edges.node.task": (v14/*: any*/),
+        "morning.slots.edges.node.task.icon": (v15/*: any*/),
+        "morning.slots.edges.node.task.id": (v9/*: any*/),
+        "morning.slots.edges.node.task.title": (v12/*: any*/),
+        "morning.slots.pageInfo": (v16/*: any*/),
+        "morning.slots.pageInfo.endCursor": (v15/*: any*/),
+        "morning.slots.pageInfo.hasNextPage": (v17/*: any*/)
       }
     },
     "name": "DaySectionPairStoryQuery",
     "operationKind": "query",
-    "text": "query DaySectionPairStoryQuery {\n  morning: daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  midday: daySectionSlots(dayOfWeek: MONDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  id\n  dayOfWeek\n  section\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    ...WeeklyPlanRoutineSection_section\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      task {\n        title\n        id\n      }\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
+    "text": "query DaySectionPairStoryQuery {\n  morning: daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...DaySection_section\n    id\n  }\n  midday: daySectionSlots(dayOfWeek: MONDAY, section: MIDDAY) {\n    ...DaySection_section\n    id\n  }\n}\n\nfragment DaySection_section on DaySectionSlots {\n  slots(first: 100) {\n    edges {\n      __typename\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    ...WeeklyPlanRoutineSection_section\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    id\n    title\n    icon\n  }\n}\n\nfragment WeeklyPlanRoutineSection_section on RoutineSlotConnection {\n  edges {\n    node {\n      id\n      task {\n        title\n        id\n      }\n      ...RoutineSlotItem_routineSlot\n    }\n  }\n}\n"
   }
 };
 })();

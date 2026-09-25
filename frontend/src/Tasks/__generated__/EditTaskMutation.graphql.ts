@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b9d2125d9c884052de277f3904275672>>
+ * @generated SignedSource<<7c6323a44c0032dfb6f0a2837bcb6e3c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -136,13 +136,6 @@ return {
               },
               {
                 "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "createdAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
                 "args": (v3/*: any*/),
                 "concreteType": "RoutineSlotConnection",
                 "kind": "LinkedField",
@@ -239,12 +232,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1de1defb6d672b414977a8e08a0273de",
+    "cacheID": "4a0421edfeb48c635d5660cbc39e4d2a",
     "id": null,
     "metadata": {},
     "name": "EditTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...Task_task\n      id\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation EditTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      ...Task_task\n      id\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

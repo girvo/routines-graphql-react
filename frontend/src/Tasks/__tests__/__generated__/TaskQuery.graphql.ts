@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0bd20213a0f15d4f7782a21461dd8c58>>
+ * @generated SignedSource<<dbfb36075e574cd90e142e93bc5c3074>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -239,13 +239,6 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
                     "args": (v6/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
@@ -322,7 +315,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "65fdf154c6a6053c7f1e6a4a0219a5ef",
+    "cacheID": "b576d75d8abaeba90ffed5df45bbf505",
     "id": null,
     "metadata": {
       "connection": [
@@ -357,12 +350,6 @@ return {
           "type": "Task"
         },
         "tasks.edges.node.__typename": (v8/*: any*/),
-        "tasks.edges.node.createdAt": {
-          "enumValues": null,
-          "nullable": false,
-          "plural": false,
-          "type": "DateTime"
-        },
         "tasks.edges.node.icon": (v9/*: any*/),
         "tasks.edges.node.id": (v7/*: any*/),
         "tasks.edges.node.slots": {
@@ -407,7 +394,7 @@ return {
     },
     "name": "TaskQuery",
     "operationKind": "query",
-    "text": "query TaskQuery {\n  tasks(first: 1) {\n    edges {\n      node {\n        ...Task_task\n        __typename\n        id\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TaskQuery {\n  tasks(first: 1) {\n    edges {\n      node {\n        ...Task_task\n        __typename\n        id\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a17d3e3b7f833f4aa337965a62bb3224>>
+ * @generated SignedSource<<5c6efbbcba89972ad64ebf06e5720007>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type TodayTaskRowCompleteMutation$variables = {
   dailyTaskInstanceId: string;
 };
@@ -16,12 +17,30 @@ export type TodayTaskRowCompleteMutation$data = {
   readonly completeRoutineSlot: {
     readonly taskCompletionEdge: {
       readonly node: {
-        readonly completedAt: any;
+        readonly dailyTaskInstance: {
+          readonly " $fragmentSpreads": FragmentRefs<"TodayTaskRow_instance">;
+        };
+      };
+    };
+  } | null | undefined;
+};
+export type TodayTaskRowCompleteMutation$rawResponse = {
+  readonly completeRoutineSlot: {
+    readonly taskCompletionEdge: {
+      readonly node: {
         readonly dailyTaskInstance: {
           readonly completion: {
             readonly id: string;
           } | null | undefined;
           readonly id: string;
+          readonly routineSlot: {
+            readonly id: string;
+            readonly task: {
+              readonly icon: string | null | undefined;
+              readonly id: string;
+              readonly title: string;
+            };
+          };
         };
         readonly id: string;
       };
@@ -29,6 +48,7 @@ export type TodayTaskRowCompleteMutation$data = {
   } | null | undefined;
 };
 export type TodayTaskRowCompleteMutation = {
+  rawResponse: TodayTaskRowCompleteMutation$rawResponse;
   response: TodayTaskRowCompleteMutation$data;
   variables: TodayTaskRowCompleteMutation$variables;
 };
@@ -41,70 +61,64 @@ var v0 = [
     "name": "dailyTaskInstanceId"
   }
 ],
-v1 = {
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "dailyTaskInstanceId",
+    "variableName": "dailyTaskInstanceId"
+  }
+],
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-},
-v2 = [
-  {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "dailyTaskInstanceId",
-        "variableName": "dailyTaskInstanceId"
-      }
-    ],
-    "concreteType": "CompleteRoutineSlotPayload",
-    "kind": "LinkedField",
-    "name": "completeRoutineSlot",
-    "plural": false,
+};
+return {
+  "fragment": {
+    "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TodayTaskRowCompleteMutation",
     "selections": [
       {
         "alias": null,
-        "args": null,
-        "concreteType": "TaskCompletionEdge",
+        "args": (v1/*: any*/),
+        "concreteType": "CompleteRoutineSlotPayload",
         "kind": "LinkedField",
-        "name": "taskCompletionEdge",
+        "name": "completeRoutineSlot",
         "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "concreteType": "TaskCompletion",
+            "concreteType": "TaskCompletionEdge",
             "kind": "LinkedField",
-            "name": "node",
+            "name": "taskCompletionEdge",
             "plural": false,
             "selections": [
-              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "completedAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "DailyTaskInstance",
+                "concreteType": "TaskCompletion",
                 "kind": "LinkedField",
-                "name": "dailyTaskInstance",
+                "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "TaskCompletion",
+                    "concreteType": "DailyTaskInstance",
                     "kind": "LinkedField",
-                    "name": "completion",
+                    "name": "dailyTaskInstance",
                     "plural": false,
                     "selections": [
-                      (v1/*: any*/)
+                      {
+                        "args": null,
+                        "kind": "FragmentSpread",
+                        "name": "TodayTaskRow_instance"
+                      }
                     ],
                     "storageKey": null
                   }
@@ -118,16 +132,6 @@ v2 = [
         "storageKey": null
       }
     ],
-    "storageKey": null
-  }
-];
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "TodayTaskRowCompleteMutation",
-    "selections": (v2/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -136,19 +140,116 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TodayTaskRowCompleteMutation",
-    "selections": (v2/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "CompleteRoutineSlotPayload",
+        "kind": "LinkedField",
+        "name": "completeRoutineSlot",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "TaskCompletionEdge",
+            "kind": "LinkedField",
+            "name": "taskCompletionEdge",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "TaskCompletion",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "DailyTaskInstance",
+                    "kind": "LinkedField",
+                    "name": "dailyTaskInstance",
+                    "plural": false,
+                    "selections": [
+                      (v2/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "RoutineSlot",
+                        "kind": "LinkedField",
+                        "name": "routineSlot",
+                        "plural": false,
+                        "selections": [
+                          (v2/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Task",
+                            "kind": "LinkedField",
+                            "name": "task",
+                            "plural": false,
+                            "selections": [
+                              (v2/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "title",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "icon",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "TaskCompletion",
+                        "kind": "LinkedField",
+                        "name": "completion",
+                        "plural": false,
+                        "selections": [
+                          (v2/*: any*/)
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  (v2/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "da1ee98b5ef9ffd68bdabe304d8ce222",
+    "cacheID": "ce38ce188faded20d73b6ac068d6d419",
     "id": null,
     "metadata": {},
     "name": "TodayTaskRowCompleteMutation",
     "operationKind": "mutation",
-    "text": "mutation TodayTaskRowCompleteMutation(\n  $dailyTaskInstanceId: ID!\n) {\n  completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {\n    taskCompletionEdge {\n      node {\n        id\n        completedAt\n        dailyTaskInstance {\n          id\n          completion {\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation TodayTaskRowCompleteMutation(\n  $dailyTaskInstanceId: ID!\n) {\n  completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {\n    taskCompletionEdge {\n      node {\n        dailyTaskInstance {\n          ...TodayTaskRow_instance\n          id\n        }\n        id\n      }\n    }\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      id\n      title\n      icon\n    }\n  }\n  completion {\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "32384ea2d01665df4538ce5899cb4c63";
+(node as any).hash = "14c15d3ea0a33b5aa06df9ee2dd80042";
 
 export default node;

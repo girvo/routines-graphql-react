@@ -21,6 +21,7 @@ export const TodayPageEntryPoint: SimpleEntryPoint<typeof TodayPage> = {
         todayPageQuery: {
           parameters: TodayPageQueryDocument,
           variables: { date: date.toISOString() },
+          options: { fetchPolicy: 'store-and-network' },
         },
       },
       extraProps: { date: explicitDayKey ? date : null },

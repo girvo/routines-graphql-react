@@ -66,7 +66,6 @@ export const EditTask = ({
           store.readUpdatableFragment<EditTask_task$key>(
             graphql`
               fragment EditTask_task on Task @updatable {
-                id
                 title
                 icon
               }

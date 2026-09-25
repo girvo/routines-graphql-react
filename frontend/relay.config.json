@@ -1,5 +1,9 @@
 {
   "src": "./src",
   "schema": "../schema.graphql",
-  "language": "typescript"
+  "language": "typescript",
+  "customScalarTypes": {
+    "DateTime": "string",
+    "NonNegativeInt": "number"
+  }
 }

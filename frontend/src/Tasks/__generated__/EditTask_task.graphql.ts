@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b24eba973c2c61c8ab6a06cb2048d7a1>>
+ * @generated SignedSource<<88fa92ca64d8f9757d4fd3afea334d3d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,6 @@ import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type EditTask_task$data = {
   icon: string | null | undefined;
-  readonly id: string;
   title: string;
   readonly " $fragmentType": "EditTask_task";
 };
@@ -27,13 +26,6 @@ const node: ReaderFragment = {
   "metadata": null,
   "name": "EditTask_task",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -53,6 +45,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "eb7c345213042c3003c1349ab286ab59";
+(node as any).hash = "a9b1649c4e7e27fd9faddaf8831389ae";
 
 export default node;

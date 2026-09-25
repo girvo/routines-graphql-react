@@ -1,31 +1,42 @@
-import { useQueryLoader } from 'react-relay'
+import { graphql, useFragment, useQueryLoader } from 'react-relay'
 import { DaySection } from './DaySection.tsx'
-import type { DaySection_section$key } from './__generated__/DaySection_section.graphql.ts'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import AddTaskDropdownQueryNode from './__generated__/AddTaskDropdownQuery.graphql.ts'
 import type { DayOfWeek } from './days.ts'
+import type { WeeklyPlanDay_sections$key } from './__generated__/WeeklyPlanDay_sections.graphql.ts'
 import styles from './WeeklyPlanDay.module.css'
 
 interface WeeklyPlanDayProps {
   dayOfWeek: DayOfWeek
-  morning: DaySection_section$key
-  midday: DaySection_section$key
-  evening: DaySection_section$key
+  sections: WeeklyPlanDay_sections$key
 }
 
-export const WeeklyPlanDay = ({
-  dayOfWeek,
-  morning,
-  midday,
-  evening,
-}: WeeklyPlanDayProps) => {
+export const WeeklyPlanDay = ({ dayOfWeek, sections }: WeeklyPlanDayProps) => {
+  const data = useFragment(
+    graphql`
+      fragment WeeklyPlanDay_sections on Query
+      @argumentDefinitions(dayOfWeek: { type: "DayOfWeek!" }) {
+        morning: daySectionSlots(dayOfWeek: $dayOfWeek, section: MORNING) {
+          ...DaySection_section
+        }
+        midday: daySectionSlots(dayOfWeek: $dayOfWeek, section: MIDDAY) {
+          ...DaySection_section
+        }
+        evening: daySectionSlots(dayOfWeek: $dayOfWeek, section: EVENING) {
+          ...DaySection_section
+        }
+      }
+    `,
+    sections,
+  )
+
   const [queryRef, loadQuery] = useQueryLoader<AddTaskDropdownQuery>(
     AddTaskDropdownQueryNode,
   )
 
   const handleButtonHover = () => {
     if (!queryRef) {
-      loadQuery({})
+      loadQuery({}, { fetchPolicy: 'store-and-network' })
     }
   }
 
@@ -33,7 +44,7 @@ export const WeeklyPlanDay = ({
     <div className={styles.day}>
       <DaySection
         label="Morning"
-        section={morning}
+        section={data.morning}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="MORNING"
@@ -41,7 +52,7 @@ export const WeeklyPlanDay = ({
       />
       <DaySection
         label="Midday"
-        section={midday}
+        section={data.midday}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="MIDDAY"
@@ -49,7 +60,7 @@ export const WeeklyPlanDay = ({
       />
       <DaySection
         label="Evening"
-        section={evening}
+        section={data.evening}
         queryRef={queryRef}
         dayOfWeek={dayOfWeek}
         daySection="EVENING"

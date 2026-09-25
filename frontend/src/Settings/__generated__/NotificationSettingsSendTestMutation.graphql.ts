@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0ea23a35a4c150b05c99c09d197495be>>
+ * @generated SignedSource<<43a1932b676bcfefaca5e89d562c9117>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -183,13 +183,6 @@ return {
                     "kind": "ScalarField",
                     "name": "createdAt",
                     "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "lastSeenAt",
-                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -203,12 +196,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "31b02fc889e45ffc6f58947a86052c5f",
+    "cacheID": "f6928ddb4ac4656987481780dabfbe7f",
     "id": null,
     "metadata": {},
     "name": "NotificationSettingsSendTestMutation",
     "operationKind": "mutation",
-    "text": "mutation NotificationSettingsSendTestMutation(\n  $endpoint: String!\n) {\n  sendTestPush(endpoint: $endpoint) {\n    delivered\n    message\n    deletedId\n    me {\n      ...NotificationSettings_me\n      id\n    }\n  }\n}\n\nfragment NotificationSettings_me on User {\n  id\n  morningReminderEnabled\n  pushSubscriptions {\n    id\n    endpoint\n    platform\n    createdAt\n    lastSeenAt\n  }\n}\n"
+    "text": "mutation NotificationSettingsSendTestMutation(\n  $endpoint: String!\n) {\n  sendTestPush(endpoint: $endpoint) {\n    delivered\n    message\n    deletedId\n    me {\n      ...NotificationSettings_me\n      id\n    }\n  }\n}\n\nfragment NotificationSettings_me on User {\n  id\n  morningReminderEnabled\n  pushSubscriptions {\n    id\n    endpoint\n    platform\n    createdAt\n  }\n}\n"
   }
 };
 })();

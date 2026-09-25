@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@loop-payments/react-router-relay'
 import { MoreVertical, LogOut, Settings } from 'lucide-react'
 import { Button } from '../primitives/Button.tsx'
 import {

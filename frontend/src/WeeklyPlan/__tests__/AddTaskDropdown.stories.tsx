@@ -209,7 +209,6 @@ const AddTaskDropdownStoryInner = ({
   const { moveSlot, isMoving } = useDaySectionMoveTask({
     connectionId: daySection.slots.__id,
     slotIds,
-    dayOfWeek: 'MONDAY',
   })
 
   return (

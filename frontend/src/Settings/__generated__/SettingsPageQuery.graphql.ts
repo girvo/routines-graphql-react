@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c9247e88d6fed5abd2326a082db942f9>>
+ * @generated SignedSource<<ec8ce54fe2fd3845c5243fad33033bcf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,6 @@ import { FragmentRefs } from "relay-runtime";
 export type SettingsPageQuery$variables = Record<PropertyKey, never>;
 export type SettingsPageQuery$data = {
   readonly me: {
-    readonly id: string;
     readonly " $fragmentSpreads": FragmentRefs<"NotificationSettings_me">;
   };
 };
@@ -45,7 +44,6 @@ return {
         "name": "me",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
           {
             "args": null,
             "kind": "FragmentSpread",
@@ -109,13 +107,6 @@ return {
                 "kind": "ScalarField",
                 "name": "createdAt",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "lastSeenAt",
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -126,16 +117,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "236ac3a596067abd54da75d2a1c81534",
+    "cacheID": "bfa497dc91a6951ff3bd8b2c76ddb99c",
     "id": null,
     "metadata": {},
     "name": "SettingsPageQuery",
     "operationKind": "query",
-    "text": "query SettingsPageQuery {\n  me {\n    id\n    ...NotificationSettings_me\n  }\n}\n\nfragment NotificationSettings_me on User {\n  id\n  morningReminderEnabled\n  pushSubscriptions {\n    id\n    endpoint\n    platform\n    createdAt\n    lastSeenAt\n  }\n}\n"
+    "text": "query SettingsPageQuery {\n  me {\n    ...NotificationSettings_me\n    id\n  }\n}\n\nfragment NotificationSettings_me on User {\n  id\n  morningReminderEnabled\n  pushSubscriptions {\n    id\n    endpoint\n    platform\n    createdAt\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e7ddd086aa92f1f754f5e90dbfed1e6e";
+(node as any).hash = "736e029f0a8c2a2df2df0b1c72bcb7ed";
 
 export default node;

@@ -1,11 +1,5 @@
-import { Suspense, type ComponentType } from 'react'
-import { NavLink } from 'react-router-dom'
-import {
-  graphql,
-  useFragment,
-  usePreloadedQuery,
-  type PreloadedQuery,
-} from 'react-relay'
+import type { ComponentType } from 'react'
+import { graphql, useFragment } from 'react-relay'
 import {
   Calendar1,
   CalendarDays,
@@ -15,8 +9,8 @@ import {
 } from 'lucide-react'
 import { Avatar } from '../primitives/Avatar.tsx'
 import { clsx } from 'clsx'
-import type { DesktopSidebarQuery } from './__generated__/DesktopSidebarQuery.graphql.ts'
 import type { DesktopSidebar_me$key } from './__generated__/DesktopSidebar_me.graphql'
+import { PreloadingNavLink } from './PreloadingNavLink.tsx'
 import styles from './DesktopSidebar.module.css'
 
 type IconComponent = ComponentType<{ className?: string }>
@@ -33,32 +27,6 @@ const primaryRoutes: NavRoute[] = [
   { to: '/weekly', label: 'Weekly Plan', icon: CalendarDays },
   { to: '/tasks', label: 'All Tasks', icon: LayoutList },
 ]
-
-const UserCardSkeleton = () => (
-  <div className={styles.userCard} aria-hidden="true">
-    <Avatar initials="" />
-    <div className={styles.userCol}>
-      <span className={styles.userName}>&nbsp;</span>
-      <span className={styles.userEmail}>&nbsp;</span>
-    </div>
-  </div>
-)
-
-type LoadedUserCardProps = { user: PreloadedQuery<DesktopSidebarQuery> }
-
-const LoadedUserCard = ({ user }: LoadedUserCardProps) => {
-  const data = usePreloadedQuery<DesktopSidebarQuery>(
-    graphql`
-      query DesktopSidebarQuery {
-        me {
-          ...DesktopSidebar_me
-        }
-      }
-    `,
-    user,
-  )
-  return <UserCard me={data.me} />
-}
 
 const UserCard = ({ me }: { me: DesktopSidebar_me$key }) => {
   const data = useFragment(
@@ -90,19 +58,19 @@ type NavItemLinkProps = { route: NavRoute }
 const NavItemLink = ({ route }: NavItemLinkProps) => {
   const Icon = route.icon
   return (
-    <NavLink to={route.to} end={route.end} className={itemClass}>
+    <PreloadingNavLink to={route.to} end={route.end} className={itemClass}>
       <Icon className={styles.itemIcon} />
       <span>{route.label}</span>
-    </NavLink>
+    </PreloadingNavLink>
   )
 }
 
 type DesktopSidebarProps = {
-  user: PreloadedQuery<DesktopSidebarQuery> | null | undefined
+  me: DesktopSidebar_me$key
   onLogout: () => void
 }
 
-export const DesktopSidebar = ({ user, onLogout }: DesktopSidebarProps) => (
+export const DesktopSidebar = ({ me, onLogout }: DesktopSidebarProps) => (
   <nav className={styles.root}>
     <div className={styles.brand}>
       <span className={styles.brandLogo}>R</span>
@@ -118,10 +86,10 @@ export const DesktopSidebar = ({ user, onLogout }: DesktopSidebarProps) => (
     <hr className={styles.divider} />
 
     <div className={styles.nav}>
-      <NavLink to="/settings" className={itemClass}>
+      <PreloadingNavLink to="/settings" className={itemClass}>
         <Settings className={styles.itemIcon} />
         <span>Settings</span>
-      </NavLink>
+      </PreloadingNavLink>
       <button type="button" className={styles.item} onClick={onLogout}>
         <LogOut className={styles.itemIcon} />
         <span>Logout</span>
@@ -130,12 +98,6 @@ export const DesktopSidebar = ({ user, onLogout }: DesktopSidebarProps) => (
 
     <div className={styles.spacer} />
 
-    {user ? (
-      <Suspense fallback={<UserCardSkeleton />}>
-        <LoadedUserCard user={user} />
-      </Suspense>
-    ) : (
-      <UserCardSkeleton />
-    )}
+    <UserCard me={me} />
   </nav>
 )

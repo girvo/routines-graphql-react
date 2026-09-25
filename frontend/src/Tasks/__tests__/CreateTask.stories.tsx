@@ -82,14 +82,7 @@ const CreateTaskStoryInner = () => {
         tasks(first: 20) @connection(key: "CreateTaskStory_tasks") {
           __id
           edges {
-            cursor
-            node {
-              id
-            }
-          }
-          pageInfo {
-            endCursor
-            hasNextPage
+            __typename
           }
         }
       }
@@ -102,7 +95,7 @@ const CreateTaskStoryInner = () => {
       <ToastProvider>
         {isCreating ? (
           <CreateTask
-            connectionId={data.tasks.__id}
+            connectionIds={[data.tasks.__id]}
             setIsCreating={setIsCreating}
           />
         ) : (

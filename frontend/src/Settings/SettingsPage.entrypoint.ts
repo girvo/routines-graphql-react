@@ -13,6 +13,7 @@ export const SettingsPageEntryPoint: SimpleEntryPoint<typeof SettingsPage> = {
         settingsPageQuery: {
           parameters: SettingsPageQueryDocument,
           variables: {},
+          options: { fetchPolicy: 'store-and-network' },
         },
       },
     }

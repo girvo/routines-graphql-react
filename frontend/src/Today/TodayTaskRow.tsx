@@ -21,6 +21,7 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
         routineSlot {
           id
           task {
+            id
             title
             icon
           }
@@ -38,17 +39,13 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
 
   const [completeRoutineSlot, completing] =
     useMutation<TodayTaskRowCompleteMutation>(graphql`
-      mutation TodayTaskRowCompleteMutation($dailyTaskInstanceId: ID!) {
+      mutation TodayTaskRowCompleteMutation($dailyTaskInstanceId: ID!)
+      @raw_response_type {
         completeRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
           taskCompletionEdge {
             node {
-              id
-              completedAt
               dailyTaskInstance {
-                id
-                completion {
-                  id
-                }
+                ...TodayTaskRow_instance
               }
             }
           }
@@ -58,11 +55,12 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
 
   const [uncompleteRoutineSlot, uncompleting] =
     useMutation<TodayTaskRowUncompleteMutation>(graphql`
-      mutation TodayTaskRowUncompleteMutation($dailyTaskInstanceId: ID!) {
+      mutation TodayTaskRowUncompleteMutation($dailyTaskInstanceId: ID!)
+      @raw_response_type {
         uncompleteRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {
           deletedId @deleteRecord
           dailyTaskInstance {
-            id
+            ...TodayTaskRow_instance
           }
         }
       }
@@ -80,9 +78,9 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
             taskCompletionEdge: {
               node: {
                 id: optimisticCompletionId,
-                completedAt: new Date().toISOString(),
                 dailyTaskInstance: {
                   id: data.id,
+                  routineSlot: data.routineSlot,
                   completion: { id: optimisticCompletionId },
                 },
               },
@@ -104,6 +102,8 @@ export const TodayTaskRow = ({ instance }: TodayTaskRowProps) => {
           deletedId: data.completion.id,
           dailyTaskInstance: {
             id: data.id,
+            routineSlot: data.routineSlot,
+            completion: null,
           },
         },
       },

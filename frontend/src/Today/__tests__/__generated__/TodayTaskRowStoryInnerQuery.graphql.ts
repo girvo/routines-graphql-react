@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<737be59f6d3b87f3293f430eb7929e8a>>
+ * @generated SignedSource<<600691c558211fcfec3a97d9bbde43d1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -124,6 +124,7 @@ return {
                     "name": "task",
                     "plural": false,
                     "selections": [
+                      (v1/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -137,8 +138,7 @@ return {
                         "kind": "ScalarField",
                         "name": "icon",
                         "storageKey": null
-                      },
-                      (v1/*: any*/)
+                      }
                     ],
                     "storageKey": null
                   }
@@ -167,7 +167,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e8b799aeda57f6814e40b07535f89659",
+    "cacheID": "ac2eac62bab663a2a13ed67e940c0219",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -211,7 +211,7 @@ return {
     },
     "name": "TodayTaskRowStoryInnerQuery",
     "operationKind": "query",
-    "text": "query TodayTaskRowStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on DailyTaskInstance {\n      ...TodayTaskRow_instance\n    }\n    id\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      title\n      icon\n      id\n    }\n  }\n  completion {\n    id\n  }\n}\n"
+    "text": "query TodayTaskRowStoryInnerQuery {\n  node(id: \"test_id\") {\n    __typename\n    ... on DailyTaskInstance {\n      ...TodayTaskRow_instance\n    }\n    id\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      id\n      title\n      icon\n    }\n  }\n  completion {\n    id\n  }\n}\n"
   }
 };
 })();

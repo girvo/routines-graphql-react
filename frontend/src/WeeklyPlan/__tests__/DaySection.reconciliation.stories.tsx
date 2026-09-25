@@ -37,7 +37,7 @@ export const OptimisticReorderSurvivesSettlement: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, BOTTOM_ORDER),
+          deferredMoveResolver(BOTTOM_ORDER),
         )
       }
     />
@@ -67,7 +67,7 @@ export const ServerOrderWinsOverTheOptimisticGuess: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, [PLANKS, SQUATS, PUSHUPS]),
+          deferredMoveResolver([PLANKS, SQUATS, PUSHUPS]),
         )
       }
     />

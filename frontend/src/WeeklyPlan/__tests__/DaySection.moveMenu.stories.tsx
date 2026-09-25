@@ -83,10 +83,10 @@ export const CommandsSendRelativeTargets: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(SQUATS, READ_ORDER),
-          deferredMoveResolver(SQUATS, READ_ORDER),
-          deferredMoveResolver(PUSHUPS, READ_ORDER),
-          deferredMoveResolver(PLANKS, READ_ORDER),
+          deferredMoveResolver(READ_ORDER),
+          deferredMoveResolver(READ_ORDER),
+          deferredMoveResolver(READ_ORDER),
+          deferredMoveResolver(READ_ORDER),
         )
       }
     />
@@ -155,7 +155,7 @@ export const ScreenReaderHearsTheNewPosition: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, [SQUATS, PUSHUPS, PLANKS]),
+          deferredMoveResolver([SQUATS, PUSHUPS, PLANKS]),
         )
       }
     />
@@ -211,7 +211,7 @@ export const SecondMoveIsNotOfferedWhileOneIsInFlight: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, READ_ORDER),
+          deferredMoveResolver(READ_ORDER),
         )
       }
     />
@@ -243,7 +243,7 @@ export const PointerOpenedMenuSelectsNoCommand: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, BOTTOM_ORDER),
+          deferredMoveResolver(BOTTOM_ORDER),
         )
       }
     />

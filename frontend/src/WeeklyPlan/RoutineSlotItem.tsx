@@ -1,16 +1,10 @@
 import { createElement, useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
-import {
-  graphql,
-  useFragment,
-  useMutation,
-  useRelayEnvironment,
-} from 'react-relay'
+import { graphql, useFragment, useMutation } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime'
 import { iconComponent } from '../utils/icons.ts'
 import { announceMove } from './announce-move.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
-import { invalidateDailyRoutinesForDayOfWeek } from './invalidate-daily-routines.ts'
 import type { DaySectionMove } from './DaySectionMoveTask.ts'
 import {
   applyMove,
@@ -61,7 +55,6 @@ export const RoutineSlotItem = ({
     graphql`
       fragment RoutineSlotItem_routineSlot on RoutineSlot {
         id
-        dayOfWeek
         task {
           id
           title
@@ -73,7 +66,6 @@ export const RoutineSlotItem = ({
   )
 
   const { showPayloadErrors, showError } = useMutationErrorHandler()
-  const environment = useRelayEnvironment()
 
   const [deleteItem, isLoading] = useMutation<RoutineSlotItemMutation>(graphql`
     mutation RoutineSlotItemMutation(
@@ -237,10 +229,6 @@ export const RoutineSlotItem = ({
             optimisticResponse: {
               deleteRoutineSlot: { deletedId: routineSlot.id },
             },
-            updater: invalidateDailyRoutinesForDayOfWeek(
-              environment,
-              routineSlot.dayOfWeek,
-            ),
             onCompleted: (_response, errors) => {
               showPayloadErrors(errors)
             },

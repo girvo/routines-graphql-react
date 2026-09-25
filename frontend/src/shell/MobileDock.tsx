@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
-import { NavLink } from 'react-router-dom'
 import { Calendar1, CalendarDays, LayoutList } from 'lucide-react'
 import { clsx } from 'clsx'
+import { PreloadingNavLink } from './PreloadingNavLink.tsx'
 import styles from './MobileDock.module.css'
 
 type IconComponent = ComponentType<{ className?: string }>
@@ -27,7 +27,7 @@ export const MobileDock = () => (
     {routes.map(route => {
       const Icon = route.icon
       return (
-        <NavLink
+        <PreloadingNavLink
           key={route.to}
           to={route.to}
           end={route.end}
@@ -35,7 +35,7 @@ export const MobileDock = () => (
         >
           <Icon className={styles.icon} />
           <span className={styles.label}>{route.label}</span>
-        </NavLink>
+        </PreloadingNavLink>
       )
     })}
   </nav>

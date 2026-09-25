@@ -25,9 +25,13 @@
     "strings": "on"
   },
   // prioritize ArkType's "type" for autoimports
-  "typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
+  "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+    "^(node:)?os$"
+  ],
   "css.validate": false,
-  "stylelint.validate": ["css"],
+  "stylelint.validate": [
+    "css"
+  ],
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -38,5 +42,13 @@
   "[markdown]": {
     "editor.formatOnSave": false
   },
-  "pendant.toolDisplayModeOverrides": ["subagent=collapseWhenDone"]
+  "pendant.toolDisplayModeOverrides": [
+    "subagent=collapseWhenDone"
+  ],
+  "pendant.autoGenerateSessionNames": true,
+  "pendant.sessionNameGeneration": {
+    "model": "openai-codex/gpt-6-luna",
+    "thinking": "low"
+  },
+  "pendant.sessionRailPosition": "right"
 }

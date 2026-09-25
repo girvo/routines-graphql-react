@@ -27,17 +27,10 @@ export const DaySection = ({
   const data = useFragment(
     graphql`
       fragment DaySection_section on DaySectionSlots {
-        id
-        dayOfWeek
-        section
         slots(first: 100) @connection(key: "DaySection_slots") {
           __id
           edges {
-            cursor
-          }
-          pageInfo {
-            endCursor
-            hasNextPage
+            __typename
           }
           ...WeeklyPlanRoutineSection_section
         }
@@ -76,10 +69,7 @@ export const DaySection = ({
       <div className={styles.body}>
         {count === 0 && <div className={styles.empty}>No tasks added</div>}
         {count > 0 && (
-          <WeeklyPlanRoutineSection
-            weeklyPlanSection={data.slots}
-            dayOfWeek={dayOfWeek}
-          />
+          <WeeklyPlanRoutineSection weeklyPlanSection={data.slots} />
         )}
         <div className={styles.mobileAddRow}>
           <AddTaskDropdown

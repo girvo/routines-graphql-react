@@ -266,6 +266,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.24
         version: 0.4.24(eslint@9.39.1(jiti@2.6.1))
+      eslint-plugin-relay:
+        specifier: ^2.1.0
+        version: 2.1.0
       eslint-plugin-storybook:
         specifier: ^10.1.7
         version: 10.1.7(eslint@9.39.1(jiti@2.6.1))(storybook@10.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3)
@@ -2907,6 +2910,10 @@ packages:
     engines: {node: '>=4'}
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9.7
+
+  eslint-plugin-relay@2.1.0:
+    resolution: {integrity: sha512-MEDnTfVhWycsIt6FmzgVmfYmpkipN1K1z54MozOB0t/x8XPPbPTbHM17Kh6qUBGWk4G16oTC66PpufqcSOwC7A==}
+    engines: {node: '>=22'}
 
   eslint-plugin-storybook@10.1.7:
     resolution: {integrity: sha512-rJNg0arpGyxlRyYdFd9XS7KQtH0K+NMp78vEXotcAR2pk+eo5sZoGJRW41Lf9k+lW6i4CHbJUhh6XGzITTiSeg==}
@@ -8388,6 +8395,10 @@ snapshots:
       semver: 6.3.1
       string.prototype.matchall: 4.0.12
       string.prototype.repeat: 1.0.0
+
+  eslint-plugin-relay@2.1.0:
+    dependencies:
+      graphql: 16.12.0
 
   eslint-plugin-storybook@10.1.7(eslint@9.39.1(jiti@2.6.1))(storybook@10.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3):
     dependencies:

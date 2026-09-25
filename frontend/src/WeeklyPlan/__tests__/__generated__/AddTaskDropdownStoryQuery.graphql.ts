@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<74834fdda21ee1679486efeaf693f2f7>>
+ * @generated SignedSource<<c29320785df92210a1810af4294d16f4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -143,13 +143,6 @@ return {
                       {
                         "alias": null,
                         "args": null,
-                        "kind": "ScalarField",
-                        "name": "dayOfWeek",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
                         "concreteType": "Task",
                         "kind": "LinkedField",
                         "name": "task",
@@ -241,7 +234,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4bb809002a128f502caba8025b0c2dc9",
+    "cacheID": "556a085255cf7394262691083d4c118b",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -273,20 +266,6 @@ return {
           "type": "RoutineSlot"
         },
         "daySectionSlots.slots.edges.node.__typename": (v4/*: any*/),
-        "daySectionSlots.slots.edges.node.dayOfWeek": {
-          "enumValues": [
-            "MONDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-            "THURSDAY",
-            "FRIDAY",
-            "SATURDAY",
-            "SUNDAY"
-          ],
-          "nullable": false,
-          "plural": false,
-          "type": "DayOfWeek"
-        },
         "daySectionSlots.slots.edges.node.id": (v3/*: any*/),
         "daySectionSlots.slots.edges.node.task": {
           "enumValues": null,
@@ -314,7 +293,7 @@ return {
     },
     "name": "AddTaskDropdownStoryQuery",
     "operationKind": "query",
-    "text": "query AddTaskDropdownStoryQuery {\n  daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...AddTaskDropdownStory_daySection\n    id\n  }\n}\n\nfragment AddTaskDropdownStory_daySection on DaySectionSlots {\n  id\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        ...RoutineSlotItem_routineSlot\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n"
+    "text": "query AddTaskDropdownStoryQuery {\n  daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...AddTaskDropdownStory_daySection\n    id\n  }\n}\n\nfragment AddTaskDropdownStory_daySection on DaySectionSlots {\n  id\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        ...RoutineSlotItem_routineSlot\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    id\n    title\n    icon\n  }\n}\n"
   }
 };
 })();

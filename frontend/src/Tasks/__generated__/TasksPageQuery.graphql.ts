@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<20453ff3f75e08b989d089a9b1b77057>>
+ * @generated SignedSource<<46939a41eb9ec46bb2b9e81e6eeea087>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -143,13 +143,6 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
                     "args": (v2/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
@@ -239,12 +232,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "253451130953aab0a7c6792c1231a0f4",
+    "cacheID": "a27047ad63aed2fd2d0d9d989a5f47ae",
     "id": null,
     "metadata": {},
     "name": "TasksPageQuery",
     "operationKind": "query",
-    "text": "query TasksPageQuery {\n  ...TasksList_tasks\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksPageQuery {\n  ...TasksList_tasks\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

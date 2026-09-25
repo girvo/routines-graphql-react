@@ -19,8 +19,6 @@ const TodayPage = ({ queries, extraProps: { date } }: TodayPageProps) => {
     graphql`
       query TodayPageQuery($date: DateTime) {
         dailyRoutine(date: $date) {
-          date
-          dayOfWeek
           morning(first: 100) {
             ...TodaySection_section
           }

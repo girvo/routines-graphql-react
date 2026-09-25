@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c884ad2516639f3396434e4d9af097f8>>
+ * @generated SignedSource<<c65f00b8a7161130f4661f1f551011fe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,14 +10,11 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type DayOfWeek = "FRIDAY" | "MONDAY" | "SATURDAY" | "SUNDAY" | "THURSDAY" | "TUESDAY" | "WEDNESDAY" | "%future added value";
 export type TodayPageQuery$variables = {
-  date?: any | null | undefined;
+  date?: string | null | undefined;
 };
 export type TodayPageQuery$data = {
   readonly dailyRoutine: {
-    readonly date: any;
-    readonly dayOfWeek: DayOfWeek;
     readonly evening: {
       readonly " $fragmentSpreads": FragmentRefs<"TodaySection_section">;
     };
@@ -49,42 +46,28 @@ v1 = [
     "variableName": "date"
   }
 ],
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "date",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "dayOfWeek",
-  "storageKey": null
-},
-v4 = [
+v2 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 100
   }
 ],
-v5 = [
+v3 = [
   {
     "args": null,
     "kind": "FragmentSpread",
     "name": "TodaySection_section"
   }
 ],
-v6 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v7 = [
+v5 = [
   {
     "alias": null,
     "args": null,
@@ -101,6 +84,19 @@ v7 = [
         "name": "node",
         "plural": false,
         "selections": [
+          (v4/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "TaskCompletion",
+            "kind": "LinkedField",
+            "name": "completion",
+            "plural": false,
+            "selections": [
+              (v4/*: any*/)
+            ],
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": null,
@@ -109,7 +105,7 @@ v7 = [
             "name": "routineSlot",
             "plural": false,
             "selections": [
-              (v6/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -118,6 +114,7 @@ v7 = [
                 "name": "task",
                 "plural": false,
                 "selections": [
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -131,27 +128,13 @@ v7 = [
                     "kind": "ScalarField",
                     "name": "icon",
                     "storageKey": null
-                  },
-                  (v6/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
             ],
             "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "TaskCompletion",
-            "kind": "LinkedField",
-            "name": "completion",
-            "plural": false,
-            "selections": [
-              (v6/*: any*/)
-            ],
-            "storageKey": null
-          },
-          (v6/*: any*/)
+          }
         ],
         "storageKey": null
       }
@@ -174,36 +157,34 @@ return {
         "name": "dailyRoutine",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v2/*: any*/),
             "concreteType": "DailyTaskInstanceConnection",
             "kind": "LinkedField",
             "name": "morning",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v3/*: any*/),
             "storageKey": "morning(first:100)"
           },
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v2/*: any*/),
             "concreteType": "DailyTaskInstanceConnection",
             "kind": "LinkedField",
             "name": "midday",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v3/*: any*/),
             "storageKey": "midday(first:100)"
           },
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v2/*: any*/),
             "concreteType": "DailyTaskInstanceConnection",
             "kind": "LinkedField",
             "name": "evening",
             "plural": false,
-            "selections": (v5/*: any*/),
+            "selections": (v3/*: any*/),
             "storageKey": "evening(first:100)"
           }
         ],
@@ -227,36 +208,34 @@ return {
         "name": "dailyRoutine",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v2/*: any*/),
             "concreteType": "DailyTaskInstanceConnection",
             "kind": "LinkedField",
             "name": "morning",
             "plural": false,
-            "selections": (v7/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": "morning(first:100)"
           },
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v2/*: any*/),
             "concreteType": "DailyTaskInstanceConnection",
             "kind": "LinkedField",
             "name": "midday",
             "plural": false,
-            "selections": (v7/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": "midday(first:100)"
           },
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v2/*: any*/),
             "concreteType": "DailyTaskInstanceConnection",
             "kind": "LinkedField",
             "name": "evening",
             "plural": false,
-            "selections": (v7/*: any*/),
+            "selections": (v5/*: any*/),
             "storageKey": "evening(first:100)"
           }
         ],
@@ -265,16 +244,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3b5746593e1778cf8a5523416a84a11c",
+    "cacheID": "a2d28045f91df2bc53c7410b932725fa",
     "id": null,
     "metadata": {},
     "name": "TodayPageQuery",
     "operationKind": "query",
-    "text": "query TodayPageQuery(\n  $date: DateTime\n) {\n  dailyRoutine(date: $date) {\n    date\n    dayOfWeek\n    morning(first: 100) {\n      ...TodaySection_section\n    }\n    midday(first: 100) {\n      ...TodaySection_section\n    }\n    evening(first: 100) {\n      ...TodaySection_section\n    }\n  }\n}\n\nfragment TodaySection_section on DailyTaskInstanceConnection {\n  edges {\n    node {\n      routineSlot {\n        id\n      }\n      completion {\n        id\n      }\n      ...TodayTaskRow_instance\n      id\n    }\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      title\n      icon\n      id\n    }\n  }\n  completion {\n    id\n  }\n}\n"
+    "text": "query TodayPageQuery(\n  $date: DateTime\n) {\n  dailyRoutine(date: $date) {\n    morning(first: 100) {\n      ...TodaySection_section\n    }\n    midday(first: 100) {\n      ...TodaySection_section\n    }\n    evening(first: 100) {\n      ...TodaySection_section\n    }\n  }\n}\n\nfragment TodaySection_section on DailyTaskInstanceConnection {\n  edges {\n    node {\n      id\n      completion {\n        id\n      }\n      ...TodayTaskRow_instance\n    }\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      id\n      title\n      icon\n    }\n  }\n  completion {\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "5bd8384dc118770526d89614df749706";
+(node as any).hash = "1b19eeb8027511d36164303cf0a8bf94";
 
 export default node;

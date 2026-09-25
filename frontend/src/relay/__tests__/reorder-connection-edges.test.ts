@@ -11,7 +11,7 @@ import {
   type RecordSourceSelectorProxy,
 } from 'relay-runtime'
 import { applyMove } from '../../WeeklyPlan/task-order.ts'
-import { reorderConnectionEdgesOnce } from '../reorder-connection-edges.ts'
+import { reorderConnectionEdges } from '../reorder-connection-edges.ts'
 
 const CONTAINER_ID = 'day-section-slots-monday-morning'
 const CONNECTION_ID = ConnectionHandler.getConnectionID(
@@ -71,13 +71,13 @@ const visibleOrder = (environment: Environment) => {
   return order
 }
 
-describe('reorderConnectionEdgesOnce', () => {
+describe('reorderConnectionEdges', () => {
   it('reorders the edges the connection already holds', () => {
     const environment = createSection(['slot-a', 'slot-b', 'slot-c'])
 
     commitLocalUpdate(
       environment,
-      reorderConnectionEdgesOnce(CONNECTION_ID, ['slot-c', 'slot-a', 'slot-b']),
+      reorderConnectionEdges(CONNECTION_ID, ['slot-c', 'slot-a', 'slot-b']),
     )
 
     expect(visibleOrder(environment)).toEqual(['slot-c', 'slot-a', 'slot-b'])
@@ -89,7 +89,7 @@ describe('reorderConnectionEdgesOnce', () => {
 
     commitLocalUpdate(
       environment,
-      reorderConnectionEdgesOnce(
+      reorderConnectionEdges(
         CONNECTION_ID,
         applyMove(slotIds, 'slot-a', { afterRoutineSlotId: 'slot-c' }),
       ),
@@ -98,21 +98,19 @@ describe('reorderConnectionEdgesOnce', () => {
     expect(visibleOrder(environment)).toEqual(['slot-b', 'slot-c', 'slot-a'])
   })
 
-  it('ignores the later invocation so the server order survives', () => {
+  it('reorders again when reapplied over a restored order', () => {
     const environment = createSection(['slot-a', 'slot-b', 'slot-c'])
-    const moveSlotAToBottom = reorderConnectionEdgesOnce(CONNECTION_ID, [
+    const moveSlotAToBottom = reorderConnectionEdges(CONNECTION_ID, [
       'slot-b',
       'slot-c',
       'slot-a',
     ])
 
     commitLocalUpdate(environment, moveSlotAToBottom)
-    expect(visibleOrder(environment)).toEqual(['slot-b', 'slot-c', 'slot-a'])
-
-    writeServerOrder(environment, ['slot-c', 'slot-b', 'slot-a'])
+    writeServerOrder(environment, ['slot-a', 'slot-b', 'slot-c'])
     commitLocalUpdate(environment, moveSlotAToBottom)
 
-    expect(visibleOrder(environment)).toEqual(['slot-c', 'slot-b', 'slot-a'])
+    expect(visibleOrder(environment)).toEqual(['slot-b', 'slot-c', 'slot-a'])
   })
 
   it('leaves the list alone when the connection record is missing', () => {
@@ -121,7 +119,7 @@ describe('reorderConnectionEdgesOnce', () => {
     expect(() =>
       commitLocalUpdate(
         environment,
-        reorderConnectionEdgesOnce(OTHER_CONNECTION_ID, [
+        reorderConnectionEdges(OTHER_CONNECTION_ID, [
           'slot-c',
           'slot-b',
           'slot-a',
@@ -137,7 +135,7 @@ describe('reorderConnectionEdgesOnce', () => {
 
     commitLocalUpdate(
       environment,
-      reorderConnectionEdgesOnce(CONNECTION_ID, [
+      reorderConnectionEdges(CONNECTION_ID, [
         'slot-c',
         'slot-a',
         'slot-removed',
@@ -152,7 +150,7 @@ describe('reorderConnectionEdgesOnce', () => {
 
     commitLocalUpdate(
       environment,
-      reorderConnectionEdgesOnce(CONNECTION_ID, ['slot-c', 'slot-a']),
+      reorderConnectionEdges(CONNECTION_ID, ['slot-c', 'slot-a']),
     )
 
     expect(visibleOrder(environment)).toEqual(['slot-a', 'slot-b', 'slot-c'])
@@ -172,7 +170,7 @@ describe('reorderConnectionEdgesOnce', () => {
 
     commitLocalUpdate(
       environment,
-      reorderConnectionEdgesOnce(CONNECTION_ID, ['slot-b', 'slot-a']),
+      reorderConnectionEdges(CONNECTION_ID, ['slot-b', 'slot-a']),
     )
 
     expect(visibleOrder(environment)).toEqual(['slot-a', 'slot-b'])
@@ -184,11 +182,7 @@ describe('reorderConnectionEdgesOnce', () => {
     expect(() =>
       commitLocalUpdate(
         environment,
-        reorderConnectionEdgesOnce(CONNECTION_ID, [
-          'slot-c',
-          'slot-a',
-          'slot-b',
-        ]),
+        reorderConnectionEdges(CONNECTION_ID, ['slot-c', 'slot-a', 'slot-b']),
       ),
     ).not.toThrow()
 

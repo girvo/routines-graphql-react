@@ -16,9 +16,7 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
       fragment TodaySection_section on DailyTaskInstanceConnection {
         edges {
           node {
-            routineSlot {
-              id
-            }
+            id
             completion {
               id
             }
@@ -53,7 +51,7 @@ export const TodaySection = ({ label, section }: TodaySectionProps) => {
           </div>
         )}
         {data.edges.map(edge => (
-          <TodayTaskRow key={edge.node.routineSlot.id} instance={edge.node} />
+          <TodayTaskRow key={edge.node.id} instance={edge.node} />
         ))}
       </div>
     </Card>

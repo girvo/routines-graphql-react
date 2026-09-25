@@ -13,6 +13,7 @@ export const TasksPageEntryPoint: SimpleEntryPoint<typeof TasksPage> = {
         tasksPageQuery: {
           parameters: TasksPageQueryDocument,
           variables: {},
+          options: { fetchPolicy: 'store-and-network' },
         },
       },
     }

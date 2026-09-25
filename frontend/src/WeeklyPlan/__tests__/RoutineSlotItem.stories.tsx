@@ -158,7 +158,6 @@ const RoutineSlotListStoryInner = () => {
   const { moveSlot, isMoving } = useDaySectionMoveTask({
     connectionId: daySection.slots.__id,
     slotIds,
-    dayOfWeek: 'MONDAY',
   })
 
   return (

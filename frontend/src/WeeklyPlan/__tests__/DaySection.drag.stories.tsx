@@ -66,7 +66,7 @@ export const DragDownToTheLastRowMovesToBottom: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, BOTTOM_ORDER),
+          deferredMoveResolver(BOTTOM_ORDER),
         )
       }
     />
@@ -133,7 +133,7 @@ export const DragUpSendsABeforeTarget: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PLANKS, UP_ORDER),
+          deferredMoveResolver(UP_ORDER),
         )
       }
     />
@@ -231,7 +231,7 @@ export const DragWhileAMoveIsInFlightIsIgnored: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, READ_ORDER),
+          deferredMoveResolver(READ_ORDER),
         )
       }
     />
@@ -273,7 +273,7 @@ export const DragFromTheRowBodyIsIgnored: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, BOTTOM_ORDER),
+          deferredMoveResolver(BOTTOM_ORDER),
         )
       }
     />

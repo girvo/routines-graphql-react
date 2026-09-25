@@ -5,6 +5,7 @@ import {
   useRef,
   useTransition,
   useCallback,
+  type ChangeEvent,
   type Ref,
 } from 'react'
 import {
@@ -12,20 +13,22 @@ import {
   useMutation,
   usePreloadedQuery,
   useRefetchableFragment,
-  useRelayEnvironment,
 } from 'react-relay'
 import type { PreloadedQuery } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime'
 import { Plus, Search, Loader2 } from 'lucide-react'
-import { useDebounceValue } from 'usehooks-ts'
+import { useDebounceCallback } from 'usehooks-ts'
 import { iconComponent } from '../utils/icons.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
-import { invalidateDailyRoutinesForDayOfWeek } from './invalidate-daily-routines.ts'
 import { clsx } from 'clsx'
 import { Button } from '../primitives/Button.tsx'
 import { AddTaskRow } from './AddTaskRow.tsx'
 import type { AddTaskDropdownQuery } from './__generated__/AddTaskDropdownQuery.graphql.ts'
-import type { AddTaskDropdown_query$key } from './__generated__/AddTaskDropdown_query.graphql.ts'
+import type {
+  AddTaskDropdown_query$data,
+  AddTaskDropdown_query$key,
+} from './__generated__/AddTaskDropdown_query.graphql.ts'
+import type { AddTaskDropdownTasksRefetchQuery } from './__generated__/AddTaskDropdownTasksRefetchQuery.graphql.ts'
 import type { DaySelection } from './days.ts'
 import type { AddTaskDropdownRoutineSlotMutation } from './__generated__/AddTaskDropdownRoutineSlotMutation.graphql.ts'
 import {
@@ -43,99 +46,54 @@ interface ClickedTask {
 }
 
 interface TaskListProps {
-  tasks: AddTaskDropdown_query$key
-  searchQuery: string
+  edges: AddTaskDropdown_query$data['tasks']['edges']
+  isPending: boolean
   isLoading: boolean
   onTaskClick: (task: ClickedTask) => void
   selectedIndex: number
-  onEdgesChange: (count: number) => void
   listRef: Ref<HTMLDivElement>
 }
 
 const TaskList = ({
-  tasks,
-  searchQuery,
+  edges,
+  isPending,
   isLoading,
   onTaskClick,
   selectedIndex,
-  onEdgesChange,
   listRef,
-}: TaskListProps) => {
-  const [data, refetch] = useRefetchableFragment(
-    graphql`
-      fragment AddTaskDropdown_query on Query
-      @refetchable(queryName: "AddTaskDropdownTasksRefetchQuery")
-      @argumentDefinitions(
-        titleSearch: { type: "String", defaultValue: null }
-      ) {
-        tasks(first: 5, titleSearch: $titleSearch) {
-          edges {
-            node {
-              id
-              title
-              icon
-            }
-          }
-        }
-      }
-    `,
-    tasks,
-  )
-
-  const [debouncedSearch] = useDebounceValue(searchQuery, 300)
-  const [isPending, startTransition] = useTransition()
-
-  const isFirstRender = useRef(true)
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-    startTransition(() => {
-      refetch({ titleSearch: debouncedSearch || null })
-    })
-  }, [debouncedSearch, refetch])
-
-  const edges = data.tasks.edges
-
-  useEffect(() => {
-    onEdgesChange(edges.length)
-  }, [edges.length, onEdgesChange])
-
-  return (
-    <div
-      ref={listRef}
-      id="addtask-listbox"
-      role="listbox"
-      aria-label="Tasks"
-      className={clsx(styles.list, (isPending || isLoading) && styles.pending)}
-    >
-      {edges.length === 0 && <div className={styles.empty}>No tasks found</div>}
-      {edges.length > 0 &&
-        edges.map(({ node }, i) => {
-          const Icon = iconComponent(node.icon)
-          return (
-            <button
-              key={node.id}
-              type="button"
-              id={`addtask-opt-${i}`}
-              role="option"
-              aria-selected={i === selectedIndex}
-              className={clsx(
-                styles.option,
-                i === selectedIndex && styles.active,
-              )}
-              onClick={() => !isLoading && onTaskClick(node)}
-              disabled={isLoading}
-            >
-              <Icon className={styles.optionIcon} />
-              <span>{node.title}</span>
-            </button>
-          )
-        })}
-    </div>
-  )
-}
+}: TaskListProps) => (
+  <div
+    ref={listRef}
+    id="addtask-listbox"
+    role="listbox"
+    aria-label="Tasks"
+    className={clsx(styles.list, (isPending || isLoading) && styles.pending)}
+  >
+    {edges.length === 0 && <div className={styles.empty}>No tasks found</div>}
+    {edges.length > 0 &&
+      edges.map(({ node }, i) => {
+        const Icon = iconComponent(node.icon)
+        return (
+          <button
+            key={node.id}
+            type="button"
+            id={`addtask-opt-${i}`}
+            role="option"
+            aria-selected={i === selectedIndex}
+            className={clsx(
+              styles.option,
+              i === selectedIndex && styles.active,
+            )}
+            onClick={() => !isLoading && onTaskClick(node)}
+            disabled={isLoading}
+          >
+            <Icon className={styles.optionIcon} />
+            <span>{node.title}</span>
+          </button>
+        )
+      })}
+  </div>
+)
 
 const TaskListFallback = () => (
   <div className={styles.fallback}>
@@ -158,23 +116,16 @@ export const AddTaskDropdownContent = ({
   onDone,
 }: AddTaskDropdownContentProps) => {
   const { showPayloadErrors, showError } = useMutationErrorHandler()
-  const environment = useRelayEnvironment()
   const [searchQuery, setSearchQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const listRef = useRef<HTMLDivElement>(null)
-  const edgesCountRef = useRef(0)
-
-  const handleEdgesChange = useCallback((count: number) => {
-    setSelectedIndex(-1)
-    edgesCountRef.current = count
-  }, [])
 
   useEffect(() => {
     searchRef.current?.focus()
   }, [])
 
-  const data = usePreloadedQuery(
+  const queryData = usePreloadedQuery(
     graphql`
       query AddTaskDropdownQuery {
         ...AddTaskDropdown_query
@@ -182,6 +133,49 @@ export const AddTaskDropdownContent = ({
     `,
     queryRef,
   )
+
+  const [data, refetch] = useRefetchableFragment<
+    AddTaskDropdownTasksRefetchQuery,
+    AddTaskDropdown_query$key
+  >(
+    graphql`
+      fragment AddTaskDropdown_query on Query
+      @refetchable(queryName: "AddTaskDropdownTasksRefetchQuery")
+      @argumentDefinitions(
+        titleSearch: { type: "String", defaultValue: null }
+      ) {
+        tasks(first: 5, titleSearch: $titleSearch) {
+          edges {
+            node {
+              id
+              title
+              icon
+            }
+          }
+        }
+      }
+    `,
+    queryData,
+  )
+  const edges = data.tasks.edges
+
+  const [isPending, startTransition] = useTransition()
+  const refetchByTitle = useCallback(
+    (titleSearch: string | null) => {
+      startTransition(() => {
+        refetch({ titleSearch }, { fetchPolicy: 'store-and-network' })
+      })
+    },
+    [refetch],
+  )
+  const debouncedRefetchByTitle = useDebounceCallback(refetchByTitle, 300)
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const next = event.target.value
+    setSearchQuery(next)
+    setSelectedIndex(-1)
+    debouncedRefetchByTitle(next || null)
+  }
 
   useEffect(() => {
     if (selectedIndex >= 0) {
@@ -191,7 +185,7 @@ export const AddTaskDropdownContent = ({
   }, [selectedIndex])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const count = edgesCountRef.current
+    const count = edges.length
     if (e.key === 'ArrowDown') {
       e.preventDefault()
       setSelectedIndex(prev => {
@@ -222,7 +216,7 @@ export const AddTaskDropdownContent = ({
         $dayOfWeek: DayOfWeek!
         $daySection: DaySection!
         $connections: [ID!]!
-      ) {
+      ) @raw_response_type {
         createRoutineSlot(
           input: {
             taskId: $taskId
@@ -231,16 +225,12 @@ export const AddTaskDropdownContent = ({
           }
         ) {
           routineSlotEdge @appendEdge(connections: $connections) {
-            cursor
             node {
-              id
               section
-              dayOfWeek
               task {
                 title
-                id
-                icon
               }
+              ...RoutineSlotItem_routineSlot
             }
           }
         }
@@ -264,11 +254,9 @@ export const AddTaskDropdownContent = ({
       optimisticResponse: {
         createRoutineSlot: {
           routineSlotEdge: {
-            cursor: '',
             node: {
               id: optimisticSlotId,
               section: daySection,
-              dayOfWeek,
               task: {
                 id: task.id,
                 title: task.title,
@@ -278,7 +266,6 @@ export const AddTaskDropdownContent = ({
           },
         },
       },
-      updater: invalidateDailyRoutinesForDayOfWeek(environment, dayOfWeek),
       onCompleted: (_response, errors) => {
         showPayloadErrors(errors)
       },
@@ -297,7 +284,7 @@ export const AddTaskDropdownContent = ({
         leadingIcon={Search}
         placeholder="Search tasks..."
         value={searchQuery}
-        onChange={e => setSearchQuery(e.target.value)}
+        onChange={handleSearchChange}
         onKeyDown={handleKeyDown}
         role="combobox"
         aria-controls="addtask-listbox"
@@ -309,12 +296,11 @@ export const AddTaskDropdownContent = ({
       />
       <TaskList
         listRef={listRef}
-        tasks={data}
-        searchQuery={searchQuery}
+        edges={edges}
+        isPending={isPending}
         isLoading={isLoading}
         onTaskClick={handleTaskClick}
         selectedIndex={selectedIndex}
-        onEdgesChange={handleEdgesChange}
       />
     </>
   )

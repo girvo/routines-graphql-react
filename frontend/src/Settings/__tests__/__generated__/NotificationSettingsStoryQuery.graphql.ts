@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fc96cbf174a661f54383a7d1992d745a>>
+ * @generated SignedSource<<cb95b8481ffd8d6ab918d017388f25dd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,6 @@ import { FragmentRefs } from "relay-runtime";
 export type NotificationSettingsStoryQuery$variables = Record<PropertyKey, never>;
 export type NotificationSettingsStoryQuery$data = {
   readonly me: {
-    readonly id: string;
     readonly " $fragmentSpreads": FragmentRefs<"NotificationSettings_me">;
   };
 };
@@ -51,7 +50,6 @@ return {
         "name": "me",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
           {
             "args": null,
             "kind": "FragmentSpread",
@@ -115,13 +113,6 @@ return {
                 "kind": "ScalarField",
                 "name": "createdAt",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "lastSeenAt",
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -132,7 +123,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ed46aee79eb441d31ad7be5a097e124d",
+    "cacheID": "b2642a5786a6a6d1442fbc2add978d78",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -168,12 +159,6 @@ return {
           "type": "String"
         },
         "me.pushSubscriptions.id": (v1/*: any*/),
-        "me.pushSubscriptions.lastSeenAt": {
-          "enumValues": null,
-          "nullable": true,
-          "plural": false,
-          "type": "DateTime"
-        },
         "me.pushSubscriptions.platform": {
           "enumValues": null,
           "nullable": true,
@@ -184,11 +169,11 @@ return {
     },
     "name": "NotificationSettingsStoryQuery",
     "operationKind": "query",
-    "text": "query NotificationSettingsStoryQuery {\n  me {\n    id\n    ...NotificationSettings_me\n  }\n}\n\nfragment NotificationSettings_me on User {\n  id\n  morningReminderEnabled\n  pushSubscriptions {\n    id\n    endpoint\n    platform\n    createdAt\n    lastSeenAt\n  }\n}\n"
+    "text": "query NotificationSettingsStoryQuery {\n  me {\n    ...NotificationSettings_me\n    id\n  }\n}\n\nfragment NotificationSettings_me on User {\n  id\n  morningReminderEnabled\n  pushSubscriptions {\n    id\n    endpoint\n    platform\n    createdAt\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "a7bdcc7d73f155742a6dada737ad5c0b";
+(node as any).hash = "c7b0b3f0920b6d70475eed31d2767420";
 
 export default node;

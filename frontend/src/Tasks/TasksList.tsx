@@ -1,35 +1,42 @@
 import { graphql, usePaginationFragment } from 'react-relay'
+import { ConnectionHandler, ROOT_ID } from 'relay-runtime'
 import {
   startTransition,
-  useEffect,
+  useCallback,
+  useMemo,
+  useState,
+  type ChangeEvent,
   type Dispatch,
   type SetStateAction,
 } from 'react'
 import { useDebounceCallback } from 'usehooks-ts'
+import { Plus, Search } from 'lucide-react'
 import { Task } from './Task.tsx'
 import { CreateTask } from './CreateTask.tsx'
 import { Button } from '../primitives/Button.tsx'
+import { TextInput } from '../primitives/form/TextInput.tsx'
 import { Card } from '../primitives/layout/Card.tsx'
 import { TasksTableHeader } from './TasksTableHeader.tsx'
 import { usePageHeader } from '../utils/page-header.ts'
 import type { TasksList_tasks$key } from './__generated__/TasksList_tasks.graphql'
+import type { TasksListPaginationQuery } from './__generated__/TasksListPaginationQuery.graphql'
 import styles from './TasksList.module.css'
 
 interface TasksListProps {
   tasks: TasksList_tasks$key
   isCreating: boolean
   setIsCreating: Dispatch<SetStateAction<boolean>>
-  searchQuery: string
 }
 
 export const TasksList = ({
   tasks: tasksRef,
   isCreating,
   setIsCreating,
-  searchQuery,
 }: TasksListProps) => {
+  const [searchQuery, setSearchQuery] = useState('')
+
   const { data, loadNext, hasNext, isLoadingNext, refetch } =
-    usePaginationFragment(
+    usePaginationFragment<TasksListPaginationQuery, TasksList_tasks$key>(
       graphql`
         fragment TasksList_tasks on Query
         @refetchable(queryName: "TasksListPaginationQuery")
@@ -44,8 +51,8 @@ export const TasksList = ({
             edges {
               node {
                 id
-                title
                 ...Task_task
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
                 ...EditTask_task
               }
             }
@@ -55,22 +62,70 @@ export const TasksList = ({
       tasksRef,
     )
 
+  const refetchByTitle = useCallback(
+    (titleSearch: string | null) => {
+      startTransition(() => {
+        refetch({ titleSearch }, { fetchPolicy: 'store-and-network' })
+      })
+    },
+    [refetch],
+  )
+  const debouncedRefetchByTitle = useDebounceCallback(refetchByTitle, 300)
+
+  const handleSearchChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const next = event.target.value
+      setSearchQuery(next)
+      debouncedRefetchByTitle(next.trim() ? next : null)
+    },
+    [debouncedRefetchByTitle],
+  )
+
+  const actions = useMemo(
+    () => (
+      <>
+        <Button
+          variant="primary"
+          size="sm"
+          leadingIcon={Plus}
+          onClick={() => setIsCreating(true)}
+        >
+          New task
+        </Button>
+        <TextInput
+          variant="filled"
+          size="sm"
+          leadingIcon={Search}
+          placeholder="Search tasks"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className={styles.desktopSearch}
+        />
+      </>
+    ),
+    [searchQuery, handleSearchChange, setIsCreating],
+  )
+
+  const belowHeader = useMemo(
+    () => (
+      <div className={styles.mobileSearchRow}>
+        <TextInput
+          variant="filled"
+          size="sm"
+          leadingIcon={Search}
+          placeholder="Search tasks"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className={styles.mobileSearch}
+        />
+      </div>
+    ),
+    [searchQuery, handleSearchChange],
+  )
+
   const loadedCount = data.tasks.edges.length
   const subtitle = hasNext ? `${loadedCount}+ total` : `${loadedCount} total`
-  usePageHeader({ subtitle })
-
-  const debouncedRefetch = useDebounceCallback((titleSearch: string | null) => {
-    startTransition(() => {
-      refetch({ titleSearch })
-    })
-  }, 300)
-
-  useEffect(() => {
-    debouncedRefetch(searchQuery.trim() ? searchQuery : null)
-    return () => {
-      debouncedRefetch.cancel()
-    }
-  }, [searchQuery, debouncedRefetch])
+  usePageHeader({ subtitle, actions, belowHeader })
 
   const showEmpty = data.tasks.edges.length === 0 && !isCreating
 
@@ -80,7 +135,10 @@ export const TasksList = ({
       {isCreating && (
         <CreateTask
           setIsCreating={setIsCreating}
-          connectionId={data.tasks.__id}
+          connectionIds={[
+            data.tasks.__id,
+            ConnectionHandler.getConnectionID(ROOT_ID, 'TasksList_tasks'),
+          ]}
         />
       )}
       {showEmpty && (
@@ -103,7 +161,11 @@ export const TasksList = ({
           <Button
             variant="secondary"
             size="md"
-            onClick={() => loadNext(20)}
+            onClick={() => {
+              startTransition(() => {
+                loadNext(20)
+              })
+            }}
             loading={isLoadingNext}
           >
             Load more

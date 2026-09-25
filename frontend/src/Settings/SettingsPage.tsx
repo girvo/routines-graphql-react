@@ -13,7 +13,6 @@ const SettingsPage = ({ queries }: Props) => {
     graphql`
       query SettingsPageQuery {
         me {
-          id
           ...NotificationSettings_me
         }
       }

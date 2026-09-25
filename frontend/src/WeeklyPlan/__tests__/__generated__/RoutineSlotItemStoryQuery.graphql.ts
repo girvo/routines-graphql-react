@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5e5bf88bfdac58c6e496d74c3d61fbb1>>
+ * @generated SignedSource<<c437c6194d2ff405d6081d96f6f7a6ac>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -143,13 +143,6 @@ return {
                       {
                         "alias": null,
                         "args": null,
-                        "kind": "ScalarField",
-                        "name": "dayOfWeek",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
                         "concreteType": "Task",
                         "kind": "LinkedField",
                         "name": "task",
@@ -241,7 +234,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "04341ad4fa35afb3880236d873948e26",
+    "cacheID": "134b4372a7903d501f4a3147955a0b35",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -273,20 +266,6 @@ return {
           "type": "RoutineSlot"
         },
         "daySectionSlots.slots.edges.node.__typename": (v4/*: any*/),
-        "daySectionSlots.slots.edges.node.dayOfWeek": {
-          "enumValues": [
-            "MONDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-            "THURSDAY",
-            "FRIDAY",
-            "SATURDAY",
-            "SUNDAY"
-          ],
-          "nullable": false,
-          "plural": false,
-          "type": "DayOfWeek"
-        },
         "daySectionSlots.slots.edges.node.id": (v3/*: any*/),
         "daySectionSlots.slots.edges.node.task": {
           "enumValues": null,
@@ -314,7 +293,7 @@ return {
     },
     "name": "RoutineSlotItemStoryQuery",
     "operationKind": "query",
-    "text": "query RoutineSlotItemStoryQuery {\n  daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...RoutineSlotItemStory_daySection\n    id\n  }\n}\n\nfragment RoutineSlotItemStory_daySection on DaySectionSlots {\n  id\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        ...RoutineSlotItem_routineSlot\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  dayOfWeek\n  task {\n    id\n    title\n    icon\n  }\n}\n"
+    "text": "query RoutineSlotItemStoryQuery {\n  daySectionSlots(dayOfWeek: MONDAY, section: MORNING) {\n    ...RoutineSlotItemStory_daySection\n    id\n  }\n}\n\nfragment RoutineSlotItemStory_daySection on DaySectionSlots {\n  id\n  slots(first: 100) {\n    edges {\n      cursor\n      node {\n        id\n        ...RoutineSlotItem_routineSlot\n        __typename\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    id\n    title\n    icon\n  }\n}\n"
   }
 };
 })();

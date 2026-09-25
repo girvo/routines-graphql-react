@@ -59,6 +59,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "eslint-plugin-relay": "^2.1.0",
     "eslint-plugin-storybook": "^10.1.7",
     "globals": "^16.5.0",
     "graphql": "^16.12.0",

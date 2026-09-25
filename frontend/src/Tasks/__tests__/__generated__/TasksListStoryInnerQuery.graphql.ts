@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<09ee41106b4fb66466de02dd3cbe5525>>
+ * @generated SignedSource<<c1c21d8e1cd77df269a7e9018e927e2e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -173,13 +173,6 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
                     "args": (v2/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
@@ -269,7 +262,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6b474785fae1a820edd16b9a8cb653c8",
+    "cacheID": "e9101286c9c08e1cfd13bf1077d5c3e9",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -294,12 +287,6 @@ return {
           "type": "Task"
         },
         "tasks.edges.node.__typename": (v7/*: any*/),
-        "tasks.edges.node.createdAt": {
-          "enumValues": null,
-          "nullable": false,
-          "plural": false,
-          "type": "DateTime"
-        },
         "tasks.edges.node.icon": (v8/*: any*/),
         "tasks.edges.node.id": (v6/*: any*/),
         "tasks.edges.node.slots": {
@@ -344,7 +331,7 @@ return {
     },
     "name": "TasksListStoryInnerQuery",
     "operationKind": "query",
-    "text": "query TasksListStoryInnerQuery {\n  ...TasksList_tasks\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksListStoryInnerQuery {\n  ...TasksList_tasks\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks on Query {\n  tasks(first: 20) {\n    edges {\n      node {\n        id\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

@@ -1,5 +1,4 @@
-import type { RecordProxy } from 'relay-runtime'
-import type { StoreUpdater } from './compose-updaters.ts'
+import type { RecordProxy, RecordSourceSelectorProxy } from 'relay-runtime'
 
 const edgesByNodeId = (edges: readonly RecordProxy[]) => {
   const byNode = new Map<string, RecordProxy>()
@@ -24,16 +23,9 @@ const edgesInOrder = (
   return ordered.length === edges.length ? ordered : null
 }
 
-export const reorderConnectionEdgesOnce = (
-  connectionId: string,
-  orderedNodeIds: readonly string[],
-): StoreUpdater => {
-  let reordered = false
-
-  return store => {
-    if (reordered) return
-    reordered = true
-
+export const reorderConnectionEdges =
+  (connectionId: string, orderedNodeIds: readonly string[]) =>
+  (store: RecordSourceSelectorProxy) => {
     const connection = store.get(connectionId)
     const edges = connection?.getLinkedRecords('edges')
     if (!connection || !edges) return
@@ -43,4 +35,3 @@ export const reorderConnectionEdgesOnce = (
 
     connection.setLinkedRecords(ordered, 'edges')
   }
-}

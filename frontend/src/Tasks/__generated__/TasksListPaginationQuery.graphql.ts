@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<22e0bb49f97ccc57f01c0fd0067328d6>>
+ * @generated SignedSource<<9cde6552c89e18cc7e679c9e9c0f1ddc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type TasksListPaginationQuery$variables = {
-  count?: any | null | undefined;
+  count?: number | null | undefined;
   cursor?: string | null | undefined;
   titleSearch?: string | null | undefined;
 };
@@ -187,13 +187,6 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
                     "args": (v4/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
@@ -283,16 +276,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7609bd99baa4bc00602698e602c05e23",
+    "cacheID": "e82534d845d915ff44448aeddc9b8aae",
     "id": null,
     "metadata": {},
     "name": "TasksListPaginationQuery",
     "operationKind": "query",
-    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n  $titleSearch: String = null\n) {\n  ...TasksList_tasks_21ZZTc\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_21ZZTc on Query {\n  tasks(first: $count, after: $cursor, titleSearch: $titleSearch) {\n    edges {\n      node {\n        id\n        title\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TasksListPaginationQuery(\n  $count: NonNegativeInt = 20\n  $cursor: String\n  $titleSearch: String = null\n) {\n  ...TasksList_tasks_21ZZTc\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TasksList_tasks_21ZZTc on Query {\n  tasks(first: $count, after: $cursor, titleSearch: $titleSearch) {\n    edges {\n      node {\n        id\n        ...Task_task\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "311bb4f4a799533e019a231aedb917b0";
+(node as any).hash = "2c49fc71f16dba3db9f1d984d382d5e4";
 
 export default node;

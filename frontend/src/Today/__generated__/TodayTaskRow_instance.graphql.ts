@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8b3219b3e02a5c68f79208e6f019d71b>>
+ * @generated SignedSource<<1791bd30555773fc89e13e4bca02ef81>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type TodayTaskRow_instance$data = {
     readonly id: string;
     readonly task: {
       readonly icon: string | null | undefined;
+      readonly id: string;
       readonly title: string;
     };
   };
@@ -61,6 +62,7 @@ return {
           "name": "task",
           "plural": false,
           "selections": [
+            (v0/*: any*/),
             {
               "alias": null,
               "args": null,
@@ -99,6 +101,6 @@ return {
 };
 })();
 
-(node as any).hash = "cb2d0c93fc8a24f4baf5a17d9a5105f4";
+(node as any).hash = "0db36ed09c08a513deaccf3d5ce6c099";
 
 export default node;

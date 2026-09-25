@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<40f3625f1d2eb50cfc3d0d30bd616ddb>>
+ * @generated SignedSource<<1bba006c947b58e87bc01b6236aa63c6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,9 +16,7 @@ export type TodaySection_section$data = {
       readonly completion: {
         readonly id: string;
       } | null | undefined;
-      readonly routineSlot: {
-        readonly id: string;
-      };
+      readonly id: string;
       readonly " $fragmentSpreads": FragmentRefs<"TodayTaskRow_instance">;
     };
   }>;
@@ -30,15 +28,13 @@ export type TodaySection_section$key = {
 };
 
 const node: ReaderFragment = (function(){
-var v0 = [
-  {
-    "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "id",
-    "storageKey": null
-  }
-];
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
 return {
   "argumentDefinitions": [],
   "kind": "Fragment",
@@ -61,16 +57,7 @@ return {
           "name": "node",
           "plural": false,
           "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": "RoutineSlot",
-              "kind": "LinkedField",
-              "name": "routineSlot",
-              "plural": false,
-              "selections": (v0/*: any*/),
-              "storageKey": null
-            },
+            (v0/*: any*/),
             {
               "alias": null,
               "args": null,
@@ -78,7 +65,9 @@ return {
               "kind": "LinkedField",
               "name": "completion",
               "plural": false,
-              "selections": (v0/*: any*/),
+              "selections": [
+                (v0/*: any*/)
+              ],
               "storageKey": null
             },
             {
@@ -98,6 +87,6 @@ return {
 };
 })();
 
-(node as any).hash = "b195aa1240323d860b5ec205622d232e";
+(node as any).hash = "64d4c6e64a238c40b8fcaff9e587edfa";
 
 export default node;

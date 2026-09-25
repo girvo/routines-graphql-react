@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5bc82d894140e65ad63dbd8661bad613>>
+ * @generated SignedSource<<88a69cc5d855f04724f8f13b38bc53c3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -120,6 +120,19 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
+                      (v1/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "TaskCompletion",
+                        "kind": "LinkedField",
+                        "name": "completion",
+                        "plural": false,
+                        "selections": [
+                          (v1/*: any*/)
+                        ],
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -137,6 +150,7 @@ return {
                             "name": "task",
                             "plural": false,
                             "selections": [
+                              (v1/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -150,27 +164,13 @@ return {
                                 "kind": "ScalarField",
                                 "name": "icon",
                                 "storageKey": null
-                              },
-                              (v1/*: any*/)
+                              }
                             ],
                             "storageKey": null
                           }
                         ],
                         "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "TaskCompletion",
-                        "kind": "LinkedField",
-                        "name": "completion",
-                        "plural": false,
-                        "selections": [
-                          (v1/*: any*/)
-                        ],
-                        "storageKey": null
-                      },
-                      (v1/*: any*/)
+                      }
                     ],
                     "storageKey": null
                   }
@@ -186,7 +186,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e1fce049e94562d3bd3146bcaf913f3d",
+    "cacheID": "1260d5b58a1da904ba803b58a1f50bb2",
     "id": null,
     "metadata": {
       "relayTestingSelectionTypeInfo": {
@@ -252,7 +252,7 @@ return {
     },
     "name": "TodaySectionStoryQuery",
     "operationKind": "query",
-    "text": "query TodaySectionStoryQuery {\n  dailyRoutine {\n    morning(first: 100) {\n      ...TodaySection_section\n    }\n  }\n}\n\nfragment TodaySection_section on DailyTaskInstanceConnection {\n  edges {\n    node {\n      routineSlot {\n        id\n      }\n      completion {\n        id\n      }\n      ...TodayTaskRow_instance\n      id\n    }\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      title\n      icon\n      id\n    }\n  }\n  completion {\n    id\n  }\n}\n"
+    "text": "query TodaySectionStoryQuery {\n  dailyRoutine {\n    morning(first: 100) {\n      ...TodaySection_section\n    }\n  }\n}\n\nfragment TodaySection_section on DailyTaskInstanceConnection {\n  edges {\n    node {\n      id\n      completion {\n        id\n      }\n      ...TodayTaskRow_instance\n    }\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      id\n      title\n      icon\n    }\n  }\n  completion {\n    id\n  }\n}\n"
   }
 };
 })();

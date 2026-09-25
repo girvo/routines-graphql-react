@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<146f4203e0b3d9da3313c7786b603551>>
+ * @generated SignedSource<<74a5216ffd404bdbc13e6caffbd73879>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,18 +9,39 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type TodayTaskRowUncompleteMutation$variables = {
   dailyTaskInstanceId: string;
 };
 export type TodayTaskRowUncompleteMutation$data = {
   readonly uncompleteRoutineSlot: {
     readonly dailyTaskInstance: {
+      readonly " $fragmentSpreads": FragmentRefs<"TodayTaskRow_instance">;
+    };
+    readonly deletedId: string;
+  } | null | undefined;
+};
+export type TodayTaskRowUncompleteMutation$rawResponse = {
+  readonly uncompleteRoutineSlot: {
+    readonly dailyTaskInstance: {
+      readonly completion: {
+        readonly id: string;
+      } | null | undefined;
       readonly id: string;
+      readonly routineSlot: {
+        readonly id: string;
+        readonly task: {
+          readonly icon: string | null | undefined;
+          readonly id: string;
+          readonly title: string;
+        };
+      };
     };
     readonly deletedId: string;
   } | null | undefined;
 };
 export type TodayTaskRowUncompleteMutation = {
+  rawResponse: TodayTaskRowUncompleteMutation$rawResponse;
   response: TodayTaskRowUncompleteMutation$data;
   variables: TodayTaskRowUncompleteMutation$variables;
 };
@@ -50,19 +71,8 @@ v2 = {
 v3 = {
   "alias": null,
   "args": null,
-  "concreteType": "DailyTaskInstance",
-  "kind": "LinkedField",
-  "name": "dailyTaskInstance",
-  "plural": false,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
-  ],
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
@@ -81,7 +91,22 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          (v3/*: any*/)
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DailyTaskInstance",
+            "kind": "LinkedField",
+            "name": "dailyTaskInstance",
+            "plural": false,
+            "selections": [
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "TodayTaskRow_instance"
+              }
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       }
@@ -113,23 +138,84 @@ return {
             "kind": "ScalarHandle",
             "name": "deletedId"
           },
-          (v3/*: any*/)
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "DailyTaskInstance",
+            "kind": "LinkedField",
+            "name": "dailyTaskInstance",
+            "plural": false,
+            "selections": [
+              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "RoutineSlot",
+                "kind": "LinkedField",
+                "name": "routineSlot",
+                "plural": false,
+                "selections": [
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Task",
+                    "kind": "LinkedField",
+                    "name": "task",
+                    "plural": false,
+                    "selections": [
+                      (v3/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "title",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "icon",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "TaskCompletion",
+                "kind": "LinkedField",
+                "name": "completion",
+                "plural": false,
+                "selections": [
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "b7f6d4ab2c0f585543026f820b04e7c7",
+    "cacheID": "f4c9732f39a2a4055e5e1e4d89041cfd",
     "id": null,
     "metadata": {},
     "name": "TodayTaskRowUncompleteMutation",
     "operationKind": "mutation",
-    "text": "mutation TodayTaskRowUncompleteMutation(\n  $dailyTaskInstanceId: ID!\n) {\n  uncompleteRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {\n    deletedId\n    dailyTaskInstance {\n      id\n    }\n  }\n}\n"
+    "text": "mutation TodayTaskRowUncompleteMutation(\n  $dailyTaskInstanceId: ID!\n) {\n  uncompleteRoutineSlot(dailyTaskInstanceId: $dailyTaskInstanceId) {\n    deletedId\n    dailyTaskInstance {\n      ...TodayTaskRow_instance\n      id\n    }\n  }\n}\n\nfragment TodayTaskRow_instance on DailyTaskInstance {\n  id\n  routineSlot {\n    id\n    task {\n      id\n      title\n      icon\n    }\n  }\n  completion {\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "74207d4346b2a145392494cad5b16390";
+(node as any).hash = "04a6bc2840ae0bf320b0e7bf88bc0db4";
 
 export default node;

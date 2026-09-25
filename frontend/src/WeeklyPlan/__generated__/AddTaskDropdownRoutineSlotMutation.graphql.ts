@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9afb31535a4b512a56a119fede72c600>>
+ * @generated SignedSource<<2bbfcc60819eb98d122dc3d138ad0d28>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type DayOfWeek = "FRIDAY" | "MONDAY" | "SATURDAY" | "SUNDAY" | "THURSDAY" | "TUESDAY" | "WEDNESDAY" | "%future added value";
 export type DaySection = "EVENING" | "MIDDAY" | "MORNING" | "%future added value";
 export type AddTaskDropdownRoutineSlotMutation$variables = {
@@ -20,9 +21,20 @@ export type AddTaskDropdownRoutineSlotMutation$variables = {
 export type AddTaskDropdownRoutineSlotMutation$data = {
   readonly createRoutineSlot: {
     readonly routineSlotEdge: {
-      readonly cursor: string;
       readonly node: {
-        readonly dayOfWeek: DayOfWeek;
+        readonly section: DaySection;
+        readonly task: {
+          readonly title: string;
+        };
+        readonly " $fragmentSpreads": FragmentRefs<"RoutineSlotItem_routineSlot">;
+      };
+    };
+  } | null | undefined;
+};
+export type AddTaskDropdownRoutineSlotMutation$rawResponse = {
+  readonly createRoutineSlot: {
+    readonly routineSlotEdge: {
+      readonly node: {
         readonly id: string;
         readonly section: DaySection;
         readonly task: {
@@ -35,6 +47,7 @@ export type AddTaskDropdownRoutineSlotMutation$data = {
   } | null | undefined;
 };
 export type AddTaskDropdownRoutineSlotMutation = {
+  rawResponse: AddTaskDropdownRoutineSlotMutation$rawResponse;
   response: AddTaskDropdownRoutineSlotMutation$data;
   variables: AddTaskDropdownRoutineSlotMutation$variables;
 };
@@ -87,77 +100,21 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "section",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
-  "concreteType": "RoutineSlotEdge",
-  "kind": "LinkedField",
-  "name": "routineSlotEdge",
-  "plural": false,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "cursor",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "RoutineSlot",
-      "kind": "LinkedField",
-      "name": "node",
-      "plural": false,
-      "selections": [
-        (v5/*: any*/),
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "section",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "dayOfWeek",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "Task",
-          "kind": "LinkedField",
-          "name": "task",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "title",
-              "storageKey": null
-            },
-            (v5/*: any*/),
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "icon",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    }
-  ],
+  "kind": "ScalarField",
+  "name": "title",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
@@ -180,7 +137,46 @@ return {
         "name": "createRoutineSlot",
         "plural": false,
         "selections": [
-          (v6/*: any*/)
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "RoutineSlotEdge",
+            "kind": "LinkedField",
+            "name": "routineSlotEdge",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "RoutineSlot",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v5/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Task",
+                    "kind": "LinkedField",
+                    "name": "task",
+                    "plural": false,
+                    "selections": [
+                      (v6/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "RoutineSlotItem_routineSlot"
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       }
@@ -207,7 +203,50 @@ return {
         "name": "createRoutineSlot",
         "plural": false,
         "selections": [
-          (v6/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "RoutineSlotEdge",
+            "kind": "LinkedField",
+            "name": "routineSlotEdge",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "RoutineSlot",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v5/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Task",
+                    "kind": "LinkedField",
+                    "name": "task",
+                    "plural": false,
+                    "selections": [
+                      (v6/*: any*/),
+                      (v7/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "icon",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  (v7/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": null,
@@ -230,16 +269,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2f68607678c5047d440f936339c644e3",
+    "cacheID": "05e76000a9b41bb45f204730fd8e14e5",
     "id": null,
     "metadata": {},
     "name": "AddTaskDropdownRoutineSlotMutation",
     "operationKind": "mutation",
-    "text": "mutation AddTaskDropdownRoutineSlotMutation(\n  $taskId: ID!\n  $dayOfWeek: DayOfWeek!\n  $daySection: DaySection!\n) {\n  createRoutineSlot(input: {taskId: $taskId, dayOfWeek: $dayOfWeek, section: $daySection}) {\n    routineSlotEdge {\n      cursor\n      node {\n        id\n        section\n        dayOfWeek\n        task {\n          title\n          id\n          icon\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation AddTaskDropdownRoutineSlotMutation(\n  $taskId: ID!\n  $dayOfWeek: DayOfWeek!\n  $daySection: DaySection!\n) {\n  createRoutineSlot(input: {taskId: $taskId, dayOfWeek: $dayOfWeek, section: $daySection}) {\n    routineSlotEdge {\n      node {\n        section\n        task {\n          title\n          id\n        }\n        ...RoutineSlotItem_routineSlot\n        id\n      }\n    }\n  }\n}\n\nfragment RoutineSlotItem_routineSlot on RoutineSlot {\n  id\n  task {\n    id\n    title\n    icon\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d440036040447472c56be6cc56932cad";
+(node as any).hash = "b1eaa8df5a8346919e2e382c1cb3d0f9";
 
 export default node;

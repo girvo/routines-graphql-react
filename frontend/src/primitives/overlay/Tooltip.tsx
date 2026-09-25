@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { ReactNode } from 'react'
+import type { ReactNode, RefObject } from 'react'
 import { createPortal } from 'react-dom'
 import { resolveSide } from './popover/helpers.ts'
 import styles from './Tooltip.module.css'
@@ -22,6 +22,43 @@ type TooltipProps = {
   label: string
   side?: 'top' | 'bottom'
   children: ReactNode
+}
+
+type TooltipPortalProps = {
+  open: boolean
+  label: string
+  tooltipId: string
+  contentRef: RefObject<HTMLDivElement | null>
+  caretRef: RefObject<HTMLSpanElement | null>
+}
+
+const TooltipPortal = ({
+  open,
+  label,
+  tooltipId,
+  contentRef,
+  caretRef,
+}: TooltipPortalProps) => {
+  if (!open) return null
+
+  return createPortal(
+    <div
+      ref={contentRef}
+      id={tooltipId}
+      role="tooltip"
+      className={styles.tooltip}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        visibility: 'hidden',
+      }}
+    >
+      {label}
+      <span ref={caretRef} className={styles.caret} aria-hidden />
+    </div>,
+    document.body,
+  )
 }
 
 export const Tooltip = ({ label, side = 'top', children }: TooltipProps) => {
@@ -137,26 +174,13 @@ export const Tooltip = ({ label, side = 'top', children }: TooltipProps) => {
       >
         {children}
       </span>
-      {open
-        ? createPortal(
-            <div
-              ref={contentRef}
-              id={tooltipId}
-              role="tooltip"
-              className={styles.tooltip}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                visibility: 'hidden',
-              }}
-            >
-              {label}
-              <span ref={caretRef} className={styles.caret} aria-hidden />
-            </div>,
-            document.body,
-          )
-        : null}
+      <TooltipPortal
+        open={open}
+        label={label}
+        tooltipId={tooltipId}
+        contentRef={contentRef}
+        caretRef={caretRef}
+      />
     </>
   )
 }

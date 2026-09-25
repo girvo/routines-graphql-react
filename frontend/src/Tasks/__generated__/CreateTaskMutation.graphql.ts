@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<acec0f59eefb5d43c2f8db928d06bacf>>
+ * @generated SignedSource<<9c849bbfd943e89deb658466e054b412>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -31,7 +31,6 @@ export type CreateTaskMutation$rawResponse = {
     readonly taskEdge: {
       readonly cursor: string;
       readonly node: {
-        readonly createdAt: any;
         readonly icon: string | null | undefined;
         readonly id: string;
         readonly slots: {
@@ -213,13 +212,6 @@ return {
                   },
                   {
                     "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
                     "args": (v6/*: any*/),
                     "concreteType": "RoutineSlotConnection",
                     "kind": "LinkedField",
@@ -330,12 +322,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "20bfc81216d01e0df19d8fcfeaadc23c",
+    "cacheID": "0f68d1a1f80b4f8dd3d2ed2e69c12994",
     "id": null,
     "metadata": {},
     "name": "CreateTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...Task_task\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  createdAt\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "mutation CreateTaskMutation(\n  $title: String!\n  $icon: String\n) {\n  createTask(icon: $icon, title: $title) {\n    taskEdge {\n      node {\n        ...Task_task\n        id\n      }\n      cursor\n    }\n  }\n}\n\nfragment Task_task on Task {\n  id\n  title\n  icon\n  slots(first: 100) {\n    edges {\n      node {\n        id\n        section\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

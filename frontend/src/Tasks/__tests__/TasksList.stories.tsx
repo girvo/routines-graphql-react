@@ -114,7 +114,6 @@ const TasksListStoryInner = ({
       tasks={data}
       isCreating={isCreating}
       setIsCreating={setIsCreating}
-      searchQuery=""
     />
   )
 }

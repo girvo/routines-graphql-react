@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2ce6d154c326bb0a2bcebc08f02d9b76>>
+ * @generated SignedSource<<3ad6f78f8b13aee59b30b8d1ff58bdf2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,15 +10,15 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type DesktopSidebarQuery$variables = Record<PropertyKey, never>;
-export type DesktopSidebarQuery$data = {
+export type AppShellQuery$variables = Record<PropertyKey, never>;
+export type AppShellQuery$data = {
   readonly me: {
     readonly " $fragmentSpreads": FragmentRefs<"DesktopSidebar_me">;
   };
 };
-export type DesktopSidebarQuery = {
-  response: DesktopSidebarQuery$data;
-  variables: DesktopSidebarQuery$variables;
+export type AppShellQuery = {
+  response: AppShellQuery$data;
+  variables: AppShellQuery$variables;
 };
 
 const node: ConcreteRequest = {
@@ -26,7 +26,7 @@ const node: ConcreteRequest = {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "DesktopSidebarQuery",
+    "name": "AppShellQuery",
     "selections": [
       {
         "alias": null,
@@ -52,7 +52,7 @@ const node: ConcreteRequest = {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "DesktopSidebarQuery",
+    "name": "AppShellQuery",
     "selections": [
       {
         "alias": null,
@@ -96,15 +96,15 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "bdaa44ac6263d8d9ff4b9bad8357fd67",
+    "cacheID": "d36b4e2e67b4f74edf614b9e87feb7b6",
     "id": null,
     "metadata": {},
-    "name": "DesktopSidebarQuery",
+    "name": "AppShellQuery",
     "operationKind": "query",
-    "text": "query DesktopSidebarQuery {\n  me {\n    ...DesktopSidebar_me\n    id\n  }\n}\n\nfragment DesktopSidebar_me on User {\n  name\n  email\n  initials\n}\n"
+    "text": "query AppShellQuery {\n  me {\n    ...DesktopSidebar_me\n    id\n  }\n}\n\nfragment DesktopSidebar_me on User {\n  name\n  email\n  initials\n}\n"
   }
 };
 
-(node as any).hash = "6ad3d9a8845d98b57bb17209ca3f6582";
+(node as any).hash = "66e2ebc7af3bda207963585d0f2e6474";
 
 export default node;

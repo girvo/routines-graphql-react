@@ -43,7 +43,7 @@ export const TouchDragFromTheGripMovesWithoutALongPress: Story = {
       createReadAndMoves={() =>
         createEnvironmentWith(
           [mockSection('MORNING', READ_ORDER)],
-          deferredMoveResolver(PUSHUPS, BOTTOM_ORDER),
+          deferredMoveResolver(BOTTOM_ORDER),
         )
       }
     />

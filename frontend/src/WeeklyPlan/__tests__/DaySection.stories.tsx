@@ -9,7 +9,6 @@ import {
   createEnvironmentWith,
   deferredMoveResolver,
   mockSection,
-  PUSHUPS,
   READ_ORDER,
   settleTheMove,
   SQUATS,
@@ -23,7 +22,7 @@ const DaySectionStory = () => (
     createReadAndMoves={() =>
       createEnvironmentWith(
         [mockSection('MORNING', READ_ORDER)],
-        deferredMoveResolver(PUSHUPS, BOTTOM_ORDER),
+        deferredMoveResolver(BOTTOM_ORDER),
       )
     }
   />

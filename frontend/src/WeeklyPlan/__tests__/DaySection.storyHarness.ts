@@ -143,15 +143,13 @@ const readResolver =
     generateDaySections(operation, readSections)
 
 export const deferredMoveResolver =
-  (moved: MockSlot, serverOrder: MockSlot[]): MoveResolver =>
+  (serverOrder: MockSlot[]): MoveResolver =>
   operation => {
     moveOperations.push(operation)
     return new Promise(resolve => {
       settleMove = () =>
         resolve(
-          generateDaySections(operation, [
-            mockSection('MORNING', [moved, ...serverOrder], serverOrder.length),
-          ]),
+          generateDaySections(operation, [mockSection('MORNING', serverOrder)]),
         )
     }) as never
   }

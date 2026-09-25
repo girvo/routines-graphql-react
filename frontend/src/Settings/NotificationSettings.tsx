@@ -3,6 +3,7 @@ import { graphql, useFragment, useMutation } from 'react-relay'
 import { format } from 'date-fns'
 import { Send, Trash2, BellPlus } from 'lucide-react'
 import { Alert } from '../primitives/Alert.tsx'
+import type { AlertType } from '../primitives/Alert.tsx'
 import { Button } from '../primitives/Button.tsx'
 import { Body } from '../primitives/text/Body.tsx'
 import { Heading } from '../primitives/text/Heading.tsx'
@@ -18,7 +19,10 @@ import {
   subscribeCurrentDevice,
   unsubscribeCurrentDevice,
 } from '../push/push-client.ts'
-import type { NotificationSettings_me$key } from './__generated__/NotificationSettings_me.graphql.ts'
+import type {
+  NotificationSettings_me$data,
+  NotificationSettings_me$key,
+} from './__generated__/NotificationSettings_me.graphql.ts'
 import type { NotificationSettingsRegisterMutation } from './__generated__/NotificationSettingsRegisterMutation.graphql.ts'
 import type { NotificationSettingsRemoveMutation } from './__generated__/NotificationSettingsRemoveMutation.graphql.ts'
 import type { NotificationSettingsSendTestMutation } from './__generated__/NotificationSettingsSendTestMutation.graphql.ts'
@@ -26,21 +30,33 @@ import styles from './NotificationSettings.module.css'
 
 type Eligibility = 'ready' | 'not-installed' | 'unsupported' | 'denied'
 
-const eligibilityNotice: Record<
-  Exclude<Eligibility, 'ready'>,
-  { title: string; body: string }
-> = {
+type EligibilityView = {
+  alertType: AlertType
+  notice: { title: string; body: string } | null
+}
+
+const eligibilityView: Record<Eligibility, EligibilityView> = {
+  ready: { alertType: 'info', notice: null },
   'not-installed': {
-    title: 'Add this app to your Home Screen first',
-    body: 'Open Routines in Safari, use Share › Add to Home Screen, then launch it from its icon. iOS only offers notifications to an installed app.',
+    alertType: 'info',
+    notice: {
+      title: 'Add this app to your Home Screen first',
+      body: 'Open Routines in Safari, use Share › Add to Home Screen, then launch it from its icon. iOS only offers notifications to an installed app.',
+    },
   },
   unsupported: {
-    title: 'This browser cannot receive push notifications',
-    body: 'Notifications need iOS 16.4 or newer, and a browser that exposes the Push API.',
+    alertType: 'info',
+    notice: {
+      title: 'This browser cannot receive push notifications',
+      body: 'Notifications need iOS 16.4 or newer, and a browser that exposes the Push API.',
+    },
   },
   denied: {
-    title: 'Notifications are blocked for this app',
-    body: 'Allow them in iOS Settings › Notifications › Routines, then reload this page.',
+    alertType: 'warning',
+    notice: {
+      title: 'Notifications are blocked for this app',
+      body: 'Allow them in iOS Settings › Notifications › Routines, then reload this page.',
+    },
   },
 }
 
@@ -49,6 +65,106 @@ const deviceLabel = (subscription: {
   endpoint: string
 }): string =>
   `${subscription.platform ?? 'Device'} · ${subscription.endpoint.slice(-6)}`
+
+type EnableActionProps = {
+  eligibility: Eligibility
+  hasDevices: boolean
+  isSubscribing: boolean
+  onEnable: () => void
+}
+
+const EnableAction = ({
+  eligibility,
+  hasDevices,
+  isSubscribing,
+  onEnable,
+}: EnableActionProps) => {
+  const { alertType, notice } = eligibilityView[eligibility]
+
+  if (notice) {
+    return (
+      <Alert type={alertType} title={notice.title}>
+        {notice.body}
+      </Alert>
+    )
+  }
+
+  return (
+    <Button
+      variant={hasDevices ? 'secondary' : 'primary'}
+      leadingIcon={BellPlus}
+      loading={isSubscribing}
+      disabled={isSubscribing}
+      onClick={onEnable}
+    >
+      {hasDevices ? 'Add this device' : 'Enable reminders'}
+    </Button>
+  )
+}
+
+type PushSubscription =
+  NotificationSettings_me$data['pushSubscriptions'][number]
+
+type DeviceListProps = {
+  subscriptions: readonly PushSubscription[]
+  pendingEndpoint: string | null
+  onSendTest: (endpoint: string) => void
+  onRemove: (endpoint: string) => void
+}
+
+const DeviceList = ({
+  subscriptions,
+  pendingEndpoint,
+  onSendTest,
+  onRemove,
+}: DeviceListProps) => {
+  if (subscriptions.length === 0) return null
+
+  return (
+    <ul className={styles.devices} aria-label="Subscribed devices">
+      {subscriptions.map(subscription => (
+        <li key={subscription.id} className={styles.device}>
+          <div className={styles.deviceDetails}>
+            <span className={styles.deviceName}>
+              {deviceLabel(subscription)}
+            </span>
+            <Mono
+              size="xs"
+              className={styles.endpoint}
+              title={subscription.endpoint}
+            >
+              {subscription.endpoint}
+            </Mono>
+            <span className={styles.deviceMeta}>
+              Added {format(new Date(subscription.createdAt), 'd MMM yyyy')}
+            </span>
+          </div>
+          <div className={styles.deviceActions}>
+            <Button
+              variant="ghost"
+              size="sm"
+              leadingIcon={Send}
+              disabled={pendingEndpoint !== null}
+              loading={pendingEndpoint === subscription.endpoint}
+              onClick={() => onSendTest(subscription.endpoint)}
+            >
+              Send test
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              iconOnly={Trash2}
+              aria-label={`Remove ${deviceLabel(subscription)}`}
+              disabled={pendingEndpoint !== null}
+              loading={pendingEndpoint === subscription.endpoint}
+              onClick={() => onRemove(subscription.endpoint)}
+            />
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 type NotificationSettingsProps = {
   me: NotificationSettings_me$key
@@ -65,7 +181,6 @@ export const NotificationSettings = ({ me }: NotificationSettingsProps) => {
           endpoint
           platform
           createdAt
-          lastSeenAt
         }
       }
     `,
@@ -222,8 +337,6 @@ export const NotificationSettings = ({ me }: NotificationSettingsProps) => {
     ],
   )
 
-  const notice = eligibility === 'ready' ? null : eligibilityNotice[eligibility]
-
   return (
     <div className={styles.root}>
       <div className={styles.intro}>
@@ -241,69 +354,19 @@ export const NotificationSettings = ({ me }: NotificationSettingsProps) => {
         </Body>
       </div>
 
-      {notice ? (
-        <Alert
-          type={eligibility === 'denied' ? 'warning' : 'info'}
-          title={notice.title}
-        >
-          {notice.body}
-        </Alert>
-      ) : (
-        <Button
-          variant={subscriptions.length === 0 ? 'primary' : 'secondary'}
-          leadingIcon={BellPlus}
-          loading={isSubscribing}
-          disabled={isSubscribing}
-          onClick={() => void handleEnable()}
-        >
-          {subscriptions.length === 0 ? 'Enable reminders' : 'Add this device'}
-        </Button>
-      )}
+      <EnableAction
+        eligibility={eligibility}
+        hasDevices={subscriptions.length > 0}
+        isSubscribing={isSubscribing}
+        onEnable={() => void handleEnable()}
+      />
 
-      {subscriptions.length > 0 ? (
-        <ul className={styles.devices} aria-label="Subscribed devices">
-          {subscriptions.map(subscription => (
-            <li key={subscription.id} className={styles.device}>
-              <div className={styles.deviceDetails}>
-                <span className={styles.deviceName}>
-                  {deviceLabel(subscription)}
-                </span>
-                <Mono
-                  size="xs"
-                  className={styles.endpoint}
-                  title={subscription.endpoint}
-                >
-                  {subscription.endpoint}
-                </Mono>
-                <span className={styles.deviceMeta}>
-                  Added {format(new Date(subscription.createdAt), 'd MMM yyyy')}
-                </span>
-              </div>
-              <div className={styles.deviceActions}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  leadingIcon={Send}
-                  disabled={pendingEndpoint !== null}
-                  loading={pendingEndpoint === subscription.endpoint}
-                  onClick={() => handleSendTest(subscription.endpoint)}
-                >
-                  Send test
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  iconOnly={Trash2}
-                  aria-label={`Remove ${deviceLabel(subscription)}`}
-                  disabled={pendingEndpoint !== null}
-                  loading={pendingEndpoint === subscription.endpoint}
-                  onClick={() => handleRemove(subscription.endpoint)}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <DeviceList
+        subscriptions={subscriptions}
+        pendingEndpoint={pendingEndpoint}
+        onSendTest={handleSendTest}
+        onRemove={handleRemove}
+      />
     </div>
   )
 }

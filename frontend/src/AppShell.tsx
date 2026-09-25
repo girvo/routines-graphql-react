@@ -1,13 +1,14 @@
 import { Suspense, use, useCallback, useState, type ReactNode } from 'react'
 import { Outlet, useMatches, type UIMatch } from 'react-router-dom'
 import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
+import { graphql, usePreloadedQuery } from 'react-relay'
 import { AuthContext } from './auth/auth-store.ts'
 import { PageHeaderContext, type PageHeaderSlots } from './utils/page-header.ts'
 import { AppShellFrame } from './shell/AppShellFrame.tsx'
 import { DesktopSidebar } from './shell/DesktopSidebar.tsx'
 import { MobileDock } from './shell/MobileDock.tsx'
 import { TopBar } from './shell/TopBar.tsx'
-import type { DesktopSidebarQuery } from './shell/__generated__/DesktopSidebarQuery.graphql.ts'
+import type { AppShellQuery } from './__generated__/AppShellQuery.graphql.ts'
 
 interface RouteHandle {
   title?: string
@@ -42,9 +43,19 @@ const BelowHeaderSlot = () => {
   return <>{belowHeader}</>
 }
 
-type Props = SimpleEntryPointProps<{ userQuery: DesktopSidebarQuery }>
+type Props = SimpleEntryPointProps<{ appShellQuery: AppShellQuery }>
 
 const AppShell = ({ queries }: Props) => {
+  const data = usePreloadedQuery<AppShellQuery>(
+    graphql`
+      query AppShellQuery {
+        me {
+          ...DesktopSidebar_me
+        }
+      }
+    `,
+    queries.appShellQuery,
+  )
   const [slots, setSlotsState] = useState<PageHeaderSlots>({
     title: null,
     subtitle: null,
@@ -85,9 +96,7 @@ const AppShell = ({ queries }: Props) => {
   return (
     <PageHeaderContext value={{ ...slots, setSlots, clearSlots }}>
       <AppShellFrame
-        sidebar={
-          <DesktopSidebar user={queries.userQuery} onLogout={handleLogout} />
-        }
+        sidebar={<DesktopSidebar me={data.me} onLogout={handleLogout} />}
         topBar={
           <TopBarSlot
             routeTitle={routeTitle}

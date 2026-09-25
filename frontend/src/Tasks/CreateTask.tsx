@@ -20,12 +20,12 @@ import { useMutationErrorHandler } from '../relay/use-mutation-error-handler'
 import styles from './CreateTask.module.css'
 
 interface CreateTaskProps {
-  connectionId: string
+  connectionIds: readonly string[]
   setIsCreating: Dispatch<SetStateAction<boolean>>
 }
 
 export const CreateTask = ({
-  connectionId,
+  connectionIds,
   setIsCreating,
 }: CreateTaskProps) => {
   const {
@@ -78,7 +78,7 @@ export const CreateTask = ({
       variables: {
         title: data.title,
         icon: data.icon,
-        connections: [connectionId],
+        connections: connectionIds,
       },
       optimisticResponse: {
         createTask: {
@@ -88,7 +88,6 @@ export const CreateTask = ({
               id: optimisticTaskId,
               title: data.title,
               icon: data.icon || null,
-              createdAt: new Date().toISOString(),
               slots: {
                 edges: [],
                 pageInfo: { endCursor: null, hasNextPage: false },

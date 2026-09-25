@@ -24,7 +24,6 @@ import {
   moveTargetForDrop,
   type DropRelation,
 } from './task-order.ts'
-import type { DayOfWeek } from './days.ts'
 import styles from './WeeklyPlanRoutineSection.module.css'
 import type { RoutineSlotItem_routineSlot$key } from './__generated__/RoutineSlotItem_routineSlot.graphql.ts'
 import type { WeeklyPlanRoutineSection_section$key } from './__generated__/WeeklyPlanRoutineSection_section.graphql'
@@ -268,12 +267,10 @@ const SortableRoutineSlotList = ({
 
 interface WeeklyPlanRoutineSectionProps {
   weeklyPlanSection: WeeklyPlanRoutineSection_section$key
-  dayOfWeek: DayOfWeek
 }
 
 export const WeeklyPlanRoutineSection = ({
   weeklyPlanSection: weeklyPlan,
-  dayOfWeek,
 }: WeeklyPlanRoutineSectionProps) => {
   const routine = useFragment<WeeklyPlanRoutineSection_section$key>(
     graphql`
@@ -302,7 +299,6 @@ export const WeeklyPlanRoutineSection = ({
   const { moveSlot, isMoving } = useDaySectionMoveTask({
     connectionId: routine.__id,
     slotIds,
-    dayOfWeek,
   })
 
   return (

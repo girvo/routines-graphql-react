@@ -161,7 +161,6 @@ const NotificationSettingsStoryInner = () => {
     graphql`
       query NotificationSettingsStoryQuery @relay_test_operation {
         me {
-          id
           ...NotificationSettings_me
         }
       }

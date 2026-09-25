@@ -1,11 +1,10 @@
 import { useState, useMemo } from 'react'
-import { graphql } from 'relay-runtime'
-import { useFragment, useMutation } from 'react-relay'
+import { graphql, useFragment, useMutation } from 'react-relay'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import type { Task_task$key } from './__generated__/Task_task.graphql'
+import type { EditTask_task$key } from './__generated__/EditTask_task.graphql.ts'
 import type { TaskDeleteMutation } from './__generated__/TaskDeleteMutation.graphql.ts'
 import { EditTask } from './EditTask.tsx'
-import type { EditTask_task$key } from './__generated__/EditTask_task.graphql.ts'
 import { sectionCounts, sectionLabel } from './section-counts.ts'
 import { ConfirmDialog } from '../primitives/overlay/modal/ConfirmDialog.tsx'
 import { IconBadge } from '../primitives/badge/IconBadge.tsx'
@@ -36,7 +35,6 @@ export const Task = ({
         id
         title
         icon
-        createdAt
         slots(first: 100) @connection(key: "Task_slots") {
           edges {
             node {

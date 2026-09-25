@@ -5,32 +5,9 @@
   min-height: 0;
 }
 
-.mobileSearchRow {
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border-bottom: var(--border-width) solid var(--stroke-line);
-}
-
-.mobileSearch {
-  width: 100%;
-}
-
-.desktopSearch {
-  display: none;
-}
-
 @media (min-width: 1024px) {
   .page {
     padding: var(--space-4) var(--space-5);
     gap: var(--space-3);
-  }
-
-  .mobileSearchRow {
-    display: none;
-  }
-
-  .desktopSearch {
-    display: inline-flex;
-    width: 260px;
   }
 }

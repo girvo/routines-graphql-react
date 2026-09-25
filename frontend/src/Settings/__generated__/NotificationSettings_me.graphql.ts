@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6f3f61befbdd2542bcfbc14b9b1bea39>>
+ * @generated SignedSource<<6521b5ade5412f450c6545430df9e61f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,10 +14,9 @@ export type NotificationSettings_me$data = {
   readonly id: string;
   readonly morningReminderEnabled: boolean;
   readonly pushSubscriptions: ReadonlyArray<{
-    readonly createdAt: any;
+    readonly createdAt: string;
     readonly endpoint: string;
     readonly id: string;
-    readonly lastSeenAt: any | null | undefined;
     readonly platform: string | null | undefined;
   }>;
   readonly " $fragmentType": "NotificationSettings_me";
@@ -78,13 +77,6 @@ return {
           "kind": "ScalarField",
           "name": "createdAt",
           "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "lastSeenAt",
-          "storageKey": null
         }
       ],
       "storageKey": null
@@ -95,6 +87,6 @@ return {
 };
 })();
 
-(node as any).hash = "d470dbdae7bb4512eea5f7ac29f74e58";
+(node as any).hash = "e2846ac6ec03b57978a35b51ac34fe11";
 
 export default node;

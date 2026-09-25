@@ -54,7 +54,7 @@ export const authedRouteConfig: EntryPointRouteObject[] = [
         },
       },
       {
-        path: '/weekly',
+        path: '/weekly/:day?',
         entryPoint: WeeklyPlanPageEntryPoint,
         handle: {
           title: 'Weekly planner',

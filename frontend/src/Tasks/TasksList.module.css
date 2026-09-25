@@ -10,3 +10,28 @@
   justify-content: center;
   padding: var(--space-4) 0;
 }
+
+.mobileSearchRow {
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border-bottom: var(--border-width) solid var(--stroke-line);
+}
+
+.mobileSearch {
+  width: 100%;
+}
+
+.desktopSearch {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .mobileSearchRow {
+    display: none;
+  }
+
+  .desktopSearch {
+    display: inline-flex;
+    width: 260px;
+  }
+}

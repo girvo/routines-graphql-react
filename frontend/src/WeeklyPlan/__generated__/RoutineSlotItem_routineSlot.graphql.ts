@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d6e1d14d2e75f43e3a09fbbd83d48612>>
+ * @generated SignedSource<<c4eec8c576e15bbe023c7e54d2897c65>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,8 @@
 // @ts-nocheck
 
 import { ReaderFragment } from 'relay-runtime';
-export type DayOfWeek = "FRIDAY" | "MONDAY" | "SATURDAY" | "SUNDAY" | "THURSDAY" | "TUESDAY" | "WEDNESDAY" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type RoutineSlotItem_routineSlot$data = {
-  readonly dayOfWeek: DayOfWeek;
   readonly id: string;
   readonly task: {
     readonly icon: string | null | undefined;
@@ -41,13 +39,6 @@ return {
   "name": "RoutineSlotItem_routineSlot",
   "selections": [
     (v0/*: any*/),
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "dayOfWeek",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -80,6 +71,6 @@ return {
 };
 })();
 
-(node as any).hash = "fc9bff870e184b57bf5f3f7340a5ca0b";
+(node as any).hash = "4311eb665b8503b47008689619e59cf4";
 
 export default node;

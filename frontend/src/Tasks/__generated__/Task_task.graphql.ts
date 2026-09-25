@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3493fd28ac5385130fdce2a4fa4b003d>>
+ * @generated SignedSource<<31a4cb6f38bd8712e8143035f05412ec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,6 @@ import { ReaderFragment } from 'relay-runtime';
 export type DaySection = "EVENING" | "MIDDAY" | "MORNING" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type Task_task$data = {
-  readonly createdAt: any;
   readonly icon: string | null | undefined;
   readonly id: string;
   readonly slots: {
@@ -69,13 +68,6 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "icon",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "createdAt",
       "storageKey": null
     },
     {
@@ -164,6 +156,6 @@ return {
 };
 })();
 
-(node as any).hash = "4e37dcca08947f6e02e369f0d8464438";
+(node as any).hash = "5b401ea017b6ab7e4d0ca4c4890bf25a";
 
 export default node;
