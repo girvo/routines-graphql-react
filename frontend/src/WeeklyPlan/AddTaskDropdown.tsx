@@ -19,6 +19,7 @@ import { ConnectionHandler } from 'relay-runtime'
 import { Plus, Search, Loader2 } from 'lucide-react'
 import { useDebounceCallback } from 'usehooks-ts'
 import { iconComponent } from '../utils/icons.ts'
+import { invalidateStoreOnSuccess } from '../relay/invalidate-store.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { clsx } from 'clsx'
 import { Button } from '../primitives/Button.tsx'
@@ -266,6 +267,7 @@ export const AddTaskDropdownContent = ({
           },
         },
       },
+      updater: invalidateStoreOnSuccess('createRoutineSlot'),
       onCompleted: (_response, errors) => {
         showPayloadErrors(errors)
       },

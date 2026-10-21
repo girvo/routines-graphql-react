@@ -35,9 +35,7 @@ export const WeeklyPlanDay = ({ dayOfWeek, sections }: WeeklyPlanDayProps) => {
   )
 
   const handleButtonHover = () => {
-    if (!queryRef) {
-      loadQuery({}, { fetchPolicy: 'store-and-network' })
-    }
+    loadQuery({})
   }
 
   return (

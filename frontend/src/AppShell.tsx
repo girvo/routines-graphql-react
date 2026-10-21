@@ -3,6 +3,7 @@ import { Outlet, useMatches, type UIMatch } from 'react-router-dom'
 import type { SimpleEntryPointProps } from '@loop-payments/react-router-relay'
 import { graphql, usePreloadedQuery } from 'react-relay'
 import { AuthContext } from './auth/auth-store.ts'
+import { useRefreshOnReturn } from './relay/use-refresh-on-return.ts'
 import { PageHeaderContext, type PageHeaderSlots } from './utils/page-header.ts'
 import { AppShellFrame } from './shell/AppShellFrame.tsx'
 import { DesktopSidebar } from './shell/DesktopSidebar.tsx'
@@ -46,6 +47,7 @@ const BelowHeaderSlot = () => {
 type Props = SimpleEntryPointProps<{ appShellQuery: AppShellQuery }>
 
 const AppShell = ({ queries }: Props) => {
+  useRefreshOnReturn()
   const data = usePreloadedQuery<AppShellQuery>(
     graphql`
       query AppShellQuery {

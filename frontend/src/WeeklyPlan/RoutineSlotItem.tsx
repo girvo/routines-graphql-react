@@ -4,6 +4,7 @@ import { graphql, useFragment, useMutation } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime'
 import { iconComponent } from '../utils/icons.ts'
 import { announceMove } from './announce-move.ts'
+import { invalidateStoreOnSuccess } from '../relay/invalidate-store.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { DaySectionMove } from './DaySectionMoveTask.ts'
 import {
@@ -229,6 +230,7 @@ export const RoutineSlotItem = ({
             optimisticResponse: {
               deleteRoutineSlot: { deletedId: routineSlot.id },
             },
+            updater: invalidateStoreOnSuccess('deleteRoutineSlot'),
             onCompleted: (_response, errors) => {
               showPayloadErrors(errors)
             },

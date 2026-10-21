@@ -1,4 +1,5 @@
 import { graphql, useMutation } from 'react-relay'
+import { invalidateStoreOnSuccess } from '../relay/invalidate-store.ts'
 import { reorderConnectionEdges } from '../relay/reorder-connection-edges.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import { applyMove, type MoveTarget } from './task-order.ts'
@@ -37,6 +38,7 @@ export const useDaySectionMoveTask = ({
         connectionId,
         applyMove(slotIds, routineSlotId, target),
       ),
+      updater: invalidateStoreOnSuccess('moveRoutineSlot'),
       onCompleted: (_response, errors) => {
         showPayloadErrors(errors)
       },

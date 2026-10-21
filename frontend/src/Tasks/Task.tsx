@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from '../primitives/overlay/popover/Popover.tsx'
 import { iconComponent } from '../utils/icons.ts'
+import { invalidateStoreOnSuccess } from '../relay/invalidate-store.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import styles from './Task.module.css'
 
@@ -22,12 +23,14 @@ interface TaskProps {
   task: Task_task$key
   updatable: EditTask_task$key
   connectionId: string
+  onRenamed?: () => void
 }
 
 export const Task = ({
   task: taskData,
   updatable,
   connectionId,
+  onRenamed,
 }: TaskProps) => {
   const task = useFragment(
     graphql`
@@ -67,6 +70,7 @@ export const Task = ({
       optimisticResponse: {
         deleteTask: { deletedId: task.id },
       },
+      updater: invalidateStoreOnSuccess('deleteTask'),
       onCompleted: (_response, errors) => {
         showPayloadErrors(errors)
       },
@@ -88,6 +92,7 @@ export const Task = ({
         icon={task.icon ?? null}
         task={updatable}
         setIsEditing={setIsEditing}
+        onSuccess={onRenamed}
       />
     )
   }

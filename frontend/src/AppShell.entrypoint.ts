@@ -13,7 +13,6 @@ export const AppShellEntryPoint: SimpleEntryPoint<typeof AppShell> = {
         appShellQuery: {
           parameters: AppShellQueryNode,
           variables: {},
-          options: { fetchPolicy: 'store-and-network' },
         },
       },
     }

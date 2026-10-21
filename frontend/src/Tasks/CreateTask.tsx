@@ -16,17 +16,20 @@ import { TextInput } from '../primitives/form/TextInput'
 import { Field } from '../primitives/form/Field'
 import { IconPicker } from '../primitives/form/IconPicker'
 import { Button } from '../primitives/Button'
+import { invalidateStoreOnSuccess } from '../relay/invalidate-store.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler'
 import styles from './CreateTask.module.css'
 
 interface CreateTaskProps {
   connectionIds: readonly string[]
   setIsCreating: Dispatch<SetStateAction<boolean>>
+  onSuccess?: () => void
 }
 
 export const CreateTask = ({
   connectionIds,
   setIsCreating,
+  onSuccess,
 }: CreateTaskProps) => {
   const {
     register,
@@ -96,8 +99,10 @@ export const CreateTask = ({
           },
         },
       },
+      updater: invalidateStoreOnSuccess('createTask'),
       onCompleted: (_response, errors) => {
-        showPayloadErrors(errors)
+        if (showPayloadErrors(errors)) return
+        onSuccess?.()
       },
       onError: showError,
     })

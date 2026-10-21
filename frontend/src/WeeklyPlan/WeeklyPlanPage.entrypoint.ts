@@ -16,7 +16,6 @@ export const WeeklyPlanPageEntryPoint: SimpleEntryPoint<typeof WeeklyPlanPage> =
           weeklyPlanPageQuery: {
             parameters: WeeklyPlanPageQueryDoc,
             variables: { dayOfWeek: daySelectorToDayOfWeek(day) },
-            options: { fetchPolicy: 'store-and-network' },
           },
         },
         extraProps: { day },

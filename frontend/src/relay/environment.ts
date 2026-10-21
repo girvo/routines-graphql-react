@@ -83,7 +83,11 @@ function fetchWithRetry(
 
 const network = Network.create(fetchWithRetry)
 
+const QUERY_STALE_AFTER_MS = 60_000
+
 export const environment = new Environment({
   network,
-  store: new Store(new RecordSource()),
+  store: new Store(new RecordSource(), {
+    queryCacheExpirationTime: QUERY_STALE_AFTER_MS,
+  }),
 })

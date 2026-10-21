@@ -10,6 +10,7 @@ import { TextInput } from '../primitives/form/TextInput'
 import { Field } from '../primitives/form/Field'
 import { IconPicker } from '../primitives/form/IconPicker'
 import { Button } from '../primitives/Button'
+import { invalidateStoreOnSuccess } from '../relay/invalidate-store.ts'
 import { useMutationErrorHandler } from '../relay/use-mutation-error-handler.ts'
 import type { EditTaskMutation } from './__generated__/EditTaskMutation.graphql'
 import type { EditTask_task$key } from './__generated__/EditTask_task.graphql'
@@ -21,6 +22,7 @@ interface EditTaskProps {
   icon: string | null
   task: EditTask_task$key
   setIsEditing: Dispatch<SetStateAction<boolean>>
+  onSuccess?: () => void
 }
 
 export const EditTask = ({
@@ -29,6 +31,7 @@ export const EditTask = ({
   icon,
   task,
   setIsEditing,
+  onSuccess,
 }: EditTaskProps) => {
   const {
     register,
@@ -75,9 +78,11 @@ export const EditTask = ({
         updatableData.title = formData.title
         updatableData.icon = formData.icon
       },
+      updater: invalidateStoreOnSuccess('updateTask'),
       onCompleted: (_response, errors) => {
         if (showPayloadErrors(errors)) return
         close()
+        onSuccess?.()
       },
       onError: showError,
     })

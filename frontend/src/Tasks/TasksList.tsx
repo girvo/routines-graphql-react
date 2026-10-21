@@ -3,12 +3,15 @@ import { ConnectionHandler, ROOT_ID } from 'relay-runtime'
 import {
   startTransition,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ChangeEvent,
   type Dispatch,
   type SetStateAction,
 } from 'react'
+import type { FetchPolicy } from 'relay-runtime'
 import { useDebounceCallback } from 'usehooks-ts'
 import { Plus, Search } from 'lucide-react'
 import { Task } from './Task.tsx'
@@ -18,6 +21,7 @@ import { TextInput } from '../primitives/form/TextInput.tsx'
 import { Card } from '../primitives/layout/Card.tsx'
 import { TasksTableHeader } from './TasksTableHeader.tsx'
 import { usePageHeader } from '../utils/page-header.ts'
+import { useOnVisible } from '../relay/use-on-visible.ts'
 import type { TasksList_tasks$key } from './__generated__/TasksList_tasks.graphql'
 import type { TasksListPaginationQuery } from './__generated__/TasksListPaginationQuery.graphql'
 import styles from './TasksList.module.css'
@@ -62,23 +66,61 @@ export const TasksList = ({
       tasksRef,
     )
 
-  const refetchByTitle = useCallback(
-    (titleSearch: string | null) => {
+  const searchQueryRef = useRef(searchQuery)
+  useEffect(() => {
+    searchQueryRef.current = searchQuery
+  }, [searchQuery])
+
+  const refetchWithSearch = useCallback(
+    (titleSearch: string | null, fetchPolicy: FetchPolicy) => {
       startTransition(() => {
-        refetch({ titleSearch }, { fetchPolicy: 'store-and-network' })
+        refetch({ titleSearch }, { fetchPolicy })
       })
     },
     [refetch],
   )
-  const debouncedRefetchByTitle = useDebounceCallback(refetchByTitle, 300)
+
+  const debouncedSearch = useCallback(
+    (titleSearch: string | null) =>
+      refetchWithSearch(titleSearch, 'store-and-network'),
+    [refetchWithSearch],
+  )
+
+  const debouncedRefetch = useDebounceCallback(debouncedSearch, 300)
+
+  const isFiltering = searchQuery.trim() !== ''
+
+  const refetchActiveSearch = useCallback(
+    (fetchPolicy: FetchPolicy) => {
+      const current = searchQueryRef.current
+      refetchWithSearch(current.trim() ? current : null, fetchPolicy)
+    },
+    [refetchWithSearch],
+  )
+
+  const refetchSearchOnCompletion = useCallback(() => {
+    if (searchQueryRef.current.trim() === '') return
+    refetchActiveSearch('store-and-network')
+  }, [refetchActiveSearch])
+
+  const refreshSearchOnReturn = useCallback(() => {
+    if (searchQueryRef.current.trim() === '') return
+    refetchActiveSearch('store-or-network')
+  }, [refetchActiveSearch])
+  useOnVisible(refreshSearchOnReturn)
 
   const handleSearchChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const next = event.target.value
       setSearchQuery(next)
-      debouncedRefetchByTitle(next.trim() ? next : null)
+      debouncedRefetch(next.trim() ? next : null)
     },
-    [debouncedRefetchByTitle],
+    [debouncedRefetch],
+  )
+
+  const rootConnectionId = ConnectionHandler.getConnectionID(
+    ROOT_ID,
+    'TasksList_tasks',
   )
 
   const actions = useMemo(
@@ -135,10 +177,12 @@ export const TasksList = ({
       {isCreating && (
         <CreateTask
           setIsCreating={setIsCreating}
-          connectionIds={[
-            data.tasks.__id,
-            ConnectionHandler.getConnectionID(ROOT_ID, 'TasksList_tasks'),
-          ]}
+          onSuccess={refetchSearchOnCompletion}
+          connectionIds={
+            isFiltering
+              ? [rootConnectionId]
+              : [data.tasks.__id, rootConnectionId]
+          }
         />
       )}
       {showEmpty && (
@@ -154,6 +198,7 @@ export const TasksList = ({
           task={node}
           updatable={node}
           connectionId={data.tasks.__id}
+          onRenamed={refetchSearchOnCompletion}
         />
       ))}
       {hasNext && !searchQuery.trim() && (
