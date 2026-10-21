@@ -47,7 +47,7 @@
   ],
   "pendant.autoGenerateSessionNames": true,
   "pendant.sessionNameGeneration": {
-    "model": "openai-codex/gpt-6-luna",
+    "model": "openai-codex/gpt-5.6-terra",
     "thinking": "low"
   },
   "pendant.sessionRailPosition": "right"

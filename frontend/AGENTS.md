@@ -19,3 +19,15 @@ Import the code under test with `../`. Relay artifacts for queries and fragments
 ## Type checking
 
 The frontend uses TypeScript project references (`tsconfig.json` is a root with `references`, no own files). Plain `tsc --noEmit` will silently exit 0 without checking anything. Always type-check via `pnpm typecheck` (which runs `tsc -b`) so all referenced projects (`tsconfig.app.json`, `tsconfig.node.json`, `.storybook/tsconfig.json`) are actually traversed.
+
+From the repository root:
+
+```bash
+# Preferred full frontend typecheck, includes app, Storybook stories, and Vitest config
+pnpm --filter @my-routines/frontend typecheck
+
+# Target the app/story source project directly when investigating src or stories
+pnpm --filter @my-routines/frontend exec tsc --noEmit -p tsconfig.app.json
+```
+
+Story files under `frontend/src` are included by `tsconfig.app.json`, so unused variables and other strict TypeScript errors in stories should be caught by the commands above.
