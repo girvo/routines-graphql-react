@@ -1,5 +1,5 @@
 # Build stage
-FROM node:24-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@10.21.0 --activate
@@ -25,7 +25,7 @@ COPY shared/ ./shared/
 COPY schema.graphql ./
 
 # Production stage
-FROM node:24-alpine AS production
+FROM node:24.22.1-alpine AS production
 
 # Install pnpm for running the app
 RUN corepack enable && corepack prepare pnpm@10.21.0 --activate
